@@ -8,6 +8,6 @@ public class IndexController {
 	
 	@GetMapping("/")
 	public String indexTest() {
-		return "/front_end/customer/unlogined/indexTest";
+		return "/front_end/index";
 	}
 }
