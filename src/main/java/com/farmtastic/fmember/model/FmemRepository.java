@@ -1,5 +1,7 @@
 package com.farmtastic.fmember.model;
 
-public class FmemRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface FmemRepository extends JpaRepository<Fmem, Integer>{
 
 }

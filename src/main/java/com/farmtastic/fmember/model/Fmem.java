@@ -3,6 +3,8 @@ package com.farmtastic.fmember.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
+@DynamicUpdate
 @Table(name = "fmem")
 public class Fmem implements Serializable {
 	
@@ -28,21 +31,21 @@ public class Fmem implements Serializable {
 	@Column(name = "fmem_pwd")
 	private String fmemPwd;
 	
-	@Column(name = "acc_status")
+	@Column(name = "acc_status", insertable = false)
 	private Byte accStatus;
 	
-	@Column(name = "acc_desc")
+	@Column(name = "acc_desc", insertable = false)
 	private String accDesc;
 	
 	@Column(name = "fmem_name")
 	private String fmemName;
 	
-	@Column(name = "fmem_moblie")
-	private String fmemMoblie;
+	@Column(name = "fmem_mobile")
+	private String fmemMobile;
 	
 	
 	
-	@Column(name = "fmem_tel")
+	@Column(name = "fmem_tel", insertable = false)
 	private String fmemTel;
 	
 	@Column(name = "fmem_email")
@@ -67,54 +70,54 @@ public class Fmem implements Serializable {
 	private String bankAcc;
 
 	
-	@Column(name = "reg_date")
+	@Column(name = "reg_date", insertable = false)
 	private Timestamp regDate;
 	
-	@Column(name = "certi_status")
+	@Column(name = "certi_status", insertable = false)
 	private Byte certiStatus;
 	
-	@Column(name = "fmem_pic")
+	@Column(name = "fmem_pic", insertable = false)
 	private byte[] fmemPic;
 	
-	@Column(name = "organic_pic")
+	@Column(name = "organic_pic", insertable = false)
 	private byte[] organicPic;
 	
-	@Column(name = "land_pic")
+	@Column(name = "land_pic", insertable = false)
 	private byte[] landPic;
 	
-	@Column(name = "insur_pic")
+	@Column(name = "insur_pic", insertable = false)
 	private byte[] insurPic;
 	
-	@Column(name = "store_pic")
+	@Column(name = "store_pic", insertable = false)
 	private byte[] storePic;
 	
-	@Column(name = "store_name")
+	@Column(name = "store_name", insertable = false)
 	private String storeName;
 	
 	
 	
-	@Column(name = "store_intro")
+	@Column(name = "store_intro", insertable = false)
 	private String storeIntro;
 	
-	@Column(name = "sty_no")
+	@Column(name = "sty_no", insertable = false)
 	private Byte styNo;
 	
-	@Column(name = "mkt_score")
+	@Column(name = "mkt_score", insertable = false)
 	private Integer mktScore;
 	
-	@Column(name = "mkt_cnt")
+	@Column(name = "mkt_cnt", insertable = false)
 	private Integer mktCnt;
 	
-	@Column(name = "act_score")
+	@Column(name = "act_score", insertable = false)
 	private Integer actScore;
 	
-	@Column(name = "act_cnt")
+	@Column(name = "act_cnt", insertable = false)
 	private Integer actCnt;
 	
-	@Column(name = "rpt_cnt")
+	@Column(name = "rpt_cnt", insertable = false)
 	private Byte rptCnt;
 	
-	@Column(name = "prod_fee")
+	@Column(name = "prod_fee", insertable = false)
 	private Integer prodFee;
 	
 	
@@ -165,11 +168,11 @@ public class Fmem implements Serializable {
 	public void setFmemName(String fmemName) {
 		this.fmemName = fmemName;
 	}
-	public String getFmemMoblie() {
-		return fmemMoblie;
+	public String getFmemMobile() {
+		return fmemMobile;
 	}
-	public void setFmemMoblie(String fmemMoblie) {
-		this.fmemMoblie = fmemMoblie;
+	public void setFmemMobile(String fmemMoblie) {
+		this.fmemMobile = fmemMoblie;
 	}
 	public String getFmemTel() {
 		return fmemTel;
