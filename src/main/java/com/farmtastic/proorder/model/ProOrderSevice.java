@@ -17,20 +17,20 @@ public class ProOrderSevice {
 //		@Autowired
 //		private SessionFactory sessionFactory;
 		
-//		// 新增
-//		public void addProOrder(ProOrderVO proOrderVO) {
-//			repository.save(proOrderVO);
-//		}
-//		// 修改
-//		public void updateProOrder(ProOrderVO proOrderVO) {
-//			repository.save(proOrderVO);
-//		}
-//		// 刪除
-//		public void deleteProOrder(Integer proOrdId) {
-//			if(repository.existsById(proOrdId)) {
-//				repository.deleteById(proOrdId);
-//			}
-//		}
+		// 新增
+		public void addProOrder(ProOrderVO proOrderVO) {
+			repository.save(proOrderVO);
+		}
+		// 修改
+		public void updateProOrder(ProOrderVO proOrderVO) {
+			repository.save(proOrderVO);
+		}
+		// 刪除
+		public void deleteProOrder(Integer proOrdId) {
+			if(repository.existsById(proOrdId)) {
+				repository.deleteById(proOrdId);
+			}
+		}
 		// 查全部
 		public List<ProOrderVO> getAll(){
 			return repository.findAll();
