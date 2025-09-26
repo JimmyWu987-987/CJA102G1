@@ -53,7 +53,7 @@ CREATE TABLE fmem (
 	fmem_addr varchar(40) NOT NULL,
 	bank_code varchar(5) NOT NULL,
 	bank_acc varchar(20) NOT NULL,
-	reg_date datetime NOT NULL,
+	reg_date datetime NOT NULL DEFAULT current_timestamp,
 	certi_status tinyint NOT NULL DEFAULT 0,
 	fmem_pic longblob DEFAULT NULL,
 	organic_pic longblob DEFAULT NULL,
