@@ -12,13 +12,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.farmtastic.proorder.model")
-public class testProOrder implements CommandLineRunner {
+public class TestProOrder implements CommandLineRunner {
 
 	@Autowired
-	ProOrderRepository repository;
+	ProOrderSevice proOrderSvc;
 
 	public static void main(String[] args) {
-		SpringApplication.run(testProOrder.class);
+		SpringApplication.run(TestProOrder.class);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class testProOrder implements CommandLineRunner {
 		
 		
 		// 查詢全部
-		List<ProOrderVO> list = repository.findAll();
+		List<ProOrderVO> list = proOrderSvc.getAll();
 		for (ProOrderVO proOrderVO : list) {
 			System.out.println(proOrderVO);
 		}
