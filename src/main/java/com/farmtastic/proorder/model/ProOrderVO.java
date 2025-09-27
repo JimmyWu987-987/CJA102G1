@@ -3,7 +3,17 @@ package com.farmtastic.proorder.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import jakarta.persistence.*;
+import com.farmtastic.member.model.Mem;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pro_order")
@@ -16,11 +26,11 @@ public class ProOrderVO implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer proOrdId;
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "mem_id")
-//	private Mem mem;
-	@Column(name = "mem_id")
-	private Integer memId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "mem_id")
+	private Mem mem;
+//	@Column(name = "mem_id")
+//	private Integer memId;
 
 //	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 //	@JoinColumn(name = "cpn_holder_detail_id")
@@ -75,13 +85,13 @@ public class ProOrderVO implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProOrderVO(Integer proOrdId, Integer menId, Integer cpnHolderDetailId, Timestamp proOrdDate,
-			byte proOrdStatus, byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc,
-			Integer proOrdPointdisc, Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm,
-			byte proOrdPayment, byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate) {
+	public ProOrderVO(Integer proOrdId, Mem mem, Integer cpnHolderDetailId, Timestamp proOrdDate, byte proOrdStatus,
+			byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
+			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, byte proOrdPayment,
+			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate) {
 		super();
 		this.proOrdId = proOrdId;
-		this.memId = menId;
+		this.mem = mem;
 		this.cpnHolderDetailId = cpnHolderDetailId;
 		this.proOrdDate = proOrdDate;
 		this.proOrdStatus = proOrdStatus;
@@ -107,12 +117,12 @@ public class ProOrderVO implements Serializable {
 		this.proOrdId = proOrdId;
 	}
 
-	public Integer getMenId() {
-		return memId;
+	public Mem getMem() {
+		return mem;
 	}
 
-	public void setMenId(Integer menId) {
-		this.memId = menId;
+	public void setMem(Mem mem) {
+		this.mem = mem;
 	}
 
 	public Integer getCpnHolderDetailId() {
@@ -234,16 +244,7 @@ public class ProOrderVO implements Serializable {
 	public void setProOrdShipdate(Timestamp proOrdShipdate) {
 		this.proOrdShipdate = proOrdShipdate;
 	}
-
-	@Override
-	public String toString() {
-		return "ProOrderVO [proOrdId=" + proOrdId + ", menId=" + memId + ", cpnHolderDetailId=" + cpnHolderDetailId
-				+ ", proOrdDate=" + proOrdDate + ", proOrdStatus=" + proOrdStatus + ", proPayStatus=" + proPayStatus
-				+ ", proTotal=" + proTotal + ", proOrdShipFee=" + proOrdShipFee + ", proOrdCpndisc=" + proOrdCpndisc
-				+ ", proOrdPointdisc=" + proOrdPointdisc + ", proOrdPointGet=" + proOrdPointGet + ", proOrdGrandTotal="
-				+ proOrdGrandTotal + ", proOrdComm=" + proOrdComm + ", proOrdPayment=" + proOrdPayment
-				+ ", proOrdShipment=" + proOrdShipment + ", proTrackingNo=" + proTrackingNo + ", proOrdShipdate="
-				+ proOrdShipdate + "]";
-	}
+	
+	
 
 }
