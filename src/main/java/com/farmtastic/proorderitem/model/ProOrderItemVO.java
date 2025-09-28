@@ -12,7 +12,7 @@ public class ProOrderItemVO {
 	@EmbeddedId
 	private ProOrderItemId id;
 	
-	// 等有了ProductVO後再不上
+	// 等有了ProductVO後再補上
 //	@MapsId("proId")
 //	@ManyToOne
 //	@JoinColumn(name="pro_id")
