@@ -12,8 +12,15 @@ public class IndexController {
 		return "/front_end/index";
 	}
 	
-	@GetMapping("/cashflow")
-	public String listAllProOrder() {
-		return "/back_end/logined/cash_flow/listAllEmp";
+	// 後台金流管理系統
+	@GetMapping("/cashflow/")
+	public String cashFlowIndex() {
+		return "/back_end/logined/cash_flow/index";
 	}
+	
+	@GetMapping("/cashflow/listAllProOrder")
+	public String listAllProOrder() {
+		return "redirect:/proorder/listAllProOrder"; 
+	}
+	
 }

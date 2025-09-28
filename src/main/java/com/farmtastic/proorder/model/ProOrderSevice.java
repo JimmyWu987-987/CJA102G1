@@ -1,8 +1,8 @@
 package com.farmtastic.proorder.model;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +35,16 @@ public class ProOrderSevice {
 		public List<ProOrderVO> getAll(){
 			return repository.findAll();
 		}
-		// 小農查詢自己的全部表單
-		// 小農查詢該會員有幾筆訂單
+		
+		// 訂單單一查詢
+		public ProOrderVO getOneProOrder(Integer proOrdId) {
+			Optional<ProOrderVO> optional = repository.findById(proOrdId);
+			return optional.orElse(null);
+		}
+		
+		
+		// 小農fmem查詢自己的全部表單
+		// 小農fmem查詢該會員有幾筆訂單
 		// 小農查詢該商品有幾筆訂單
 		// 後台查詢該小農商品有幾筆訂單（回傳多筆）
 		// 用復合查詢？

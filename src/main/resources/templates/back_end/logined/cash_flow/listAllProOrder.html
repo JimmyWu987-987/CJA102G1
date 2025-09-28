@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>全部產品訂單列表</title>
+</head>
+<body>
+    <h1>全部產品訂單列表</h1>
+    
+    <div th:if="${#lists.isEmpty(proOrderList)}">
+        <p>目前沒有任何訂單資料。</p>
+    </div>
+    
+    <div th:unless="${#lists.isEmpty(proOrderList)}">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>訂單編號</th>
+                    <th>會員ID</th>
+                    <th>訂單日期</th>
+                    <th>總金額</th>
+                    <th>物流追蹤編號</th>
+                    </tr>
+            </thead>
+            <tbody>
+                <tr th:each="proOrderVO : ${proOrderList}">
+                    <td th:text="${proOrderVO.proOrdId}">1</td>
+                    <td th:text="${proOrderVO.mem.memId}">M001</td> 
+                    <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
+                    <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>
+                    <td th:text="${proOrderVO.proTrackingNo}">ABC123456</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</body>
+</html>
