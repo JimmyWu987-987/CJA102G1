@@ -25,8 +25,6 @@ public class ProOrderVO implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mem_id")
 	private Mem memVO;
-//	@Column(name = "mem_id")
-//	private Integer memId;
 
 //	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 //	@JoinColumn(name = "cpn_holder_detail_id")

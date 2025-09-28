@@ -25,7 +25,7 @@
             <tbody>
                 <tr th:each="proOrderVO : ${proOrderList}">
                     <td th:text="${proOrderVO.proOrdId}">1</td>
-                    <td th:text="${proOrderVO.mem.memId}">M001</td> 
+                    <td th:text="${proOrderVO.memVO.memId}">M001</td> 
                     <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                     <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>
                     <td th:text="${proOrderVO.proTrackingNo}">ABC123456</td>
