@@ -20,6 +20,14 @@ public class ProOrderItemId implements Serializable{
 	
 	
 
+	public ProOrderItemId(Integer proId, Integer proOrdId) {
+		super();
+		this.proId = proId;
+		this.proOrdId = proOrdId;
+	}
+
+
+
 	public Integer getProId() {
 		return proId;
 	}

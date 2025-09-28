@@ -9,8 +9,7 @@ import com.farmtastic.member.model.Mem;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
 import jakarta.persistence.*;
-
-
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pro_order")
@@ -25,7 +24,7 @@ public class ProOrderVO implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mem_id")
-	private Mem mem;
+	private Mem memVO;
 //	@Column(name = "mem_id")
 //	private Integer memId;
 
@@ -81,20 +80,19 @@ public class ProOrderVO implements Serializable {
 			   cascade=CascadeType.ALL, // 訂單刪除，明細也刪除
 			   orphanRemoval = true)
 	private Set<ProOrderItemVO> proOrderItems = new HashSet<>();
-	
-	
+
 	public ProOrderVO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProOrderVO(Integer proOrdId, Mem mem, Integer cpnHolderDetailId, Timestamp proOrdDate, byte proOrdStatus,
+	public ProOrderVO(Integer proOrdId, Mem memVO, Integer cpnHolderDetailId, Timestamp proOrdDate, byte proOrdStatus,
 			byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
 			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, byte proOrdPayment,
-			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate) {
+			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, Set<ProOrderItemVO> proOrderItems) {
 		super();
 		this.proOrdId = proOrdId;
-		this.mem = mem;
+		this.memVO = memVO;
 		this.cpnHolderDetailId = cpnHolderDetailId;
 		this.proOrdDate = proOrdDate;
 		this.proOrdStatus = proOrdStatus;
@@ -110,6 +108,7 @@ public class ProOrderVO implements Serializable {
 		this.proOrdShipment = proOrdShipment;
 		this.proTrackingNo = proTrackingNo;
 		this.proOrdShipdate = proOrdShipdate;
+		this.proOrderItems = proOrderItems;
 	}
 
 	public Integer getProOrdId() {
@@ -120,12 +119,12 @@ public class ProOrderVO implements Serializable {
 		this.proOrdId = proOrdId;
 	}
 
-	public Mem getMem() {
-		return mem;
+	public Mem getMemVO() {
+		return memVO;
 	}
 
-	public void setMem(Mem mem) {
-		this.mem = mem;
+	public void setMemVO(Mem memVO) {
+		this.memVO = memVO;
 	}
 
 	public Integer getCpnHolderDetailId() {
@@ -255,6 +254,10 @@ public class ProOrderVO implements Serializable {
 	public void setProOrderItems(Set<ProOrderItemVO> proOrderItems) {
 		this.proOrderItems = proOrderItems;
 	}
+
+	
+
+	
 	
 	
 
