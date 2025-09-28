@@ -2,18 +2,15 @@ package com.farmtastic.proorder.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+
 
 @Entity
 @Table(name = "pro_order")
@@ -80,6 +77,12 @@ public class ProOrderVO implements Serializable {
 	@Column(name = "pro_ord_shipdate")
 	private Timestamp proOrdShipdate;
 
+	@OneToMany(mappedBy="proOrderVO", // 指向 ProOrderItemVO 要關聯的屬性
+			   cascade=CascadeType.ALL, // 訂單刪除，明細也刪除
+			   orphanRemoval = true)
+	private Set<ProOrderItemVO> proOrderItems = new HashSet<>();
+	
+	
 	public ProOrderVO() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -243,6 +246,14 @@ public class ProOrderVO implements Serializable {
 
 	public void setProOrdShipdate(Timestamp proOrdShipdate) {
 		this.proOrdShipdate = proOrdShipdate;
+	}
+
+	public Set<ProOrderItemVO> getProOrderItems() {
+		return proOrderItems;
+	}
+
+	public void setProOrderItems(Set<ProOrderItemVO> proOrderItems) {
+		this.proOrderItems = proOrderItems;
 	}
 	
 	

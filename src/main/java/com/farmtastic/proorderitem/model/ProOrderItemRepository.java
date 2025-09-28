@@ -1,5 +1,7 @@
 package com.farmtastic.proorderitem.model;
 
-public interface ProOrderItemRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProOrderItemRepository extends JpaRepository<ProOrderItemVO, Integer>{
 
 }
