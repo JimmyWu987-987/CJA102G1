@@ -21,6 +21,7 @@
                     <th>總金額</th>
                     <th>付款方式</th>
                     <th>物流方式</th>
+                    <th></th>
 
                     </tr>
             </thead>
@@ -46,6 +47,12 @@
                     		<span th:case="1">超商取貨</span>
                     		<span th:case="*"></span>
                     	</div>
+                    </td>
+                    <td>
+                    	<form method="post" th:action="@{/proorder/listOneProOrder}">
+                    		<input type="submit" value="詳細資料">
+                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+                    	</form>
                     </td>
                     
                    
