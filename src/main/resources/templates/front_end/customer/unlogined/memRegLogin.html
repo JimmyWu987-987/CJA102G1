@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一般會員註冊</title>
+    <link rel="icon" href="./images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/regLogin.css}">
+
+    <style>
+        
+    </style>
+</head>
+<body th:data-active-tab="${activeTab != null ? activeTab : 'login'}">
+    <div class="container container-header">
+        <div class="header">
+            <div class="logo">
+                <a th:href="@{/}" class="link">
+                    <img th:src="@{/images/logo-t.png}" alt="">
+                </a>
+            </div>
+
+            <ul class="nav">
+                <li>
+                    <a href="#" class="link btn">關於本站</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="link btn">小農商城</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                        <li><a href="#">如果有需要再多一層</a></li>
+                        <li><a href="#">是可以再加(但最好不要)</a></li>
+                        <li><a href="#">因為有點麻煩</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="link btn">活動專區</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                        <li><a href="#">如果有需要再多一層</a></li>
+                        <li><a href="#">是可以再加(但最好不要)</a></li>
+                        <li><a href="#">因為有點麻煩</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="link btn">會員中心</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                        <li><a href="#">如果有需要再多一層</a></li>
+                        <li><a href="#">是可以再加(但最好不要)</a></li>
+                        <li><a href="#">因為有點麻煩</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="member">
+                <a th:href="@{/mem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <a th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container container-reg-login">
+        <h2 class="reg-login-title">一般會員</h2>
+
+        <div class="reg-login-btns">    
+            <span class="btn-login active-btn" id="btn-login">登 入</span><span class="btn-reg" id="btn-reg">註 冊</span>
+        </div>
+        
+        <div class="login" id="login">
+            <form method="post" th:action="@{/mem/login}" th:object="${loginRequest}">
+                <ul>
+                    <li>
+                        <label for="">帳號</label>
+                        <input type="text" th:field="*{memAccLogin}" class="memAccLogin" placeholder="mem測試帳號:test">                        
+                    </li>
+                    <li>
+                        <label for="">密碼</label>
+                        <input type="password" th:field="*{memPwdLogin}" class="memPwdLogin" placeholder="mem測試密碼:1234">
+                    </li>
+
+					<div th:if="${loginError}">
+						<span th:text="${loginError}" class="error error-login"></span>
+					</div>
+
+					<input type="submit" value="登入" class="btn link">
+                </ul>
+            </form>
+        </div>
+        
+        <div class="register" id="register">
+            <form method="post" th:action="@{/mem/register}" th:object="${mem}">
+                <ul>
+                    <li>
+                        <label for="">帳號</label>
+                        <input type="text" th:field="*{memAcc}" placeholder="英文或數字或_ , 長度8~20">                        
+                        <span th:if="${#fields.hasErrors('memAcc')}" th:errors="*{memAcc}" class="error"></span>
+                        
+						<span th:if="${regError}" th:text="${regError}" class="error-reg"></span>
+						
+                    </li>
+                    <li>
+                        <label for="">密碼</label>
+                        <input type="password" th:field="*{memPwd}" placeholder="英文或數字或@ , 長度8~20">
+                        <span th:if="${#fields.hasErrors('memPwd')}" th:errors="*{memPwd}" class="error"></span>
+                    </li>
+                    <li>
+                        <label for="">再次輸入密碼</label>
+                        <input type="password" th:field="*{memPwdCheck}" placeholder="英文或數字或@ , 長度8~20">
+                        <span th:if="${#fields.hasErrors('memPwdCheck')}" th:errors="*{memPwdCheck}" class="error"></span>
+                    </li>
+                    <li>
+                        <label for="">姓名</label>
+                        <input type="text" th:field="*{memName}">
+                        <span th:if="${#fields.hasErrors('memName')}" th:errors="*{memName}" class="error"></span>
+                    </li>
+                    <li>
+                        <label for="">生日</label>
+                        <input type="date" th:field="*{memBirthday}">
+                        <span th:if="${#fields.hasErrors('memBirthday')}" th:errors="*{memBirthday}" class="error"></span>
+                    </li>
+                    <li>
+                        <label for="">手機</label>
+                        <input type="tel" th:field="*{memMobile}" placeholder="格式: 09XX-XXXXXX">
+                        <span th:if="${#fields.hasErrors('memMobile')}" th:errors="*{memMobile}" class="error"></span>
+                    </li>
+                    <li>
+                        <label for="">信箱</label>
+                        <input type="email" th:field="*{memEmail}" class="memEmail" list="email-suggestions">
+                        <datalist id="email-suggestions"></datalist>
+                        <span th:if="${#fields.hasErrors('memEmail')}" th:errors="*{memEmail}" class="error"></span>
+                    </li>
+                    <li class="list-addr">
+                        <label>居住地址</label>
+                        <input type="text" th:field="*{memZipcode}" class="memZipcode" placeholder="郵遞區號" maxlength="3">
+
+                        <select th:field="*{memCity}" class="memCity">
+                            <option value="" class="city-option" id="city-option"></option>
+                        </select>
+
+                        <select th:field="*{memDist}" class="memDist">
+                            <option value="" class="dist-option" id="dist-option"></option>
+                        </select>
+                        
+                        <input type="text" th:field="*{memAddr}" class="memAddr" placeholder="街道名稱 / 號碼 / 樓層" >
+                        
+                        <span th:if="${#fields.hasErrors('memZipcode')}" th:errors="*{memZipcode}" class="error-zipcode"></span>
+                        <span th:if="${#fields.hasErrors('memCity')}" th:errors="*{memCity}" class="error-city"></span>
+                        <span th:if="${#fields.hasErrors('memDist')}" th:errors="*{memDist}" class="error-dist"></span>
+                        <span th:if="${#fields.hasErrors('memAddr')}" th:errors="*{memAddr}" class="error-addr"></span>
+
+                    </li>
+                    
+                    <input type="submit" value="送出" class="btn link" id="btn-submitReg">
+                </ul>
+            </form>
+        </div>
+
+    </div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/regLogin.js}"></script>
+    
+    
+</body>
+</html>
