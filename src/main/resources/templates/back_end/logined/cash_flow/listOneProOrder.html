@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>全部產品訂單列表</title>
+
+<style type="text/css">
+	
+    span {
+		display: inline-block;
+		width: 150px;
+		text-align: left;
+		font-weight: bold;
+	}
+</style>
+
+</head>
+<body>
+    <h1>這是單一查詢訂單列表</h1>
+    
+    
+    <div th:if="${#lists.isEmpty(proOrderVO)}">
+        <p>目前沒有任何訂單資料。</p>
+    </div>
+    
+    <div th:unless="${#lists.isEmpty(proOrderVO)}">
+		
+		<h1 th:text="${proOrderVO.proOrdId}"></h1>		
+		<h2>訂單明細</h2>
+				
+		<span>訂單編號:</span><span th:text="${proOrderVO.proOrdId}"></span><br>
+		<span>一般會員編號:</span><span th:text="${proOrderVO.memVO.memId}"></span><br>
+		<span>商品折價卷持有者流水號:</span><span th:text="${proOrderVO.cpnHolderDetailId}"></span><br>
+		<span>訂單日期:</span><span th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}"></span><br>
+		<span>訂單狀態:</span><span th:text="${proOrderVO.proOrdStatus}"></span><br>
+		<span>付款狀態:</span><span th:text="${proOrderVO.proPayStatus}"></span>
+		<br>==========================</br>
+		預留訂單明細的include
+		<br>==========================</br>
+		<span>商品總金額:</span><span th:text="${proOrderVO.proTotal}"></span><br>
+		<span>運費:</span><span th:text="${proOrderVO.proOrdShipFee}"></span><br>
+		<span>折價券折抵金額:</span><span th:text="${proOrderVO.proOrdCpndisc}"></span><br>
+		<span>商品訂單折抵會員點數:</span><span th:text="${proOrderVO.proOrdPointdisc}"></span><br>
+		<span>商品訂單回饋會員點數:</span><span th:text="${proOrderVO.proOrdPointGet}"></span><br>
+		<span>實付金額:</span><span th:text="${proOrderVO.proOrdGrandTotal}"></span><br>
+		<span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span><br>
+		<span>付款方式:</span><span th:text="${proOrderVO.proOrdPayment}"></span><br>
+		<span>物流方式:</span><span th:text="${proOrderVO.proOrdShipment}"></span><br>
+		<span>物流追蹤碼:</span><span th:text="${proOrderVO.proTrackingNo}"></span><br>
+		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd HH:mm')}"></span><br>
+
+                    
+
+      
+                    	<form method="post" th:action="@{/proorder/listOneProOrder}">
+                    		<input type="submit" value="詳細資料">
+                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+                    	</form>
+
+    </div>
+    
+</body>
+</html>

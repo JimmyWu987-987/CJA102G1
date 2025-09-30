@@ -6,8 +6,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class IndexController {
 	
+	// 這是測試用網頁
 	@GetMapping("/")
 	public String indexTest() {
 		return "/front_end/index";
 	}
+	
+	// 後台金流管理系統
+	@GetMapping("/cashflow/")
+	public String cashFlowIndex() {
+		return "/back_end/logined/cash_flow/index";
+	}
+	
+	@GetMapping("/cashflow/listAllProOrder")
+	public String listAllProOrder() {
+		return "redirect:/proorder/listAllProOrder"; 
+	}
+	
 }
