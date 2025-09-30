@@ -9,7 +9,6 @@ import com.farmtastic.member.model.Mem;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pro_order")
