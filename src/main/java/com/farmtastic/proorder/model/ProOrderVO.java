@@ -28,7 +28,7 @@ public class ProOrderVO implements Serializable {
 
 //	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 //	@JoinColumn(name = "cpn_holder_detail_id")
-//	private MemProCpn memProCpn;
+//	private ProCpnVO proCpnVO;
 	@Column(name = "cpn_holder_detail_id")
 	private Integer cpnHolderDetailId;
 
