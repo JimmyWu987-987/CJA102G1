@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("ProCpnService")
+@Service("proCpnService")
 public class ProCpnServiceImp implements ProCpnService {
 	@Autowired
 	ProCpnRepository repository;
