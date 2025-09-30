@@ -16,10 +16,12 @@
             <thead>
                 <tr>
                     <th>訂單編號</th>
-                    <th>會員ID</th>
+                    <th>訂購會員ID</th>
                     <th>訂單日期</th>
                     <th>總金額</th>
-                    <th>物流追蹤編號</th>
+                    <th>付款方式</th>
+                    <th>物流方式</th>
+
                     </tr>
             </thead>
             <tbody>
@@ -27,8 +29,26 @@
                     <td th:text="${proOrderVO.proOrdId}">1</td>
                     <td th:text="${proOrderVO.memVO.memId}">M001</td> 
                     <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
-                    <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>
-                    <td th:text="${proOrderVO.proTrackingNo}">ABC123456</td>
+                    <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>       
+                    
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdPayment}">
+                    		<span th:case="0">信用卡</span>
+                    		<span th:case="1">轉帳</span>
+                    		<span th:case="2">貨到付款</span>
+                    		<span th:case="3">超商付款</span>
+                    		<span th:case="*"></span>
+                    	</div>
+                    </td>
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdShipment}">
+                    		<span th:case="0">宅配</span>
+                    		<span th:case="1">超商取貨</span>
+                    		<span th:case="*"></span>
+                    	</div>
+                    </td>
+                    
+                   
                 </tr>
             </tbody>
         </table>
