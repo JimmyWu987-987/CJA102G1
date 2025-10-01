@@ -20,40 +20,44 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/mem/proorders")
 public class ProOrderMemIdController {
-	
+
 	@Autowired
 	ProOrderSevice proOrdSvc;
-	
-	
+
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
-	public String listAll(Model model,HttpSession session) {
-		
-		// 取得會員資訊
-		
-		Mem MemVO = new Mem();
-		
-		// 測試 會員ID為1的會員
-		MemVO.setMemId(18);
-		
-		List<ProOrderVO> list = proOrdSvc.getAllByMemId(MemVO);
-		
-		model.addAttribute("proOrderList",list);
+	public String listAllProOrder(Model model, HttpSession session) {
 
-        return "/front_end/customer/logined/memProOrders/listAllProOrder";
+		// 取得 session 的會員資訊
+		Integer memId = (Integer) session.getAttribute("memId");
+
+//		if (memId == null) {
+//			// 沒有值則會重導至登入頁面
+//			return "redirect:/mem/showMemRegLoginForm";
+//		} else {
+			try {
+				Mem MemVO = new Mem();
+				MemVO.setMemId(memId);
+				List<ProOrderVO> list = proOrdSvc.getAllByMemId(MemVO);
+				model.addAttribute("proOrderList", list);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+
+			return "/front_end/customer/logined/memProOrders/listAllProOrder";
+//		}
 	}
-	
+
 	// 查詢單筆訂單
 	@PostMapping("listOneProOrder")
 	public String listOneProOrder(@RequestParam("proOrdId") String proOrdId, ModelMap model) {
-		
+
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(Integer.valueOf(proOrdId));
-		
-		model.addAttribute("proOrderVO",proOrderVO);
-		
+
+		model.addAttribute("proOrderVO", proOrderVO);
+
 		return "/back_end/logined/cash_flow/listOneProOrder";
 	}
-	
-	
-	
+
 }

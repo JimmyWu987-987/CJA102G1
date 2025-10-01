@@ -13,9 +13,9 @@ public class IndexController {
 		return "/front_end/index";
 	}
 	
-	// 這是測試用網頁
+	// 一般會員的商品訂單頁面
 	@GetMapping("/mem/proorders")
-	public String mem() {
+	public String memProOrders() {
 		return "/front_end/customer/logined/memProOrders/index";
 	}
 	
