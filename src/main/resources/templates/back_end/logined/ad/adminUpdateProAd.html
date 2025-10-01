@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+</style>
+</head>
+<body>
+
+<form th:action="@{/admin/proAd/updateProAd}"
+      method="post" enctype="multipart/form-data"
+      th:object="${proAdVO}">
+     <input type="hidden" name="proAdId" th:value="*{proAdId}"/>
+	<div>
+    <table>
+    
+    <tr>
+    <th></th>
+    <td>原本的資料</td>
+    <td>修改資料</td>
+    </tr>
+    
+    <tr>
+    <th>商品廣告編號</th>
+    <td th:text="${proAdVO.proAdId}"></td>
+    <td th:text="*{proAdId}" ></td>
+    </tr>
+    
+    <tr>
+    <th> 小農編號</th>
+    <td th:text="${proAdVO.fmemId}"></td>
+    <td th:text="${proAdVO.fmemId}"></td>
+    </tr>
+    
+    <tr>
+    <th>商品名稱</th>
+    <td><a href="javascript:void(0)">尚未 join</a></td>
+    <td><a href="javascript:void(0)">尚未 join</a></td>
+    </tr>
+    
+    <tr>
+    <th>商品廣告圖片</th>
+    <td><img class="adImg" th:src="@{/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg" width="100"/></td>
+    <td>
+          <input type="file" name="adImg" id="newImgInput"/><br>
+                新圖片預覽：<br>
+          <img id="newImgPreview" src="" style="display:none; border:1px solid #ccc;"/>
+    </td>
+    </tr>
+    
+    
+    
+    <tr>
+    	<th>審核狀態</th>
+    	 <td th:switch="${proAdVO.proAdRevStat}">
+	      <span th:case="0">編輯中</span>
+	      <span th:case="1">待審核</span>
+	      <span th:case="2">通過</span>
+	      <span th:case="3">未通過</span>
+	      <span th:case="4">待繳費</span>
+	      <span th:case="5">已繳費</span>
+	    </td>
+	    
+	     <td>
+	      <select th:field="*{proAdRevStat}">
+            <option value="0" >編輯中</option>
+            <option value="1" >待審核</option>
+            <option value="2" >審核通過</option>
+            <option value="3" >審核未過</option>
+            <option value="4" >待繳費</option>
+            <option value="5" >已繳費</option>
+         </select>
+	    </td>
+	</tr>
+
+       
+		<tr>
+    		<th>審核更新時間</th>
+    		<td>
+		      <span th:text="${#dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd')}"></span><br>
+		      <span th:text="${#dates.format(proAdVO.proAdRevUpd,'HH:mm:ss')}"></span>
+		    </td>
+		    
+		    <!-- 現在時間 -->
+		    <td>
+		      <span>修改後自動更新為現在時間</span>
+		    </td>
+		</tr>
+		
+        
+        <tr>
+        <th>審核備註</th>
+            <td th:text="${proAdVO.proAdRevRemark}"></td>
+            <td><input type="text" th:field="*{proAdRevRemark}" /></td>
+        </tr>
+        
+        <tr>
+    	<th>上下架狀態</th>
+    	<td>
+	      <span th:if="${proAdVO.proAdLaunStat == 0}">下架中</span>
+	      <span th:if="${proAdVO.proAdLaunStat != 0}">上架中</span>
+	    </td>
+	    <td>
+	      <select th:field="*{proAdLaunStat}">
+            <option value="0" >下架中</option>
+            <option value="1" >上架中</option>
+         </select>
+	    </td>
+		</tr>
+		
+        <tr>
+    		<th>上下架更新時間</th>
+    		<td>
+		      <span th:text="${#dates.format(proAdVO.proAdLaunUpd,'yyyy-MM-dd')}"></span><br>
+		      <span th:text="${#dates.format(proAdVO.proAdLaunUpd,'HH:mm:ss')}"></span>
+		    </td>
+		    
+			<!-- 現在時間 -->
+		    <td>
+		       <span>修改後自動更新為現在時間</span>
+		    </td>
+		</tr>
+		
+		<tr>
+            <th>開始日期</th>
+            <td>
+		      <span th:if="${proAdVO.proAdStart != null}" th:text="${proAdVO.proAdStart}"></span>
+		      <span th:unless="${proAdVO.proAdStart != null}">-</span>
+		    </td>
+		    <td>
+		      <input type="date" th:field="*{proAdStart}"/>
+		    </td>
+        </tr>
+        
+        
+        <tr>
+            <th>結束日期</th>
+             <td>
+		      <span th:if="${proAdVO.proAdEnd != null}" th:text="${proAdVO.proAdEnd}"></span>
+		      <span th:unless="${proAdVO.proAdEnd != null}">-</span>
+		    </td>
+		     <td>
+		      <input type="date" th:field="*{proAdEnd}"/>
+		    </td>
+        </tr>
+        
+        
+        <tr>
+            <th>費用</th>
+            <td>
+		      <span th:if="${proAdVO.proAdFee != null}"
+		            th:text="|$ ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}|"></span>
+		      <span th:unless="${proAdVO.proAdFee != null}">-</span>
+		    </td>
+		    
+		    <td>
+		       <select th:field="*{proAdFee}">
+            	<option value="1000" >$1,000</option>
+            	<option value="2000" >$2,000</option>
+            	<option value="3000" >$3,000</option>
+         		</select>
+		    </td>
+        </tr>
+        
+        
+        <tr>
+            <th>繳費截止日</th>
+            <td>
+		      <span th:if="${proAdVO.proAdFeeEnd != null}" th:text="${proAdVO.proAdFeeEnd}"></span>
+		      <span th:unless="${proAdVO.proAdFeeEnd != null}">-</span>
+		    </td>
+            <td><input type="date" th:field="*{proAdFeeEnd}"/></td>
+        </tr>
+       
+        
+
+    </table>
+    <button type="submit">送出修改</button>
+    </div>
+</form>
+
+
+
+<script>
+  const newImgInput = document.getElementById("newImgInput");
+    const newImgPreview = document.getElementById("newImgPreview");
+
+    newImgInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                newImgPreview.src = e.target.result;
+                newImgPreview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            newImgPreview.src = "";
+            newImgPreview.style.display = "none";
+        }
+    });
+</script>
+</body>
+</html>
