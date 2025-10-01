@@ -21,7 +21,7 @@ public class ProCpnController {
 	@GetMapping("listAllProCpn")
 	public String listAll(Model model) {
 		List<ProCpnVO> list = proCpnSvc.getAll();
-		model.addAllAttributes(list);
+		model.addAttribute("coupons", list);
 		return "/back_end/logined/procpn/listAllProCpn";
 	}
 }

@@ -4,7 +4,12 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import com.farmtastic.common.converter.EnumConverters;
+import com.farmtastic.common.enums.DiscountType;
+import com.farmtastic.common.enums.IsActive;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,8 +27,10 @@ public class ProCpnVO implements java.io.Serializable {
 	@Column(name = "cpn_name", nullable = false, length = 50)
 	private String cpnName; // 折價券名稱
 
+	@Convert(converter = EnumConverters.DiscountTypeConverter.class) // 指定轉換器
 	@Column(name = "disc_type", nullable = false)
-	private Byte discType; // 0: 滿額折抵, 1: 百分比
+	// java讀的Enem 資料庫還是byte
+	private DiscountType discType; // 0: 滿額折抵, 1: 百分比
 
 	@Column(name = "disc_value", nullable = false, precision = 10, scale = 2)
 	private BigDecimal discValue; // 折扣數值
@@ -39,15 +46,16 @@ public class ProCpnVO implements java.io.Serializable {
 
 	@Column(name = "cpn_desc", length = 200)
 	private String cpnDesc; // 折價券規則描述
-
+	@Convert(converter = EnumConverters.IsActiveConverter.class)
 	@Column(name = "is_active", nullable = false)
-	private Byte isActive; // 0:未啟用, 1:啟用
+	private IsActive isActive; // 0:未啟用, 1:啟用
 
 	@Column(name = "crt_at", nullable = false, insertable = false, updatable = false)
 	private Timestamp crtAt; // 建立時間 (由 DB 預設 CURRENT_TIMESTAMP)
 
 	@Column(name = "appl_scope", nullable = false)
 	private Byte applScope; // 0:全館, 1:指定小農, 2:指定商品
+
 	public Integer getProCpnId() {
 		return proCpnId;
 	}
@@ -64,11 +72,11 @@ public class ProCpnVO implements java.io.Serializable {
 		this.cpnName = cpnName;
 	}
 
-	public Byte getDiscType() {
+	public DiscountType getDiscType() {
 		return discType;
 	}
 
-	public void setDiscType(Byte discType) {
+	public void setDiscType(DiscountType discType) {
 		this.discType = discType;
 	}
 
@@ -112,11 +120,11 @@ public class ProCpnVO implements java.io.Serializable {
 		this.cpnDesc = cpnDesc;
 	}
 
-	public Byte getIsActive() {
+	public IsActive getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(Byte isActive) {
+	public void setIsActive(IsActive isActive) {
 		this.isActive = isActive;
 	}
 
@@ -140,10 +148,8 @@ public class ProCpnVO implements java.io.Serializable {
 		super();
 	}
 
-	public ProCpnVO(Integer proCpnId, String cpnName, Byte discType,
-			BigDecimal discValue, Integer minSpend, Date startDate,
-			Integer validDays, String cpnDesc, Byte isActive, Timestamp crtAt,
-			Byte applScope) {
+	public ProCpnVO(Integer proCpnId, String cpnName, DiscountType discType, BigDecimal discValue, Integer minSpend,
+			Date startDate, Integer validDays, String cpnDesc, IsActive isActive, Timestamp crtAt, Byte applScope) {
 		super();
 		this.proCpnId = proCpnId;
 		this.cpnName = cpnName;
