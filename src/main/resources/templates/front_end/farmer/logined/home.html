@@ -64,9 +64,16 @@
                 </li>
             </ul>
             <div class="member">
-                <a th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
-                <a th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
-                <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <div class="userInfo" th:if="${session.loggedInMember} != null">
+                	<div th:text="${session.fmemName} + '，'"></div>
+                	<div>您好</div>
+                </div>
+                <a th:if="${session.loggedInMember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+            	<form th:action="@{/fmem/logout}" th:if="${session.loggedInMember} != null" method="post" class="logout">
+            		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+            	</form>
             </div>
         </div>
     </div>

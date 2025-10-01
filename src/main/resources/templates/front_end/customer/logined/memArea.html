@@ -1,18 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<style>
-	*{
-		font-size: 30px;
-	}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>header footer 模板</title>
+    <link rel="icon" href="./images/logo.png">
+    
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
 </head>
 <body>
-<div>memArea.html</div>
-<div>測試用-會員專區</div>
-<div>登入成功</div>
+
+<div th:replace="~{/front_end/index :: header}"></div>
+
+<div class="container container-member">
+    <div class="member-sidebar">
+        <h3>會員專區</h3>
+        <ul class="link-list">
+            <li><a href="#">訂單查詢</a></li>
+            <li><a href="#">售票網訂單查詢</a></li>
+            <li><a href="#">發票 / 折讓查詢</a></li>
+            <li><a href="#">訂閱服務設定</a></li>
+            <li><a href="#">購買證明查詢</a></li>
+            <li><a href="#">書店消費紀錄</a></li>
+            <li><a href="#">最近購買清單</a></li>
+        </ul>
+    </div>
+
+    <div class="member-content">
+        <h2>標題title</h2>
+        <p>內容寫這裡</p>
+        <p>內容寫這裡</p>
+        <p>內容寫這裡</p>
+        <p>內容寫這裡</p>
+        <p>內容寫這裡</p>
+    </div>
+</div>
+
+<div th:replace="~{/front_end/index :: footer}"></div>
 
 </body>
 </html>

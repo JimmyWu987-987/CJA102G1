@@ -53,6 +53,16 @@ public class MemController{
 		return "front_end/customer/unlogined/memRegLogin";
 	}
 	
+	@GetMapping("/toMemArea")
+	public String toMemArea(HttpSession session){
+		Mem mem = (Mem) session.getAttribute("loggedInMember");
+		if(mem != null) {
+			return "redirect:/mem/memArea";
+		} else {
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+	}
+	
 //	送出註冊"表單"
 	@PostMapping("/register")
 	public String register(
