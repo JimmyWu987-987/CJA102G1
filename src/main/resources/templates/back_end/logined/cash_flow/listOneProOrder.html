@@ -24,8 +24,6 @@
     </div>
     
     <div th:unless="${#lists.isEmpty(proOrderVO)}">
-		
-		<h1 th:text="${proOrderVO.proOrdId}"></h1>		
 		<h2>訂單明細</h2>
 				
 		<span>訂單編號:</span><span th:text="${proOrderVO.proOrdId}"></span><br>
@@ -43,8 +41,26 @@
                     		<span th:case="*">XXX</span></span><br>
 		<span>付款狀態:</span><span th:text="${proOrderVO.proPayStatus}"></span>
 		<br>==========================</br>
-		預留訂單明細的include
-		<br>==========================</br>
+		<table border="1">
+			<thead>
+                <tr>
+                    <th>商品編號</th>
+                    <th>商品名稱</th>
+                    <th>購買單價</th>
+                    <th>購買數量</th>
+                    <th>商品小計</th>
+                 </tr>
+            </thead>
+            <tbody>
+            		<tr th:each="proOrderItemsVO : ${proOrderItems}">
+            			<td th:text="${proOrderItemsVO.productVO.proId}"></td>
+            			<td th:text="${proOrderItemsVO.productVO.proName}"></td>
+            			<td th:text="${proOrderItemsVO.proUnitPrice}"></td>
+            			<td th:text="${proOrderItemsVO.proAmount}"></td>
+            			<td th:text="${proOrderItemsVO.proSubTota}"></td>
+            </tbody>
+		</table>		
+		==========================</br>
 		<span>商品總金額:</span><span th:text="${proOrderVO.proTotal}"></span><br>
 		<span>運費:</span><span th:text="${proOrderVO.proOrdShipFee}"></span><br>
 		<span>折價券折抵金額:</span><span th:text="${proOrderVO.proOrdCpndisc}"></span><br>
@@ -68,8 +84,8 @@
                     
 
       
-                    	<form method="post" th:action="@{/proorder/listOneProOrder}">
-                    		<input type="submit" value="詳細資料">
+                    	<form method="Get" th:action="@{/admin/cashflow/listAllProOrder}">
+                    		<input type="submit" value="回上一頁">
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
                     	</form>
 

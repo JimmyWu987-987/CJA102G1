@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
+import com.farmtastic.proorderitem.model.ProOrderItemService;
+import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -23,6 +25,8 @@ public class ProOrderMemController {
 
 	@Autowired
 	ProOrderSevice proOrdSvc;
+	@Autowired
+	ProOrderItemService ProOrderItemSvc;
 
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
@@ -56,10 +60,12 @@ public class ProOrderMemController {
 	public String listOneProOrder(@RequestParam("proOrdId") String proOrdId, ModelMap model) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(Integer.valueOf(proOrdId));
+		List<ProOrderItemVO> items = ProOrderItemSvc.getProOrderItems(proOrderVO);
 
 		model.addAttribute("proOrderVO", proOrderVO);
+		model.addAttribute("proOrderItems", items);
 
-		return "/back_end/logined/cash_flow/listOneProOrder";
+		return "/front_end/customer/logined/memProOrders/listOneProOrder";
 	}
 
 }
