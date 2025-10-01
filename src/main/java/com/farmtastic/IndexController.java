@@ -13,16 +13,19 @@ public class IndexController {
 		return "/front_end/index";
 	}
 	
-	// 後台金流管理系統
-	@GetMapping("/cashflow/")
-	public String cashFlowIndex() {
+	// 一般會員的商品訂單頁面
+	@GetMapping("/mem/proorders")
+	public String memProOrders() {
+		return "/front_end/customer/logined/memProOrders/index";
+	}
+	
+	// 金流管理首頁
+	@GetMapping("/admin/cashflow/index")
+	public String cashflowIndex() {
 		return "/back_end/logined/cash_flow/index";
 	}
 	
-	@GetMapping("/cashflow/listAllProOrder")
-	public String listAllProOrder() {
-		return "redirect:/proorder/listAllProOrder"; 
-	}
+
 	
 //	@GetMapping("/mem/showMemRegLoginForm")
 //	public String memRegLogin() {
