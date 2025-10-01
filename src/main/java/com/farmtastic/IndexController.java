@@ -40,7 +40,7 @@ public class IndexController {
 //	登入後才能看的 測試用
 	@GetMapping("/mem/memArea")
 	public String memArea() {
-		return "/front_end/customer/logined/memArea";
+		return "/front_end/customer/logined/memHeaderFooter";
 	}
 	
 //	登入後才能看的 測試用
@@ -61,3 +61,11 @@ public class IndexController {
 		return "/front_end/farmer/logined/home";
 	}
 }
+
+
+
+
+
+
+
+
