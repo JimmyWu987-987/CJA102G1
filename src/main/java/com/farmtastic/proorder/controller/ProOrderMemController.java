@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/mem/proorders")
-public class ProOrderMemIdController {
+public class ProOrderMemController {
 
 	@Autowired
 	ProOrderSevice proOrdSvc;
@@ -29,12 +29,15 @@ public class ProOrderMemIdController {
 	public String listAllProOrder(Model model, HttpSession session) {
 
 		// 取得 session 的會員資訊
+		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		Integer memId = (Integer) session.getAttribute("memId");
-
-//		if (memId == null) {
-//			// 沒有值則會重導至登入頁面
-//			return "redirect:/mem/showMemRegLoginForm";
-//		} else {
+		String memName = (String) session.getAttribute("memName");
+		
+		// 錯誤驗證
+		if (loggedInMember == null || memId == null || memName == null || memName.trim().isEmpty()) {
+			// 沒有值則會重導至登入頁面
+			return "redirect:/mem/showMemRegLoginForm";
+		} else {
 			try {
 				Mem MemVO = new Mem();
 				MemVO.setMemId(memId);
@@ -44,9 +47,8 @@ public class ProOrderMemIdController {
 				// TODO: handle exception
 			}
 
-
 			return "/front_end/customer/logined/memProOrders/listAllProOrder";
-//		}
+		}
 	}
 
 	// 查詢單筆訂單
