@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一般會員註冊</title>
+    <link rel="icon" href="./images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/regLogin.css}">
+
+</head>
+<body>
+    <div class="container container-header">
+        <div class="header">
+            <div class="logo">
+                <a th:href="@{/}" class="link">
+                    <img th:src="@{/images/logo-t.png}" alt="">
+                </a>
+            </div>
+
+            <ul class="nav">
+                <li>
+                    <a href="#" class="link btn">關於本站</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="link btn">小農商城</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                        <li><a href="#">如果有需要再多一層</a></li>
+                        <li><a href="#">是可以再加(但最好不要)</a></li>
+                        <li><a href="#">因為有點麻煩</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="link btn">活動專區</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                        <li><a href="#">如果有需要再多一層</a></li>
+                        <li><a href="#">是可以再加(但最好不要)</a></li>
+                        <li><a href="#">因為有點麻煩</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="link btn">會員中心</a>
+                    <ul>
+                        <li><a href="#">自行修改喔</a></li>
+                        <li><a href="#">最好不要超過九個字</a></li>
+                        <li><a href="#">短一點比較好</a></li>
+                        <li><a href="#">如果有需要再多一層</a></li>
+                        <li><a href="#">是可以再加(但最好不要)</a></li>
+                        <li><a href="#">因為有點麻煩</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="member">
+                <a th:href="@{/mem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <a th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container container-reg-login">
+        <h2 class="reg-login-title">小農會員XXX</h2>
+
+        <div class="reg-login-btns">    
+            <span class="btn-login active-btn" id="btn-login">登 入</span><span class="btn-reg" id="btn-reg">註 冊</span>
+        </div>
+        
+        <div class="register" id="register">
+            <form method="post" action="/memHibernate/mem.do">
+                <ul>
+                    <li>
+                        <label for="">帳號</label>
+                        <input type="text" name="memAcc" value="" placeholder="英文或數字或_ , 長度8~20">                        
+                    </li>
+                    <li>
+                        <label for="">密碼</label>
+                        <input type="password" name="memPwd" value="" placeholder="英文或數字或@ , 長度8~20">
+                    </li>
+                    <li>
+                        <label for="">再次輸入密碼</label>
+                        <input type="password" name="memPwd2" value="" placeholder="英文或數字或@ , 長度8~20">
+                    </li>
+                    <li>
+                        <label for="">姓名</label>
+                        <input type="text" name="memName" value="">
+                    </li>
+                    <li>
+                        <label for="">生日</label>
+                        <input type="date" name="memBirthday" value="">
+                    </li>
+                    <li>
+                        <label for="">手機</label>
+                        <input type="tel" name="memMobile" value="" placeholder="格式: 09XX-XXXXXX">
+                    </li>
+                    <li>
+                        <label for="">信箱</label>
+                        <input type="email" name="memEmail" value="" class="memEmail" id="memEmail" list="email-suggestions">
+                        <datalist id="email-suggestions"></datalist>
+                    </li>
+                    <li class="list-addr">
+                        <label>居住地址</label>
+                        <input type="text" name="memZipcode" class="memZipcode" id="memZipcode" value=""
+                        placeholder="郵遞區號" maxlength="3">
+
+                        <select name="memCity" id="memCity-select" class="memCity">
+                            <option value="" class="city-option" id="city-option"></option>
+                        </select>
+
+                        <select name="memDist" id="memDist-select" class="memDist">
+                            <option value="" class="dist-option" id="dist-option"></option>
+                        </select>
+                        <input type="text" name="memAddr" value="" placeholder="街道名稱 / 號碼 / 樓層" class="memAddr">
+                    </li>
+                    <input type="hidden" name="action" value="insert">
+                    <input type="submit" value="送出" class="btn link">
+                </ul>
+            </form>
+        </div>
+
+
+         <div class="login" id="login">
+            <form method="post" action="/memHibernate/mem.do">
+                <ul>
+                    <li>
+                        <label for="">帳號</label>
+                        <input type="text" name="memAcc" value="" placeholder="請輸入英文或數字或_ , 長度8~20">                        
+                    </li>
+                    <li>
+                        <label for="">密碼</label>
+                        <input type="password" name="memPwd" value="" placeholder="請輸入英文或數字或@ , 長度8~20">
+                    </li>
+       
+                    <input type="hidden" name="action" value="insert">
+                    <input type="submit" value="送出" class="btn link">
+                </ul>
+            </form>
+        </div>
+    </div>
+
+
+
+    <script th:src="@{/js/regLogin.js}"></script>
+</body>
+</html>

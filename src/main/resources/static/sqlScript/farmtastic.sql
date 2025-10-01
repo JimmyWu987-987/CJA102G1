@@ -39,7 +39,7 @@ DROP TABLE IF EXISTS fmem;
 CREATE TABLE fmem (
 	fmem_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	f_id varchar(10) NOT NULL,
-	fmem_acc varchar(40) NOT NULL,
+	fmem_acc varchar(40) NOT NULL UNIQUE,
 	fmem_pwd varchar(20) NOT NULL,
 	acc_status tinyint NOT NULL DEFAULT 0,
 	acc_desc varchar(200) DEFAULT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE fmem (
 	fmem_addr varchar(40) NOT NULL,
 	bank_code varchar(5) NOT NULL,
 	bank_acc varchar(20) NOT NULL,
-	reg_date datetime NOT NULL,
+	reg_date datetime NOT NULL DEFAULT current_timestamp,
 	certi_status tinyint NOT NULL DEFAULT 0,
 	fmem_pic longblob DEFAULT NULL,
 	organic_pic longblob DEFAULT NULL,
@@ -75,7 +75,7 @@ INSERT INTO fmem (f_id, fmem_acc, fmem_pwd, acc_status, acc_desc, fmem_name, fme
 				   fmem_zipcode, fmem_city, fmem_dist, fmem_addr,  bank_code, bank_acc, reg_date, 
 				   certi_status, fmem_pic, organic_pic, land_pic, insur_pic, store_pic, store_name, store_intro, sty_no, 
 				   mkt_score, mkt_cnt, act_score, act_cnt, rpt_cnt, prod_fee) VALUES
-('H237230756', 'user001', 'pwd12345', 0, NULL, '王小明', '0912-345678', NULL, 'user001@example.com', '101', '台北市', '中正區', '仁愛路一段100號', '004', '1234567890123456', '2024-05-01 10:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('H237230756', 'test', '1234', 0, NULL, '王小明', '0912-345678', NULL, 'user001@example.com', '101', '台北市', '中正區', '仁愛路一段100號', '004', '1234567890123456', '2024-05-01 10:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
 ('A182893231', 'user002', 'pwd12345', 0, NULL, '林小美', '0922-333444', NULL, 'user002@example.com', '102', '新北市', '板橋區', '文化路200號', '822', '2233445566778899', '2024-05-02 11:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
 ('A119254857', 'user003', 'pwd12345', 0, NULL, '陳大華', '0933-445566', NULL, 'user003@example.com', '103', '台中市', '西屯區', '市政路300號', '700', '3344556677889900', '2024-05-03 12:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
 ('E118270271', 'user004', 'pwd12345', 0, NULL, '張美麗', '0955-667788', NULL, 'user004@example.com', '104', '高雄市', '苓雅區', '光華路88號', '012', '4455667788990011', '2024-05-04 13:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -405,7 +405,7 @@ CREATE TABLE mem (
 );
 
 INSERT INTO mem (mem_acc, mem_pwd, acc_status, mem_name, mem_birthday, mem_mobile, mem_email, mem_zipcode, mem_city, mem_dist, mem_addr, reg_date, mem_point) VALUES
-('zeusMax9914', 'Karma88@Rise', 1, '謝維綺', '1980-11-26', '0910-380143', 'pamela8508@gmail.com', '320', '桃園市', '中壢區', '仁和街35號', '2022-08-26 10:30:00', 150),
+('test', '1234', 1, '謝維綺', '1980-11-26', '0910-380143', 'pamela8508@gmail.com', '320', '桃園市', '中壢區', '仁和街35號', '2022-08-26 10:30:00', 150),
 ('NovaSkyline203', 'Lx657XhM', 1, '胡得軒', '1996-10-11', '0916-518593', 'henson1654@hotmail.com', '600', '嘉義市', '西區', '世賢路2段5號', '2022-08-26 11:29:30', 110),
 ('TigerRun88', '9y7wqUwv', 0, '宋柯雯', '1993-08-07', '0961-388330', 'arianna6146@hotmail.com', '511', '彰化縣', '社頭鄉', '中山路1段38號10樓之10', '2022-09-01 12:00:59', 253),
 ('valine203', 'echo92Xx@', 0, '郭實祐', '1990-11-01', '0937-453975', 'jeffrey2062@icloud.com', '360', '苗栗縣', '苗栗市', '宜春路62號', '2023-03-05 09:08:05', 20),

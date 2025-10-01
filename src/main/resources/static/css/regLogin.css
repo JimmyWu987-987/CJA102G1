@@ -1,0 +1,149 @@
+
+.container-reg-login{
+    margin-top: 40px;
+}
+.container-reg-login h2{
+    color: #62574e;
+    font-size: 28px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+.register,
+.login{
+    width: 520px;
+    padding: 16px 60px 40px;
+    margin: 0px auto 40px;
+    border: 3px solid #f9bd97;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/*------ 預設 只顯示登入 */
+.register{
+/* .login{ */
+    display: none;
+}
+/* 預設 只顯示登入------ */
+
+.reg-login-btns{
+    width: 520px;
+    margin: 16px auto 0;
+    text-align: center;
+    color: #444;
+    font-size: var(--link-button-font-size);
+    display: flex;
+    justify-content: center;
+}
+.reg-login-btns .btn-login,
+.reg-login-btns .btn-reg{
+    display: inline-block;
+    width: 50%;
+    padding: 8px;
+    margin: 30 auto 2;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: #63554b;
+    background-color: rgb(247, 220, 205);
+    cursor: pointer;
+}
+.reg-login-btns .btn-login{
+    margin-right: 1px;
+}
+.reg-login-btns .active-btn{
+    background-color: #f9bd97;
+}
+.reg-login-btns .btn-login:not(.active-btn):hover,
+.reg-login-btns .btn-reg:not(.active-btn):hover{
+    background-color: #f8d5c0;
+}
+
+.register li,
+.login li{
+    margin-top: 14px;
+    color: #555;
+    font-size: 0;
+}
+.register li label,
+.login li label{
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    margin-left: 4px;
+}
+.register li input,
+.login li input{
+    width: 100%;
+    height: 40px;
+    padding: 8px 10px;
+    margin-top: 3px;
+    font-size: 16px;
+    border: 1px solid #bcbcbc;
+    border-radius: 5px;
+    color: #333;
+}
+.register .memZipcode{
+    width: 32%;
+    margin-right: 2%;
+}
+.register .memCity{
+    margin-right: 2%;
+}
+.register .memCity,
+.register .memDist{
+    width: 32%;
+    height: 40px;
+    font-size: 16px;
+    padding: 8px 10px;
+    border: 1px solid #bcbcbc;
+    border-radius: 5px;
+    color: #333;
+}
+.register .memAddr{
+    margin-top: 8px;
+}
+.register li *:focus,
+.login li *:focus{
+    outline: 1px solid #6873ed;
+}
+.register input.btn,
+.login input.btn{
+    margin-top: 24px;
+    width: 100%;
+    border: none;
+    color: #fff;
+    padding: 8px 0;
+    font-size: 18px;
+}
+.register input.btn:hover,
+.login input.btn:hover{
+    background-color: #e96c4a;
+}
+
+
+
+.error,
+.error-reg,
+.error-zipcode,
+.error-city,
+.error-dist,
+.error-addr,
+.js-error-zipcode{
+	display: block;
+	color: #f00;
+	font-size: 16px;
+}
+.error:before,
+.error-reg:before,
+.error-zipcode:before,
+.error-city:before,
+.error-dist:before,
+.error-addr:before{
+	display: inline-block;
+	content: '*';
+}
+
+.error-login{
+	margin-top: 8px;
+}
+
+

@@ -2,6 +2,7 @@ package com.farmtastic;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class IndexController {
@@ -23,4 +24,19 @@ public class IndexController {
 		return "redirect:/proorder/listAllProOrder"; 
 	}
 	
+//	@GetMapping("/mem/showMemRegLoginForm")
+//	public String memRegLogin() {
+//		return "/front_end/customer/unlogined/memRegLogin";
+//	}
+	
+	@GetMapping("/mem/showFmemRegLoginForm")
+	public String fmemRegLogin() {
+		return "/front_end/farmer/unlogined/fmemRegLogin";
+	}
+	
+//	登入後才能看的 測試用
+	@GetMapping("/mem/memArea")
+	public String memArea() {
+		return "/front_end/customer/logined/memArea";
+	}
 }

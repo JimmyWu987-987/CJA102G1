@@ -31,10 +31,11 @@ body{
     width: 100%;
     margin: 0 auto;
 }
-.container:not(.container-banner){
+.container:not(.container-banner):not(.container-register){
     padding-left: 10%;
     padding-right: 10%;
 }
+
 
 
 
@@ -44,11 +45,12 @@ body{
         display: block;
         text-decoration: none;
     }
-    a.link{
+    a.link,
+    input.link{
         display: block;
         text-decoration: none;
-        padding: 10px 14px;
-        margin-right: 20px;
+        padding: 8px 14px;
+        margin-right: 14px;
     }
 
     a.link:last-child{
@@ -84,7 +86,7 @@ body{
 
 /* header */
 .container-header{
-    background-color: #f9ecd7;
+    background-color: #fae2cd;
     padding-top: 2px;
     padding-bottom: 4px;
     position: sticky; /* 導覽列置頂 */
@@ -102,7 +104,7 @@ body{
     color: #fff;
 }
 .logo img{
-    max-height: 82px;
+    max-height: 72px;
 }
 .logo img:hover{
     transform: scale(1.1);
@@ -126,13 +128,13 @@ body{
     background-color: rgba(255,255,255, .8);
 }
 .nav ul a{
-    padding: 12px;
+    padding: 8px 10px;
     border-top: 1px solid #88b3a0;
     font-size: 18px;
     color: var(--second-color);
 }
 .nav ul a:hover{
-    background-color: #eaeae4bf;
+    background-color: #d7d7cdb7;
 }
 .nav li:hover > ul{
     display: block;
@@ -144,9 +146,9 @@ body{
     display: flex;
 }
 .member a{
-    width: 56px;
-    height: 56px;
-    line-height: 26px;
+    width: 52px;
+    height: 52px;
+    line-height: 30px;
     text-align: center;
     border-radius: 50%;
     color: var(--btn-color);
@@ -158,7 +160,7 @@ body{
     border: 3px solid #64775a;
 }
 .member a{
-    margin-right: 12px;
+    margin-right: 8px;
 }
 .member a:hover{
     color: var(--btn-hover-color);

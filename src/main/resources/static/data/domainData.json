@@ -1,0 +1,92 @@
+[
+  {
+    "domain": "@gmail.com",
+    "provider": "Google"
+  },
+  {
+    "domain": "@outlook.com",
+    "provider": "Microsoft"
+  },
+  {
+    "domain": "@yahoo.com.tw",
+    "provider": "Yahoo 奇摩"
+  },
+  {
+    "domain": "@hotmail.com",
+    "provider": "Microsoft"
+  },
+  {
+    "domain": "@icloud.com",
+    "provider": "Apple"
+  },
+  {
+    "domain": "@msn.com",
+    "provider": "Microsoft"
+  },
+  {
+    "domain": "@hinet.net",
+    "provider": "中華電信 Hinet"
+  },
+  {
+    "domain": "@yahoo.com",
+    "provider": "Yahoo"
+  },
+  
+  
+  {
+    "domain": "@live.com",
+    "provider": "Microsoft"
+  },
+  {
+    "domain": "@msa.hinet.net",
+    "provider": "中華電信 HiNet"
+  },
+  {
+    "domain": "@seed.net.tw",
+    "provider": "遠傳大寬頻"
+  },
+  {
+    "domain": "@kimo.com",
+    "provider": "Yahoo 奇摩 (舊網域)"
+  },
+  {
+    "domain": "@pccu.edu.tw",
+    "provider": "中國文化大學"
+  },
+  {
+    "domain": "@mail2000.com.tw",
+    "provider": "網擎資訊"
+  },
+  {
+    "domain": "@giga.net.tw",
+    "provider": "台灣大哥大"
+  },
+  {
+    "domain": "@pchome.com.tw",
+    "provider": "PChome"
+  },
+  {
+    "domain": "@me.com",
+    "provider": "Apple iCloud"
+  },
+  {
+    "domain": "@mac.com",
+    "provider": "Apple (舊網域)"
+  },
+  {
+    "domain": "@url.com.tw",
+    "provider": "優力網"
+  },
+  {
+    "domain": "@ms.tcn.com.tw",
+    "provider": "台灣固網"
+  },
+  {
+    "domain": "@tfn.net.tw",
+    "provider": "台灣大寬頻"
+  }
+]
+
+
+ 
+  
