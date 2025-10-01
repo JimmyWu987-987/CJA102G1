@@ -32,7 +32,7 @@ public class MemService {
 		
 		// 3.檢查帳號狀態
 		if(mem.getAccStatus() != 1) {
-			throw new IllegalStateException("帳號尚未通過審核或已被停用");
+			throw new IllegalStateException("帳號尚未開通或已被停權");
 		}
 		
 		return mem; //登入成功

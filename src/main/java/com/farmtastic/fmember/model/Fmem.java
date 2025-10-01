@@ -11,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @DynamicUpdate
@@ -30,6 +32,10 @@ public class Fmem implements Serializable {
 	
 	@Column(name = "fmem_pwd")
 	private String fmemPwd;
+	
+	@Transient
+//	@NotEmpty(message = "密碼確認欄位請勿空白")
+	private String fmemPwdCheck;
 	
 	@Column(name = "acc_status", insertable = false)
 	private Byte accStatus;
@@ -132,108 +138,136 @@ public class Fmem implements Serializable {
 	public void setFmemId(Integer fmemId) {
 		this.fmemId = fmemId;
 	}
+	
 	public String getFId() {
 		return fId;
 	}
 	public void setFId(String fId) {
 		this.fId = fId;
 	}
+	
 	public String getFmemAcc() {
 		return fmemAcc;
 	}
 	public void setFmemAcc(String fmemAcc) {
 		this.fmemAcc = fmemAcc;
 	}
+	
 	public String getFmemPwd() {
 		return fmemPwd;
 	}
 	public void setFmemPwd(String fmemPwd) {
 		this.fmemPwd = fmemPwd;
 	}
+	
+	public String getFmemPwdCheck() {
+		return fmemPwdCheck;
+	}
+	public void setFmemPwdCheck(String fmemPwdCheck) {
+		this.fmemPwdCheck = fmemPwdCheck;
+	}
+	
 	public Byte getAccStatus() {
 		return accStatus;
 	}
 	public void setAccStatus(Byte accStatus) {
 		this.accStatus = accStatus;
 	}
+	
 	public String getAccDesc() {
 		return accDesc;
 	}
 	public void setAccDesc(String accDesc) {
 		this.accDesc = accDesc;
 	}
+	
 	public String getFmemName() {
 		return fmemName;
 	}
 	public void setFmemName(String fmemName) {
 		this.fmemName = fmemName;
 	}
+	
+	
 	public String getFmemMobile() {
 		return fmemMobile;
 	}
 	public void setFmemMobile(String fmemMoblie) {
 		this.fmemMobile = fmemMoblie;
 	}
+	
+	
 	public String getFmemTel() {
 		return fmemTel;
 	}
 	public void setFmemTel(String fmemTel) {
 		this.fmemTel = fmemTel;
 	}
+	
+	
 	public String getFmemEmail() {
 		return fmemEmail;
 	}
 	public void setFmemEmail(String fmemEmail) {
 		this.fmemEmail = fmemEmail;
 	}
+	
 	public String getFmemZipcode() {
 		return fmemZipcode;
 	}
 	public void setFmemZipcode(String fmemZipcode) {
 		this.fmemZipcode = fmemZipcode;
 	}
+	
 	public String getFmemCity() {
 		return fmemCity;
 	}
 	public void setFmemCity(String fmemCity) {
 		this.fmemCity = fmemCity;
 	}
+	
 	public String getFmemDist() {
 		return fmemDist;
 	}
 	public void setFmemDist(String fmemDist) {
 		this.fmemDist = fmemDist;
 	}
+	
 	public String getFmemAddr() {
 		return fmemAddr;
 	}
 	public void setFmemAddr(String fmemAddr) {
 		this.fmemAddr = fmemAddr;
 	}
+	
 	public String getBankCode() {
 		return bankCode;
 	}
 	public void setBankCode(String bankCode) {
 		this.bankCode = bankCode;
 	}
+	
 	public String getBankAcc() {
 		return bankAcc;
 	}
 	public void setBankAcc(String bankAcc) {
 		this.bankAcc = bankAcc;
 	}
+	
 	public Timestamp getRegDate() {
 		return regDate;
 	}
 	public void setRegDate(Timestamp regDate) {
 		this.regDate = regDate;
 	}
+	
 	public Byte getCertiStatus() {
 		return certiStatus;
 	}
 	public void setCertiStatus(Byte certiStatus) {
 		this.certiStatus = certiStatus;
 	}
+	
 	public byte[] getFmemPic() {
 		return fmemPic;
 	}
