@@ -12,16 +12,22 @@ import com.farmtastic.procpn.model.ProCpnService;
 import com.farmtastic.procpn.model.ProCpnVO;
 
 @Controller
-@RequestMapping("mem/procpn")
-public class ProCpnController {
+@RequestMapping("/admin/procpn")
+public class ProCpnAdminController {
 	@Autowired
 	private ProCpnService proCpnSvc;
+
+	public String addProCpn(Model model) {
+		ProCpnVO procpnVO = new ProCpnVO();
+		model.addAttribute(procpnVO);
+		return "/back_end/logined/procpn/addProCpn";
+	}
 
 	// 查詢全部折價卷
 	@GetMapping("listAllProCpn")
 	public String listAll(Model model) {
 		List<ProCpnVO> list = proCpnSvc.getAll();
 		model.addAttribute("coupons", list);
-		return "/front_end/customer/logined/myCoupons";
+		return "/back_end/logined/procpn/listAllProCpn";
 	}
 }
