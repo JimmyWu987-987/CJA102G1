@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>新增折價券</title>
+</head>
+<body>
+<form th:action="@{/admin/procpn/add}" th:object="${proCpnVO}" method="post">
+    名稱: <input type="text" th:field="*{cpnName}" /> <br/>
+
+    類型: 
+    <select th:field="*{discType}">
+    <option th:value="FULL_REDUCTION" th:text="'滿額折抵'"></option>
+    <option th:value="PERCENT" th:text="'百分比'"></option>
+</select>
+
+    折扣數值: <input type="number" step="0.01" th:field="*{discValue}" /> <br/>
+
+    消費門檻: <input type="number" th:field="*{minSpend}" /> <br/>
+
+    有效天數: <input type="number" th:field="*{validDays}" /> <br/>
+
+    說明: <textarea th:field="*{cpnDesc}"></textarea> <br/>
+
+    狀態: 
+    <select th:field="*{isActive}">
+        <option th:value="ACTIVE" th:text="'啟用'"></option>
+        <option th:value="INACTIVE" th:text="'停用'"></option>
+    </select><br/>
+
+    適用範圍: 
+    <select th:field="*{applScope}">
+        <option th:value="0" th:text="'全館'"></option>
+        <option th:value="1" th:text="'指定小農'"></option>
+        <option th:value="2" th:text="'指定商品'"></option>
+    </select><br/>
+
+    <button type="submit">新增</button>
+</form>
+</body>
+</html>

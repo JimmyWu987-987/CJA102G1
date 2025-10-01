@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,10 +29,9 @@ public class ProCpnAdminController {
 
 	// 新增折價卷
 	@PostMapping("/add")
-	public String addProCpn(Model model) {
-		ProCpnVO procpnVO = new ProCpnVO();
-		model.addAttribute(procpnVO);
-		return "redirect:/admin/procpn/listAll"; // 新增後回列表
+	public String addProCpn(@ModelAttribute ProCpnVO procpnVO) {
+		proCpnSvc.addProCpn(procpnVO);
+		return "redirect:/admin/procpn/listAllProCpn"; // 新增後回列表
 	}
 
 	// 查詢全部折價卷
