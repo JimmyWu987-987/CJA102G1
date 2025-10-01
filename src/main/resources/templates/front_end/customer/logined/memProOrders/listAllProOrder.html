@@ -5,13 +5,15 @@
 <title>會員專區 - 小農產品訂單列表</title>
 </head>
 <body>
+	
+	<h1>這是一般會員查詢自己訂單的頁面</h1>
     <h1>小農產品訂單列表</h1>
     
-    <div th:if="${#lists.isEmpty(proOrderListByMemID)}">
+    <div th:if="${#lists.isEmpty(proOrderList)}">
         <p>目前沒有任何訂單資料。</p>
     </div>
     
-    <div th:unless="${#lists.isEmpty(proOrderListByMemID)}">
+    <div th:unless="${#lists.isEmpty(proOrderList)}">
         <table border="1">
             <thead>
                 <tr>
@@ -27,7 +29,7 @@
                     </tr>
             </thead>
             <tbody>
-                <tr th:each="proOrderVO : ${proOrderListByMemID}">
+                <tr th:each="proOrderVO : ${proOrderList}">
                     <td th:text="${proOrderVO.proOrdId}">1</td>
                     <td th:text="${proOrderVO.memVO.memId}">M001</td> 
                     <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
@@ -62,7 +64,7 @@
                     	</div>
                     </td>
                     <td>
-                    	<form method="post" th:action="@{/proorder/listOneProOrder}">
+                    	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
                     		<input type="submit" value="詳細資料">
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
                     	</form>
