@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>廣告申請列表</title>
+<link rel="stylesheet" th:href="@{/css/ad/reviewAd.css}">
+<style>
+body {
+	background: #faf7f2;
+	color: #2c3e50;
+}
+
+.title {
+	display: flex;
+	justify-content: center;
+	color: #2c3e50;
+	margin-bottom: 20px;
+}
+
+table {
+	margin-top: 10px;
+	border-collapse: collapse;
+	width: 100%;
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	overflow: hidden;
+	z-index:20;
+}
+
+th, td {
+	padding: 7px 8px;
+	text-align: center;
+}
+
+th {
+	background-color: #3498db;
+	color: #fff;
+	font-weight: bold;
+	letter-spacing: 0.5px;
+	padding: 8px 10px;
+}
+
+tr:nth-child(even) {
+	background-color: #E0F2E9;
+}
+
+tr:hover {
+	background-color: #d6eaf8;
+}
+
+.adImg {
+	border-radius: 10px;
+}
+
+.adImg:hover {
+	cursor: pointer;
+	transform: scale(1.2);
+}
+
+#outSide {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, .5);
+	z-index: 10;
+	width: 1020px;
+	height: 550px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 10px
+}
+
+.closeButton {
+	font-size: 28px;
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid white;
+	border-radius: 50%;
+	position: absolute;
+	top: 6%;
+	left: 96.9%;
+	transform: translate(-50%, -50%);
+	cursor: pointer;
+	z-index: 2;
+	color: azure;
+}
+
+.inSide {
+	width: 925px;
+	height: 450px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	object-fit: contain;
+	border-radius: 10px;
+}
+
+.zoomImg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	z-index: 1;
+	border-radius: 10px;
+}
+
+.btn {
+	padding: 6px 12px;
+	margin-left: 8px;
+	background: #e69900;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	text-decoration: none;
+	font-size: 15px;
+}
+
+.btn:hover {
+	cursor: pointer;
+	transform: scale(1.2);
+	background: #ffb31a;
+}
+
+.functions {
+	margin: 6px 0;
+	font-size: 20px;
+}
+.reviewPerson{
+    width:180px;
+    height:auto;
+    position: absolute;
+	top: 28%;
+	left: 93%;
+	transform: translate(-50%, -50%);
+	z-index:0;
+}
+
+.reviewPerson:hover {
+	cursor:pointer
+}
+
+
+.mwt_border{
+  position: absolute;
+  top: 7%;
+  left: 79.5%;
+  width: 260px; min-height: 40px;
+  background: #fff; border: 1px solid #333;
+  border-radius:20px;
+  box-sizing: border-box; 
+  display:flex; align-items:center;
+}
+
+.mwt_border .arrow_b_int{
+  position:absolute;
+  width:0;height:0;
+  border-width:15px; border-style:solid;
+  border-color:#333 transparent transparent transparent;
+  bottom:-30px; left:80%; transform:translateX(-50%);
+  z-index:2;
+}
+
+.bubble-text{
+  font-size:20px; 
+  padding:0 20px; 
+  margin:0;
+}
+
+</style>
+</head>
+<body>
+
+<h1 class="title">管理員查詢廣告審核列表</h1>
+<img class="reviewPerson" id="personImg" th:src="@{/images/ad/review.gif}" alt="reviewPerson" />
+
+<div class="mwt_border">
+    <span class="arrow_b_int"></span>
+    <span class="arrow_b_out"></span>
+     <p class="bubble-text" id="bubbleText">你是最棒的!</p>
+</div>
+
+<div>
+  <label for="adType" class="functions">選擇廣告類型：</label>
+  <select id="adType" class="btn">
+    <option th:value="@{/proAd/list}" th:selected="${selectedType} == 'proAd'" >商品廣告</option>
+    <option th:value="@{/actAd/list}" th:selected="${selectedType} == 'actAd'">活動廣告</option>
+  </select>
+</div>
+
+<form id="proAdSearch" th:action="@{/admin/proAd/list}" method="get" class= "functions" style="display:flex">
+  <input type="number" name="proAdId" placeholder="輸入商品廣告編號" class= "functions" >
+  <button type="submit" class="btn">查詢</button>
+	<div th:if="${queryError}" style="color:red; margin-top:6px; margin-left:20px;" >
+    <span th:text="${queryError}"></span>
+    <a th:href="@{/proAd/list}" class="btn" style="padding:11px;">
+      回到全部
+    </a>
+  </div>
+</form>
+
+<div style="display: flex;gap: 10px;align-items: center;">
+<form id="proNotReview" th:action="@{/admin/proAd/list}" method="get" class= "functions" >
+  <input type="hidden" name="proAdRevStat" value="1"> 
+  <button type="submit" class="btn">查詢尚未審核</button>
+</form>
+<form th:if="${proAdRevStat == 1}"id="proNotReview" th:action="@{/admin/proAd/list}" class= "functions" method="get" >
+  <button type="submit" class="btn">查全部</button>
+</form>
+</div>
+
+<table id="proAdTable">
+  <tr>
+    <th>商品廣告編號</th><th>商品名稱</th><th>商品廣告圖片</th>
+    <th>審核狀態</th><th>審核<br>更新時間</th><th>審核備註</th>
+    <th>上下架狀態</th><th>上下架<br>更新時間</th>
+    <th>開始日期</th><th>結束日期</th>
+    <th>費用</th><th>繳費截止日</th><th>進行審核</th><th>修改</th>
+  </tr>
+
+  <tr th:each="proAdVO : ${listAllProAd}"
+      th:if="${proAdId == null or proAdVO.proAdId == proAdId}">
+      
+    <td th:text="${proAdVO.proAdId}"></td>
+    <td><a href="javascript:void(0)">尚未 join</a></td>
+    <td><img class="adImg" th:src="@{/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg" width="100"/></td>
+
+    <td th:switch="${proAdVO.proAdRevStat}">
+      <span th:case="0">編輯中</span>
+      <span th:case="1">待審核</span>
+      <span th:case="2">通過</span>
+      <span th:case="3">未通過</span>
+      <span th:case="4">待繳費</span>
+      <span th:case="5">已繳費</span>
+    </td>
+
+    <td>
+      <span th:text="${#dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd')}"></span><br>
+      <span th:text="${#dates.format(proAdVO.proAdRevUpd,'HH:mm:ss')}"></span>
+    </td>
+
+    <td th:text="${proAdVO.proAdRevRemark}">-</td>
+
+    <td>
+      <span th:if="${proAdVO.proAdLaunStat == 0}">下架中</span>
+      <span th:if="${proAdVO.proAdLaunStat != 0}">上架中</span>
+    </td>
+
+    <td>
+      <span th:text="${#dates.format(proAdVO.proAdLaunUpd,'yyyy-MM-dd')}"></span><br>
+      <span th:text="${#dates.format(proAdVO.proAdLaunUpd,'HH:mm:ss')}"></span>
+    </td>
+
+    <td>
+      <span th:if="${proAdVO.proAdStart != null}" th:text="${proAdVO.proAdStart}"></span>
+      <span th:unless="${proAdVO.proAdStart != null}">-</span>
+    </td>
+
+    <td>
+      <span th:if="${proAdVO.proAdEnd != null}" th:text="${proAdVO.proAdEnd}"></span>
+      <span th:unless="${proAdVO.proAdEnd != null}">-</span>
+    </td>
+
+    <td>
+      <span th:if="${proAdVO.proAdFee != null}"
+            th:text="|$ ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}|"></span>
+      <span th:unless="${proAdVO.proAdFee != null}">-</span>
+    </td>
+
+    <td>
+      <span th:if="${proAdVO.proAdFeeEnd != null}" th:text="${proAdVO.proAdFeeEnd}"></span>
+      <span th:unless="${proAdVO.proAdFeeEnd != null}">-</span>
+    </td>
+
+    <td>
+      <div th:if="${proAdVO.proAdRevStat == 1}">
+		 <form th:action="@{/admin/proAd/showReviewProAd}" method="get">
+		  <input type="hidden" name="proAdId" th:value="${proAdVO.proAdId}">
+		  <input type="submit" value="開始審核" class="btn">
+		</form>
+	  </div>
+      <span th:if="${proAdVO.proAdRevStat == 3}">🚫</span>
+      <span th:if="${proAdVO.proAdRevStat == 4}">💰⏳</span>
+      <span th:if="${proAdVO.proAdRevStat == 5}">🎉</span>
+    </td>
+    
+    <td>
+    <form th:action="@{/admin/proAd/showUpdateProAd}" method="get">
+    	  <input type="hidden" name="proAdId" th:value="${proAdVO.proAdId}">
+		  <input type="submit" value="修改" class="btn">
+	</form>
+    </td>
+  </tr>
+</table>
+
+<!-- 將審核商品畫面拉進來 -->
+<div th:if="${showReview}" id="proAdRevView" class="proAdRevView" style="display:block;">
+  <div th:replace="~{back_end/logined/ad/adminReviewProAd :: reviewProAd-div(proAdVO=${proAdVO})}"></div>
+</div>
+
+<!-- 圖片放大 -->
+<div id="outSide" class="outSide">
+  <b><span id="closeButton" class="closeButton">X</span></b>
+  <div id="inSide" class="inSide">
+    <img id="zoomImg" class="zoomImg" alt="預覽">
+  </div>
+</div>
+
+	<script>
+// 下拉切換
+document.getElementById('adType').addEventListener('change', e=>{
+  location.href = e.target.value;
+});
+
+// 圖片放大
+const outSide = document.getElementById('outSide');
+const zoomImg = document.getElementById('zoomImg');
+document.addEventListener('click', e=>{
+  const img = e.target.closest('.adImg');
+  if (!img) return;
+  outSide.style.display = 'block';
+  zoomImg.src = img.src;
+});
+document.getElementById('closeButton').addEventListener('click', ()=>{
+  outSide.style.display = 'none';
+  zoomImg.src = '';
+});
+
+//商品審核畫面顯示
+document.addEventListener('click', function (e) {
+	const btn = e.target.closest('.showProAdReview');
+	if (!btn) return;
+  e.preventDefault();
+  document.getElementById('proAdRevView').style.display = 'block';
+});
+
+//關閉商品審核畫面顯示
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.closeRev');
+  if (!btn) return;
+  location.href = '/admin/proAd/list';
+});
+
+//人物文字顯示
+const quotes = [
+    "今天也要努力哦!",
+    "喝水休息一下吧。",
+    "加油！你做得很好。",
+    "笑一個，世界更美好。",
+    "站起來走一走吧!。"
+  ];
+
+  const personImg = document.getElementById("personImg");
+  const bubbleText = document.getElementById("bubbleText");
+
+  personImg.addEventListener("click", () => {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    bubbleText.textContent = quotes[randomIndex];
+  });
+</script>
+</body>
+</html>
