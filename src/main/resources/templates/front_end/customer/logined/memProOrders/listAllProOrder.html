@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>會員專區 - 小農產品訂單列表</title>
+</head>
+<body>
+    <h1>小農產品訂單列表</h1>
+    
+    <div th:if="${#lists.isEmpty(proOrderListByMemID)}">
+        <p>目前沒有任何訂單資料。</p>
+    </div>
+    
+    <div th:unless="${#lists.isEmpty(proOrderListByMemID)}">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>訂單編號</th>
+                    <th>訂購會員ID</th>
+                    <th>訂單日期</th>
+                    <th>總金額</th>
+                    <th>付款方式</th>
+                    <th>物流方式</th>
+                    <th>訂單狀態</th>
+                    <th></th>
+
+                    </tr>
+            </thead>
+            <tbody>
+                <tr th:each="proOrderVO : ${proOrderListByMemID}">
+                    <td th:text="${proOrderVO.proOrdId}">1</td>
+                    <td th:text="${proOrderVO.memVO.memId}">M001</td> 
+                    <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
+                    <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>       
+                    
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdPayment}">
+                    		<span th:case="0">信用卡</span>
+                    		<span th:case="1">轉帳</span>
+                    		<span th:case="2">貨到付款</span>
+                    		<span th:case="3">超商付款</span>
+                    		<span th:case="*"></span>
+                    	</div>
+                    </td>
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdShipment}">
+                    		<span th:case="0">宅配</span>
+                    		<span th:case="1">超商取貨</span>
+                    		<span th:case="*"></span>
+                    	</div>
+                    </td>
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdStatus}">
+                    		<span th:case="0">成立訂單</span>
+                    		<span th:case="1">取消訂單(未出貨)取貨</span>
+                    		<span th:case="2">出貨中</span>
+                    		<span th:case="3">已到貨</span>
+                    		<span th:case="4">申請退貨(已出貨)</span>
+                    		<span th:case="5">退貨中</span>
+                    		<span th:case="6">已退貨</span>
+                    		<span th:case="*">XXX</span>
+                    	</div>
+                    </td>
+                    <td>
+                    	<form method="post" th:action="@{/proorder/listOneProOrder}">
+                    		<input type="submit" value="詳細資料">
+                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+                    	</form>
+                    </td>
+                    
+                   
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</body>
+</html>

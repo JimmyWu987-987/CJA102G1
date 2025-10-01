@@ -15,7 +15,7 @@ import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 
 @Controller
-@RequestMapping("/proorder")
+@RequestMapping("/mem")
 public class ProOrderController {
 	
 	@Autowired
