@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.farmtastic.common.enums.IsActive;
 
+//未完成
 @Service("proCpnService")
 public class ProCpnServiceImp implements ProCpnService {
 	@Autowired
