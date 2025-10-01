@@ -6,17 +6,20 @@
     <title>index.html</title>
     <link rel="icon" href="./images/logo.png">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <th:block th:fragment="mainCss">
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	    <link rel="stylesheet" th:href="@{/css/main.css}">
+    </th:block>
+    
     <link rel="stylesheet" th:href="@{/css/index.css}">
 	
 </head>
 <body th:data-success="${success}">
 
-    <div class="container container-header">
+    <div class="container container-header" th:fragment="header">
         <div class="header">
             <div class="logo">
-                <a href="#" class="link">
+                <a th:href="@{/}" class="link">
                     <img th:src="@{/images/logo-t.png}" alt="">
                 </a>
             </div>
@@ -65,10 +68,21 @@
                 </li>
             </ul>
             <div class="member">
-                <a th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
-                <a th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <div class="userInfo" th:if="${session.loggedInMember} != null">
+                	<div th:text="${session.memName} + '，'"></div>
+                	<div>您好</div>
+                </div>
                 <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+
+            	<form th:action="@{/mem/logout}" th:if="${session.loggedInMember} != null" method="post" class="logout">
+            		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+            	</form>
+
+            
             </div>
+            
         </div>
     </div>
     
@@ -206,7 +220,7 @@
         </div> 
     </div>
 
-    <div class="container container-footer">
+    <div class="container container-footer" th:fragment="footer">
         <div class="footer">
             <div class="quick-link">
                 <a href="#">關於我們</a>

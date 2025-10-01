@@ -130,7 +130,7 @@ public class FmemController{
 			session.setAttribute("fmemName", fmem.getFmemName());
 			
 			// 4.登入成功後 重導至首頁或會員中心
-			return "redirect:/fmem/fmemArea";
+			return "redirect:/fmem/home";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);

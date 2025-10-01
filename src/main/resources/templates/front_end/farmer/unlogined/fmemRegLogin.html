@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一般會員註冊</title>
+    <title>小農會員註冊</title>
     <link rel="icon" href="./images/logo.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/regLogin.css}">
 
     <style>
@@ -15,66 +14,9 @@
     </style>
 </head>
 <body th:data-active-tab="${activeTab != null ? activeTab : 'login'}">
-    <div class="container container-header">
-        <div class="header">
-            <div class="logo">
-                <a th:href="@{/}" class="link">
-                    <img th:src="@{/images/logo-t.png}" alt="">
-                </a>
-            </div>
+    
 
-            <ul class="nav">
-                <li>
-                    <a href="#" class="link btn">關於本站</a>
-                    <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" class="link btn">小農商城</a>
-                    <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
-                        <li><a href="#">如果有需要再多一層</a></li>
-                        <li><a href="#">是可以再加(但最好不要)</a></li>
-                        <li><a href="#">因為有點麻煩</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" class="link btn">活動專區</a>
-                    <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
-                        <li><a href="#">如果有需要再多一層</a></li>
-                        <li><a href="#">是可以再加(但最好不要)</a></li>
-                        <li><a href="#">因為有點麻煩</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" class="link btn">會員中心</a>
-                    <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
-                        <li><a href="#">如果有需要再多一層</a></li>
-                        <li><a href="#">是可以再加(但最好不要)</a></li>
-                        <li><a href="#">因為有點麻煩</a></li>
-                    </ul>
-                </li>
-            </ul>
-
-            <div class="member">
-                <a th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
-                <a th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
-                <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{/front_end/index :: header}"></div>
 
     <div class="container container-reg-login">
         <h2 class="reg-login-title">小農會員</h2>
@@ -182,28 +124,10 @@
                 </ul>
             </form>
         </div>
-
     </div>
 
-	<div class="container container-footer">
-        <div class="footer">
-            <div class="quick-link">
-                <a href="#">關於我們</a>
-                <a href="#">最新消息</a>
-                <a href="#">常見問題</a>
-                <a href="#">聯絡我們</a>
-                <a href="#">退貨說明</a>
-                <a href="#">訂單查詢</a>
-                <a href="#">聯絡我們</a>
-            </div>
-            <div class="info">
-                <div class="copyright">Copyright © 2025 農作物與它們的產地</div>
-                <span>Email: support@farm.com</span>
-                <span>電話: 03-4259888</span>
-                <span>地址: 桃園市中壢區農田路66號</span>
-            </div>
-        </div>
-    </div>
+
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/regLogin.js}"></script>
