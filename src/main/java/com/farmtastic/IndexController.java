@@ -12,8 +12,14 @@ public class IndexController {
 		return "/front_end/index";
 	}
 	
+	// 這是測試用網頁
+	@GetMapping("/mem/proorders")
+	public String mem() {
+		return "/front_end/customer/logined/memProOrders/index";
+	}
+	
 	// 金流管理首頁
-	@GetMapping("/admin/cashflow")
+	@GetMapping("/admin/cashflow/index")
 	public String cashflowIndex() {
 		return "/back_end/logined/cash_flow/index";
 	}
