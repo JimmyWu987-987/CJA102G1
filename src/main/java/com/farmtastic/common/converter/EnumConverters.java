@@ -1,5 +1,6 @@
 package com.farmtastic.common.converter;
 
+import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
 
@@ -20,6 +21,13 @@ public class EnumConverters {
 	public static class DiscountTypeConverter extends GenericEnumConverter<DiscountType, Byte> {
 		public DiscountTypeConverter() {
 			super(DiscountType.class);
+		}
+	}
+
+	@Converter(autoApply = false)
+	public static class CpnUseStatusConverter extends GenericEnumConverter<CpnUseStatus, Byte> {
+		public CpnUseStatusConverter() {
+			super(CpnUseStatus.class);
 		}
 	}
 }
