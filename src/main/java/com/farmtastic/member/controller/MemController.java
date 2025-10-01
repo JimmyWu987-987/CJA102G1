@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.member.model.LoginRequest;
 import com.farmtastic.member.model.Mem;
@@ -54,7 +55,12 @@ public class MemController{
 	
 //	送出註冊"表單"
 	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute("mem") Mem mem, BindingResult result, ModelMap model) {
+	public String register(
+			@Valid @ModelAttribute("mem") 
+			Mem mem, 
+			BindingResult result, 
+			ModelMap model,
+			RedirectAttributes redirectAttrs) {
 	
 		// 驗證帳號不能跟別人重複
 		String memAcc = mem.getMemAcc();
@@ -75,7 +81,8 @@ public class MemController{
 		
 		memSvc.addMem(mem);
 		
-		model.addAttribute("success", "註冊成功");
+		redirectAttrs.addFlashAttribute("success", "註冊成功");
+//		model.addAttribute("success", "註冊成功");
 		return "redirect:/"; //註冊(新增)成功後重導至index.html
 		//*******************************************
 	}
@@ -125,7 +132,7 @@ public class MemController{
 			session.setAttribute("memName", mem.getMemName());
 			
 			// 4.登入成功後 重導至首頁或會員中心
-			return "redirect:/mem/memArea";
+			return "redirect:/mem/home";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);

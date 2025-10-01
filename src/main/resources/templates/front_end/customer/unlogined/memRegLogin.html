@@ -69,7 +69,7 @@
             </ul>
 
             <div class="member">
-                <a th:href="@{/mem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <a th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
                 <a th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
                 <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
             </div>
@@ -88,11 +88,11 @@
                 <ul>
                     <li>
                         <label for="">帳號</label>
-                        <input type="text" th:field="*{memAccLogin}" class="memAccLogin" placeholder="mem測試帳號:test">                        
+                        <input type="text" th:field="*{memAccLogin}" class="accLogin" placeholder="mem測試帳號:test">                        
                     </li>
                     <li>
                         <label for="">密碼</label>
-                        <input type="password" th:field="*{memPwdLogin}" class="memPwdLogin" placeholder="mem測試密碼:1234">
+                        <input type="password" th:field="*{memPwdLogin}" class="pwdLogin" placeholder="mem測試密碼:1234">
                     </li>
 
 					<div th:if="${loginError}">
@@ -109,7 +109,7 @@
                 <ul>
                     <li>
                         <label for="">帳號</label>
-                        <input type="text" th:field="*{memAcc}" placeholder="英文或數字或_ , 長度8~20">                        
+                        <input type="text" th:field="*{memAcc}" class="acc" placeholder="英文或數字或_ , 長度8~20">                        
                         <span th:if="${#fields.hasErrors('memAcc')}" th:errors="*{memAcc}" class="error"></span>
                         
 						<span th:if="${regError}" th:text="${regError}" class="error-reg"></span>
@@ -117,7 +117,7 @@
                     </li>
                     <li>
                         <label for="">密碼</label>
-                        <input type="password" th:field="*{memPwd}" placeholder="英文或數字或@ , 長度8~20">
+                        <input type="password" th:field="*{memPwd}" class="pwd" placeholder="英文或數字或@ , 長度8~20">
                         <span th:if="${#fields.hasErrors('memPwd')}" th:errors="*{memPwd}" class="error"></span>
                     </li>
                     <li>
@@ -142,23 +142,23 @@
                     </li>
                     <li>
                         <label for="">信箱</label>
-                        <input type="email" th:field="*{memEmail}" class="memEmail" list="email-suggestions">
+                        <input type="email" th:field="*{memEmail}" class="email" list="email-suggestions">
                         <datalist id="email-suggestions"></datalist>
                         <span th:if="${#fields.hasErrors('memEmail')}" th:errors="*{memEmail}" class="error"></span>
                     </li>
                     <li class="list-addr">
                         <label>居住地址</label>
-                        <input type="text" th:field="*{memZipcode}" class="memZipcode" placeholder="郵遞區號" maxlength="3">
+                        <input type="text" th:field="*{memZipcode}" class="zipcode" placeholder="郵遞區號" maxlength="3">
 
-                        <select th:field="*{memCity}" class="memCity">
+                        <select th:field="*{memCity}" class="city">
                             <option value="" class="city-option" id="city-option"></option>
                         </select>
 
-                        <select th:field="*{memDist}" class="memDist">
+                        <select th:field="*{memDist}" class="dist">
                             <option value="" class="dist-option" id="dist-option"></option>
                         </select>
                         
-                        <input type="text" th:field="*{memAddr}" class="memAddr" placeholder="街道名稱 / 號碼 / 樓層" >
+                        <input type="text" th:field="*{memAddr}" class="addr" placeholder="街道名稱 / 號碼 / 樓層" >
                         
                         <span th:if="${#fields.hasErrors('memZipcode')}" th:errors="*{memZipcode}" class="error-zipcode"></span>
                         <span th:if="${#fields.hasErrors('memCity')}" th:errors="*{memCity}" class="error-city"></span>
@@ -171,7 +171,26 @@
                 </ul>
             </form>
         </div>
-
+    </div>
+    
+    <div class="container container-footer">
+        <div class="footer">
+            <div class="quick-link">
+                <a href="#">關於我們</a>
+                <a href="#">最新消息</a>
+                <a href="#">常見問題</a>
+                <a href="#">聯絡我們</a>
+                <a href="#">退貨說明</a>
+                <a href="#">訂單查詢</a>
+                <a href="#">聯絡我們</a>
+            </div>
+            <div class="info">
+                <div class="copyright">Copyright © 2025 農作物與它們的產地</div>
+                <span>Email: support@farm.com</span>
+                <span>電話: 03-4259888</span>
+                <span>地址: 桃園市中壢區農田路66號</span>
+            </div>
+        </div>
     </div>
 
 

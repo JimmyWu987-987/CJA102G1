@@ -4,13 +4,20 @@ document.querySelector("#register form").addEventListener("submit", function(e) 
     e.preventDefault(); // 先不要真的送出
 
     Swal.fire({
-        title: '已確認資料無誤，註冊成為會員',
-//        text: "註冊會員",
+        title: '註冊成為會員',
+		text: '已確認資料無誤，送出後即無法再修改',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: '確認送出',
         cancelButtonText: '取消',
-//		confirmButtonColor: '#f98227'
+		customClass: {
+			icon: 'custom-icon',
+		    popup: 'custom-swal',
+		    title: 'custom-swal-title',
+		    htmlContainer: 'custom-swal-content',
+		    confirmButton: 'custom-swal-confirm',
+		    cancelButton: 'custom-swal-cancel'
+		}
     }).then((result) => {
         if (result.isConfirmed) {
             e.target.submit(); // 使用者點確認再送出表單
@@ -22,35 +29,42 @@ document.querySelector("#register form").addEventListener("submit", function(e) 
 
 
 // 地址4欄位有輸入資料時，隱藏錯誤訊息(zipcode, city, dist, addr互相影響)
-let memCityElement = document.querySelector('.memCity');
-let memDistElement = document.querySelector('.memDist');
-let memZipcodeElement = document.querySelector('.memZipcode');
-memCityElement.addEventListener('change', function(){
-	document.querySelector('.error-dist').style.display = 'block';
+let cityElement = document.querySelector('.city');
+let distElement = document.querySelector('.dist');
+
+cityElement.addEventListener('change', function(){
+	let errorDistElement = document.querySelector('.error-dist');
+	let errorCityElement = document.querySelector('.error-city');
 	
-	if(memCityElement.value === ''){
-		document.querySelector('.error-city').style.display = 'block';
+	if(errorDistElement) errorDistElement.style.display = 'block';
+	
+	if(cityElement.value === ''){
+		if(errorCityElement) errorCityElement.style.display = 'block';
 	} else {
-		document.querySelector('.error-city').style.display = 'none';
+		if(errorCityElement) errorCityElement.style.display = 'none';
 	}
 })
-memDistElement.addEventListener('change', function(){
-	if(memDistElement.value === ''){
-		document.querySelector('.error-dist').style.display = 'block';
-		document.querySelector('.error-zipcode').style.display = 'block';
+distElement.addEventListener('change', function(){
+	let errorDist = document.querySelector('.error-dist');
+	let errorZipcode = document.querySelector('.error-zipcode');
+	
+	if(distElement.value === ''){
+		if(errorDist) errorDist.style.display = 'block';
+		if(errorZipcode) errorZipcode.style.display = 'block';
 	} else {
-		document.querySelector('.error-dist').style.display = 'none';
-		document.querySelector('.error-zipcode').style.display = 'none';
+		
+		if(errorDist) errorDist.style.display = 'none';
+		if(errorZipcode) errorZipcode.style.display = 'none';
 	}
 	
 })
 
 
 // "error-reg此帳號有人註冊過"的錯誤訊息，跟其他欄位顯示時機不太一樣，另外寫
-let memAccElement = document.querySelector('#memAcc');
-let errorRegElement = memAccElement.closest('li').querySelector('.error-reg');
-memAccElement.addEventListener('input', function(){
-	errorRegElement.style.display = 'none';
+let accElement = document.querySelector('.acc');
+let errorRegElement = accElement.closest('li').querySelector('.error-reg');
+accElement.addEventListener('input', function(){
+	if(errorRegElement) errorRegElement.style.display = 'none';
 })
 
 
@@ -77,13 +91,13 @@ function switchInputError(inputElement, displayValue){
 	}
 	
 	// 因為兩個input欄位(zipcode和addr)放在同一個li底下，要另外寫
-	if(inputElement.classList.contains('memZipcode')){
+	if(inputElement.classList.contains('zipcode')){
 		let errorZipcodeElement = inputElement.closest('li').querySelector('.error-zipcode');
 		if(errorZipcodeElement){
 			errorZipcodeElement.style.display = displayValue;					
 		}
 	}
-	if(inputElement.classList.contains('memAddr')){
+	if(inputElement.classList.contains('addr')){
 		let errorAddrElement = inputElement.closest('li').querySelector('.error-addr');
 		if(errorAddrElement){
 			errorAddrElement.style.display = displayValue;				
@@ -152,7 +166,7 @@ function loadOriginalTab(){
 // ------------------------Email自動填入提示-----Start-------------------
 
 let domainData = [];
-let memEmail = document.querySelector('#memEmail');
+let emailElement = document.querySelector('.email');
 
 window.addEventListener('load', function () {
     fetch('/data/domainData.json')
@@ -161,13 +175,13 @@ window.addEventListener('load', function () {
             return res.json();
         }).then(data => {
             domainData = data;
-            memEmail.addEventListener('input', showEmailSuggestions);
+            emailElement.addEventListener('input', showEmailSuggestions);
         })
 })
 
 let emailSuggestions = document.querySelector('#email-suggestions');
 function showEmailSuggestions() {
-    let memEmailInput = memEmail.value;
+    let memEmailInput = emailElement.value;
     let emailSuggestionsData = '';
     let atCount = memEmailInput.split('@').length - 1;  //計算@數量
     
@@ -221,7 +235,7 @@ function showEmailSuggestions() {
 
 
 let cityData = [];
-let memZipcode = document.querySelector('#memZipcode');
+let zipcodeElement = document.querySelector('.zipcode');
 
 window.addEventListener('load', function(){
 	loadJson();
@@ -246,32 +260,32 @@ async function loadJson(){
         // 設定上次選的city
         const savedCity = '';
         if (savedCity) {
-            memCitySelect.value = savedCity;
+            citySelect.value = savedCity;
             // 手動載入dist
             if (savedCity !== '--請選擇--') {
                 loadDistSelect();
                 // 設定上次選的dist
                 const savedDist = '';
                 if (savedDist) {
-                    memDistSelect.value = savedDist;
+                    distSelect.value = savedDist;
                 }
             }
         }
         
         // 如果送出表單驗證失敗，後端儲存已填過的欄位放到前端，用JS去抓郵遞區號->選對應的縣市鄉鎮
-		if(memZipcode.value != ''){
+		if(zipcodeElement.value != ''){
 			loadCityCountyByZipcode();
 		}
 		
 		
         // 一次只能綁定一個事件 
         // input觸發包含: 鍵盤輸入、滑鼠複製貼上、清除欄位、語音輸入、自動填入(瀏覽器自動帶入)、手機選字
-        if (memZipcode) {
-            memZipcode.addEventListener('input', function(){
+        if (zipcodeElement) {
+            zipcodeElement.addEventListener('input', function(){
                 loadCityCountyByZipcode();
             });
         } else {
-            console.log('找不到 #memZipcode 元素');
+            console.log('找不到 .zipcode 元素');
         }
         
         } catch (error) {
@@ -280,7 +294,7 @@ async function loadJson(){
         
 }
 
-let memCitySelect = document.querySelector('#memCity');
+let citySelect = document.querySelector('.city');
 
 // city縣市 載入JSON檔做成下拉選單
 function loadCitySelect(){
@@ -293,12 +307,12 @@ function loadCitySelect(){
     }
 
 
-    memCitySelect.innerHTML = jsonCityData;
+    citySelect.innerHTML = jsonCityData;
 
     // 只要縣市欄位變動 就會重新載入區域選單
     // change: 手動點選新的選項、鍵盤選擇(上下鍵+enter)
-    memCitySelect.addEventListener('change', function(){    
-        if(memCitySelect.value){
+    citySelect.addEventListener('change', function(){    
+        if(citySelect.value){
 			loadDistSelect();
 		}
     })
@@ -308,12 +322,12 @@ function loadCitySelect(){
 }
 
 
-let memDistSelect = document.querySelector('#memDist');
+let distSelect = document.querySelector('.dist');
 let citySelectedIndex = null;
 // dist區域 載入JSON檔做成下拉選單
 function loadDistSelect(){
     // 取得city欄位資料在JSON檔中的索引值
-    citySelectedIndex =  memCitySelect.options[memCitySelect.selectedIndex].dataset.cityIndex;
+    citySelectedIndex =  citySelect.options[citySelect.selectedIndex].dataset.cityIndex;
 
     
     let jsonDistData = `<option value="" class="dist-option" id="dist-option">請選擇</option>`;
@@ -324,10 +338,10 @@ function loadDistSelect(){
         // 改用字串串接，避免模板字串問題
         jsonDistData += '<option value="' + areaName + '" class="dist-option" id="dist-option" data-zipcode="' + zipCode + '">' + areaName + '</option>';
     }
-    memDistSelect.innerHTML = jsonDistData;
+    distSelect.innerHTML = jsonDistData;
     
-    memDistSelect.addEventListener('change', function(){
-    	if(memDistSelect.value){ //************ */
+    distSelect.addEventListener('change', function(){
+    	if(distSelect.value){ //************ */
 			loadSeletedZipcode();
 		}
     })
@@ -337,15 +351,15 @@ function loadDistSelect(){
 
 
 function loadSeletedZipcode(){
-    zipcodeSelected = memDistSelect.options[memDistSelect.selectedIndex].dataset.zipcode;
-    memZipcode.value = zipcodeSelected;
+    zipcodeSelected = distSelect.options[distSelect.selectedIndex].dataset.zipcode;
+    zipcodeElement.value = zipcodeSelected;
 }
 
 
 
 
 function loadCityCountyByZipcode(){
-    let zipcodeInput =  memZipcode.value;
+    let zipcodeInput =  zipcodeElement.value;
     let cityIndex = null;
     let distIndex = null;
     for(let i=0; i<cityData.length; i++){
@@ -374,13 +388,16 @@ function loadCityCountyByZipcode(){
 
         loadCitySelect();
         // 如果select裡有這個option 會自動在option加上selected
-        memCitySelect.value = city;
+        citySelect.value = city;
 
         loadDistSelect();
-        memDistSelect.value = dist;
+        distSelect.value = dist;
 		
-		document.querySelector('.error-city').style.display = 'none';//****隱藏後端的錯誤訊息 */
-		document.querySelector('.error-dist').style.display = 'none';//****隱藏後端的錯誤訊息 */
+		
+		let errorCityElement = document.querySelector('.error-city');
+		let errorDistElement = document.querySelector('.error-dist');
+		if(errorCityElement) errorCityElement.style.display = 'none';//****隱藏後端的錯誤訊息 */	
+		if(errorDistElement) errorDistElement.style.display = 'none';//****隱藏後端的錯誤訊息 */
         
     } else {
 	//  郵遞區號輸入3碼以上，才出現驗證錯誤訊息

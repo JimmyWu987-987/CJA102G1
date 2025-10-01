@@ -26,17 +26,35 @@ public class IndexController {
 	
 //	@GetMapping("/mem/showMemRegLoginForm")
 //	public String memRegLogin() {
-//		return "/front_end/customer/unlogined/memRegLogin";
+//		return "/front_end/farmer/unlogined/fmemRegLogin";
 //	}
 	
-	@GetMapping("/mem/showFmemRegLoginForm")
-	public String fmemRegLogin() {
-		return "/front_end/farmer/unlogined/fmemRegLogin";
-	}
-	
+//	@GetMapping("/mem/showFmemRegLoginForm")
+//	public String fmemRegLogin() {
+//		return "/front_end/farmer/unlogined/fmemRegLogin";
+//	}
+//	
 //	登入後才能看的 測試用
 	@GetMapping("/mem/memArea")
 	public String memArea() {
 		return "/front_end/customer/logined/memArea";
+	}
+	
+//	登入後才能看的 測試用
+	@GetMapping("/fmem/fmemArea")
+	public String fmemArea() {
+		return "/front_end/farmer/logined/fmemArea";
+	}
+	
+//	登入後才能看的 
+	@GetMapping("/mem/home")
+	public String memHome() {
+		return "/front_end/customer/logined/home";
+	}
+	
+//	登入後才能看的 
+	@GetMapping("/fmem/home")
+	public String fmemHome() {
+		return "/front_end/farmer/logined/home";
 	}
 }
