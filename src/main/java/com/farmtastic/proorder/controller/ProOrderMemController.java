@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/mem/proorders")
-public class ProOrderMemIdController {
+public class ProOrderMemController {
 
 	@Autowired
 	ProOrderSevice proOrdSvc;
