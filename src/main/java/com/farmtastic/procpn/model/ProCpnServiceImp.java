@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("ProCpnService")
+import com.farmtastic.common.enums.IsActive;
+
+@Service("proCpnService")
 public class ProCpnServiceImp implements ProCpnService {
 	@Autowired
 	ProCpnRepository repository;
@@ -35,28 +37,28 @@ public class ProCpnServiceImp implements ProCpnService {
 	// 查啟用券
 	@Override
 	public List<ProCpnVO> getActiveCoupons() {
-		return repository.findByIsActive((byte) 1);
+		return repository.findByIsActive(IsActive.ACTIVE);
 	}
 
 	// 啟用券
 	@Override
-	public void activateCoupon(Integer id) {
-		ProCpnVO vo = repository.findById(id).orElseThrow();
-		if (vo.getIsActive() == 1) {
+	public void activateCoupon(Integer proCpnId) {
+		ProCpnVO procpnVO = repository.findById(proCpnId).orElseThrow();
+		if (procpnVO.getIsActive() == IsActive.ACTIVE) {
 			return;// 已經啟用，不再動作
 		}
-		vo.setIsActive((byte) 1);
-		repository.save(vo);
+		procpnVO.setIsActive((IsActive.ACTIVE));
+		repository.save(procpnVO);
 	}
 
 	// 停用卷
 	@Override
-	public void deactivateCoupon(Integer id) {
-		ProCpnVO vo = repository.findById(id).orElseThrow();
-		if (vo.getIsActive() == 0) {
+	public void deactivateCoupon(Integer proCpnId) {
+		ProCpnVO procpnVO = repository.findById(proCpnId).orElseThrow();
+		if (procpnVO.getIsActive() == IsActive.INACTIVE) {
 			return; // 已經停用，不再動作
 		}
-		vo.setIsActive((byte) 0);
-		repository.save(vo);
+		procpnVO.setIsActive(IsActive.INACTIVE);
+		repository.save(procpnVO);
 	}
 }

@@ -1,15 +1,10 @@
-package com.farmtastic.procpn.model;
+package com.farmtastic.actcpn.model;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-import com.farmtastic.common.converter.EnumConverters;
-import com.farmtastic.common.enums.DiscountType;
-import com.farmtastic.common.enums.IsActive;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,20 +12,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "pro_cpn")
-public class ProCpnVO implements java.io.Serializable {
+@Table(name = "act_cpn")
+public class ActCpnVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 對應 AUTO_INCREMENT
-	@Column(name = "pro_cpn_id")
-	private Integer proCpnId; // PK
+	@Column(name = "act_cpn_id")
+	private Integer actCpnId;
 
 	@Column(name = "cpn_name", nullable = false, length = 50)
 	private String cpnName; // 折價券名稱
 
-	@Convert(converter = EnumConverters.DiscountTypeConverter.class) // 指定轉換器
 	@Column(name = "disc_type", nullable = false)
-	// java讀的Enem 資料庫還是byte
-	private DiscountType discType; // 0: 滿額折抵, 1: 百分比
+	private Byte discType; // 0: 滿額折抵, 1: 百分比
 
 	@Column(name = "disc_value", nullable = false, precision = 10, scale = 2)
 	private BigDecimal discValue; // 折扣數值
@@ -46,22 +39,19 @@ public class ProCpnVO implements java.io.Serializable {
 
 	@Column(name = "cpn_desc", length = 200)
 	private String cpnDesc; // 折價券規則描述
-	@Convert(converter = EnumConverters.IsActiveConverter.class)
+
 	@Column(name = "is_active", nullable = false)
-	private IsActive isActive; // 0:未啟用, 1:啟用
+	private Byte isActive; // 0:未啟用, 1:啟用
 
 	@Column(name = "crt_at", nullable = false, insertable = false, updatable = false)
 	private Timestamp crtAt; // 建立時間 (由 DB 預設 CURRENT_TIMESTAMP)
 
-	@Column(name = "appl_scope", nullable = false)
-	private Byte applScope; // 0:全館, 1:指定小農, 2:指定商品
-
-	public Integer getProCpnId() {
-		return proCpnId;
+	public Integer getActCpnId() {
+		return actCpnId;
 	}
 
-	public void setProCpnId(Integer proCpnId) {
-		this.proCpnId = proCpnId;
+	public void setActCpnId(Integer actCpnId) {
+		this.actCpnId = actCpnId;
 	}
 
 	public String getCpnName() {
@@ -72,11 +62,11 @@ public class ProCpnVO implements java.io.Serializable {
 		this.cpnName = cpnName;
 	}
 
-	public DiscountType getDiscType() {
+	public Byte getDiscType() {
 		return discType;
 	}
 
-	public void setDiscType(DiscountType discType) {
+	public void setDiscType(Byte discType) {
 		this.discType = discType;
 	}
 
@@ -120,11 +110,11 @@ public class ProCpnVO implements java.io.Serializable {
 		this.cpnDesc = cpnDesc;
 	}
 
-	public IsActive getIsActive() {
+	public Byte getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(IsActive isActive) {
+	public void setIsActive(Byte isActive) {
 		this.isActive = isActive;
 	}
 
@@ -136,22 +126,14 @@ public class ProCpnVO implements java.io.Serializable {
 		this.crtAt = crtAt;
 	}
 
-	public Byte getApplScope() {
-		return applScope;
-	}
-
-	public void setApplScope(Byte applScope) {
-		this.applScope = applScope;
-	}
-
-	public ProCpnVO() {
+	public ActCpnVO() {
 		super();
 	}
 
-	public ProCpnVO(Integer proCpnId, String cpnName, DiscountType discType, BigDecimal discValue, Integer minSpend,
-			Date startDate, Integer validDays, String cpnDesc, IsActive isActive, Timestamp crtAt, Byte applScope) {
+	public ActCpnVO(Integer actCpnId, String cpnName, Byte discType, BigDecimal discValue, Integer minSpend,
+			Date startDate, Integer validDays, String cpnDesc, Byte isActive, Timestamp crtAt) {
 		super();
-		this.proCpnId = proCpnId;
+		this.actCpnId = actCpnId;
 		this.cpnName = cpnName;
 		this.discType = discType;
 		this.discValue = discValue;
@@ -161,14 +143,13 @@ public class ProCpnVO implements java.io.Serializable {
 		this.cpnDesc = cpnDesc;
 		this.isActive = isActive;
 		this.crtAt = crtAt;
-		this.applScope = applScope;
 	}
 
 	@Override
 	public String toString() {
-		return "ProCpnVO [proCpnId=" + proCpnId + ", cpnName=" + cpnName + ", discType=" + discType + ", discValue="
+		return "ActCpnVO [actCpnId=" + actCpnId + ", cpnName=" + cpnName + ", discType=" + discType + ", discValue="
 				+ discValue + ", minSpend=" + minSpend + ", startDate=" + startDate + ", validDays=" + validDays
-				+ ", cpnDesc=" + cpnDesc + ", isActive=" + isActive + ", crtAt=" + crtAt + ", applScope=" + applScope
-				+ "]";
+				+ ", cpnDesc=" + cpnDesc + ", isActive=" + isActive + ", crtAt=" + crtAt + "]";
 	}
+
 }
