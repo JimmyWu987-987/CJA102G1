@@ -40,25 +40,14 @@ public class ProCpnServiceImp implements ProCpnService {
 		return repository.findByIsActive(IsActive.ACTIVE);
 	}
 
-	// 啟用券
+	// 改變卷狀態 啟用或停用
 	@Override
-	public void activateCoupon(Integer proCpnId) {
+	public void changeCouponStatus(Integer proCpnId, IsActive status) {
 		ProCpnVO procpnVO = repository.findById(proCpnId).orElseThrow();
-		if (procpnVO.getIsActive() == IsActive.ACTIVE) {
-			return;// 已經啟用，不再動作
-		}
-		procpnVO.setIsActive((IsActive.ACTIVE));
+		if (procpnVO.getIsActive() == status)
+			return; // 避免重複設定
+		procpnVO.setIsActive(status);
 		repository.save(procpnVO);
 	}
 
-	// 停用卷
-	@Override
-	public void deactivateCoupon(Integer proCpnId) {
-		ProCpnVO procpnVO = repository.findById(proCpnId).orElseThrow();
-		if (procpnVO.getIsActive() == IsActive.INACTIVE) {
-			return; // 已經停用，不再動作
-		}
-		procpnVO.setIsActive(IsActive.INACTIVE);
-		repository.save(procpnVO);
-	}
 }
