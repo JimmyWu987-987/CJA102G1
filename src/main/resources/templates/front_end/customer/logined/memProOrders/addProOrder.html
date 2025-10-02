@@ -6,6 +6,35 @@
 </head>
 <body>
 	<h1>這是一般會員新增訂單的頁面</h1>
+	<span th:text="${session.loggedInMember}"></span><br>
+	<span th:text="${session.memId}"></span><br>
+	<span th:text="${session.memName}"></span><br>
 	<h1>結帳頁面</h1>
+	<form method="post" action="@{insert}" th:object="${proOrderVO}">
+		
+		一般會員編號
+		<input type="text" th:field="*{memVO.memId}" readonly/><br>
+		
+		商品折價卷持有者流水號
+		訂單日期
+		訂單狀態
+		付款狀態
+		商品總金額
+		運費
+		折價券折抵金額
+		商品訂單折抵會員點數
+		訂單回饋會員點數
+		實付金額
+		訂單備註
+		付款方式
+		物流方式
+		物流追蹤碼
+		出貨日期
+		收件人姓名
+		收件人電話
+		收件人電子郵件
+		收件人地址
+		
+	</form>
 </body>
 </html>

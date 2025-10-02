@@ -8,7 +8,18 @@ import java.util.Set;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 
 @Entity
 @Table(name = "pro_order")
@@ -85,7 +96,7 @@ public class ProOrderVO implements Serializable {
 	@Column(name = "PRO_ORD_ADDR")
 	private String proOrdAddr;
 
-
+	@Valid
 	@OneToMany(mappedBy="proOrderVO", // 指向 ProOrderItemVO 要關聯的屬性
 			   cascade=CascadeType.ALL, // 訂單刪除，明細也刪除
 			   orphanRemoval = true)
