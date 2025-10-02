@@ -72,6 +72,19 @@ public class ProOrderVO implements Serializable {
 
 	@Column(name = "pro_ord_shipdate")
 	private Timestamp proOrdShipdate;
+	
+	@Column(name = "PRO_ORD_NAME")
+	private String proOrdName;
+	
+	@Column(name = "PRO_ORD_MOBILE")
+	private String proOrdMobile;
+	
+	@Column(name = "PRO_ORD_EMAIL")
+	private String proOrdEmail;
+	
+	@Column(name = "PRO_ORD_ADDR")
+	private String proOrdAddr;
+
 
 	@OneToMany(mappedBy="proOrderVO", // 指向 ProOrderItemVO 要關聯的屬性
 			   cascade=CascadeType.ALL, // 訂單刪除，明細也刪除
@@ -86,7 +99,8 @@ public class ProOrderVO implements Serializable {
 	public ProOrderVO(Integer proOrdId, Mem memVO, Integer cpnHolderDetailId, Timestamp proOrdDate, byte proOrdStatus,
 			byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
 			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, byte proOrdPayment,
-			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, Set<ProOrderItemVO> proOrderItems) {
+			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, String proOrdName, String proOrdMobile,
+			String proOrdEmail, String proOrdAddr, Set<ProOrderItemVO> proOrderItems) {
 		super();
 		this.proOrdId = proOrdId;
 		this.memVO = memVO;
@@ -105,6 +119,10 @@ public class ProOrderVO implements Serializable {
 		this.proOrdShipment = proOrdShipment;
 		this.proTrackingNo = proTrackingNo;
 		this.proOrdShipdate = proOrdShipdate;
+		this.proOrdName = proOrdName;
+		this.proOrdMobile = proOrdMobile;
+		this.proOrdEmail = proOrdEmail;
+		this.proOrdAddr = proOrdAddr;
 		this.proOrderItems = proOrderItems;
 	}
 
@@ -244,6 +262,38 @@ public class ProOrderVO implements Serializable {
 		this.proOrdShipdate = proOrdShipdate;
 	}
 
+	public String getProOrdName() {
+		return proOrdName;
+	}
+
+	public void setProOrdName(String proOrdName) {
+		this.proOrdName = proOrdName;
+	}
+
+	public String getProOrdMobile() {
+		return proOrdMobile;
+	}
+
+	public void setProOrdMobile(String proOrdMobile) {
+		this.proOrdMobile = proOrdMobile;
+	}
+
+	public String getProOrdEmail() {
+		return proOrdEmail;
+	}
+
+	public void setProOrdEmail(String proOrdEmail) {
+		this.proOrdEmail = proOrdEmail;
+	}
+
+	public String getProOrdAddr() {
+		return proOrdAddr;
+	}
+
+	public void setProOrdAddr(String proOrdAddr) {
+		this.proOrdAddr = proOrdAddr;
+	}
+
 	public Set<ProOrderItemVO> getProOrderItems() {
 		return proOrderItems;
 	}
@@ -252,10 +302,16 @@ public class ProOrderVO implements Serializable {
 		this.proOrderItems = proOrderItems;
 	}
 
-	
-
-	
-	
-	
+	@Override
+	public String toString() {
+		return "ProOrderVO [proOrdId=" + proOrdId + ", memVO=" + memVO + ", cpnHolderDetailId=" + cpnHolderDetailId
+				+ ", proOrdDate=" + proOrdDate + ", proOrdStatus=" + proOrdStatus + ", proPayStatus=" + proPayStatus
+				+ ", proTotal=" + proTotal + ", proOrdShipFee=" + proOrdShipFee + ", proOrdCpndisc=" + proOrdCpndisc
+				+ ", proOrdPointdisc=" + proOrdPointdisc + ", proOrdPointGet=" + proOrdPointGet + ", proOrdGrandTotal="
+				+ proOrdGrandTotal + ", proOrdComm=" + proOrdComm + ", proOrdPayment=" + proOrdPayment
+				+ ", proOrdShipment=" + proOrdShipment + ", proTrackingNo=" + proTrackingNo + ", proOrdShipdate="
+				+ proOrdShipdate + ", proOrdName=" + proOrdName + ", proOrdMobile=" + proOrdMobile + ", proOrdEmail="
+				+ proOrdEmail + ", proOrdAddr=" + proOrdAddr + ", proOrderItems=" + proOrderItems + "]";
+	}
 
 }
