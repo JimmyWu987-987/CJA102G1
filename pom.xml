@@ -18,6 +18,14 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+		
+		<!-- Redis -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+	
+		
 		<dependency><!-- ＠用途說明2: Add typical dependencies for a web application -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
