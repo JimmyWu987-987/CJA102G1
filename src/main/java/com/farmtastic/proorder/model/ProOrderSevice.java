@@ -50,6 +50,9 @@ public class ProOrderSevice {
 		}
 		
 		// 小農fmem查詢自己的全部表單
+		public List<FmemOrderSummary> getAllByFmemId(Integer fmemId){
+			return repository.findFmemProOrders(fmemId);
+		}
 		// 小農fmem查詢該會員有幾筆訂單
 		// 小農查詢該商品有幾筆訂單
 		// 後台查詢該小農商品有幾筆訂單（回傳多筆）
