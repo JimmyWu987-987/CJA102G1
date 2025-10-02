@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>header footer 模板</title>
+    <link rel="icon" href="./images/logo.png">
+    
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+</head>
+<body th:data-success="${success}">
+
+<div th:replace="~{/front_end/index :: header}"></div>
+
+<div class="container container-member">
+    <div class="member-sidebar">
+        <h3>會員專區</h3>
+<!--         = index.html的會員中心架構 -->
+        <ul th:replace="~{/front_end/index :: memAreaLink}"></ul>
+    </div>
+
+    <div class="member-content center">
+            <form method="post" th:action="@{/mem/memArea/updateProfile}" th:object="${updateProfileMem}" class="userInfo">
+                <h3>修改會員資料</h3>
+                <ul>
+                    <li>
+                        <label for="">帳號</label>
+                        <input type="text" th:value="${loggedInMember.memAcc}" class="acc" disabled>                        
+                    </li>
+                    <li>
+                        <label for="">姓名</label>
+                        <input type="text" th:field="*{memName}">
+                        <span th:if="${#fields.hasErrors('memName')}" th:errors="*{memName}" class="error"></span>
+                    </li>
+                    <li>
+                        <label for="">生日</label>
+                        <input type="date" th:value="${loggedInMember.memBirthday}" disabled>
+                    </li>
+                    <li>
+                        <label for="">手機</label>
+                        <input type="tel" th:field="*{memMobile}" placeholder="格式: 09XX-XXXXXX">
+                        <span th:if="${#fields.hasErrors('memMobile')}" th:errors="*{memMobile}" class="error"></span>
+                    </li>
+                    <li>
+                        <label for="">信箱</label>
+                        <input type="email" th:field="*{memEmail}" class="email" list="email-suggestions">
+                        <datalist id="email-suggestions"></datalist>
+                        <span th:if="${#fields.hasErrors('memEmail')}" th:errors="*{memEmail}" class="error"></span>
+                    </li>
+                    <li class="list-addr">
+                        <label>居住地址</label>
+                        <input type="text" th:field="*{memZipcode}" class="zipcode" placeholder="郵遞區號" maxlength="3">
+
+                        <select th:field="*{memCity}" class="city">
+                            <option value="" class="city-option" id="city-option"></option>
+                        </select>
+
+                        <select th:field="*{memDist}" class="dist">
+                            <option value="" class="dist-option" id="dist-option"></option>
+                        </select>
+                        
+                        <input type="text" th:field="*{memAddr}" class="addr" placeholder="街道名稱 / 號碼 / 樓層" >
+                        
+                        <span th:if="${#fields.hasErrors('memZipcode')}" th:errors="*{memZipcode}" class="error-zipcode"></span>
+                        <span th:if="${#fields.hasErrors('memCity')}" th:errors="*{memCity}" class="error-city"></span>
+                        <span th:if="${#fields.hasErrors('memDist')}" th:errors="*{memDist}" class="error-dist"></span>
+                        <span th:if="${#fields.hasErrors('memAddr')}" th:errors="*{memAddr}" class="error-addr"></span>
+                    </li>
+                    <input type="submit" value="儲存" class="btn link" id="btn-submitReg">
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/mem/emailAddr.js}"></script>
+<script th:src="@{/js/mem/successUpdateProfileAlert.js}"></script>
+
+</body>
+</html>

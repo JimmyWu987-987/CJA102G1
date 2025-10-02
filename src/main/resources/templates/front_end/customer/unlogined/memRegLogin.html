@@ -14,66 +14,6 @@
     </style>
 </head>
 <body th:data-active-tab="${activeTab != null ? activeTab : 'login'}">
-<!--     <div class="container container-header"> -->
-<!--         <div class="header"> -->
-<!--             <div class="logo"> -->
-<!--                 <a th:href="@{/}" class="link"> -->
-<!--                     <img th:src="@{/images/logo-t.png}" alt=""> -->
-<!--                 </a> -->
-<!--             </div> -->
-
-<!--             <ul class="nav"> -->
-<!--                 <li> -->
-<!--                     <a href="#" class="link btn">關於本站</a> -->
-<!--                     <ul> -->
-<!--                         <li><a href="#">自行修改喔</a></li> -->
-<!--                         <li><a href="#">自行修改喔</a></li> -->
-<!--                         <li><a href="#">最好不要超過九個字</a></li> -->
-<!--                         <li><a href="#">短一點比較好</a></li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
-<!--                 <li> -->
-<!--                     <a href="#" class="link btn">小農商城</a> -->
-<!--                     <ul> -->
-<!--                         <li><a href="#">自行修改喔</a></li> -->
-<!--                         <li><a href="#">最好不要超過九個字</a></li> -->
-<!--                         <li><a href="#">短一點比較好</a></li> -->
-<!--                         <li><a href="#">如果有需要再多一層</a></li> -->
-<!--                         <li><a href="#">是可以再加(但最好不要)</a></li> -->
-<!--                         <li><a href="#">因為有點麻煩</a></li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
-<!--                 <li> -->
-<!--                     <a href="#" class="link btn">活動專區</a> -->
-<!--                     <ul> -->
-<!--                         <li><a href="#">自行修改喔</a></li> -->
-<!--                         <li><a href="#">最好不要超過九個字</a></li> -->
-<!--                         <li><a href="#">短一點比較好</a></li> -->
-<!--                         <li><a href="#">如果有需要再多一層</a></li> -->
-<!--                         <li><a href="#">是可以再加(但最好不要)</a></li> -->
-<!--                         <li><a href="#">因為有點麻煩</a></li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
-<!--                 <li> -->
-<!--                     <a href="#" class="link btn">會員中心</a> -->
-<!--                     <ul> -->
-<!--                         <li><a href="#">自行修改喔</a></li> -->
-<!--                         <li><a href="#">最好不要超過九個字</a></li> -->
-<!--                         <li><a href="#">短一點比較好</a></li> -->
-<!--                         <li><a href="#">如果有需要再多一層</a></li> -->
-<!--                         <li><a href="#">是可以再加(但最好不要)</a></li> -->
-<!--                         <li><a href="#">因為有點麻煩</a></li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
-<!--             </ul> -->
-
-<!--             <div class="member"> -->
-<!--                 <a th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a> -->
-<!--                 <a th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a> -->
-<!--                 <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a> -->
-<!--             </div> -->
-<!--         </div> -->
-<!--     </div> -->
 
 	<div th:replace="~{/front_end/index :: header}"></div>
 
@@ -85,7 +25,7 @@
         </div>
         
         <div class="login" id="login">
-            <form method="post" th:action="@{/mem/login}" th:object="${loginRequest}">
+            <form method="post" th:action="@{/mem/login}" th:object="${loginRequest}" class="userInfo">
                 <ul>
                     <li>
                         <label for="">帳號</label>
@@ -106,7 +46,7 @@
         </div>
         
         <div class="register" id="register">
-            <form method="post" th:action="@{/mem/register}" th:object="${mem}">
+            <form method="post" th:action="@{/mem/register}" th:object="${mem}" class="userInfo">
                 <ul>
                     <li>
                         <label for="">帳號</label>
@@ -178,7 +118,7 @@
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script th:src="@{/js/regLogin.js}"></script>
+    <script th:src="@{/js/mem/regLogin.js}"></script>
     
     
 </body>

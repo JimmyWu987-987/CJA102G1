@@ -26,7 +26,7 @@
         </div>
         
         <div class="login" id="login">
-            <form method="post" th:action="@{/fmem/login}" th:object="${loginRequest}">
+            <form method="post" th:action="@{/fmem/login}" th:object="${loginRequest}" class="userInfo">
                 <ul>
                     <li>
                         <label for="">帳號</label>
@@ -47,7 +47,7 @@
         </div>
         
         <div class="register" id="register">
-            <form method="post" th:action="@{/fmem/register}" th:object="${fmem}">
+            <form method="post" th:action="@{/fmem/register}" th:object="${fmem}" class="userInfo">
                 <ul>
                     <li>
                         <label for="">帳號</label>
@@ -130,7 +130,7 @@
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script th:src="@{/js/regLogin.js}"></script>
+    <script th:src="@{/js/mem/regLogin.js}"></script>
     
     
 </body>

@@ -121,7 +121,7 @@ public class FmemController{
 			
 			
 			// 3.登入成功，把會員資料存進session
-			session.setAttribute("loggedInMember", fmem);
+			session.setAttribute("loggedInFmember", fmem);
 			session.setAttribute("fmemId", fmem.getFmemId());
 			session.setAttribute("fmemName", fmem.getFmemName());
 			

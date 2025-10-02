@@ -5,6 +5,7 @@
 }
 .member-sidebar{
     width: 150px;
+    margin-right: 60px;
 }
 .member-sidebar h3{
     padding: 0 8px;
@@ -27,8 +28,35 @@
 }
 .member-content{
     flex-grow: 1;
-    padding-left: 40px;
+    padding: 40px 50px 60px;
     color: #333;
-    border: 1px solid #aaa;
-        /* outline: 1px solid #f00; */
+    background-color: #fac9aa08;
+    border: 1px solid #f9bc97cb;
+    border-radius: 12px;
 }
+.member-content.center{
+    display: flex;
+    justify-content: center;
+}
+
+
+/* ----------------------------------- */
+/* ----------修改個人資料 updateProfile.html */
+/* ----------修改密碼 updatePassword.html */
+form.userInfo{
+    width: 320px;
+    padding: 0;
+    margin-bottom: 0;
+    border: none;
+}
+
+form.userInfo h3{
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+/* 修改個人資料 updateProfile.html---------- */
+/* 修改密碼 updatePassword.html---------- */
+
+
+

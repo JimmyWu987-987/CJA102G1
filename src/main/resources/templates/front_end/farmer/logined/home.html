@@ -6,6 +6,18 @@
 
 <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 
+<style>
+	
+	.container-header,
+	.container-footer{
+		background-color: #dce2ef;	
+	}
+	.nav > li > a{
+		background-color: #4F9D9D;
+	}
+</style>
+
+
 </head>
 <body>
 
@@ -21,57 +33,47 @@
             </div>
             <ul class="nav">
                 <li>
-                    <a href="#" class="link btn">關於本站</a>
+                    <a href="#" class="link btn">廣告</a>
                     <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
+                    	<li><a th:href="@{/fmem/proAd/applyAdView}">申請廣告</a></li>
+  						<li><a th:href="@{/fmem/proAd/list}">查看廣告</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="link btn">小農商城</a>
+                    <a href="#" class="link btn">商城</a>
                     <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
-                        <li><a href="#">如果有需要再多一層</a></li>
-                        <li><a href="#">是可以再加(但最好不要)</a></li>
-                        <li><a href="#">因為有點麻煩</a></li>
+                        <li><a href="#">上架商品</a></li>
+                        <li><a href="#">商品管理</a></li>
+  						<li><a href="#">商城商店佈置</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="link btn">活動專區</a>
+                    <a href="#" class="link btn">活動</a>
                     <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
-                        <li><a href="#">如果有需要再多一層</a></li>
-                        <li><a href="#">是可以再加(但最好不要)</a></li>
-                        <li><a href="#">因為有點麻煩</a></li>
+                        <li><a href="#">上架活動</a></li>
+                        <li><a href="#">上架場次</a></li>
+                        <li><a href="#">活動管理</a></li>
+                        <li><a href="#">場次管理</a></li>
+  						<li><a href="#">活動商店佈置</a></li>
                     </ul>
                 </li>
                 <li>
                     <a href="#" class="link btn">會員中心</a>
                     <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">最好不要超過九個字</a></li>
-                        <li><a href="#">短一點比較好</a></li>
-                        <li><a href="#">如果有需要再多一層</a></li>
-                        <li><a href="#">是可以再加(但最好不要)</a></li>
-                        <li><a href="#">因為有點麻煩</a></li>
+                        <li><a href="#">修改會員資料</a></li>
+                        <li><a href="#">修改會員密碼</a></li>
                     </ul>
                 </li>
             </ul>
             <div class="member">
-                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
-                <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
-                <div class="userInfo" th:if="${session.loggedInMember} != null">
+                <a th:if="${session.loggedInFmember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
+                <a th:if="${session.loggedInFmember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <div class="helloUser" th:if="${session.loggedInFmember} != null">
                 	<div th:text="${session.fmemName} + '，'"></div>
                 	<div>您好</div>
                 </div>
-                <a th:if="${session.loggedInMember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
-            	<form th:action="@{/fmem/logout}" th:if="${session.loggedInMember} != null" method="post" class="logout">
+                <a th:if="${session.loggedInFmember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+            	<form th:action="@{/fmem/logout}" th:if="${session.loggedInFmember} != null" method="post" class="logout">
             		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
             	</form>
             </div>

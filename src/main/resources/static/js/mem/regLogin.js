@@ -1,4 +1,6 @@
 
+
+
 //送出表單前確認alert
 document.querySelector("#register form").addEventListener("submit", function(e) {
     e.preventDefault(); // 先不要真的送出

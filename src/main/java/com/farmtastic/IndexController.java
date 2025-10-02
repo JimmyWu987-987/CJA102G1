@@ -32,17 +32,9 @@ public class IndexController {
 		return "/front_end/farmer/unlogined/fmemRegLogin";
 	}
 	
-//	@GetMapping("/mem/showFmemRegLoginForm")
-//	public String fmemRegLogin() {
-//		return "/front_end/farmer/unlogined/fmemRegLogin";
-//	}
-//	
-//	登入後才能看的 測試用
-	@GetMapping("/mem/memArea")
-	public String memArea() {
-		return "/front_end/customer/logined/memArea";
-//		return "/front_end/customer/logined/memHeaderFooter";
-	}
+	
+
+
 	
 //	登入後才能看的 測試用
 	@GetMapping("/fmem/fmemArea")
@@ -50,11 +42,6 @@ public class IndexController {
 		return "/front_end/farmer/logined/fmemArea";
 	}
 	
-//	登入後才能看的 
-	@GetMapping("/mem/home")
-	public String memHome() {
-		return "/front_end/customer/logined/home";
-	}
 	
 //	登入後才能看的 
 	@GetMapping("/fmem/home")

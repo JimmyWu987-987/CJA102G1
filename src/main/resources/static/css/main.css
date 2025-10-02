@@ -186,7 +186,7 @@ body{
     border: 3px solid var(--btn-hover-color);
     background-color: #fff;
 }
-.member .userInfo{
+.member .helloUser{
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
