@@ -1,0 +1,33 @@
+關於Conroller的路徑說明
+
+因攔截器是依照有無登入的Conroller的路徑去做攔截。
+ex:RequestMapping("/admin"),GetMapping("listAllEmp")
+
+所以請大家依照以下指定名稱做路徑的開頭，做各功能的實作。
+功能的名稱由該負責人自行定義即可。
+
+====================
+1.有登入的路徑
+
+a.管理員後台: /admin
+ex: 
+金流管理: /admin/cashflow
+
+b.一般會員前台: /mem
+ex:
+查詢訂單: /mem/proorders
+
+c.小農會員前台: /fmem
+ex:
+小農會員登入: /fmem/login
+
+====================
+2.不需登入的路徑
+
+起頭為「/」
+ex:
+首頁: /
+商品瀏覽頁面: /product
+活動瀏覽頁面: /act
+
+不需要登入的網頁，統一設定在IndexComtroller.java
