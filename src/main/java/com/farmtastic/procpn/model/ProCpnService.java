@@ -3,6 +3,7 @@ package com.farmtastic.procpn.model;
 import java.util.List;
 
 import com.farmtastic.common.enums.IsActive;
+import com.farmtastic.procpn.dto.ProCpnResponseDTO;
 
 //多個Service切換實作不改 Controller
 public interface ProCpnService {
@@ -12,10 +13,12 @@ public interface ProCpnService {
 
 	ProCpnVO getOneProCpn(Integer id);
 
-	List<ProCpnVO> getAll();
+//	List<ProCpnVO> getAll();
 
 	List<ProCpnVO> getActiveCoupons();// 查詢卷
 
 	void changeCouponStatus(Integer proCpnId, IsActive status);
 	// 改變卷狀態
+
+	List<ProCpnResponseDTO> findAllProCpn();
 }

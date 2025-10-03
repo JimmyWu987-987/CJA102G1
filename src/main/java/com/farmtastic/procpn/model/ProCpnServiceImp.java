@@ -1,5 +1,6 @@
 package com.farmtastic.procpn.model;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.farmtastic.common.enums.IsActive;
+import com.farmtastic.procpn.dto.ProCpnResponseDTO;
 
-//未完成
 @Service("proCpnService")
 public class ProCpnServiceImp implements ProCpnService {
 	@Autowired
@@ -31,8 +32,35 @@ public class ProCpnServiceImp implements ProCpnService {
 	}
 
 	@Override
-	public List<ProCpnVO> getAll() {
-		return repository.findAll();
+	public List<ProCpnResponseDTO> findAllProCpn() {
+		return repository.findAll().stream().map(vo -> {
+			ProCpnResponseDTO dto = new ProCpnResponseDTO();
+			// 帶上券 ID（前端操作需要）
+			dto.setProCpnId(vo.getProCpnId());
+			dto.setCpnName(vo.getCpnName());
+
+			// 格式化折扣資訊
+			if (vo.getDiscType() != null && vo.getDiscValue() != null) {
+				switch (vo.getDiscType()) {
+				case PERCENTAGE -> dto.setDiscountInfo(vo.getDiscValue() + "折");
+				case FULL_REDUCTION -> dto.setDiscountInfo("滿" + vo.getMinSpend() + "折" + vo.getDiscValue());
+				default -> dto.setDiscountInfo("未設定");
+				}
+			}
+
+			// 防呆處理 validDays
+			if (vo.getValidDays() != null) {
+				dto.setExpDate(LocalDate.now().plusDays(vo.getValidDays()));
+			} else {
+				dto.setExpDate(null); // 或 LocalDate.now() 給預設值
+			}
+
+			// 狀態轉換
+			dto.setStatus(vo.getIsActive() != null ? vo.getIsActive().name() : "UNKNOWN");
+
+			return dto;
+		}).toList();
+
 	}
 
 	// 查啟用券

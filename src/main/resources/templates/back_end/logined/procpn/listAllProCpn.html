@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>商品折價券清單</title>
- <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
 <div class="container mt-4">
@@ -15,10 +15,8 @@
             <th>編號</th>
             <th>名稱</th>
             <th>折扣類型</th>
-            <th>折扣值</th>
+            <th>折扣資訊</th>
             <th>狀態</th>
-            <th>請把我刪掉</th>
-            <th>請把我刪掉2</th>
         </tr>
         </thead>
         <tbody>
@@ -26,8 +24,9 @@
             <td th:text="${c.proCpnId}"></td>
             <td th:text="${c.cpnName}"></td>
             <td th:text="${c.discType}"></td>
-            <td th:text="${c.discValue}"></td>
-            <td th:text="${c.isActive}"></td>
+            <td th:text="${c.discountInfo}"></td>
+            <td th:text="${c.status}"></td>
+        </tr>
         </tbody>
     </table>
 </div>
