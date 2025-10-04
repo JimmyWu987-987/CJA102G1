@@ -60,12 +60,13 @@
 		
 		<div>
 		<label>會員持有點數</label>
-		<input type="text" th:value="${session.loggedInMember.memPoint}" readonly/><br>
+		<span th:text="${session.loggedInMember.memPoint}"></span><br>
 		</div>
 		
 		<div>
 		<label>商品訂單折抵會員點數</label>
-		<input type="number" th:field="*{proOrdPointdisc}" value="" min="0" th:max="${session.loggedInMember.memPoint}"/><br>
+		<input type="number" th:field="*{proOrdPointdisc}" value="0" min="0" th:max="${session.loggedInMember.memPoint}"/><br>
+		<!-- 這邊前端JS要寫一個輸入方法方法，當這邊有輸入值的時候，訂單的總金額也要改變-->
 		</div>
 		
 		<div>
@@ -111,10 +112,22 @@
 		<input type="text" th:field="*{proOrdName}"/><br>
 		</div>
 		
-		收件人姓名
-		收件人電話
-		收件人電子郵件
-		收件人地址
+		<div>
+		<label>收件人電話</label>
+		<input type="text" th:field="*{proOrdMobile}"/><br>
+		</div>
+		
+		<div>
+		<label>收件人電子郵件</label>
+		<input type="email" th:field="*{proOrdEmail}"/><br>
+		</div>
+		
+		<div>
+		<label>收件人地址</label>
+		<input type="text" th:field="*{proOrdAddr}"/><br>
+		</div>
+		
+		<div><button type="submit" id="submit"> 送出新增 </button></div>
 		
 	</form>
 <script>

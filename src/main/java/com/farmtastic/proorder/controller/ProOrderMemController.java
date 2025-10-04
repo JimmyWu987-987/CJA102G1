@@ -137,7 +137,7 @@ public class ProOrderMemController {
 			Fmem fmem = new Fmem();
 			// 查詢小農的運費
 			// 這邊要寫一個fmem的service的方法
-			// 1.等同學寫好商品的單一查詢。
+			// 1.等同學寫好小農的單一查詢。
 			// 2.再從小農編號查詢該運費
 			
 			
@@ -145,8 +145,8 @@ public class ProOrderMemController {
 			// 判斷運費欄位是否為null
 			if (prodFee == null) {
 				prodFee = 0; // 如果小農沒設定運費，則預設為0
-				fmem.setProdFee(prodFee); // 手動數入，未來要刪掉
 			}
+			fmem.setProdFee(prodFee);
 
 			// 折價券折抵金額
 			// 用memId查詢 同學寫好持有者明細
@@ -165,8 +165,8 @@ public class ProOrderMemController {
 			Integer proOrdPointdisc = proOrderVO.getProOrdPointdisc();
 			if(proOrdPointdisc == null) {
 				proOrdPointdisc = 0;
-				proOrderVO.setProOrdPointdisc(proOrdPointdisc);
 			}
+			proOrderVO.setProOrdPointdisc(proOrdPointdisc);
 			// 修改該會員點數
 			// 這邊要寫一個修改mem的service
 			memPoint = memPoint - proOrdPointdisc;
@@ -193,10 +193,21 @@ public class ProOrderMemController {
 
 			// 收件人姓名
 			proOrderVO.setProOrdName(loggedInMember.getMemName());
+			
 			// 收件人電話
+			proOrderVO.setProOrdMobile(loggedInMember.getMemMobile());
+			
 			// 收件人電子郵件
+			proOrderVO.setProOrdEmail(loggedInMember.getMemEmail());
+			
 			// 收件人地址
-
+			String proOrdAddr = loggedInMember.getMemZipcode();
+			proOrdAddr += loggedInMember.getMemCity();
+			proOrdAddr += loggedInMember.getMemDist();
+			proOrdAddr += loggedInMember.getMemAddr();
+			proOrderVO.setProOrdAddr(proOrdAddr);
+			
+			
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("memVO", memVO);
 			model.addAttribute("fmemVO", fmem);
@@ -222,8 +233,10 @@ public class ProOrderMemController {
 		// 驗證成功後，新增資料
 		proOrdSvc.addProOrder(proOrderVO);
 		proOrderItemSvc.addProOrderItem(proOrderItemVO);
-
+		// 因為要計算會員持有點數，還要寫一個修改Mem的service方法
+		
 		// 將資料交給資料庫
+		
 
 		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}
