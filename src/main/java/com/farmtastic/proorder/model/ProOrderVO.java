@@ -5,10 +5,25 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 
 @Entity
 @Table(name = "pro_order")
@@ -25,12 +40,13 @@ public class ProOrderVO implements Serializable {
 	@JoinColumn(name = "mem_id")
 	private Mem memVO;
 
-//	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
-//	@JoinColumn(name = "cpn_holder_detail_id")
-//	private ProCpnVO proCpnVO;
-	@Column(name = "cpn_holder_detail_id")
-	private Integer cpnHolderDetailId;
-
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	@JoinColumn(name = "cpn_holder_detail_id")
+	private MemProCpnVO memProCpnVO;
+//	@Column(name = "cpn_holder_detail_id")
+//	private Integer cpnHolderDetailId;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_date")
 	private Timestamp proOrdDate;
 
@@ -69,10 +85,24 @@ public class ProOrderVO implements Serializable {
 
 	@Column(name = "pro_tracking_no")
 	private String proTrackingNo;
-
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_shipdate")
 	private Timestamp proOrdShipdate;
+	
+	@Column(name = "PRO_ORD_NAME")
+	private String proOrdName;
+	
+	@Column(name = "PRO_ORD_MOBILE")
+	private String proOrdMobile;
+	
+	@Column(name = "PRO_ORD_EMAIL")
+	private String proOrdEmail;
+	
+	@Column(name = "PRO_ORD_ADDR")
+	private String proOrdAddr;
 
+	@Valid
 	@OneToMany(mappedBy="proOrderVO", // 指向 ProOrderItemVO 要關聯的屬性
 			   cascade=CascadeType.ALL, // 訂單刪除，明細也刪除
 			   orphanRemoval = true)
@@ -83,14 +113,15 @@ public class ProOrderVO implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProOrderVO(Integer proOrdId, Mem memVO, Integer cpnHolderDetailId, Timestamp proOrdDate, byte proOrdStatus,
+	public ProOrderVO(Integer proOrdId, Mem memVO, MemProCpnVO memProCpnVO, Timestamp proOrdDate, byte proOrdStatus,
 			byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
 			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, byte proOrdPayment,
-			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, Set<ProOrderItemVO> proOrderItems) {
+			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, String proOrdName, String proOrdMobile,
+			String proOrdEmail, String proOrdAddr, @Valid Set<ProOrderItemVO> proOrderItems) {
 		super();
 		this.proOrdId = proOrdId;
 		this.memVO = memVO;
-		this.cpnHolderDetailId = cpnHolderDetailId;
+		this.memProCpnVO = memProCpnVO;
 		this.proOrdDate = proOrdDate;
 		this.proOrdStatus = proOrdStatus;
 		this.proPayStatus = proPayStatus;
@@ -105,6 +136,10 @@ public class ProOrderVO implements Serializable {
 		this.proOrdShipment = proOrdShipment;
 		this.proTrackingNo = proTrackingNo;
 		this.proOrdShipdate = proOrdShipdate;
+		this.proOrdName = proOrdName;
+		this.proOrdMobile = proOrdMobile;
+		this.proOrdEmail = proOrdEmail;
+		this.proOrdAddr = proOrdAddr;
 		this.proOrderItems = proOrderItems;
 	}
 
@@ -124,12 +159,12 @@ public class ProOrderVO implements Serializable {
 		this.memVO = memVO;
 	}
 
-	public Integer getCpnHolderDetailId() {
-		return cpnHolderDetailId;
+	public MemProCpnVO getMemProCpnVO() {
+		return memProCpnVO;
 	}
 
-	public void setCpnHolderDetailId(Integer cpnHolderDetailId) {
-		this.cpnHolderDetailId = cpnHolderDetailId;
+	public void setMemProCpnVO(MemProCpnVO memProCpnVO) {
+		this.memProCpnVO = memProCpnVO;
 	}
 
 	public Timestamp getProOrdDate() {
@@ -244,6 +279,38 @@ public class ProOrderVO implements Serializable {
 		this.proOrdShipdate = proOrdShipdate;
 	}
 
+	public String getProOrdName() {
+		return proOrdName;
+	}
+
+	public void setProOrdName(String proOrdName) {
+		this.proOrdName = proOrdName;
+	}
+
+	public String getProOrdMobile() {
+		return proOrdMobile;
+	}
+
+	public void setProOrdMobile(String proOrdMobile) {
+		this.proOrdMobile = proOrdMobile;
+	}
+
+	public String getProOrdEmail() {
+		return proOrdEmail;
+	}
+
+	public void setProOrdEmail(String proOrdEmail) {
+		this.proOrdEmail = proOrdEmail;
+	}
+
+	public String getProOrdAddr() {
+		return proOrdAddr;
+	}
+
+	public void setProOrdAddr(String proOrdAddr) {
+		this.proOrdAddr = proOrdAddr;
+	}
+
 	public Set<ProOrderItemVO> getProOrderItems() {
 		return proOrderItems;
 	}
@@ -252,10 +319,5 @@ public class ProOrderVO implements Serializable {
 		this.proOrderItems = proOrderItems;
 	}
 
-	
-
-	
-	
-	
 
 }

@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 
 @Entity
@@ -36,9 +38,13 @@ public class ProOrderItemVO {
 //	@Column(name="pro_ord_id")
 //	private Integer proOrdId; //PK.FK
 	
+	@NotNull(message = "商品單價不能為空")
+    @Min(value = 1, message = "商品單價必須大於 0")
 	@Column(name="pro_unitprice")
 	private Integer proUnitPrice;
 	
+	@NotNull(message = "商品數量不能為空")
+    @Min(value = 1, message = "商品數量必須大於 1")
 	@Column(name="pro_amount")
 	private Integer proAmount;
 	
@@ -51,7 +57,7 @@ public class ProOrderItemVO {
 		// TODO Auto-generated constructor stub
 	}
 
-
+	
 	public ProOrderItemId getId() {
 		return id;
 	}

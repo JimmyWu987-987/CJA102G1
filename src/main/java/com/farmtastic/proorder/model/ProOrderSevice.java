@@ -38,7 +38,7 @@ public class ProOrderSevice {
 			return repository.findAll();
 		}
 		
-		// 訂單單一查詢
+		// 訂單編號的單一查詢
 		public ProOrderVO getOneProOrder(Integer proOrdId) {
 			Optional<ProOrderVO> optional = repository.findById(proOrdId);
 			return optional.orElse(null);

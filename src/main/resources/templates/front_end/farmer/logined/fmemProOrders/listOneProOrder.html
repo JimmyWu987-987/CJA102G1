@@ -8,7 +8,7 @@
 	
     span {
 		display: inline-block;
-		width: 150px;
+		width: 200px;
 		text-align: left;
 		font-weight: bold;
 	}
@@ -23,12 +23,19 @@
         <p>目前沒有任何訂單資料。</p>
     </div>
     
-    <div th:unless="${#lists.isEmpty(proOrderVO)}">
+    <div th:unless="${#lists.isEmpty(proOrderVO)}">	
 		<h2>訂單明細</h2>
 				
 		<span>訂單編號:</span><span th:text="${proOrderVO.proOrdId}"></span><br>
 		<span>一般會員編號:</span><span th:text="${proOrderVO.memVO.memId}"></span><br>
-		<span>商品折價卷持有者流水號:</span><span th:text="${proOrderVO.cpnHolderDetailId}"></span><br>
+
+		<div th:if="${proOrderVO.memProCpnVO}">
+			<span>商品折價卷持有者流水號:</span>
+			<span th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span><br>
+		</div>
+		<div th:unless="${proOrderVO.memProCpnVO}">
+			<span>商品折價卷持有者流水號:</span><span>無/未使用</span><br>
+		</div>
 		<span>訂單日期:</span><span th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}"></span><br>
 		<span>訂單狀態:</span><span th:switch="${proOrderVO.proOrdStatus}">
                     		<span th:case="0">成立訂單</span>
@@ -39,9 +46,17 @@
                     		<span th:case="5">退貨中</span>
                     		<span th:case="6">已退貨</span>
                     		<span th:case="*">XXX</span></span><br>
-		<span>付款狀態:</span><span th:text="${proOrderVO.proPayStatus}"></span>
+		<span>付款狀態:</span><span th:switch="${proOrderVO.proPayStatus}">
+		                    <span th:case="0">未付款</span>
+                            <span th:case="1">已付款</span>
+                            <span th:case="*">N/A</span></span><br>
+        <span>收件人姓名:</span><span th:text="${proOrderVO.proOrdName}"></span><br>
+        <span>收件人電話:</span><span th:text="${proOrderVO.proOrdMobile}"></span><br>
+        <span>收件人地址:</span><span th:text="${proOrderVO.proOrdAddr}"></span><br>
+        <span>收件人電子信箱:</span><span th:text="${proOrderVO.proOrdEmail}"></span>
+                            
 		<br>==========================</br>
-		<table border="1">
+				<table border="1">
 			<thead>
                 <tr>
                     <th>商品編號</th>
@@ -84,7 +99,7 @@
                     
 
       
-                    	<form method="Get" th:action="@{/admin/cashflow/listAllProOrder}">
+                    	<form method="get" th:action="@{/fmem/proorders/listAllProOrder}">
                     		<input type="submit" value="回上一頁">
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
                     	</form>
