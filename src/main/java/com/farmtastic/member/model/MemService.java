@@ -1,10 +1,13 @@
 package com.farmtastic.member.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.farmtastic.fmember.model.Fmem;
 
 @Service("memService")
 public class MemService {
@@ -65,6 +68,11 @@ public class MemService {
 //	public List<Mem> getMems(Byte accStatus){
 //		return dao.getMemsByAccStatus(accStatus);
 //	}
+	
+	public Optional<Mem> getOneByMemId(Integer memId) {
+		return repository.findById(memId);
+	}
+	
 	
 	public List<Mem> getAll(){
 		return repository.findAll();

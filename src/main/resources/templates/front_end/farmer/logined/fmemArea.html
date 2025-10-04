@@ -1,18 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<style>
-	*{
-		font-size: 30px;
-	}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小農會員中心</title>
+    <link rel="icon" href="./images/logo.png">
+    
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+    
+    <style>
+		.container-header,
+		.container-footer{
+			background-color: #dce2ef;	
+		}
+		.nav > li > a{
+			background-color: #4F9D9D;
+		}
+	</style>
+
 </head>
 <body>
-<div>fmemArea.html</div>
-<div>測試用-小農會員專區</div>
-<div>登入成功</div>
+
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+
+<div class="container container-member">
+    <div class="member-sidebar">
+        <h3>會員專區</h3>
+<!--         = home.html的會員中心架構 -->
+        <ul th:replace="~{/front_end/farmer/logined/home :: fmemAreaLink}"></ul>
+    </div>
+
+    <div class="member-content">
+        <h2>標題title</h2>
+<!--         <input type="text" th:value="${session.fmemTest.fmemName}" class="acc" disabled>  -->
+        <p>內容寫這裡</p>
+        <p>內容寫這裡</p>
+        <p>內容寫這裡</p>
+        <p>內容寫這裡</p>
+    </div>
+</div>
+
+<div th:replace="~{/front_end/index :: footer}"></div>
 
 </body>
 </html>

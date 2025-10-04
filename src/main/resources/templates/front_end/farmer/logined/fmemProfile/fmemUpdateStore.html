@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>小農-修改商店資料</title>
+
+	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+
+	<link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+    <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateProfile.css}">
+    <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateStore.css}">
+
+<style>
+	
+	.container-header,
+	.container-footer{
+		background-color: #dce2ef;	
+	}
+	.nav > li > a{
+		background-color: #4F9D9D;
+	}
+	
+	.container-content{
+		font-size:80px;
+	}
+
+
+</style>
+
+
+</head>
+<body th:data-success="${success}">
+
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+
+	<div class="container container-member">
+	    <div class="member-sidebar">
+	        <h3>會員專區</h3>
+	<!--         = home.html的會員中心架構 -->
+	        <ul th:replace="~{/front_end/farmer/logined/home :: fmemAreaLink}"></ul>
+	    </div>
+	
+	    <div class="member-content center">
+	        <form method="post" 
+	        	  th:action="@{/fmem/fmemArea/updateStore}" 
+	        	  th:object="${updateStoreFmem}" 
+	        	  class="userInfo" 
+	        	  enctype="multipart/form-data">
+	            <h3>修改小農商店資料</h3>
+	            <ul>
+	                <li>
+	                    <label for="">小農商店名稱</label>
+	                    <input type="text" th:field="*{storeName}">
+<!-- 	                    <span th:if="${#fields.hasErrors('storeName')}" th:errors="*{storeName}" class="error"></span> -->
+	                </li>
+	                <li>
+	                    <label for="">小農商店介紹</label>
+	                    <textarea type="text" th:field="*{storeIntro}"></textarea>
+<!-- 	                    <span th:if="${#fields.hasErrors('storeIntro')}" th:errors="*{storeIntro}" class="error"></span> -->
+	                </li>
+	                <li>
+	                    <label for="">小農商店樣式選擇</label>
+	                    <select th:field="*{styNo}">
+	                    	<option value="1">樣式一</option>
+					        <option value="2">樣式二</option>
+					        <option value="3">樣式三</option>
+	                    </select>
+	                </li>
+	                
+	                <li class="list-pic first-pic">
+               			<label>小農商店主圖(點選下框以新增或更換圖片)</label>
+                   		<div class="picBox">
+                   			<img th:if="${storePicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${storePicBase64}}"
+                   				 alt="小農頭像">
+					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+                   			<input type="file" name="storePic" class="storePic pic" accept="image/*">
+					    </div>
+	                </li>
+	               
+<!-- 	                <li class="list-fee"> -->
+<!-- 	                    <label>運費：</label> -->
+<!-- 	                    <span th:text = "${loggedInFmember.mktScore != null ? loggedInFmember.mktScore : '尚無評分'}"></span> -->
+<!-- 	                </li> -->
+	                
+	                <li class="list-score">
+	                    <label>商品總評分：</label>
+	                    <span th:text = "${loggedInFmember.mktScore != null ? loggedInFmember.mktScore : '尚無評分'}"></span>
+	                </li>
+	                <li class="list-score">
+	                    <label>商品總評論數：</label>                      
+	                    <span th:text = "${loggedInFmember.mktCnt != null ? loggedInFmember.mktCnt : '尚無評論'}"></span>
+	                </li>
+	                <li class="list-score">
+	                    <label>活動總評分：</label>
+	                    <span th:text = "${loggedInFmember.actScore != null ? loggedInFmember.actScore : '尚無評分'}"></span>
+	                </li>
+	                <li class="list-score">
+	                    <label>活動總評論數：</label>
+	                    <span th:text = "${loggedInFmember.actCnt != null ? loggedInFmember.actCnt : '尚無評論'}"></span>
+	                </li>
+	                <li class="list-score">
+	                    <label>商品(含活動)被檢舉次數：</label>
+	                    <span th:text = "${loggedInFmember.rptCnt != null ? loggedInFmember.rptCnt : '尚無被檢舉紀錄，是優質小農！'}"></span>
+	                </li>
+	                
+	            	<input type="submit" value="儲存" class="btn link" id="btn-submitReg">
+	            </ul>
+	        </form>
+	    </div>
+	</div>
+	<div th:replace="~{/front_end/index :: footer}"></div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script th:src="@{/js/fmem/uploadPic.js}"></script>
+	<script th:src="@{/js/mem/successUpdateProfileAlert.js}"></script>
+	
+</body>
+</html>
