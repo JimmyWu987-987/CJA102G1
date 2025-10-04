@@ -12,15 +12,54 @@
 	<h1>結帳頁面</h1>
 	<form method="post" action="@{insert}" th:object="${proOrderVO}">
 		
-		一般會員編號
+		<div>
+		<label>一般會員編號</label>
 		<input type="text" th:field="*{memVO.memId}" readonly/><br>
+		</div>
 		
-		商品折價卷持有者流水號
-		訂單日期
-		訂單狀態
-		付款狀態
-		商品總金額
-		運費
+		<div>
+		<label>一般商品折價卷持有者流水號編號</label>
+		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
+		<!-- 讀取商品折價卷持有者明細，要做下拉式選單 -->
+		</div>
+		
+<!-- 		<div> sql預設為0 (0:成立訂單)
+		<label>訂單狀態</label>
+		<input type="text" th:field="*{proOrdStatus}" readonly/><br>
+		</div> -->
+		
+<!-- 		<div> sql預設為0 (0:未付款)
+		<label>付款狀態</label>
+		<input type="text" th:field="*{proPayStatus}" readonly/><br>
+		</div> -->
+		<div>
+		=================商品訂單明細的範圍==================
+		</div><br>
+		
+		
+		
+		<div>
+		<label>商品總金額</label>
+		<input type="text" th:field="*{proTotal}" readonly/><br>
+		</div>
+		
+		<div>
+		<label>商品運費</label>
+		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
+		</div>
+		
+		<div>
+		<label>折價券折抵金額</label>
+		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
+		</div>
+		
+		<div>
+		<label>商品總運費</label>
+		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
+		</div>
+		
+		
+		
 		折價券折抵金額
 		商品訂單折抵會員點數
 		訂單回饋會員點數

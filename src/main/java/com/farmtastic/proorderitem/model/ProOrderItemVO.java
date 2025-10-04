@@ -57,7 +57,7 @@ public class ProOrderItemVO {
 		// TODO Auto-generated constructor stub
 	}
 
-
+	
 	public ProOrderItemId getId() {
 		return id;
 	}

@@ -5,7 +5,10 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
 import jakarta.persistence.CascadeType;
@@ -18,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 
@@ -36,12 +40,13 @@ public class ProOrderVO implements Serializable {
 	@JoinColumn(name = "mem_id")
 	private Mem memVO;
 
-//	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
-//	@JoinColumn(name = "cpn_holder_detail_id")
-//	private ProCpnVO proCpnVO;
-	@Column(name = "cpn_holder_detail_id")
-	private Integer cpnHolderDetailId;
-
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	@JoinColumn(name = "cpn_holder_detail_id")
+	private MemProCpnVO memProCpnVO;
+//	@Column(name = "cpn_holder_detail_id")
+//	private Integer cpnHolderDetailId;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_date")
 	private Timestamp proOrdDate;
 
@@ -80,7 +85,8 @@ public class ProOrderVO implements Serializable {
 
 	@Column(name = "pro_tracking_no")
 	private String proTrackingNo;
-
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_shipdate")
 	private Timestamp proOrdShipdate;
 	
@@ -107,15 +113,15 @@ public class ProOrderVO implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProOrderVO(Integer proOrdId, Mem memVO, Integer cpnHolderDetailId, Timestamp proOrdDate, byte proOrdStatus,
+	public ProOrderVO(Integer proOrdId, Mem memVO, MemProCpnVO memProCpnVO, Timestamp proOrdDate, byte proOrdStatus,
 			byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
 			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, byte proOrdPayment,
 			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, String proOrdName, String proOrdMobile,
-			String proOrdEmail, String proOrdAddr, Set<ProOrderItemVO> proOrderItems) {
+			String proOrdEmail, String proOrdAddr, @Valid Set<ProOrderItemVO> proOrderItems) {
 		super();
 		this.proOrdId = proOrdId;
 		this.memVO = memVO;
-		this.cpnHolderDetailId = cpnHolderDetailId;
+		this.memProCpnVO = memProCpnVO;
 		this.proOrdDate = proOrdDate;
 		this.proOrdStatus = proOrdStatus;
 		this.proPayStatus = proPayStatus;
@@ -153,12 +159,12 @@ public class ProOrderVO implements Serializable {
 		this.memVO = memVO;
 	}
 
-	public Integer getCpnHolderDetailId() {
-		return cpnHolderDetailId;
+	public MemProCpnVO getMemProCpnVO() {
+		return memProCpnVO;
 	}
 
-	public void setCpnHolderDetailId(Integer cpnHolderDetailId) {
-		this.cpnHolderDetailId = cpnHolderDetailId;
+	public void setMemProCpnVO(MemProCpnVO memProCpnVO) {
+		this.memProCpnVO = memProCpnVO;
 	}
 
 	public Timestamp getProOrdDate() {
@@ -313,16 +319,5 @@ public class ProOrderVO implements Serializable {
 		this.proOrderItems = proOrderItems;
 	}
 
-	@Override
-	public String toString() {
-		return "ProOrderVO [proOrdId=" + proOrdId + ", memVO=" + memVO + ", cpnHolderDetailId=" + cpnHolderDetailId
-				+ ", proOrdDate=" + proOrdDate + ", proOrdStatus=" + proOrdStatus + ", proPayStatus=" + proPayStatus
-				+ ", proTotal=" + proTotal + ", proOrdShipFee=" + proOrdShipFee + ", proOrdCpndisc=" + proOrdCpndisc
-				+ ", proOrdPointdisc=" + proOrdPointdisc + ", proOrdPointGet=" + proOrdPointGet + ", proOrdGrandTotal="
-				+ proOrdGrandTotal + ", proOrdComm=" + proOrdComm + ", proOrdPayment=" + proOrdPayment
-				+ ", proOrdShipment=" + proOrdShipment + ", proTrackingNo=" + proTrackingNo + ", proOrdShipdate="
-				+ proOrdShipdate + ", proOrdName=" + proOrdName + ", proOrdMobile=" + proOrdMobile + ", proOrdEmail="
-				+ proOrdEmail + ", proOrdAddr=" + proOrdAddr + ", proOrderItems=" + proOrderItems + "]";
-	}
 
 }
