@@ -23,7 +23,12 @@
 		<!-- 讀取商品折價卷持有者明細，要做下拉式選單 -->
 		</div>
 		
-<!-- 		<div> sql預設為0 (0:成立訂單)
+		<div>
+		<label>訂單日期</label>
+		<input type="text" th:field="*{proOrdDate}" readonly/><br>
+		</div>
+		
+<!-- 	<div> sql預設為0 (0:成立訂單)
 		<label>訂單狀態</label>
 		<input type="text" th:field="*{proOrdStatus}" readonly/><br>
 		</div> -->
@@ -54,26 +59,125 @@
 		</div>
 		
 		<div>
-		<label>商品總運費</label>
-		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
+		<label>會員持有點數</label>
+		<input type="text" th:value="${session.loggedInMember.memPoint}" readonly/><br>
 		</div>
 		
+		<div>
+		<label>商品訂單折抵會員點數</label>
+		<input type="number" th:field="*{proOrdPointdisc}" value="" min="0" th:max="${session.loggedInMember.memPoint}"/><br>
+		</div>
 		
+		<div>
+		<label>實付金額</label>
+		<input type="text" th:field="*{proOrdGrandTotal}" readonly/><br>
+		</div>
 		
-		折價券折抵金額
-		商品訂單折抵會員點數
-		訂單回饋會員點數
-		實付金額
-		訂單備註
-		付款方式
-		物流方式
-		物流追蹤碼
-		出貨日期
+		<div>
+		<label>訂單回饋會員點數</label>
+		<input type="text" th:field="*{proOrdPointGet}" readonly/><br>
+		</div>
+		
+		<div>
+		<label>訂單備註</label>
+		<input type="text" th:field="*{proOrdComm}" readonly/><br>
+		</div>
+		
+		<div id="paymentMethods">
+    		<label>付款方式</label>
+    		<input type="radio" id="paymentCredit" th:field="*{proOrdPayment}" th:value="0"/>信用卡
+    		<input type="radio" id="paymentTransfer" th:field="*{proOrdPayment}" th:value="1"/>轉帳
+    		<input type="radio" id="paymentCOD" th:field="*{proOrdPayment}" th:value="2"/>貨到付款
+    		<input type="radio" id="paymentCSPP" th:field="*{proOrdPayment}" th:value="3"/>超商取貨付款<br>
+		</div>
+
+		<div id="shipmentMethods">
+   		<label>物流方式</label>
+    
+    		<span id="shipmentHomeDelivery">
+        		<input type="radio" id="inputShipmentHome" th:field="*{proOrdShipment}" th:value="0"/>
+        		<label for="inputShipmentHome">宅配</label>
+    		</span>
+
+    		<span id="shipmentCVS">
+        		<input type="radio" id="inputShipmentCVS" th:field="*{proOrdShipment}" th:value="1"/>
+        		<label for="inputShipmentCVS">超商取貨</label>
+    		</span>
+    		<br>
+		</div>
+		<label>*預設為會員資料</label>
+		<div>
+		<label>收件人姓名</label>
+		<input type="text" th:field="*{proOrdName}"/><br>
+		</div>
+		
 		收件人姓名
 		收件人電話
 		收件人電子郵件
 		收件人地址
 		
 	</form>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 取得所有付款方式的 Radio Button (共用相同的 name: proOrdPayment)
+    const paymentRadios = document.querySelectorAll('input[name="proOrdPayment"]');
+    
+    // 取得物流方式的容器元素
+    const shipmentHomeDelivery = document.getElementById('shipmentHomeDelivery'); // 宅配
+    const shipmentCVS = document.getElementById('shipmentCVS'); // 超商取貨
+
+    // 定義顯示/隱藏的函式
+    function updateShipmentOptions(selectedValue) {
+        // 先隱藏所有選項
+        shipmentHomeDelivery.style.display = 'none';
+        shipmentCVS.style.display = 'none';
+
+        // 確保所有物流 Radio Button 都不被選中 (避免提交錯誤的值)
+        document.getElementById('inputShipmentHome').checked = false;
+        document.getElementById('inputShipmentCVS').checked = false;
+
+
+        // 根據選擇的值決定顯示哪個選項
+        switch (selectedValue) {
+            case '2': // 選擇「2: 貨到付款」
+                // 需求：只顯示「宅配」
+                shipmentHomeDelivery.style.display = 'inline-block';
+                // 超商取貨 (shipmentCVS) 保持隱藏 (因為在函式開頭已經隱藏了)
+                // 自動選中「宅配」
+                document.getElementById('inputShipmentHome').checked = true;
+                break;
+            case '3': // 選擇「3: 超商取貨付款」
+                // 需求：只顯示「超商取貨」
+                shipmentCVS.style.display = 'inline-block';
+                // 自動選中「超商取貨」
+                document.getElementById('inputShipmentCVS').checked = true;
+                break;
+            default: // 選擇其他付款方式 (0:信用卡, 1:轉帳)
+                // 需求：兩個物流選項都顯示
+                shipmentHomeDelivery.style.display = 'inline-block';
+                shipmentCVS.style.display = 'inline-block';
+                document.getElementById('inputShipmentHome').checked = true;
+                break;
+        }
+    }
+
+    // 監聽所有付款 Radio Button 的變化
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            updateShipmentOptions(this.value);
+        });
+    });
+
+    // 頁面載入時執行一次，確保初始狀態正確
+    let initialSelected = document.querySelector('input[name="proOrdPayment"]:checked');
+    if (initialSelected) {
+        updateShipmentOptions(initialSelected.value);
+    } else {
+        // 如果一開始沒有選取任何付款方式，預設顯示所有物流選項
+        shipmentHomeDelivery.style.display = 'inline-block';
+        shipmentCVS.style.display = 'inline-block';
+    }
+});
+</script>
 </body>
 </html>
