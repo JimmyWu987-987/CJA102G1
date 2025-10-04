@@ -51,6 +51,7 @@ public class MemService {
 	}
 	
 	public void updateMem(Mem mem) {
+		System.out.println("memId: " + mem.getMemId());
 		repository.save(mem);
 	}
 	

@@ -3,28 +3,38 @@ package com.farmtastic.member.controller;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.member.model.LoginRequest;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
+import com.farmtastic.member.model.UpdatePasswordMem;
+import com.farmtastic.member.model.UpdateProfileMem;
+import com.farmtastic.validator.RegistrationValidation;
+import com.farmtastic.validator.UpdatePasswordValidation;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/mem")
+@SessionAttributes("loggedInMember")  //只要有model.addAttribute("mem", mem) => 會自動把mem放進session裡
+
 public class MemController{
 	
 	@Autowired
@@ -53,11 +63,143 @@ public class MemController{
 		return "front_end/customer/unlogined/memRegLogin";
 	}
 	
+	@GetMapping("/toMemArea")
+	public String toMemArea(HttpSession session){
+		Mem mem = (Mem) session.getAttribute("loggedInMember");
+		if(mem != null) {
+			return "redirect:/mem/memArea";
+		} else {
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+	}
+	
+	
+//	登入後才能看的: 會員專區
+	@GetMapping("/memArea")
+	public String memArea() {
+		return "/front_end/customer/logined/memArea";
+	}
+
+	
+
+	
+	@GetMapping("/toUpdateProfile")
+	public String toUpdateProfile(HttpSession session){
+		Mem mem = (Mem) session.getAttribute("loggedInMember");
+		if(mem != null) {
+			return "redirect:/mem/memArea/updateProfilePage";
+		} else {
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+	}
+	
+	
+//	怎麼分辨是「表單送來的」還是「Session 裡的」？
+//	Spring 的處理順序大致是這樣：
+//	1. 如果是 @PostMapping，且有 th:object="loggedInMember"，那麼 Spring 會用 表單資料來綁定 loggedInMember
+//	2. 如果你沒有送這個物件（或是 GET 請求），那麼 Spring 就會從 @SessionAttributes 管理的 session model 中取出 loggedInMember 填給你
+//	登入後才能看的: 會員專區/修改個人資料頁面
+	@GetMapping("/memArea/updateProfilePage")
+	public String updateProfilePage(
+//			HttpSession session,
+			@ModelAttribute("loggedInMember") Mem loggedInMember,
+			ModelMap model) {
+		
+//		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+//		if (loggedInMember == null) {
+//			return "redirect:/mem/showMemRegLoginForm";
+//		}
+		
+		UpdateProfileMem updateProfileMem = new UpdateProfileMem();
+		BeanUtils.copyProperties(loggedInMember, updateProfileMem);
+		model.addAttribute("updateProfileMem", updateProfileMem);
+		return "/front_end/customer/logined/memProfile/memUpdateProfile";
+	}
+	
+//	修改個人資料 => 存進DB
+	@PostMapping("/memArea/updateProfile")
+	public String updateProfile(
+			@Valid @ModelAttribute("updateProfileMem") UpdateProfileMem updateProfileMem,
+			BindingResult result, //一定要放在@Valid @ModelAttribute後面，不然如果有錯誤不會進controller
+			ModelMap model,
+			HttpSession session,
+			RedirectAttributes redirectAttrs) {
+		
+		if (result.hasErrors()) {
+			return "/front_end/customer/logined/memProfile/memUpdateProfile";
+		}
+		
+		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+		if (loggedInMember == null) {
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+
+		BeanUtils.copyProperties(updateProfileMem, loggedInMember);
+		memSvc.updateMem(loggedInMember);
+		System.out.println("loggedInMember="+loggedInMember);
+//		model.addAttribute("loggedInMember", loggedInMember); //index右上角顯示更新
+		session.setAttribute("loggedInMember", loggedInMember); //index右上角顯示更新
+		redirectAttrs.addFlashAttribute("success", "修改資料成功");
+		return "redirect:/mem/memArea/updateProfilePage";
+	}
+	
+	
+	
+	
+	@GetMapping("/toUpdatePassword")
+	public String toUpdatePassword(HttpSession session){
+		Mem mem = (Mem) session.getAttribute("loggedInMember");
+		if(mem != null) {
+			return "redirect:/mem/memArea/updatePasswordPage";
+		} else {
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+	}
+	
+	@GetMapping("/memArea/updatePasswordPage")
+	public String updatePasswordPage(
+			@ModelAttribute("loggedInMember") Mem loggedInMember,
+			ModelMap model) {
+		
+		UpdatePasswordMem updatePasswordMem = new UpdatePasswordMem();
+		BeanUtils.copyProperties(loggedInMember, updatePasswordMem);
+		model.addAttribute("updatePasswordMem", updatePasswordMem); //??
+		return "/front_end/customer/logined/memProfile/memUpdatePassword";
+	}
+	
+	@PostMapping("/memArea/updatePassword")
+	public String updatePassword(
+			@Validated(UpdatePasswordValidation.class) @ModelAttribute("updatePasswordMem") Mem updatePasswordMem,
+			BindingResult result, //一定要放在@Valid @ModelAttribute後面，不然如果有錯誤不會進controller
+			ModelMap model,
+			HttpSession session,
+			RedirectAttributes redirectAttrs) {
+		
+		if (result.hasErrors()) {
+			return "/front_end/customer/logined/memProfile/memUpdatePassword";
+		}
+		
+		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+		if (loggedInMember == null) {
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+
+		loggedInMember.setMemPwd(updatePasswordMem.getMemPwd());
+//		BeanUtils.copyProperties(updatePasswordMem, loggedInMember);
+		memSvc.updateMem(loggedInMember);
+		redirectAttrs.addFlashAttribute("success", "修改密碼成功");
+		return "redirect:/mem/memArea/updatePasswordPage";
+	}
+	
+	
+	
+	
+
+	
 //	送出註冊"表單"
 	@PostMapping("/register")
 	public String register(
-			@Valid @ModelAttribute("mem") 
-			Mem mem, 
+			@Validated(RegistrationValidation.class) @ModelAttribute("mem") Mem mem, 
 			BindingResult result, 
 			ModelMap model,
 			RedirectAttributes redirectAttrs) {
@@ -88,7 +230,6 @@ public class MemController{
 	
 	@PostMapping("/login")
 	public String login(LoginRequest loginRequest, HttpSession session, ModelMap model) {
-		
 		String memAccLogin = loginRequest.getMemAccLogin();
 		String memPwdLogin = loginRequest.getMemPwdLogin();
 		
@@ -100,7 +241,6 @@ public class MemController{
 			model.addAttribute("activeTab", "login");  //標記目前所在頁籤
 			return "front_end/customer/unlogined/memRegLogin";
 		}
-		
 		if(memPwdLogin == null || memPwdLogin.trim().isEmpty()) {
 			model.addAttribute("loginError", "請輸入密碼");
 			model.addAttribute("loginRequest", loginRequest);
@@ -122,7 +262,13 @@ public class MemController{
 			}
 			
 			// 3.登入成功，把會員資料存進session
-			session.setAttribute("loggedInMember", mem);
+			
+			model.addAttribute("loggedInMember", mem);
+
+			model.addAttribute("memId", mem.getMemId());
+			model.addAttribute("memName", mem.getMemName());
+			
+//			session.setAttribute("loggedInMember", mem);  //@SessionAttributes
 			session.setAttribute("memId", mem.getMemId());
 			session.setAttribute("memName", mem.getMemName());
 			
@@ -141,11 +287,20 @@ public class MemController{
 
 	
 	@PostMapping("/logout")
-	public String logout(HttpSession session) {
+	public String logout(HttpSession session, SessionStatus status) {
+		// 1. 清掉 @SessionAttributes 管理的 model 屬性
+		if(!status.isComplete()) {
+			status.setComplete();
+		}
+		
+		// 2. 清掉 HttpSession 屬性
 		session.removeAttribute("loggedInMember");
+		
+		// 3. 重導到首頁
 		return "redirect:/";
 	}
-	
+
+}
 	
 	/*
 
@@ -215,156 +370,6 @@ public class MemController{
 		}
 		
 		
-//		在Update頁面 送出修改資料
-		if("update".equals(action)) {
-			List<String> errorMsgs = new LinkedList<String>();
-			req.setAttribute("errorMsgs", errorMsgs);
-
-//			---------1.接收請求參數--------
-
-//			用來查出這筆會員資料
-			Integer memId = Integer.valueOf(req.getParameter("memId"));
-//			String memAcc = req.getParameter("memAcc"); 帳號不能改
-			
-//			密碼驗證
-			String memPwd = req.getParameter("memPwd");
-			String memPwdReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9@)]{8,20}$";
-			if(memPwd == null || (memPwd.trim()).length() == 0) {
-				errorMsgs.add("密碼欄位請勿空白");
-			} else if(!memPwd.trim().matches(memPwdReg)) {
-				errorMsgs.add("密碼格式不符，請輸入英文或數字或@ , 且長度必需在8到20之間");
-			}
-			
-//			審核狀態(改下拉選單)***
-			String accStatusStr =  req.getParameter("accStatus");
-			Byte accStatus = Byte.valueOf(accStatusStr);
-			
-//			String accStatusStr =  req.getParameter("accStatus").trim();
-//			Integer accStatus = null;
-//			
-//			if (accStatusStr.length() != 0) {
-//				accStatus = Integer.valueOf(accStatusStr);				
-//			}
-//			
-//			if (accStatusStr == null || accStatusStr.length() == 0) {
-//				errorMsgs.add("審核狀態欄位請勿空白");
-//			} else if(accStatus < 0) {
-//				errorMsgs.add("審核狀態不能為負值");  //前端也有驗證
-//			}
-			
-//			姓名驗證
-			String memName = req.getParameter("memName");
-			String memNameReg = "^[(\u4e00-\u9fa5)(a-zA-Z)]{2,20}$";
-			if(memName == null || (memName.trim()).length() == 0) {
-				errorMsgs.add("姓名欄位請勿空白");
-			} else if(!memName.trim().matches(memNameReg)) {
-				errorMsgs.add("姓名格式不符，請輸入中文或英文, 且長度必需在2到20之間");
-			}
-			
-//			手機號碼驗證
-			String memMobile = req.getParameter("memMobile");
-			String memMobileReg = "^09[0-9]{2}-[0-9]{6}$";
-			if(memMobile == null || (memMobile.trim()).length() == 0) {
-				errorMsgs.add("手機欄位請勿空白");
-			} else if (!memMobile.trim().matches(memMobileReg)) {
-				errorMsgs.add("手機格式不符，範例: 0912-123456");
-			}
-			
-//			信箱驗證
-			String memEmail = req.getParameter("memEmail");
-			String memEmailReg = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-			if(memEmail == null || (memEmail.trim()).length() == 0) {
-				errorMsgs.add("信箱欄位請勿空白");
-			} else if (!memEmail.trim().matches(memEmailReg)) {
-				errorMsgs.add("信箱格式不符，範例: abcdefg1234@gmail.com");
-			}
-			
-//			郵遞區號驗證
-			String memZipcode = req.getParameter("memZipcode");
-			String memZipcodeReg = "^[0-9]{3,6}$";
-			if(memZipcode == null || (memZipcode.trim()).length() == 0) {
-				errorMsgs.add("郵遞區號欄位請勿空白");
-			} else if (!memZipcode.trim().matches(memZipcodeReg)) {
-				errorMsgs.add("郵遞區號格式不符，請輸入3~6位數字");
-			}
-			
-//			縣市驗證(改成下拉選單)***
-			String memCity = req.getParameter("memCity");
-			if(memCity == null || (memCity.trim()).length() == 0) {
-				errorMsgs.add("縣市欄位請勿空白");
-			}
-			
-//			區域驗證(改成下拉選單)***
-			String memDist = req.getParameter("memDist");
-			if(memDist == null || (memDist.trim()).length() == 0) {
-				errorMsgs.add("區域欄位請勿空白");
-			}
-			
-//			地址驗證
-			String memAddr = req.getParameter("memAddr");
-			String memAddrReg = "^[\u4e00-\u9fa5\\-\\d]{3,20}$";
-			if(memAddr == null || (memAddr.trim()).length() == 0) {
-				errorMsgs.add("地址欄位請勿空白");
-			} else if (!memAddr.trim().matches(memAddrReg)) {
-				errorMsgs.add("地址格式不符，請輸入中文或數字或-");
-			}
-//			**********
-			
-//			Timestamp regDate = Timestamp.valueOf(req.getParameter("regDate")); 註冊時間不能改
-			
-//			會員點數驗證
-			String memPointStr = req.getParameter("memPoint").trim();
-			Integer memPoint = null;
-			
-			if (memPointStr.length() != 0) {
-				memPoint = Integer.valueOf(req.getParameter("memPoint").trim());
-			}
-			
-			if (memPointStr == null || memPointStr.length() == 0) {
-				errorMsgs.add("會員點數請勿空白");
-			} else if (memPoint < 0) {
-				errorMsgs.add("會員點數不能為負值");  
-			}
-			
-	
-			MemService memSvc = new MemService();
-		    Mem mem = memSvc.getOneMem(memId);
-		    
-//			mem.setMemId(memId);
-//			mem.setMemAcc(memAcc);
-			mem.setMemPwd(memPwd);
-			mem.setMemName(memName);
-			mem.setAccStatus(accStatus);
-			mem.setMemMobile(memMobile);
-			mem.setMemEmail(memEmail);
-			mem.setMemZipcode(memZipcode);
-			mem.setMemCity(memCity);
-			mem.setMemDist(memDist);
-			mem.setMemAddr(memAddr);
-//			mem.setRegDate(regDate);
-			mem.setMemPoint(memPoint);
-			
-			
-			if(!errorMsgs.isEmpty()) {
-				req.setAttribute("mem", mem);
-				String url = "/back-end/mem/update_mem_input.jsp";
-				RequestDispatcher failureView = req.getRequestDispatcher(url);
-				failureView.forward(req, res);
-				return;
-			}
-			
-			
-//			---------2.開始更新資料--------
-			memSvc.updateMem(mem);
-			
-//			---------3.更新完成，跳到更新成功的頁面--------
-//			req.setAttribute("mem", mem);
-			String url = "/back-end/mem/listAllMem.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);
-			successView.forward(req, res);
-
-		}
-		
 //		刪除會員資料(用會員編號)
 		if("delete".equals(action)) {
 			String str = req.getParameter("memId");
@@ -387,12 +392,5 @@ public class MemController{
 			
 		}
 		
-		
-		
-		
-		
-		
-		
 	}*/
 
-}

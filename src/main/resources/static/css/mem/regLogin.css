@@ -8,10 +8,9 @@
     text-align: center;
     letter-spacing: 2px;
 }
-.register,
-.login{
+form.userInfo{
     width: 520px;
-    padding: 16px 60px 40px;
+    padding: 26px 70px 50px;
     margin: 0px auto 40px;
     border: 3px solid #f9bd97;
     border-bottom-left-radius: 8px;
@@ -20,7 +19,6 @@
 
 /*------ 預設 只顯示登入 */
 .register{
-/* .login{ */
     display: none;
 }
 /* 預設 只顯示登入------ */
@@ -57,21 +55,18 @@
     background-color: #f8d5c0;
 }
 
-.register li,
-.login li{
+form.userInfo li{
     margin-top: 14px;
     color: #555;
     font-size: 0;
 }
-.register li label,
-.login li label{
+form.userInfo li label{
     display: block;
     width: 100%;
     font-size: 16px;
     margin-left: 4px;
 }
-.register li input,
-.login li input{
+form.userInfo li input{
     width: 100%;
     height: 40px;
     padding: 8px 10px;
@@ -81,15 +76,15 @@
     border-radius: 5px;
     color: #333;
 }
-.register .zipcode{
+form.userInfo .zipcode{
     width: 32%;
     margin-right: 2%;
 }
-.register .city{
+form.userInfo .city{
     margin-right: 2%;
 }
-.register .city,
-.register .dist{
+form.userInfo .city,
+form.userInfo .dist{
     width: 32%;
     height: 40px;
     font-size: 16px;
@@ -98,15 +93,13 @@
     border-radius: 5px;
     color: #333;
 }
-.register .addr{
+form.userInfo .addr{
     margin-top: 8px;
 }
-.register li *:focus,
-.login li *:focus{
+form.userInfo li *:focus{
     outline: 1px solid #6873ed;
 }
-.register input.btn,
-.login input.btn{
+form.userInfo input.btn{
     margin-top: 24px;
     width: 100%;
     border: none;
@@ -114,16 +107,15 @@
     padding: 8px 0;
     font-size: 18px;
 }
-.register input.btn:hover,
-.login input.btn:hover{
+form.userInfo input.btn:hover{
     background-color: #e96c4a;
 }
 
-.register .bankCode{
+form.userInfo .bankCode{
 	width: 30%;
 	margin-right: 2%;
 }
-.register .bankAcc{
+form.userInfo .bankAcc{
 	width: 68%;
 	
 }

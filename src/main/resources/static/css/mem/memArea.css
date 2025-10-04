@@ -1,0 +1,62 @@
+
+.container-member{
+    margin-top: 50px;
+    display: flex;
+}
+.member-sidebar{
+    width: 150px;
+    margin-right: 60px;
+}
+.member-sidebar h3{
+    padding: 0 8px;
+    font-size: 22px;
+    color: #333;
+}
+.member-sidebar ul{
+    margin-top: 10px;
+}
+.member-sidebar li a{
+    display: block;
+    padding: 8px;
+    border-top: 1px solid #6b635b8c;
+    color: #333;
+    font-size: 18px;
+}
+.member-sidebar li a:hover{
+    background-color: #ff8a632e;
+    color: var(--btn-hover-color);
+}
+.member-content{
+    flex-grow: 1;
+    padding: 40px 50px 60px;
+    color: #333;
+    background-color: #fac9aa08;
+    border: 1px solid #f9bc97cb;
+    border-radius: 12px;
+}
+.member-content.center{
+    display: flex;
+    justify-content: center;
+}
+
+
+/* ----------------------------------- */
+/* ----------修改個人資料 updateProfile.html */
+/* ----------修改密碼 updatePassword.html */
+form.userInfo{
+    width: 320px;
+    padding: 0;
+    margin-bottom: 0;
+    border: none;
+}
+
+form.userInfo h3{
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+/* 修改個人資料 updateProfile.html---------- */
+/* 修改密碼 updatePassword.html---------- */
+
+
+

@@ -80,12 +80,8 @@ public class FmemController{
 		fmemSvc.addFmem(fmem);
 		
 		redirectAttrs.addFlashAttribute("success", "小農會員註冊成功");
-//		model.addAttribute("success", "註冊成功");
-		return "redirect:/"; //註冊(新增)成功後重導至index.html
-		//*******************************************
+		return "redirect:/"; //要重導到小農首頁
 	}
-	
-
 	
 	
 	@PostMapping("/login")
@@ -125,7 +121,7 @@ public class FmemController{
 			
 			
 			// 3.登入成功，把會員資料存進session
-			session.setAttribute("loggedInMember", fmem);
+			session.setAttribute("loggedInFmember", fmem);
 			session.setAttribute("fmemId", fmem.getFmemId());
 			session.setAttribute("fmemName", fmem.getFmemName());
 			
@@ -140,6 +136,12 @@ public class FmemController{
 		}
 	}
 	
+	
+	@PostMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("loggedInMember");
+		return "redirect:/";
+	}
 	
 	
 }
