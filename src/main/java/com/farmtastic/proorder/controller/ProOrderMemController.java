@@ -28,6 +28,10 @@ import jakarta.validation.Valid;
 @RequestMapping("/mem/proorders")
 public class ProOrderMemController {
 
+	// Points Earning Rate
+	// 計算消費商品的總金額(金額不含運費)
+	private final static double PER = 0.01;
+
 	@Autowired
 	ProOrderSevice proOrdSvc;
 	@Autowired
@@ -99,18 +103,19 @@ public class ProOrderMemController {
 			// 將包含 memId 的 memVO 設定給 proOrderVO
 			memVO.setMemId(memId);
 			proOrderVO.setMemVO(memVO);
-			
+
 			// 查詢該會員"未使用"的"全部"商品折價卷明細
 			// 儲存 商品折價卷明細 的 商品折價卷編號
-			
+
 			// 新增訂單日期為當下系統時間
+			// 讀取毫秒
 			// 將日期格式轉成 yyyy-MM-dd HH:mm:ss，由JPA處理日期格式(ProOrderVO第47行)
 			java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
 			// 存入proOrderVO物件
 			proOrderVO.setProOrdDate(currentTimestamp);
 
 			// 訂單狀態預設為(0:成立訂單)
-			// 付款狀態預設為 (0:未付款)
+			// 付款狀態預設為(0:未付款)
 
 			// 建立商品訂單明細
 			List<ProOrderItemVO> items = new LinkedList<ProOrderItemVO>();
@@ -118,12 +123,12 @@ public class ProOrderMemController {
 			// 這邊我先手動輸入，等購物車做好再改成session取值
 			Product p1 = new Product("新鮮杏鮑菇", 75, 85, 1, 4, 190, "苗栗");
 			Product p2 = new Product("在地小番茄", 140, 70, 1, 5, 260, "桃園");
-			//未完成
-			
+			// 未完成
+
 			// 計算商品總金額
 			Integer proTotal = null;
 			if (proTotal == null) {
-				proTotal = 1232456;
+				proTotal = 9487;
 			}
 			// 存入proOrderVO物件
 			proOrderVO.setProTotal(proTotal);
@@ -131,18 +136,66 @@ public class ProOrderMemController {
 			// 計算運費金額
 			Fmem fmem = new Fmem();
 			// 查詢小農的運費
+			// 這邊要寫一個fmem的service的方法
 			// 1.等同學寫好商品的單一查詢。
 			// 2.再從小農編號查詢該運費
-			// 判斷運費欄位是否為null
-			fmem.setProdFee(null);
-			if (fmem.getProdFee() == null) {
-				fmem.setProdFee(6666); // 如果小農沒設定運費，則預設為0
-			}
 			
+			
+			Integer prodFee = fmem.getProdFee();
+			// 判斷運費欄位是否為null
+			if (prodFee == null) {
+				prodFee = 0; // 如果小農沒設定運費，則預設為0
+				fmem.setProdFee(prodFee); // 手動數入，未來要刪掉
+			}
+
 			// 折價券折抵金額
 			// 用memId查詢 同學寫好持有者明細
 			// 等同學寫好持有者明細
+			proOrderVO.setProOrdCpndisc(null);
+			Integer proOrdCpndisc = proOrderVO.getProOrdCpndisc(); // 先手動輸入
+			if(proOrdCpndisc == null) {
+				proOrdCpndisc = 0;
+			}
 			
+
+			// 會員持有點數
+			Integer memPoint = loggedInMember.getMemPoint();
+
+			// 商品訂單折抵會員點數
+			Integer proOrdPointdisc = proOrderVO.getProOrdPointdisc();
+			if(proOrdPointdisc == null) {
+				proOrdPointdisc = 0;
+				proOrderVO.setProOrdPointdisc(proOrdPointdisc);
+			}
+			// 修改該會員點數
+			// 這邊要寫一個修改mem的service
+			memPoint = memPoint - proOrdPointdisc;
+			memVO.setMemPoint(memPoint);
+			
+			// 實付金額
+			// 實付金額 = 商品總金額 + 運費 - 折價券折抵金額 - 訂單折抵會員點數
+			Integer proOrdGrandTotal = proTotal + prodFee - proOrdCpndisc - proOrdPointdisc;
+			proOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
+			
+			// 訂單回饋會員點數
+			// 回饋 1%
+			// 無條件捨去小數點
+			Integer proOrdPointGet = (int) (Math.floor(proTotal * PER));
+			proOrderVO.setProOrdPointGet(proOrdPointGet);
+			
+			// 物流追蹤碼
+			// 小農前台做修改
+			// 預設可以null
+			
+			// 出貨日期
+			// 小農前台做修改
+			// 預設可以null
+
+			// 收件人姓名
+			proOrderVO.setProOrdName(loggedInMember.getMemName());
+			// 收件人電話
+			// 收件人電子郵件
+			// 收件人地址
 
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("memVO", memVO);
