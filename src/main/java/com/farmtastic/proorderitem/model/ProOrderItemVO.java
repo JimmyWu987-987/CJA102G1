@@ -1,6 +1,6 @@
 package com.farmtastic.proorderitem.model;
 
-import com.farmtastic.product.model.Product;
+import com.farmtastic.shoppingcart.model.Product;
 import com.farmtastic.proorder.model.ProOrderVO;
 
 import jakarta.persistence.Column;

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的購物車</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { width: 80%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .total { text-align: right; font-weight: bold; }
+        .success-message { color: green; font-weight: bold; margin-bottom: 15px; }
+        .error-message { color: red; font-weight: bold; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <h1>我的購物車</h1>
+    <a th:href="@{/cart/products/list}" style="float: right; margin-top: -40px;">繼續購物</a>
+    <hr>
+
+    <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div th:if="${#lists.isEmpty(cartItems)}">
+        <p>您的購物車目前是空的。</p>
+    </div>
+    
+    <div th:unless="${#lists.isEmpty(cartItems)}">
+        <table>
+            <thead>
+                <tr>
+                    <th>商品 ID</th>
+                    <th>商品名稱</th>
+                    <th>單價</th>
+                    <th>數量</th>
+                    <th>小計</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.proId}">101</td>
+                    <td th:text="${item.cartName}">有機蘋果</td>
+                    <td th:text="${item.cartUnitPrice}">50</td>
+                    
+                    <td>
+                        <form th:action="@{/cart/update}" method="post" style="display: inline-block;">
+                            <input type="hidden" name="proId" th:value="${item.proId}" />
+                            
+                            <input type="number" name="quantity" 
+                                   th:value="${item.cartAmount}" min="0" style="width: 50px;">
+                            
+                            <button type="submit">更新</button>
+                        </form>
+                    </td>
+                    
+                    <td th:text="${item.cartSubTotal}">100</td>
+                    
+                    <td>
+                        <form th:action="@{/cart/remove}" method="post" onsubmit="return confirm('確定要從購物車移除此商品嗎？');">
+                            <input type="hidden" name="proId" th:value="${item.proId}" />
+                            <button type="submit" style="color: red;">移除</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="total">總計金額:</td>
+                    <td class="total" th:with="total=${#aggregates.sum(cartItems.![cartSubTotal])}" th:text="${total}">500</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <hr>
+        <form th:action="@{/cart/checkout}" method="post">
+            <button type="submit">前往結帳</button>
+        </form>
+        
+        <form th:action="@{/cart/clear}" method="post" onsubmit="return confirm('確定要清空購物車嗎？');" style="margin-top: 10px;">
+            <button type="submit" style="background-color: #ffcccc;">清空購物車</button>
+        </form>
+    </div>
+
+</body>
+</html>

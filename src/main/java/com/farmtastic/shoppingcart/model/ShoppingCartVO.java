@@ -28,6 +28,55 @@ public class ShoppingCartVO implements Serializable{
 		this.cartAmount = cartAmount;
 		this.cartSubTotal = cartSubTotal;
 	}
+	
+	
+	public Integer getMemId() {
+		return memId;
+	}
+
+	public void setMemId(Integer memId) {
+		this.memId = memId;
+	}
+
+	public Integer getProId() {
+		return proId;
+	}
+
+	public void setProId(Integer proId) {
+		this.proId = proId;
+	}
+
+	public String getCartName() {
+		return cartName;
+	}
+
+	public void setCartName(String cartName) {
+		this.cartName = cartName;
+	}
+
+	public Integer getCartUnitPrice() {
+		return cartUnitPrice;
+	}
+
+	public void setCartUnitPrice(Integer cartUnitPrice) {
+		this.cartUnitPrice = cartUnitPrice;
+	}
+
+	public Integer getCartAmount() {
+		return cartAmount;
+	}
+
+	public void setCartAmount(Integer cartAmount) {
+		this.cartAmount = cartAmount;
+	}
+
+	public Integer getCartSubTotal() {
+		return cartSubTotal;
+	}
+
+	public void setCartSubTotal(Integer cartSubTotal) {
+		this.cartSubTotal = cartSubTotal;
+	}
 
 	@Override
 	public int hashCode() {

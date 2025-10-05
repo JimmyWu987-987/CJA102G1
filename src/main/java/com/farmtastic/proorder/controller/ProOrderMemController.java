@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.member.model.Mem;
-import com.farmtastic.product.model.Product;
+
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
@@ -122,8 +122,8 @@ public class ProOrderMemController {
 			// 顯示從購物車傳入的商品訂單明細
 			// 將購物車的session 存入商品訂單明細
 			// 這邊我先手動輸入，等購物車做好再改成session取值
-			Product p1 = new Product("新鮮杏鮑菇", 75, 85, 1, 4, 190, "苗栗");
-			Product p2 = new Product("在地小番茄", 140, 70, 1, 5, 260, "桃園");
+//			Product p1 = new Product("新鮮杏鮑菇", 75, 85, 1, 4, 190, "苗栗");
+//			Product p2 = new Product("在地小番茄", 140, 70, 1, 5, 260, "桃園");
 			// 未完成
 			List<ProOrderItemVO> items = new LinkedList<ProOrderItemVO>();
 			
