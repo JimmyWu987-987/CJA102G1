@@ -1,5 +1,6 @@
 package com.farmtastic.common.converter;
 
+import com.farmtastic.common.enums.ApplScope;
 import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
@@ -28,6 +29,13 @@ public class EnumConverters {
 	public static class CpnUseStatusConverter extends GenericEnumConverter<CpnUseStatus, Byte> {
 		public CpnUseStatusConverter() {
 			super(CpnUseStatus.class);
+		}
+	}
+
+	@Converter(autoApply = false)
+	public static class ApplScopeConverter extends GenericEnumConverter<ApplScope, Byte> {
+		public ApplScopeConverter() {
+			super(ApplScope.class);
 		}
 	}
 }
