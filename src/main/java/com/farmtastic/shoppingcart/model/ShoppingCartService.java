@@ -30,10 +30,10 @@ public class ShoppingCartService implements Serializable {
     }
     
     // 計算單一 VO 的小計並設定
-    private void calculateSubtotal(ShoppingCartVO vo) {
+    private void calculateSubtotal(ShoppingCartVO shoppingCartVO) {
         // 使用 Integer 進行計算時要小心溢位，這裡假設單價和數量不會太大。
-        Integer subTotal = vo.getCartUnitPrice() * vo.getCartAmount();
-        vo.setCartSubTotal(subTotal);
+        Integer subTotal = shoppingCartVO.getCartUnitPrice() * shoppingCartVO.getCartAmount();
+        shoppingCartVO.setCartSubTotal(subTotal);
     }
     
     // --- 核心功能 (CRUD) ---

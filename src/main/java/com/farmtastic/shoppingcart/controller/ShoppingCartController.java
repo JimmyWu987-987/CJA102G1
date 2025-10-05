@@ -68,7 +68,7 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		}
 
 		// 使用重定向 (redirect) 到顯示頁面，遵循 Post/Redirect/Get 模式
-		return "redirect:/cart/view";
+		return "redirect:/cart/products/list";
 	}
 
 	// ---
