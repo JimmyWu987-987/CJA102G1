@@ -1,11 +1,28 @@
 package com.farmtastic.procpn.model;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.farmtastic.common.enums.IsActive;
 
 public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
-	List<ProCpnVO> findByIsActive(IsActive isActive); // 查啟用/停用
+	// 查詢全部啟用或停用的折價券
+	List<ProCpnVO> findByIsActive(IsActive isActive);
+
+	// 查詢指定名稱 + 狀態的單張券
+	Optional<ProCpnVO> findByCpnNameAndIsActive(String cpnName, IsActive isActive);
+
+	// 名稱模糊查詢
+	List<ProCpnVO> findByCpnNameContaining(String keyword);
+
+	// 折扣類型查詢
+//	List<ProCpnVO> findByDiscType(DiscountType discType);
+
+	// 上架日期篩選
+	List<ProCpnVO> findByStartDateAfter(Date startDate);
+
+	List<ProCpnVO> findByStartDateBetween(Date start, Date end);
 }
