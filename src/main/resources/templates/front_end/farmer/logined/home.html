@@ -73,6 +73,7 @@
                 	<div>您好</div>
                 </div>
                 <a th:if="${session.loggedInFmember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+            	
             	<form th:action="@{/fmem/logout}" th:if="${session.loggedInFmember} != null" method="post" class="logout">
             		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
             	</form>

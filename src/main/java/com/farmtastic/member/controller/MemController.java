@@ -195,7 +195,6 @@ public class MemController{
 	
 	
 
-	
 //	送出註冊"表單"
 	@PostMapping("/register")
 	public String register(
