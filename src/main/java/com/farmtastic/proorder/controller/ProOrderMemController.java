@@ -115,15 +115,19 @@ public class ProOrderMemController {
 			proOrderVO.setProOrdDate(currentTimestamp);
 
 			// 訂單狀態預設為(0:成立訂單)
+			proOrderVO.setProOrdStatus((byte) 0);
 			// 付款狀態預設為(0:未付款)
+			proOrderVO.setProPayStatus((byte) 0);
 
-			// 建立商品訂單明細
-			List<ProOrderItemVO> items = new LinkedList<ProOrderItemVO>();
+			// 顯示從購物車傳入的商品訂單明細
 			// 將購物車的session 存入商品訂單明細
 			// 這邊我先手動輸入，等購物車做好再改成session取值
 			Product p1 = new Product("新鮮杏鮑菇", 75, 85, 1, 4, 190, "苗栗");
 			Product p2 = new Product("在地小番茄", 140, 70, 1, 5, 260, "桃園");
 			// 未完成
+			List<ProOrderItemVO> items = new LinkedList<ProOrderItemVO>();
+			
+			
 
 			// 計算商品總金額
 			Integer proTotal = null;
