@@ -49,6 +49,27 @@ public class MemService {
 		}
 	}
 	
+
+	
+	public Mem forgetPassword(String memMobile, String memEmail) {
+		Mem mem = repository.findByMemMobile(memMobile);
+		if (mem == null) {
+			return null;
+		}
+		
+		if (!mem.getMemEmail().equals(memEmail)) {
+			return null;
+		}
+		
+		if (mem.getAccStatus() != 1) {
+			throw new IllegalStateException("帳號尚未開通或已被停權");
+		}
+		
+		return mem;
+	}
+	
+	
+	
 	public void addMem(Mem mem) {
 		repository.save(mem);
 	}
@@ -69,10 +90,15 @@ public class MemService {
 //		return dao.getMemsByAccStatus(accStatus);
 //	}
 	
+	// ***********************????************
+	public Mem getOneByMemAcc(String memAcc) {
+		return repository.findByMemAcc(memAcc);
+	}
+	
 	public Optional<Mem> getOneByMemId(Integer memId) {
 		return repository.findById(memId);
 	}
-	
+	// ***********************????************
 	
 	public List<Mem> getAll(){
 		return repository.findAll();

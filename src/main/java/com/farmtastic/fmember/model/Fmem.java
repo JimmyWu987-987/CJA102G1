@@ -114,15 +114,15 @@ public class Fmem implements Serializable {
 	
 	@Column(name = "bank_code")
 	@NotEmpty(message = "銀行代碼請勿空白")
-	@Pattern(regexp = "^$|^[0-9]{3,10}$", 
-			 message = "銀行代碼格式不符，請輸入數字，至少3碼", 
+	@Pattern(regexp = "^$|^[0-9]{3,4}$", 
+			 message = "銀行代碼格式不符，請輸入數字3~4碼", 
 			 groups = RegistrationValidation.class)
 	private String bankCode;
 	
 	@Column(name = "bank_acc")
 	@NotEmpty(message = "銀行帳號請勿空白")
-	@Pattern(regexp = "^$|^[0-9]{10,20}$", 
-			 message = "銀行帳號格式不符，請輸入數字，至少10碼", 
+	@Pattern(regexp = "^$|^[0-9]{7,14}$", 
+			 message = "銀行帳號格式不符，請輸入數字7~14碼", 
 			 groups = RegistrationValidation.class)
 	private String bankAcc;
 

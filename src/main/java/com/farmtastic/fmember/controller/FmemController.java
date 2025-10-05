@@ -377,8 +377,8 @@ public class FmemController{
 			session.setAttribute("fmemId", fmem.getFmemId());
 			session.setAttribute("fmemName", fmem.getFmemName());
 			
-			// 4.登入成功後 重導至首頁或會員中心
-			return "redirect:/fmem/home";
+			// 4.登入成功後 重導至首頁或會員中心 ****************
+			return "redirect:/fmem/fmemArea";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);

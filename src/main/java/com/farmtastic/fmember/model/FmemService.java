@@ -45,7 +45,6 @@ public class FmemService {
 	}
 	
 	
-	
 	public void addFmem(Fmem fmem) {
 		repository.save(fmem);
 	}
