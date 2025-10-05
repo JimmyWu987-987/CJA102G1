@@ -1,6 +1,11 @@
 package com.shoppingcart.model;
 
-public class shoppingCartVO {
+import java.io.Serializable;
+
+public class shoppingCartVO implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
 	private Integer memId;
 	private Integer proId;
 	private String cartName;
