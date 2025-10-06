@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.common.mapper.ProCpnMapper;
 import com.farmtastic.procpn.dto.ProCpnAdminDTO;
-import com.farmtastic.procpn.dto.ProCpnResponseDTO;
 
 @Service("proCpnService")
 public class ProCpnServiceImp implements ProCpnService {
@@ -57,9 +56,9 @@ public class ProCpnServiceImp implements ProCpnService {
 
 	// 單筆查詢
 	@Override
-	public Optional<ProCpnResponseDTO> getOneProCpn(Integer proCpnId) {
+	public Optional<ProCpnAdminDTO> getById(Integer proCpnId) {
 		// (vo) -> mapper.toResponseDTO(vo)
-		return repository.findById(proCpnId).map(mapper::toResponseDTO);
+		return repository.findById(proCpnId).map(mapper::toAdminDTO);
 	}
 
 	// 查啟用券
@@ -85,10 +84,11 @@ public class ProCpnServiceImp implements ProCpnService {
 		return resultList.stream().map(mapper::toAdminDTO).collect(Collectors.toList());
 	}
 
+	// 查詢指定日期範圍內的折價券
 	@Override
 	public List<ProCpnAdminDTO> findProCpnByDateRange(Date start, Date end) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ProCpnVO> resultList = repository.findByStartDateBetween(start, end);
+		return resultList.stream().map(mapper::toAdminDTO).collect(Collectors.toList());
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.procpn.dto.ProCpnAdminDTO;
-import com.farmtastic.procpn.dto.ProCpnResponseDTO;
 
 //多個Service切換實作不改 Controller
 public interface ProCpnService {
@@ -23,7 +22,7 @@ public interface ProCpnService {
 
 	void changeProCpnStatus(Integer proCpnId, IsActive status);// 改變卷狀態
 
-	Optional<ProCpnResponseDTO> getOneProCpn(Integer id); // 查單一折價券 (DTO)
+	Optional<ProCpnAdminDTO> getById(Integer id); // 查單一折價券 (DTO)
 
 	List<ProCpnAdminDTO> searchProCpnByName(String keyword);// 名稱模糊搜尋
 
