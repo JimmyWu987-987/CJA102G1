@@ -1,11 +1,15 @@
 package com.farmtastic.procpn.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.farmtastic.procpn.dto.ProCpnAdminDTO;
 import com.farmtastic.procpn.dto.ProCpnFormDTO;
 import com.farmtastic.procpn.model.ProCpnService;
 
@@ -35,6 +39,15 @@ public class ProCpnAdminController {
 	public String listAll(Model model) {
 		// List<ProCpnVO> list = proCpnSvc.findAllCoupons();
 		model.addAttribute("coupons", proCpnSvc.findAllProCpn());
+		return "/back_end/logined/procpn/listAllProCpn";
+	}
+
+	/** 模糊搜尋折價券名稱（後台） */
+	@GetMapping("/search")
+	public String searchCpns(@RequestParam("keyword") String keyword, Model model) {
+		List<ProCpnAdminDTO> cpn = proCpnSvc.searchProCpnByName(keyword);
+		model.addAttribute("coupons", cpn);
+		model.addAttribute("keyword", keyword);
 		return "/back_end/logined/procpn/listAllProCpn";
 	}
 }

@@ -1,5 +1,6 @@
 package com.farmtastic.procpn.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,6 +76,25 @@ public class ProCpnServiceImp implements ProCpnService {
 			return; // 避免重複設定
 		procpnVO.setIsActive(status);
 		repository.save(procpnVO);
+	}
+
+	// 名稱模糊搜尋
+	@Override
+	public List<ProCpnAdminDTO> searchProCpnByName(String keyword) {
+		List<ProCpnVO> resultList = repository.findByCpnNameContaining(keyword);
+		return resultList.stream().map(mapper::toAdminDTO).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ProCpnAdminDTO> findProCpnByDateRange(Date start, Date end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deactivateExpiredCoupons() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

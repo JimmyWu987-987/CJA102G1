@@ -21,8 +21,16 @@ public interface ProCpnService {
 
 	List<ProCpnAdminDTO> findAllProCpn(); // 查全部折價券
 
+	void changeProCpnStatus(Integer proCpnId, IsActive status);// 改變卷狀態
+
 	Optional<ProCpnResponseDTO> getOneProCpn(Integer id); // 查單一折價券 (DTO)
 
-	// === 狀態控制 ===
-	void changeProCpnStatus(Integer proCpnId, IsActive status);// 改變卷狀態
+	List<ProCpnAdminDTO> searchProCpnByName(String keyword);// 名稱模糊搜尋
+
+	// 查詢指定日期範圍內的折價券
+	List<ProCpnAdminDTO> findProCpnByDateRange(java.util.Date start, java.util.Date end);
+
+	// 停用所有過期折價券（排程）
+	void deactivateExpiredCoupons();
+
 }

@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import com.farmtastic.common.enums.IsActive;
+
+import jakarta.transaction.Transactional;
 
 public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 	// 查詢全部啟用或停用的折價券
@@ -25,4 +29,15 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 	List<ProCpnVO> findByStartDateAfter(Date startDate);
 
 	List<ProCpnVO> findByStartDateBetween(Date start, Date end);
+
+	// 批次停用過期券
+	@Modifying
+	@Transactional
+	@Query(value = """
+			    UPDATE pro_cpn
+			    SET is_active = 0
+			    WHERE DATE_ADD(start_date, INTERVAL valid_days DAY) < CURRENT_DATE()
+			      AND is_active = 1
+			""", nativeQuery = true)
+	void deactivateExpiredCoupons();
 }
