@@ -6,10 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
@@ -17,16 +19,18 @@ import com.farmtastic.proorderitem.model.ProOrderItemVO;
 // @SessionScope 確保這個 Service 實例綁定到單個使用者的 Session，
 // 並自動將其狀態 (購物車內容) 存入 Redis。
 @Service
-@SessionScope
+//@SessionScope
 public class ShoppingCartService implements Serializable {
     private static final long serialVersionUID = 1L;
+    
+    @Autowired
+    FmemService fmemSvc;
+    
     
     // 購物車的核心資料結構：直接儲存 ShoppingCartVO
     // 注意：這裡假設 memId 是從登入後的 Session 中取得，所以不儲存在 Service 層
     private List<ShoppingCartVO> cartItems = new ArrayList<>();
-
-    // --- 輔助方法 ---
-
+    
     // 尋找購物車中是否有某個商品
     private Optional<ShoppingCartVO> findItemByProId(Integer proId) {
         return cartItems.stream()
@@ -184,11 +188,30 @@ public class ShoppingCartService implements Serializable {
 
      			// 顯示從購物車傳入的商品訂單明細
      			// 將購物車的session 存入商品訂單明細
-     			// 未完成
-     			List<ProOrderItemVO> proOrderitems = new LinkedList<ProOrderItemVO>();
-//     			for() {
-//     				
-//     			}
+     			
+     			// 步驟 1: 宣告一個新的 List 來存放轉換後的商品訂單明細
+     			List<ProOrderItemVO> proOrderItemsList = new ArrayList<>();
+     			List<ShoppingCartVO> cartItems = getCartItems();
+     			// 步驟 2: 遍歷購物車清單 (cartItems)
+     			for(ShoppingCartVO shoppingCartVO : cartItems) {
+     				// 步驟 3: 在迴圈內，建立一個新的 ProOrderItemVO 物件
+     				ProOrderItemVO proOrderItemVO = new ProOrderItemVO();
+     				Product productVO = new Product();
+     				// 步驟 4: 取出 ShoppingCartVO 的欄位資料，存入 ProOrderItemVO
+     				productVO.setProId(shoppingCartVO.getProId());
+     				productVO.setProName(shoppingCartVO.getCartName());
+     				proOrderItemVO.setProductVO(productVO);
+     				proOrderItemVO.setProUnitPrice(shoppingCartVO.getCartUnitPrice());
+     				proOrderItemVO.setProAmount(shoppingCartVO.getCartAmount());
+     				
+     				Integer proSubTota = shoppingCartVO.getCartUnitPrice()*shoppingCartVO.getCartAmount();
+     				proOrderItemVO.setProSubTota(proSubTota);
+     				
+     				// 步驟 5: 將新的 ProOrderItemVO 加入到訂單明細清單中
+     				proOrderItemsList.add(proOrderItemVO);
+     			}
+     			
+     			proOrderVO.setProOrderItems(proOrderItemsList);
      			
 
      			// 計算商品總金額
@@ -196,20 +219,18 @@ public class ShoppingCartService implements Serializable {
      			proOrderVO.setProTotal(proTotal);
 
      			// 計算運費金額
-     			Fmem fmem = new Fmem();
-     			// 查詢小農的運費
      			// 這邊要寫一個fmem的service的方法
-     			// 1.等同學寫好小農的單一查詢。
-     			// 2.再從小農編號查詢該運費
-     			
-     			
+     			Optional<Fmem> fmemlist = fmemSvc.getOneByFmemId(memId);
+     			// 如果 Optional 包含 Fmem，則取出它；否則，建立並使用一個新的 Fmem() 物件作為預設值。
+     			Fmem fmem = fmemlist.orElse(new Fmem());
+     			// 查詢小農的運費
      			Integer prodFee = fmem.getProdFee();
      			// 判斷運費欄位是否為null
      			if (prodFee == null) {
      				prodFee = 0; // 如果小農沒設定運費，則預設為0
      			}
-     			fmem.setProdFee(prodFee);
-
+     			proOrderVO.setProOrdShipFee(prodFee);
+     			
      			// 折價券折抵金額
      			// 用memId查詢 同學寫好持有者明細
      			// 等同學寫好持有者明細
@@ -219,7 +240,6 @@ public class ShoppingCartService implements Serializable {
      				proOrdCpndisc = 0;
      			}
      			
-
      			// 會員持有點數
      			Integer memPoint = loggedInMember.getMemPoint();
 

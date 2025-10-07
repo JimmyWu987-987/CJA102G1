@@ -1,6 +1,5 @@
 package com.farmtastic.proorder.controller;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
-
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
-import com.farmtastic.shoppingcart.model.ShoppingCartVO;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,6 +34,8 @@ public class ProOrderMemController {
 	ProOrderSevice proOrdSvc;
 	@Autowired
 	ProOrderItemService proOrderItemSvc;
+	FmemService FemSvc;
+	
 
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
@@ -116,16 +115,16 @@ public class ProOrderMemController {
 
 	// 新增訂單
 	@PostMapping("insert")
-	public String insert(@Valid ProOrderVO proOrderVO, @Valid List<ProOrderItemVO> proOrderItemVO, BindingResult result,
+	public String insert(@Valid ProOrderVO proOrderVO, BindingResult result,
 			HttpSession session, ModelMap model) {
-
-		proOrderVO.setMemVO(null);
 
 		// 輸入資料的錯誤驗證
 		if (result.hasErrors()) {
 			// 數入資料錯誤，重新返回訂單頁面
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
+		// 從 ProOrderVO 中取出明細列表
+		List<ProOrderItemVO> proOrderItemVO = proOrderVO.getProOrderItems();
 		// 驗證成功後，新增資料
 		proOrdSvc.addProOrder(proOrderVO,proOrderItemVO);
 		// 因為要計算會員持有點數，還要寫一個修改Mem的service方法

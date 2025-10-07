@@ -1,6 +1,9 @@
 package com.farmtastic.proorderitem.model;
 
 import com.farmtastic.shoppingcart.model.Product;
+
+import java.io.Serializable;
+
 import com.farmtastic.proorder.model.ProOrderVO;
 
 import jakarta.persistence.Column;
@@ -16,8 +19,11 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="pro_order_item")
-public class ProOrderItemVO {
+public class ProOrderItemVO implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
+
 	@EmbeddedId
 	private ProOrderItemId id;
 	
@@ -49,7 +55,7 @@ public class ProOrderItemVO {
 	private Integer proAmount;
 	
 	@Column(name="pro_subtotal")
-	private Integer proSubTota;
+	private Integer proSubTotal;
 	
 	
 	public ProOrderItemVO() {
@@ -109,12 +115,12 @@ public class ProOrderItemVO {
 
 
 	public Integer getProSubTota() {
-		return proSubTota;
+		return proSubTotal;
 	}
 
 
 	public void setProSubTota(Integer proSubTota) {
-		this.proSubTota = proSubTota;
+		this.proSubTotal = proSubTota;
 	}
 	
 }

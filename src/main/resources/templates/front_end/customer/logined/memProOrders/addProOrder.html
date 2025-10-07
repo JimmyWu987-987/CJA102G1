@@ -42,25 +42,47 @@
 		</div> -->
 		<div>
 		<span>=================商品訂單明細的範圍==================</span><br>
+		<h2>訂單明細</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>商品 ID</th>
+					<th>商品名稱</th>
+					<th>單價</th>
+					<th>數量</th>
+					<th>小計</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item, stat : *{proOrderItems}">
+					<td th:text="${item.productVO.proId}">商品 ID</td> 
+					<td th:text="${item.productVO.proName}">商品名稱</td> 
+					<td th:text="${item.proUnitPrice}">單價<</td>
+					<td th:text="${item.proAmount}">數量</td>
+					<td th:text="${item.proSubTota}">小計</td>
+					
+					</tr>
+			</tbody>
+		</table>
+		<div>
+		<label>商品總金額</label>
+		<input type="text" th:field="*{proTotal}" readonly/><br>
+		</div>
 		<span>=================商品訂單明細的範圍==================</span>
 		</div><br>
 		
 		
 		
-		<div>
-		<label>商品總金額</label>
-		<input type="text" th:field="*{proTotal}" readonly/><br>
-		</div>
 		
-<!-- 		<div>
+		<div>
 		<label>商品運費</label>
-		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
+		<input type="text" th:value="${proOrdShipFee}" readonly/><br>
 		</div>
 		
 		<div>
 		<label>折價券折抵金額</label>
-		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
-		</div> -->
+		<input type="text" th:value="${proOrdShipFee}" readonly/><br>
+		</div>
 		
 		<div>
 		<label>會員持有點數</label>
