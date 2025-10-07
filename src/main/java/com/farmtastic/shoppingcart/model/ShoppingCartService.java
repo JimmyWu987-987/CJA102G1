@@ -200,6 +200,7 @@ public class ShoppingCartService implements Serializable {
      				// 步驟 4: 取出 ShoppingCartVO 的欄位資料，存入 ProOrderItemVO
      				productVO.setProId(shoppingCartVO.getProId());
      				productVO.setProName(shoppingCartVO.getCartName());
+     				
      				proOrderItemVO.setProductVO(productVO);
      				proOrderItemVO.setProUnitPrice(shoppingCartVO.getCartUnitPrice());
      				proOrderItemVO.setProAmount(shoppingCartVO.getCartAmount());
