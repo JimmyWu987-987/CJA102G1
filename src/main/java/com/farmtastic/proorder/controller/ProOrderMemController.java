@@ -88,23 +88,25 @@ public class ProOrderMemController {
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		Integer memId = (Integer) session.getAttribute("memId");
 		String memName = (String) session.getAttribute("memName");
+		ProOrderVO cartToProOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 		
 		// 錯誤驗證
-		if (loggedInMember == null || memId == null || memName == null || memName.trim().isEmpty()) {
+		if (loggedInMember == null || memId == null || memName == null || memName.trim().isEmpty()|| cartToProOrder == null) {
 			// 沒有值則會重導至登入頁面
 			return "redirect:/mem/showMemRegLoginForm";
 		} else {
 			
 			// 如果 Model 中沒有 cartToProOrder (即非從結帳頁面重定向而來)，則新增一個空的 ProOrderVO 
 	        // 這樣可防止用戶直接訪問此 URL 時發生錯誤
-	        if (!model.containsAttribute("cartToProOrder")) {
-	            model.addAttribute("cartToProOrder", new ProOrderVO());
-	        }
+//	        if (!model.containsAttribute("cartToProOrder")) {
+//	            model.addAttribute("cartToProOrder", new ProOrderVO());
+//	        }
 	        
 	        // 由於您要使用 cartToProOrder，確保這裡不能被註解掉
 			
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("memVO", loggedInMember);
+			model.addAttribute("cartToProOrder", cartToProOrder);
 //			model.addAttribute("fmemVO", fmem);
 //			model.addAttribute("proOrderVO", proOrderVO);
 //			model.addAttribute("proOrderItemVO", items);

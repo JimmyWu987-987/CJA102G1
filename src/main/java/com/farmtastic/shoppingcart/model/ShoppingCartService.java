@@ -188,7 +188,6 @@ public class ShoppingCartService implements Serializable {
 
      			// 顯示從購物車傳入的商品訂單明細
      			// 將購物車的session 存入商品訂單明細
-     			
      			// 步驟 1: 宣告一個新的 List 來存放轉換後的商品訂單明細
      			List<ProOrderItemVO> proOrderItemsList = new ArrayList<>();
      			List<ShoppingCartVO> cartItems = getCartItems();

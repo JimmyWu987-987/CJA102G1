@@ -158,12 +158,14 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 				
 			}
 			
+			// 將訂單+訂單明細存成一個暫存物件，交給addProOrder.html頁面
 			ProOrderVO cartToProOrder = cartService.checkout(memId,loggedInMember,PER);
 
 			if (cartToProOrder != null ) {
 				redirectAttributes.addFlashAttribute("successMessage", "結帳成功！您的訂單已送出。");
 			    // 修正後的程式碼行：使用 Flash Attribute 傳輸物件
-			    redirectAttributes.addFlashAttribute("cartToProOrder", cartToProOrder);
+//			    redirectAttributes.addFlashAttribute("cartToProOrder", cartToProOrder);
+			    session.setAttribute("cartToProOrder", cartToProOrder);
 
 				return "redirect:/mem/proorders/addProOrder";
 			} else {
