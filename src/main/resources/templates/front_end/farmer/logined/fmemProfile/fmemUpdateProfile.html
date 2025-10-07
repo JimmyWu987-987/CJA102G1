@@ -109,48 +109,55 @@
                			<label>認證狀態</label>
                    		<input type="text" th:value="${loggedInFmember.certiStatus}" class="certiStatus" disabled>
 	               </li>
-	               
 	               <li class="list-pic first-pic">
                			<label>小農頭像(點選下框以新增或更換圖片)</label>
                    		<div class="picBox">
-                   			<img th:if="${fmemPicBase64 != null}" 
-                   				 th:src="@{'data:image/jpeg;base64,' + ${fmemPicBase64}}"
+                   			<img th:if="${tempFmemPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempFmemPicBase64}}"
                    				 alt="小農頭像">
 					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                   			<input type="file"  name="fmemPic" class="fmemPic pic" accept="image/*">
+                   			<input type="file"  th:field="*{fmemPic}" class="fmemPic pic" accept="image/*">
 					    </div>
+					    <div class="picInfo"></div>
+					    <span th:if="${#fields.hasErrors('fmemPic')}" th:errors="*{fmemPic}" class="error"></span>
+          
 	               </li>
 	               <li class="list-pic">
                			<label>有機證明文件(點選下框以新增或更換圖片)</label>
                			<div class="picBox">
-                   			<img th:if="${organicPicBase64 != null}" 
-                   				 th:src="@{'data:image/jpeg;base64,' + ${organicPicBase64}}"
+                   			<img th:if="${tempOrganicPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempOrganicPicBase64}}"
                    				 alt="有機證明文件">
 					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                   			<input type="file" name="organicPic" class="organicPic pic" accept="image/*">
+                   			<input type="file" th:field="*{organicPic}" class="organicPic pic" accept="image/*">
 					    </div>
+					    <div class="picInfo"></div>
+					    <span th:if="${#fields.hasErrors('organicPic')}" th:errors="*{organicPic}" class="error"></span>
 	               </li>
 	               <li class="list-pic">
 	               		<label>農地證明文件(點選下框以新增或更換圖片)</label>
                			<div class="picBox">
-                   			<img th:if="${landPicBase64 != null}" 
-                   				 th:src="@{'data:image/jpeg;base64,' + ${landPicBase64}}"
+                   			<img th:if="${tempLandPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempLandPicBase64}}"
                    				 alt="農地證明文件">
 					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                   			<input type="file" name="landPic" class="landPic pic" accept="image/*">
+                   			<input type="file" th:field="*{landPic}" class="landPic pic" accept="image/*">
 					    </div>
+					    <div class="picInfo"></div>
+					    <span th:if="${#fields.hasErrors('landPic')}" th:errors="*{landPic}" class="error"></span>
 	               </li>
 	               <li class="list-pic">
 	               		<label>農保證明文件(點選下框以新增或更換圖片)</label>
                			<div class="picBox">
-                   			<img th:if="${insurPicBase64 != null}" 
-                   				 th:src="@{'data:image/jpeg;base64,' + ${insurPicBase64}}"
+                   			<img th:if="${tempInsurPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempInsurPicBase64}}"
                    				 alt="農保證明文件">
 					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                   			<input type="file" name="insurPic" class="insurPic pic" accept="image/*">
+                   			<input type="file" th:field="*{insurPic}" class="insurPic pic" accept="image/*">
 					    </div>
+					    <div class="picInfo"></div>
+					    <span th:if="${#fields.hasErrors('insurPic')}" th:errors="*{insurPic}" class="error"></span>
 	               </li>
-	            
 	               
 	               <input type="submit" value="儲存" class="btn link" id="btn-submitReg">
 	            </ul>

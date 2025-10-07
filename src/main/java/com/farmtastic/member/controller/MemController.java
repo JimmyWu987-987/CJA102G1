@@ -74,15 +74,15 @@ public class MemController{
 		return "front_end/customer/unlogined/memRegLogin";
 	}
 	
-	@GetMapping("/toMemArea")
-	public String toMemArea(HttpSession session){
-		Mem mem = (Mem) session.getAttribute("loggedInMember");
-		if(mem != null) {
-			return "redirect:/mem/memArea";
-		} else {
-			return "redirect:/mem/showMemRegLoginForm";
-		}
-	}
+//	@GetMapping("/toMemArea")
+//	public String toMemArea(HttpSession session){
+//		Mem mem = (Mem) session.getAttribute("loggedInMember");
+//		if(mem != null) {
+//			return "redirect:/mem/memArea";
+//		} else {
+//			return "redirect:/mem/showMemRegLoginForm";
+//		}
+//	}
 	
 	
 //	登入後才能看的: 會員專區
@@ -94,15 +94,15 @@ public class MemController{
 	
 
 	
-	@GetMapping("/toUpdateProfile")
-	public String toUpdateProfile(HttpSession session){
-		Mem mem = (Mem) session.getAttribute("loggedInMember");
-		if(mem != null) {
-			return "redirect:/mem/memArea/updateProfilePage";
-		} else {
-			return "redirect:/mem/showMemRegLoginForm";
-		}
-	}
+//	@GetMapping("/toUpdateProfile")
+//	public String toUpdateProfile(HttpSession session){
+//		Mem mem = (Mem) session.getAttribute("loggedInMember");
+//		if(mem != null) {
+//			return "redirect:/mem/memArea/updateProfilePage";
+//		} else {
+//			return "redirect:/mem/showMemRegLoginForm";
+//		}
+//	}
 	
 	
 //	怎麼分辨是「表單送來的」還是「Session 裡的」？
@@ -115,11 +115,6 @@ public class MemController{
 //			HttpSession session,
 			@ModelAttribute("loggedInMember") Mem loggedInMember,
 			ModelMap model) {
-		
-//		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-//		if (loggedInMember == null) {
-//			return "redirect:/mem/showMemRegLoginForm";
-//		}
 		
 		UpdateProfileMem updateProfileMem = new UpdateProfileMem();
 		BeanUtils.copyProperties(loggedInMember, updateProfileMem);
@@ -157,15 +152,15 @@ public class MemController{
 	
 	
 	
-	@GetMapping("/toUpdatePassword")
-	public String toUpdatePassword(HttpSession session){
-		Mem mem = (Mem) session.getAttribute("loggedInMember");
-		if(mem != null) {
-			return "redirect:/mem/memArea/updatePasswordPage";
-		} else {
-			return "redirect:/mem/showMemRegLoginForm";
-		}
-	}
+//	@GetMapping("/toUpdatePassword")
+//	public String toUpdatePassword(HttpSession session){
+//		Mem mem = (Mem) session.getAttribute("loggedInMember");
+//		if(mem != null) {
+//			return "redirect:/mem/memArea/updatePasswordPage";
+//		} else {
+//			return "redirect:/mem/showMemRegLoginForm";
+//		}
+//	}
 	
 	@GetMapping("/memArea/updatePasswordPage")
 	public String updatePasswordPage(
@@ -214,15 +209,14 @@ public class MemController{
 			ModelMap model,
 			RedirectAttributes redirectAttrs) {
 	
-		// 驗證帳號不能跟別人重複
+		// 驗證帳號、手機不能跟別人重複
 		String memAcc = mem.getMemAcc();
-		try {
-			memSvc.Register(memAcc);
-		} catch (IllegalStateException e) {
-			model.addAttribute("regError", e.getMessage());
-			model.addAttribute("loginRequest", new LoginRequest()); // 給login用
-			model.addAttribute("activeTab", "register"); //標記目前所在頁籤
-			return "front_end/customer/unlogined/memRegLogin";
+		String memMobile = mem.getMemMobile();
+		if (memSvc.existsByMemAcc(memAcc)) {
+			result.rejectValue("memAcc", null, "此帳號已有人註冊過");
+		}
+		if (memSvc.existsByMemMobile(memMobile)) {
+			result.rejectValue("memMobile", null, "此手機已有人註冊過");
 		}
 		
 		if (result.hasErrors()) {
@@ -235,12 +229,9 @@ public class MemController{
 		
 		//Redis 驗證碼
 		String verificationCode = UUID.randomUUID().toString(); 
-		System.out.println("verificationCode="+verificationCode);
-		System.out.println("mem.getMemAcc()="+mem.getMemAcc());
-		System.out.println("mem.getMemEmail()="+mem.getMemEmail());
+
 		redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), 60);
 		String verifyUrl = "開通帳號請點擊此連結: http://localhost:8080/mem/verifyEmail?code=" + verificationCode;
-		
 		mailSvc.sendMail(mem.getMemEmail(), "帳號開通信", verifyUrl);
 		
 		redirectAttrs.addFlashAttribute("success", "註冊成功");
@@ -265,9 +256,8 @@ public class MemController{
 			mem.setAccStatus((byte) 1);
 			memSvc.updateMem(mem);
 			
-			redisSvc.deleteCode(code);
-			
 			redirectAttrs.addFlashAttribute("success", "驗證成功，帳號已啟用");
+			redisSvc.deleteCode(code);
 			return "redirect:/mem/showMemRegLoginForm";
 		}
 		model.addAttribute("fail", "使用者不存在"); //*****要寫錯誤訊息的提示
@@ -317,11 +307,15 @@ public class MemController{
 			
 			// 3.驗證成功，寄送Redis驗證碼
 			String verificationCode = UUID.randomUUID().toString(); 
-			redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), 60);
-			String verifyUrl = "重設密碼請點擊此連結: http://localhost:8080/mem/resetPasswordPage?code=" + verificationCode;
+			long timeoutMinutes = 10;  //設定有效時間(分鐘)
+			redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), timeoutMinutes);
 			
-			mailSvc.sendMail(mem.getMemEmail(), "重設密碼", verifyUrl);
-		
+			String mailTitle = "農作物與它們的產地：一般會員-重設密碼驗證信";
+			String verifyUrl = "重設密碼請點擊下列連結：\n"
+			        + "http://localhost:8080/mem/resetPasswordPage?code=" + verificationCode + "\n\n"
+			        + "此連結" + timeoutMinutes +"分鐘內有效，逾時請重新操作。";
+			
+			mailSvc.sendMail(mem.getMemEmail(), mailTitle, verifyUrl);
 			
 			redirectAttrs.addFlashAttribute("success", "成功發送驗證信");
 			return "redirect:/mem/forgetPasswordPage";  //重導到重設密碼頁面
@@ -329,7 +323,6 @@ public class MemController{
 		} catch (IllegalStateException e) {
 			model.addAttribute("forgetPwdError", e.getMessage());
 			model.addAttribute("forgetPwdRequest", forgetPwdRequest);
-
 			return "front_end/customer/unlogined/memForgetPassword";
 		}
 	}
@@ -337,6 +330,11 @@ public class MemController{
 	
 	
 //	------------------重設密碼----------------
+	
+//	@GetMapping("/memVerifyFailPage")
+//	public String memVerifyFailPage(){
+//		return "/front_end/customer/unlogined/memVerifyFail";
+//	}
 	
 	@GetMapping("/resetPasswordPage")
 	public String resetPasswordPage(
@@ -347,8 +345,8 @@ public class MemController{
 		
 		String memAcc = redisSvc.getMemAccByCode(code);
 		if (memAcc == null) {
-			model.addAttribute("fail", "驗證碼失效或不存在");
-			return "redirect:/";
+			redirectAttrs.addFlashAttribute("fail", "驗證碼失效或不存在");
+			return "redirect:/mem/forgetPasswordPage";
 		}
 		
 		Mem memForResetPwd = memSvc.getOneByMemAcc(memAcc);
@@ -357,12 +355,11 @@ public class MemController{
 			model.addAttribute("updatePasswordMem", new UpdatePasswordMem());
 			session.setAttribute("memForResetPwd", memForResetPwd);
 
-//			redisSvc.deleteCode(code);
-			
+			session.setAttribute("code", code);  // for重設密碼成功後 刪掉驗證碼
 			return "front_end/customer/unlogined/memResetPassword";
 		}
-		model.addAttribute("fail", "使用者不存在"); //*****要寫錯誤訊息的提示
-		return "redirect:/";
+		redirectAttrs.addFlashAttribute("fail", "驗證碼失效或不存在");
+		return "redirect:/mem/forgetPasswordPage";
 	}
 	
 	
@@ -387,6 +384,9 @@ public class MemController{
 		memForResetPwd.setMemPwd(resetPasswordMem.getMemPwd());
 		memSvc.updateMem(memForResetPwd);
 		redirectAttrs.addFlashAttribute("success", "重設密碼成功");
+		
+		String code = (String) session.getAttribute("code");
+		redisSvc.deleteCode(code);
 		return "redirect:/mem/showMemRegLoginForm";
 	}
 	
@@ -417,7 +417,7 @@ public class MemController{
 		
 		// 2.呼叫service進行登入驗證
 		try {
-			Mem mem = memSvc.Login(memAccLogin, memPwdLogin);
+			Mem mem = memSvc.login(memAccLogin, memPwdLogin);
 			
 			if(mem == null) {
 				model.addAttribute("loginError", "帳號或密碼錯誤");
@@ -439,7 +439,6 @@ public class MemController{
 			session.setAttribute("memName", mem.getMemName());
 			
 			// 4.登入成功後 重導至首頁
-//			return "redirect:/mem/memArea";
 			return "redirect:/";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
@@ -448,7 +447,6 @@ public class MemController{
 			model.addAttribute("activeTab", "login");  //標記目前所在頁籤
 			return "front_end/customer/unlogined/memRegLogin";
 		}
-		
 	}
 
 	
@@ -458,105 +456,13 @@ public class MemController{
 		if(!status.isComplete()) {
 			status.setComplete();
 		}
-		
 		// 2. 清掉 HttpSession 屬性
 		session.removeAttribute("loggedInMember");
-		
 		// 3. 重導到首頁
 		return "redirect:/";
 	}
 
 }
 	
-	/*
 
-	
-//		用審核狀態查詢多筆會員資料*****
-		
-		HttpSession session = req.getSession();
-		if("getMulti_For_Display".equals(action)) {
-			String accStatusStr = req.getParameter("accStatus");
-			
-			// form表單用accStatus查詢時 session保存參數
-			session.setAttribute("accStatusStr", accStatusStr);
-			
-			
-			Byte accStatus = Byte.valueOf(accStatusStr);
-			MemService memSvc = new MemService();
-			List<Mem> memList = memSvc.getMems(accStatus);
-			
-			
-			req.setAttribute("memList", memList);
-			String url = "/back-end/mem/listMems.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);
-			successView.forward(req, res);
-			
-		}
-		
-		if("getMulti_For_Display2".equals(action)) {
-			
-//			HttpSession session = req.getSession();
-			String accStatusStr = (String) session.getAttribute("accStatusStr");
-		
-			Byte accStatus = Byte.valueOf(accStatusStr);
-			
-			MemService memSvc = new MemService();
-			List<Mem> memList = memSvc.getMems(accStatus);
-			
-			
-			req.setAttribute("memList", memList);
-			String url = "/back-end/mem/listMems.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);
-			successView.forward(req, res);
-			
-		}
-		
-		
-
-//		///////////////////  先查詢出單筆資料 再跳到Update頁面
-		if("getOne_For_Update".equals(action)) {
-			List<String> errorMsgs = new LinkedList<String>();
-			req.setAttribute("errorMsgs", errorMsgs);
-			
-//			---------1.接收請求參數--------
-			Integer memId = Integer.valueOf(req.getParameter("memId"));
-			
-//			---------2.查詢出要更新的資料--------
-			MemService memSvc = new MemService();
-			Mem mem = memSvc.getOneMem(memId);
-			
-//			---------3.查詢完成，跳到修改頁面--------
-			req.setAttribute("mem", mem);
-			
-			
-			String url = "/back-end/mem/update_mem_input.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);
-			successView.forward(req, res);
-			
-		}
-		
-		
-//		刪除會員資料(用會員編號)
-		if("delete".equals(action)) {
-			String str = req.getParameter("memId");
-			Integer memId = Integer.valueOf(str);
-			MemService memSvc = new MemService();
-			memSvc.deleteMem(memId);
-			
-			String queryPage = req.getParameter("queryPage");
-			String url = null;
-//			if("listOneMem".equals(queryPage)) {
-//				url = "/back-end/mem/listOneMem.jsp";
-//			} else if ("listMems".equals(queryPage)) {
-//				url = "/back-end/mem/listMems.jsp";				
-//			} else {
-				url = "/back-end/mem/listAllMem.jsp";				
-//			}
-			
-			RequestDispatcher successView = req.getRequestDispatcher(url);
-			successView.forward(req, res);
-			
-		}
-		
-	}*/
 

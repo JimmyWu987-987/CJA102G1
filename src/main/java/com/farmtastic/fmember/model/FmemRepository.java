@@ -5,4 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface FmemRepository extends JpaRepository<Fmem, Integer>{
 
 	Fmem findByFmemAcc(String fmemAcc);
+	
+	Fmem findByFmemMobile(String fmemMobile);
+	
+	
 }

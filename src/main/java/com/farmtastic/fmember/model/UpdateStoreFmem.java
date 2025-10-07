@@ -1,5 +1,9 @@
 package com.farmtastic.fmember.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.farmtastic.validator.FileSize;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
@@ -20,6 +24,9 @@ public class UpdateStoreFmem {
 	private Integer actCnt;
 	
 	private Byte rptCnt;
+	
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
+	private MultipartFile storePic;
 	
 //	@Min(value = 0, message = "運費不能小於0")
 //	@Max(value = 500, message = "運費不能大於500")
@@ -94,6 +101,17 @@ public class UpdateStoreFmem {
 		this.rptCnt = rptCnt;
 	}
 
+
+	public MultipartFile getStorePic() {
+		return storePic;
+	}
+
+
+	public void setStorePic(MultipartFile storePic) {
+		this.storePic = storePic;
+	}
+
+	
 //	public Integer getProdFee() {
 //		return prodFee;
 //	}

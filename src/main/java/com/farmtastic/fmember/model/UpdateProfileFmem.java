@@ -1,5 +1,10 @@
 package com.farmtastic.fmember.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.farmtastic.validator.FileSize;
+
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 
@@ -47,6 +52,15 @@ public class UpdateProfileFmem {
 	@Pattern(regexp = "^$|^[0-9]{10,20}$", 
 			 message = "銀行帳號格式不符，請輸入數字，至少10碼")
 	private String bankAcc;
+	
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
+	private MultipartFile fmemPic;
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
+	private MultipartFile organicPic;
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
+	private MultipartFile landPic;
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
+	private MultipartFile insurPic;
 
 	
 	public UpdateProfileFmem() {
@@ -133,5 +147,44 @@ public class UpdateProfileFmem {
 	public void setBankAcc(String bankAcc) {
 		this.bankAcc = bankAcc;
 	}
+
+	public MultipartFile getFmemPic() {
+		return fmemPic;
+	}
+
+	public void setFmemPic(MultipartFile fmemPic) {
+		this.fmemPic = fmemPic;
+	}
+
+
+	public MultipartFile getOrganicPic() {
+		return organicPic;
+	}
+
+
+	public void setOrganicPic(MultipartFile organicPic) {
+		this.organicPic = organicPic;
+	}
+
+
+	public MultipartFile getLandPic() {
+		return landPic;
+	}
+
+
+	public void setLandPic(MultipartFile landPic) {
+		this.landPic = landPic;
+	}
+
+
+	public MultipartFile getInsurPic() {
+		return insurPic;
+	}
+
+
+	public void setInsurPic(MultipartFile insurPic) {
+		this.insurPic = insurPic;
+	}
+	
 	
 }

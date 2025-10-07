@@ -17,7 +17,7 @@ public class PasswordMatchedValidator implements ConstraintValidator<PasswordMat
 		
 		if(!isMatched) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("*與第一次輸入的密碼不一致")
+			context.buildConstraintViolationWithTemplate("與第一次輸入的密碼不一致")
 					.addPropertyNode("memPwdCheck")
 					.addConstraintViolation();
 		}
