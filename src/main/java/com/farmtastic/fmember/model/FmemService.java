@@ -1,6 +1,7 @@
 package com.farmtastic.fmember.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,15 @@ public class FmemService {
 	}
 	
 	
-	
-	
 	public void addFmem(Fmem fmem) {
 		repository.save(fmem);
 	}
 	public void updateFmem(Fmem fmem) {
 		repository.save(fmem);
+	}
+	
+	public Optional<Fmem> getOneByFmemId(Integer fmemId) {
+		return repository.findById(fmemId);
 	}
 	
 	public List<Fmem> getAll(){

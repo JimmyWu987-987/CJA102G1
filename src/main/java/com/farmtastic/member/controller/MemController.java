@@ -2,6 +2,7 @@ package com.farmtastic.member.controller;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,19 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.member.model.ForgetPwdRequest;
 import com.farmtastic.member.model.LoginRequest;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
 import com.farmtastic.member.model.UpdatePasswordMem;
 import com.farmtastic.member.model.UpdateProfileMem;
+import com.farmtastic.redis.verification.MailService;
+import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.validator.RegistrationValidation;
 import com.farmtastic.validator.UpdatePasswordValidation;
 
@@ -39,6 +44,12 @@ public class MemController{
 	
 	@Autowired
 	MemService memSvc;
+	
+	@Autowired
+	RedisService redisSvc;
+	
+	@Autowired
+	MailService mailSvc;
 	
 	// @InitBinder：用來註冊**資料綁定器**
 	// 這個方法會在每次**處理請求之前**自動執行
@@ -195,7 +206,6 @@ public class MemController{
 	
 	
 
-	
 //	送出註冊"表單"
 	@PostMapping("/register")
 	public String register(
@@ -223,9 +233,165 @@ public class MemController{
 		
 		memSvc.addMem(mem);
 		
+		//Redis 驗證碼
+		String verificationCode = UUID.randomUUID().toString(); 
+		System.out.println("verificationCode="+verificationCode);
+		System.out.println("mem.getMemAcc()="+mem.getMemAcc());
+		System.out.println("mem.getMemEmail()="+mem.getMemEmail());
+		redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), 60);
+		String verifyUrl = "開通帳號請點擊此連結: http://localhost:8080/mem/verifyEmail?code=" + verificationCode;
+		
+		mailSvc.sendMail(mem.getMemEmail(), "帳號開通信", verifyUrl);
+		
 		redirectAttrs.addFlashAttribute("success", "註冊成功");
 		return "redirect:/"; //註冊(新增)成功後重導至index.html
 	}
+	
+	
+	@GetMapping("/verifyEmail")
+	public String verifyEmail(
+			@RequestParam("code") String code,
+			ModelMap model,
+			RedirectAttributes redirectAttrs) {
+		
+		String memAcc = redisSvc.getMemAccByCode(code);
+		if (memAcc == null) {
+			model.addAttribute("fail", "驗證碼失效或不存在");
+			return "redirect:/";
+		}
+		
+		Mem mem = memSvc.getOneByMemAcc(memAcc);
+		if (mem != null) {
+			mem.setAccStatus((byte) 1);
+			memSvc.updateMem(mem);
+			
+			redisSvc.deleteCode(code);
+			
+			redirectAttrs.addFlashAttribute("success", "驗證成功，帳號已啟用");
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+		model.addAttribute("fail", "使用者不存在"); //*****要寫錯誤訊息的提示
+		return "redirect:/";
+	}
+	
+	
+	
+//	------------------忘記密碼----------------
+	
+	@GetMapping("/forgetPasswordPage")
+	public String forgetPasswordPage(ModelMap model) {
+		model.addAttribute("forgetPwdRequest", new ForgetPwdRequest());
+		return "front_end/customer/unlogined/memForgetPassword";
+	}
+
+
+	@PostMapping("/forgetPassword")
+	public String forgetPassword(
+			ForgetPwdRequest forgetPwdRequest, 
+			HttpSession session, 
+			ModelMap model,
+			RedirectAttributes redirectAttrs) {
+		String memMobileForgetPwd = forgetPwdRequest.getMemMobileForgetPwd();
+		String memEmailForgetPwd = forgetPwdRequest.getMemEmailForgetPwd();
+		
+		// 1.基本欄位驗證 
+		if(memMobileForgetPwd == null || memMobileForgetPwd.trim().isEmpty()) {
+			model.addAttribute("forgetPwdError", "請輸入手機");
+			model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+			return "front_end/customer/unlogined/memForgetPassword";
+		}
+		if(memEmailForgetPwd == null || memEmailForgetPwd.trim().isEmpty()) {
+			model.addAttribute("forgetPwdError", "請輸入信箱");
+			model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+			return "front_end/customer/unlogined/memForgetPassword";
+		}
+		
+		// 2.呼叫service進行驗證
+		try {
+			Mem mem = memSvc.forgetPassword(memMobileForgetPwd, memEmailForgetPwd);
+			if(mem == null) {
+				model.addAttribute("forgetPwdError", "查無此帳號");
+				model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+				return "front_end/customer/unlogined/memForgetPassword";
+			}
+			
+			// 3.驗證成功，寄送Redis驗證碼
+			String verificationCode = UUID.randomUUID().toString(); 
+			redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), 60);
+			String verifyUrl = "重設密碼請點擊此連結: http://localhost:8080/mem/resetPasswordPage?code=" + verificationCode;
+			
+			mailSvc.sendMail(mem.getMemEmail(), "重設密碼", verifyUrl);
+		
+			
+			redirectAttrs.addFlashAttribute("success", "成功發送驗證信");
+			return "redirect:/mem/forgetPasswordPage";  //重導到重設密碼頁面
+			
+		} catch (IllegalStateException e) {
+			model.addAttribute("forgetPwdError", e.getMessage());
+			model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+
+			return "front_end/customer/unlogined/memForgetPassword";
+		}
+	}
+	
+	
+	
+//	------------------重設密碼----------------
+	
+	@GetMapping("/resetPasswordPage")
+	public String resetPasswordPage(
+			@RequestParam("code") String code,
+			ModelMap model,
+			RedirectAttributes redirectAttrs,
+			HttpSession session) {
+		
+		String memAcc = redisSvc.getMemAccByCode(code);
+		if (memAcc == null) {
+			model.addAttribute("fail", "驗證碼失效或不存在");
+			return "redirect:/";
+		}
+		
+		Mem memForResetPwd = memSvc.getOneByMemAcc(memAcc);
+		if (memForResetPwd != null) {
+			model.addAttribute("memForResetPwd", memForResetPwd);
+			model.addAttribute("updatePasswordMem", new UpdatePasswordMem());
+			session.setAttribute("memForResetPwd", memForResetPwd);
+
+//			redisSvc.deleteCode(code);
+			
+			return "front_end/customer/unlogined/memResetPassword";
+		}
+		model.addAttribute("fail", "使用者不存在"); //*****要寫錯誤訊息的提示
+		return "redirect:/";
+	}
+	
+	
+	
+	@PostMapping("/resetPassword")
+	public String resetPassword(
+			@Validated(UpdatePasswordValidation.class) @ModelAttribute("updatePasswordMem") Mem resetPasswordMem,
+			BindingResult result,
+			ModelMap model,
+			HttpSession session,
+			RedirectAttributes redirectAttrs) {
+		
+		if (result.hasErrors()) {
+			return "/front_end/customer/unlogined/memResetPassword";
+		}
+		
+		Mem memForResetPwd = (Mem) session.getAttribute("memForResetPwd");
+		if (memForResetPwd == null) {
+			return "/front_end/customer/unlogined/memResetPassword";
+		}
+
+		memForResetPwd.setMemPwd(resetPasswordMem.getMemPwd());
+		memSvc.updateMem(memForResetPwd);
+		redirectAttrs.addFlashAttribute("success", "重設密碼成功");
+		return "redirect:/mem/showMemRegLoginForm";
+	}
+	
+
+	
 	
 	
 	@PostMapping("/login")

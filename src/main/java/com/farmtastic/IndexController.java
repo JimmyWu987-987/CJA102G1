@@ -14,27 +14,23 @@ public class IndexController {
 	}
 	
 	
-	@GetMapping("/fmem/logout")
-	public String memRegLogin() {
-		return "/front_end/farmer/unlogined/fmemRegLogin";
-	}
+//	@GetMapping("/fmem/logout")
+//	public String memRegLogin() {
+//		return "/front_end/farmer/unlogined/fmemRegLogin";
+//	}
+//	
+//	
+//
+//
+//	
+////	登入後才能看的 測試用
+//	@GetMapping("/fmem/fmemArea")
+//	public String fmemArea() {
+//		return "/front_end/farmer/logined/fmemArea";
+//	}
 	
 	
 
-
-	
-//	登入後才能看的 測試用
-	@GetMapping("/fmem/fmemArea")
-	public String fmemArea() {
-		return "/front_end/farmer/logined/fmemArea";
-	}
-	
-	
-//	登入後才能看的 
-	@GetMapping("/fmem/home")
-	public String fmemHome() {
-		return "/front_end/farmer/logined/home";
-	}
 }
 
 

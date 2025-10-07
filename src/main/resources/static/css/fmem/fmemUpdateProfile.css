@@ -1,0 +1,52 @@
+/*  *{outline: 1px solid #f00;}  */
+.list-pic{
+ 	margin-bottom: 20px; 
+}
+.list-pic.first-pic{
+ 	margin-top: 20px; 
+}
+.picBox{
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    border: 3px dashed #00000042;
+    margin-top: 4px; 
+    position: relative;
+}
+.addPic{
+ 	width: 100%;
+ 	height: 100%;
+    font: bold 80px Tahoma;
+    color: #00000075;
+    background-color: #00000030;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    line-height: 186px;
+}
+.picBox:hover .addPic{
+	transition: .5s;
+ 	color: #00000090; 
+	background-color: #ffffff25;
+}
+.picBox input.pic{
+    display: block; 
+    width:100%;
+    height: 100%;
+    margin-top: 0;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    opacity: 0;
+}
+.picBox img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+

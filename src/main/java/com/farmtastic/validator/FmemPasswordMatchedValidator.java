@@ -1,24 +1,25 @@
+
 package com.farmtastic.validator;
 
-import com.farmtastic.member.model.Mem;
+import com.farmtastic.fmember.model.Fmem;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class PasswordMatchedValidator implements ConstraintValidator<PasswordMatches, Mem> {
+public class FmemPasswordMatchedValidator implements ConstraintValidator<FmemPasswordMatches, Fmem> {
 	
 	@Override
-	public boolean isValid(Mem mem, ConstraintValidatorContext context) {
-		if(mem.getMemPwd() == null || mem.getMemPwdCheck() == null) {
+	public boolean isValid(Fmem fmem, ConstraintValidatorContext context) {
+		if(fmem.getFmemPwd() == null || fmem.getFmemPwdCheck() == null) {
 			return false;
 		}
 		
-		boolean isMatched = mem.getMemPwd().equals(mem.getMemPwdCheck());
+		boolean isMatched = fmem.getFmemPwd().equals(fmem.getFmemPwdCheck());
 		
 		if(!isMatched) {
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate("*與第一次輸入的密碼不一致")
-					.addPropertyNode("memPwdCheck")
+					.addPropertyNode("fmemPwdCheck")
 					.addConstraintViolation();
 		}
 		
