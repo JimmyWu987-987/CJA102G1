@@ -9,6 +9,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
+import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.member.model.Mem;
+import com.farmtastic.proorder.model.ProOrderVO;
+import com.farmtastic.proorderitem.model.ProOrderItemVO;
+
 // @SessionScope 確保這個 Service 實例綁定到單個使用者的 Session，
 // 並自動將其狀態 (購物車內容) 存入 Redis。
 @Service
@@ -44,7 +49,7 @@ public class ShoppingCartService implements Serializable {
      * @param quantity 欲購買的數量
      * @param memId 使用者 ID (用於記錄在 VO 中，雖然主要用 Session 管理)
      */
-    public void addProduct(Product product, Integer quantity, Integer memId) {
+    public void addProduct(Product product, Integer quantity) {
         if (quantity == null || quantity <= 0) return;
 
         Optional<ShoppingCartVO> existingItem = findItemByProId(product.getProId());
@@ -56,16 +61,30 @@ public class ShoppingCartService implements Serializable {
             item.setCartAmount(newAmount);
             calculateSubtotal(item); // 重新計算小計
         } else {
-            // 2. 如果商品不存在，則新增 ShoppingCartVO
+        	 // 如果購物車中沒有此商品，則新增項目
             ShoppingCartVO newItem = new ShoppingCartVO();
-            newItem.setMemId(memId);
+            // *** memId 暫時為 null 或 0，表示訪客購物 ***
+            newItem.setMemId(null);
             newItem.setProId(product.getProId());
             newItem.setCartName(product.getProName());
-            newItem.setCartUnitPrice(product.getProPrice()); // 假設 proPrice 就是單價
+            newItem.setCartUnitPrice(product.getProPrice());
             newItem.setCartAmount(quantity);
-            calculateSubtotal(newItem); // 設定小計
+            calculateSubtotal(newItem);     
             
             cartItems.add(newItem);
+        }
+    }
+
+    // *** 新增：當訪客登入後，用來更新購物車中所有 VO 的 memId ***
+    /**
+     * 在使用者登入後，將購物車中的所有項目綁定到新的會員 ID。
+     * @param loggedInMemId 已登入的會員 ID
+     */
+    public void updateMemIdInCart(Integer loggedInMemId) {
+        if (loggedInMemId != null && loggedInMemId > 0) {
+            for (ShoppingCartVO item : this.cartItems) {
+                item.setMemId(loggedInMemId);
+            }
         }
     }
 
@@ -128,9 +147,9 @@ public class ShoppingCartService implements Serializable {
      * * @return boolean 結帳是否成功
      */
     
-    public boolean checkout() {
+    public ProOrderVO checkout(Integer memId,Mem loggedInMember ,double PER) {
         if (this.cartItems.isEmpty()) {
-            return false; // 購物車是空的，無法結帳
+            return null; // 購物車是空的，無法結帳
         }
 
         // 這裡僅進行高階的模擬
@@ -138,13 +157,123 @@ public class ShoppingCartService implements Serializable {
         System.out.println("訂單包含 " + this.cartItems.size() + " 個項目，總金額為: XXX"); 
         
         // 實際的結帳/扣庫存/寫入訂單邏輯...
-        
+        // 建立商品訂單
+     			ProOrderVO proOrderVO = new ProOrderVO();
+
+     			// 將session的值儲存至 proOrderVO.memVO.memId
+     			Mem memVO = new Mem();
+     			// 設定 memVO 的 memId
+     			// 將包含 memId 的 memVO 設定給 proOrderVO
+     			memVO.setMemId(memId);
+     			proOrderVO.setMemVO(memVO);
+
+     			// 查詢該會員"未使用"的"全部"商品折價卷明細
+     			// 儲存 商品折價卷明細 的 商品折價卷編號
+
+     			// 新增訂單日期為當下系統時間
+     			// 讀取毫秒
+     			// 將日期格式轉成 yyyy-MM-dd HH:mm:ss，由JPA處理日期格式(ProOrderVO第47行)
+     			java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+     			// 存入proOrderVO物件
+     			proOrderVO.setProOrdDate(currentTimestamp);
+
+     			// 訂單狀態預設為(0:成立訂單)
+     			proOrderVO.setProOrdStatus((byte) 0);
+     			// 付款狀態預設為(0:未付款)
+     			proOrderVO.setProPayStatus((byte) 0);
+
+     			// 顯示從購物車傳入的商品訂單明細
+     			// 將購物車的session 存入商品訂單明細
+     			// 未完成
+     			List<ProOrderItemVO> proOrderitems = new LinkedList<ProOrderItemVO>();
+//     			for() {
+//     				
+//     			}
+     			
+
+     			// 計算商品總金額
+     			Integer proTotal = getCartTotal();
+     			proOrderVO.setProTotal(proTotal);
+
+     			// 計算運費金額
+     			Fmem fmem = new Fmem();
+     			// 查詢小農的運費
+     			// 這邊要寫一個fmem的service的方法
+     			// 1.等同學寫好小農的單一查詢。
+     			// 2.再從小農編號查詢該運費
+     			
+     			
+     			Integer prodFee = fmem.getProdFee();
+     			// 判斷運費欄位是否為null
+     			if (prodFee == null) {
+     				prodFee = 0; // 如果小農沒設定運費，則預設為0
+     			}
+     			fmem.setProdFee(prodFee);
+
+     			// 折價券折抵金額
+     			// 用memId查詢 同學寫好持有者明細
+     			// 等同學寫好持有者明細
+     			proOrderVO.setProOrdCpndisc(null);
+     			Integer proOrdCpndisc = proOrderVO.getProOrdCpndisc(); // 先手動輸入
+     			if(proOrdCpndisc == null) {
+     				proOrdCpndisc = 0;
+     			}
+     			
+
+     			// 會員持有點數
+     			Integer memPoint = loggedInMember.getMemPoint();
+
+     			// 商品訂單折抵會員點數
+     			Integer proOrdPointdisc = proOrderVO.getProOrdPointdisc();
+     			if(proOrdPointdisc == null) {
+     				proOrdPointdisc = 0;
+     			}
+     			proOrderVO.setProOrdPointdisc(proOrdPointdisc);
+     			// 修改該會員點數
+     			// 這邊要寫一個修改mem的service
+     			memPoint = memPoint - proOrdPointdisc;
+     			memVO.setMemPoint(memPoint);
+     			
+     			// 實付金額
+     			// 實付金額 = 商品總金額 + 運費 - 折價券折抵金額 - 訂單折抵會員點數
+     			Integer proOrdGrandTotal = proTotal + prodFee - proOrdCpndisc - proOrdPointdisc;
+     			proOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
+     			
+     			// 訂單回饋會員點數
+     			// 回饋 1%
+     			// 無條件捨去小數點
+     			Integer proOrdPointGet = (int) (Math.floor(proTotal * PER));
+     			proOrderVO.setProOrdPointGet(proOrdPointGet);
+     			
+     			// 物流追蹤碼
+     			// 小農前台做修改
+     			// 預設可以null
+     			
+     			// 出貨日期
+     			// 小農前台做修改
+     			// 預設可以null
+
+     			// 收件人姓名
+     			proOrderVO.setProOrdName(loggedInMember.getMemName());
+     			
+     			// 收件人電話
+     			proOrderVO.setProOrdMobile(loggedInMember.getMemMobile());
+     			
+     			// 收件人電子郵件
+     			proOrderVO.setProOrdEmail(loggedInMember.getMemEmail());
+     			
+     			// 收件人地址
+     			String proOrdAddr = loggedInMember.getMemZipcode();
+     			proOrdAddr += loggedInMember.getMemCity();
+     			proOrdAddr += loggedInMember.getMemDist();
+     			proOrdAddr += loggedInMember.getMemAddr();
+     			proOrderVO.setProOrdAddr(proOrdAddr);
 
         // 結帳成功後，清空購物車
         clearCart(); 
         
         System.out.println("--- 模擬結帳成功，購物車已清空 ---");
-        return true;
+        return proOrderVO;
     }
 
     /**

@@ -9,19 +9,22 @@
 	<span th:text="${session.loggedInMember}"></span><br>
 	<span th:text="${session.memId}"></span><br>
 	<span th:text="${session.memName}"></span><br>
+	<span th:text="${cartToProOrder}"></span><br>
+
+	
 	<h1>結帳頁面</h1>
-	<form method="post" action="@{insert}" th:object="${proOrderVO}">
+	<form method="post" action="@{insert}" th:object="${cartToProOrder}">
 		
 		<div>
 		<label>一般會員編號</label>
 		<input type="text" th:field="*{memVO.memId}" readonly/><br>
 		</div>
 		
-		<div>
+<!-- 		<div>
 		<label>一般商品折價卷持有者流水號編號</label>
 		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
-		<!-- 讀取商品折價卷持有者明細，要做下拉式選單 -->
-		</div>
+		讀取商品折價卷持有者明細，要做下拉式選單
+		</div> -->
 		
 		<div>
 		<label>訂單日期</label>
@@ -49,7 +52,7 @@
 		<input type="text" th:field="*{proTotal}" readonly/><br>
 		</div>
 		
-		<div>
+<!-- 		<div>
 		<label>商品運費</label>
 		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
 		</div>
@@ -57,11 +60,11 @@
 		<div>
 		<label>折價券折抵金額</label>
 		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
-		</div>
+		</div> -->
 		
 		<div>
 		<label>會員持有點數</label>
-		<span th:text="${session.loggedInMember.memPoint}"></span><br>
+		<span th:text="${memVO.memPoint}"></span><br>
 		</div>
 		
 		<div>

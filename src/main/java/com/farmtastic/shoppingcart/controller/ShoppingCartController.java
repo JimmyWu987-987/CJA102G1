@@ -11,15 +11,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.member.model.Mem;
+import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.shoppingcart.model.Product;
 import com.farmtastic.shoppingcart.model.ProductService;
 import com.farmtastic.shoppingcart.model.ShoppingCartService;
 import com.farmtastic.shoppingcart.model.ShoppingCartVO;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/cart")
 public class ShoppingCartController { // 類別名稱修正為標準的 Controller
-
+	
+	// Points Earning Rate
+	// 計算消費商品的總金額(金額不含運費)
+	private final static double PER = 0.01;
+	
 	// 注入 @SessionScope 的購物車服務
 	// 使用 final 確保 Service 不變，並透過建構子注入，是 Spring 推薦的做法
 	private final ShoppingCartService cartService;
@@ -59,9 +67,8 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		Product product = productService.getProductById(proId);
 
 		if (product != null && quantity > 0) {
-			// 注意：這裡假設 memId=1，請務必替換成實際登入的使用者 ID
-			Integer memId = 1;
-			cartService.addProduct(product, quantity, memId);
+			// *** 修正：不再傳遞 memId，由 Service 內部處理 memId = 0 (訪客) ***
+			cartService.addProduct(product, quantity);
 			redirectAttributes.addFlashAttribute("successMessage", product.getProName() + " 成功加入購物車！");
 		} else {
 			redirectAttributes.addFlashAttribute("errorMessage", "加入購物車失敗，商品不存在或數量無效。");
@@ -130,18 +137,43 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 
 		// URL: POST /cart/checkout
 		@PostMapping("/checkout")
-		public String checkout(RedirectAttributes redirectAttributes) {
+		public String checkout(RedirectAttributes redirectAttributes,HttpSession session,Model model) {
 
-			boolean success = cartService.checkout();
-
-			if (success) {
-				redirectAttributes.addFlashAttribute("successMessage", "結帳成功！您的訂單已送出。");
+			// *** 登入檢查邏輯 ***
+			// 在真實專案中，這裡會檢查 Spring Security 的 Context 或 Session 中是否有使用者物件
+			// 取得 session 的會員資訊
+			Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+			Integer memId = (Integer) session.getAttribute("memId");
+			String memName = (String) session.getAttribute("memName");
+			
+			if (loggedInMember == null || memId == null || memName == null || memName.trim().isEmpty()){
+				// 如果未登入，則導向登入頁面，並在 URL 中帶上「要結帳」的指示
+				redirectAttributes.addFlashAttribute("errorMessage", "請先登入或註冊以完成結帳！");
+				// *** 假設您的登入頁面是 /login ***
+				return "redirect:/mem/showMemRegLoginForm";
 			} else {
-				// 只有在購物車為空時才會失敗 (根據 Service 的邏輯)
+				
+				// 這是處理使用者剛才登入的動作
+				cartService.updateMemIdInCart(memId); // <--- 新增：更新購物車所有項目的 memId
+				
+			}
+			
+			ProOrderVO cartToProOrder = cartService.checkout(memId,loggedInMember,PER);
+
+			if (cartToProOrder != null ) {
+				redirectAttributes.addFlashAttribute("successMessage", "結帳成功！您的訂單已送出。");
+			    // 修正後的程式碼行：使用 Flash Attribute 傳輸物件
+			    redirectAttributes.addFlashAttribute("cartToProOrder", cartToProOrder);
+
+				return "redirect:/mem/proorders/addProOrder";
+			} else {
 				redirectAttributes.addFlashAttribute("errorMessage", "結帳失敗！您的購物車是空的。");
+				// 返回商品頁面
+				return "/cart/products/list";
 			}
 
-			return "redirect:/cart/view";
+
+			
 		}
 	}
 	

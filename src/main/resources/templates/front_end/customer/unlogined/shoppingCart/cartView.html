@@ -14,7 +14,11 @@
     </style>
 </head>
 <body>
-
+	<span th:text="${session.loggedInMember}"></span><br>
+	<span th:text="${session.memId}"></span><br>
+	<span th:text="${session.memName}"></span><br>
+	<span th:text="${cartItems}"></span><br>
+	<span th:text="${cartTotal}"></span><br>
     <h1>我的購物車</h1>
     <a th:href="@{/cart/products/list}" style="float: right; margin-top: -40px;">繼續購物</a>
     <hr>
@@ -71,7 +75,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4" class="total">總計金額:</td>
+                    <td colspan="4" class="total">商品總計金額	(不含運):</td>
                     <td class="total" th:with="total=${#aggregates.sum(cartItems.![cartSubTotal])}" th:text="${total}">500</td>
                     <td></td>
                 </tr>
