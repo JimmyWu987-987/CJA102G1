@@ -1,33 +1,105 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>商品折價券清單</title>
- <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<title>後台｜商品折價券清單</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<style>
+    .status-active {
+        color: #28a745;
+        font-weight: bold;
+    }
+    .status-inactive {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    .scope-badge {
+        padding: 4px 8px;
+        border-radius: 8px;
+        background-color: #e9ecef;
+        font-size: 0.9rem;
+    }
+</style>
 </head>
 <body>
 <div class="container mt-4">
-    <h2 class="mb-3">商品折價券清單</h2>
+    <h2 class="mb-4 text-center">商品折價券清單</h2>
+<div th:if="${error}" class="alert alert-danger text-center" role="alert"
+     th:text="${error}"></div>
+   <div class="d-flex justify-content-between align-items-center mb-3">
+       <!-- 模糊搜尋 -->
+    <form th:action="@{/admin/procpn/search}" method="get" class="d-flex">
+        <input type="text" name="keyword" class="form-control me-2"
+               placeholder="輸入折價券名稱關鍵字..."
+               th:value="${keyword}">
+        <button type="submit" class="btn btn-outline-primary">搜尋</button>
+    </form>
 
-    <table class="table table-bordered table-hover">
+    <!-- 日期篩選 -->
+    <form th:action="@{/admin/procpn/filter}" method="get" class="d-flex">
+        <input type="date" name="start" class="form-control me-2">
+        <input type="date" name="end" class="form-control me-2">
+        <button type="submit" class="btn btn-outline-primary">查詢</button>
+    </form>
+
+    <!-- 單筆查詢 -->
+    <form th:action="@{/admin/procpn/find}" method="get" class="d-flex">
+        <input type="number" name="id" class="form-control me-2" placeholder="輸入折價券編號">
+        <button type="submit" class="btn btn-outline-success">查單筆</button>
+    </form>
+
+    <!-- 新增按鈕 -->
+    <a class="btn btn-primary" th:href="@{/admin/procpn/addForm}">＋ 新增折價券</a>
+</div>
+
+    <table class="table table-striped table-hover align-middle">
         <thead class="table-light">
-         <tr>
-            <th>編號</th>
-            <th>名稱</th>
-            <th>折扣類型</th>
-            <th>折扣值</th>
-            <th>狀態</th>
-        </tr>
+            <tr class="text-center">
+                <th>編號</th>
+                <th>名稱</th>
+                <th>折扣類型</th>
+                <th>折扣值</th>
+                <th>門檻金額</th>
+                <th>適用範圍</th>
+                <th>起始日</th>
+                <th>有效天數</th>
+                <th>到期日</th>
+                <th>狀態</th>
+                <th>建立時間</th>
+                <th>操作</th>
+            </tr>
         </thead>
         <tbody>
-        <tr th:each="c : ${coupons}">
-            <td th:text="${c.proCpnId}"></td>
-            <td th:text="${c.cpnName}"></td>
-            <td th:text="${c.discType}"></td>
-            <td th:text="${c.discValue}"></td>
-            <td th:text="${c.isActive}"></td>
+            <tr th:each="c : ${coupons}" class="text-center">
+                <td th:text="${c.proCpnId}"></td>
+                <td th:text="${c.cpnName}"></td>
+                <td th:text="${c.discType}"></td>
+                <td th:text="${c.discValue}"></td>
+                <td th:text="${c.minSpend != null ? c.minSpend : '-'}"></td>
+                <td>
+                    <span class="scope-badge" th:text="${c.applScopeText}"></span>
+                </td>
+                <td th:text="${c.startDate != null ? c.startDate : '-'}"></td>
+                <td th:text="${c.validDays != null ? c.validDays + ' 天' : '-'}"></td>
+                <td th:text="${c.expDate != null ? c.expDate : '-'}"></td>
+                <td>
+                    <span th:text="${c.statusText}"
+                          th:classappend="${c.isActive == 'ACTIVE'} ? 'status-active' : 'status-inactive'"></span>
+                </td>
+                <td th:text="${c.crtAt}"></td>
+                <td>
+                    <a th:href="@{'/admin/procpn/edit/' + ${c.proCpnId}}" class="btn btn-sm btn-warning">編輯</a>
+                    <a th:href="@{'/admin/procpn/toggle/' + ${c.proCpnId}}" class="btn btn-sm btn-secondary">切換狀態</a>
+                </td>
+            </tr>
         </tbody>
     </table>
+
+    <div th:if="${#lists.isEmpty(coupons)}" class="text-center text-muted mt-4">
+        尚無折價券資料
+    </div>
 </div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

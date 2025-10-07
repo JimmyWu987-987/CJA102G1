@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>折價券詳細資料</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container mt-4">
+    <h3>折價券詳細資料</h3>
+    <hr>
+    <div th:if="${coupon != null}">
+        <p><strong>名稱：</strong> <span th:text="${coupon.cpnName}"></span></p>
+        <p><strong>折扣類型：</strong> <span th:text="${coupon.discType}"></span></p>
+        <p><strong>折扣值：</strong> <span th:text="${coupon.discValue}"></span></p>
+        <p><strong>門檻金額：</strong> <span th:text="${coupon.minSpend}"></span></p>
+        <p><strong>起始日：</strong> <span th:text="${coupon.startDate}"></span></p>
+        <p><strong>有效天數：</strong> <span th:text="${coupon.validDays} + '天'"></span></p>
+        <p><strong>到期日：</strong> <span th:text="${coupon.expDate}"></span></p>
+        <p><strong>狀態：</strong> <span th:text="${coupon.status}"></span></p>
+        <p><strong>適用範圍：</strong> <span th:text="${coupon.applScopeText}"></span></p>
+        <p><strong>描述：</strong> <span th:text="${coupon.cpnDesc}"></span></p>
+    </div>
+
+    <div th:if="${error}">
+        <p class="text-danger" th:text="${error}"></p>
+    </div>
+
+    <a th:href="@{/admin/procpn/listAllProCpn}" class="btn btn-secondary">返回列表</a>
+</div>
+</body>
+</html>
