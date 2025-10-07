@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.farmtastic.common.enums.ApplScope;
 import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.procpn.dto.ProCpnAdminDTO;
+import com.farmtastic.procpn.dto.ProCpnFormDTO;
 import com.farmtastic.procpn.dto.ProCpnResponseDTO;
 import com.farmtastic.procpn.model.ProCpnVO;
 
@@ -90,5 +91,26 @@ public class ProCpnMapperImp implements ProCpnMapper {
 		case PRODUCT -> "指定商品";
 		default -> "未知";
 		};
+	}
+
+	// from DTO to VO
+	public ProCpnVO toEntity(ProCpnFormDTO dto) {
+		ProCpnVO vo = new ProCpnVO();
+		vo.setCpnName(dto.getCpnName());
+		vo.setDiscType(dto.getDiscType());
+		vo.setDiscValue(dto.getDiscValue());
+		vo.setMinSpend(dto.getMinSpend());
+		// 防止 NullPointerException
+		if (dto.getStartDate() != null) {
+			vo.setStartDate(java.sql.Date.valueOf(dto.getStartDate()));
+		} else {
+			// 若表單未填，給預設今天
+			vo.setStartDate(new java.sql.Date(System.currentTimeMillis()));
+		}
+		vo.setValidDays(dto.getValidDays());
+		vo.setCpnDesc(dto.getCpnDesc());
+		vo.setApplScope(dto.getApplScope());
+		vo.setIsActive(dto.getIsActive());
+		return vo;
 	}
 }

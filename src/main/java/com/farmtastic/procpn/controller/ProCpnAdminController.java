@@ -8,13 +8,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.farmtastic.common.mapper.ProCpnMapper;
 import com.farmtastic.procpn.dto.DateRangeRequestDTO;
 import com.farmtastic.procpn.dto.ProCpnAdminDTO;
 import com.farmtastic.procpn.dto.ProCpnFormDTO;
 import com.farmtastic.procpn.model.ProCpnService;
+import com.farmtastic.procpn.model.ProCpnVO;
 
 import jakarta.validation.Valid;
 
@@ -24,20 +28,28 @@ import jakarta.validation.Valid;
 public class ProCpnAdminController {
 	@Autowired
 	private ProCpnService proCpnSvc;
+	@Autowired
+	private ProCpnMapper mapper;
 
 	// 顯示新增頁面
 	@GetMapping("/addForm")
 	public String showAddForm(Model model) {
-		model.addAttribute("proCpnVO", new ProCpnFormDTO());
+		model.addAttribute("proCpnForm", new ProCpnFormDTO());
 		return "/back_end/logined/procpn/addProCpn";
 	}
 
 	// 新增折價卷
-//	@PostMapping("/add")
-//	public String addProCpn(@ModelAttribute ProCpnFormDTO form) {
-//		proCpnSvc.addProCpn(form);
-//		return "redirect:/admin/procpn/listAllProCpn"; // 新增後回列表
-//	}
+	@PostMapping("/add")
+	public String addProCpn(@Valid @ModelAttribute("proCpnForm") ProCpnFormDTO form, BindingResult result,
+			Model model) {
+		if (result.hasErrors()) {
+			System.out.println("驗證錯誤數：" + result.getErrorCount());
+			return "/back_end/logined/procpn/addProCpn";
+		}
+		ProCpnVO vo = mapper.toEntity(form);
+		proCpnSvc.addProCpn(vo);
+		return "redirect:/admin/procpn/listAllProCpn"; // 新增後回列表
+	}
 
 	// 查詢全部折價卷
 	@GetMapping("/listAllProCpn")
