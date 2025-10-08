@@ -20,7 +20,7 @@ public class MemProCpnServiceImp {
 	@Autowired
 	private ProCpnRepository proCpnRepository; // ✅ 查找折價券名稱用這個
 	@Autowired
-	MemProCpnRepository repository;
+	MemProCpnRepository memProCpnRepository;
 	@Autowired
 	private MemProCpnMapperImp mapper;
 	@Autowired
@@ -28,17 +28,17 @@ public class MemProCpnServiceImp {
 
 	// 新增
 	public void addMemProCpn(MemProCpnVO memProCpnVO) {
-		repository.save(memProCpnVO);
+		memProCpnRepository.save(memProCpnVO);
 	}
 
 	// 修改
 	public void updateMemProCpn(MemProCpnVO memProCpnVO) {
-		repository.save(memProCpnVO);
+		memProCpnRepository.save(memProCpnVO);
 	}
 
 	// 查全部
 	public List<MemProCpnVO> getAll() {
-		return repository.findAll();
+		return memProCpnRepository.findAll();
 	}
 
 //	  /**
@@ -49,7 +49,7 @@ public class MemProCpnServiceImp {
 //    }
 	// 查「某會員」未使用且有效折價券
 	public List<MemProCpnVO> getValidCpnsByMember(Integer memId) {
-		return repository.findValidCpnByMember(memId);
+		return memProCpnRepository.findValidCpnByMember(memId);
 	}
 
 	public void giveRegisterCoupon(Integer memId) {
@@ -77,7 +77,36 @@ public class MemProCpnServiceImp {
 		}
 
 		// ✅ 儲存
-		repository.save(memCpn);
+		memProCpnRepository.save(memCpn);
 	}
+
+//發放生日折價券（每天執行）	
+//	public void giveBirthdayCoupons() {
+//		// 今天日期（不含時間）
+//		LocalDate today = LocalDate.now();
+//		// 找出今天生日的會員
+//		List<Mem> birthdayMems = memRepository.findByMemBirthMonthAndDay(today.getMonthValue(), today.getDayOfMonth());
+//
+//		// 找出生日券
+//		ProCpnVO birthdayCpn = proCpnRepository.findByCpnNameAndIsActive("生日快樂折價券", IsActive.ACTIVE)
+//				.orElseThrow(() -> new RuntimeException("找不到啟用中的生日券！"));
+//
+//		for (Mem mem : birthdayMems) {
+//			// 避免重複發券
+//			boolean alreadyHas = memProCpnRepository.existsByMemVO_MemIdAndProCpnVO_ProCpnId(mem.getMemId(),
+//					birthdayCpn.getProCpnId());
+//			if (alreadyHas)
+//				continue;
+//
+//			MemProCpnVO vo = new MemProCpnVO();
+//			vo.setMemVO(mem);
+//			vo.setProCpnVO(birthdayCpn);
+//			vo.setCpnUseStatus((byte) 0);
+//			vo.setRcvAt(LocalDateTime.now());
+//			vo.setEffStart(LocalDate.now());
+//			vo.setEffEnd(LocalDate.now().plusDays(birthdayCpn.getValidDays()));
+//			memProCpnRepository.save(vo);
+//		}
+//	}
 
 }

@@ -25,4 +25,6 @@ public interface MemProCpnRepository extends JpaRepository<MemProCpnVO, Integer>
 	@Query("SELECT m FROM MemProCpnVO m WHERE m.proCpnVO.proCpnId = :cpnId AND m.cpnUseStatus = :status")
 	List<MemProCpnVO> findUsedRecords(@Param("cpnId") Integer couponId, @Param("status") Byte status);
 
+//
+	boolean existsByMemVO_MemIdAndProCpnVO_ProCpnId(Integer memId, Integer proCpnId);
 }
