@@ -92,27 +92,15 @@ public class MemService {
 		System.out.println("memId: " + mem.getMemId());
 		repository.save(mem);
 	}
-	
-//	public void deleteMem(Integer memId) {
-//		dao.delete(memId);
-//	}
-//	
-//	public Mem getOneMem(Integer memId){
-//		return dao.findByMemId(memId);
-//	}
-//	public List<Mem> getMems(Byte accStatus){
-//		return dao.getMemsByAccStatus(accStatus);
-//	}
-	
-	// ***********************????************
+
 	public Mem getOneByMemAcc(String memAcc) {
 		return repository.findByMemAcc(memAcc);
 	}
 	
-	public Optional<Mem> getOneByMemId(Integer memId) {
-		return repository.findById(memId);
+	public Mem getOneByMemId(Integer memId) {
+		return repository.findById(memId).orElse(null);
 	}
-	// ***********************????************
+	
 	
 	public List<Mem> getAll(){
 		return repository.findAll();

@@ -35,6 +35,8 @@ import com.farmtastic.fmember.model.UpdateProfileFmem;
 import com.farmtastic.fmember.model.UpdateStoreFmem;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
+import com.farmtastic.style.model.Sty;
+import com.farmtastic.style.model.StyService;
 import com.farmtastic.validator.RegistrationValidation;
 import com.farmtastic.validator.UpdatePasswordValidation;
 
@@ -49,6 +51,9 @@ public class FmemController{
 	
 	@Autowired
 	FmemService fmemSvc;
+	
+	@Autowired
+	StyService stySvc;
 	
 	@Autowired
 	RedisService redisSvc;
@@ -343,6 +348,16 @@ public class FmemController{
 			RedirectAttributes redirectAttrs,
 			HttpServletRequest request) throws IOException {
 		
+		
+		
+//		 處理商店樣式
+		Byte styNo = updateStoreFmem.getStyNo();
+		Sty sty = stySvc.getOneByStyNo(styNo);
+		session.setAttribute("sty", sty);
+		///////////////////////
+		
+		
+
 		// 抓使用者選擇的圖片
 		MultipartFile storePicFile = updateStoreFmem.getStorePic();
 		
@@ -398,7 +413,7 @@ public class FmemController{
 			loggedInFmember.setStorePic(storePicFile.getBytes());
 		}
 		
-		fmemSvc.updateFmem(loggedInFmember);
+		
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
 		redirectAttrs.addFlashAttribute("success", "修改資料成功");
@@ -608,7 +623,12 @@ public class FmemController{
 			session.setAttribute("fmemId", fmem.getFmemId());
 			session.setAttribute("fmemName", fmem.getFmemName());
 			
-			// 4.登入成功後 重導至首頁或會員中心 ****************
+			// 4.登入成功後 重導至原本頁面或會員中心
+//			String redirectUrl  = (String) session.getAttribute("redirectAfterLogin");
+//			if ( redirectUrl  != null) {
+//				session.removeAttribute("redirectAfterLogin");
+//				return "redirect:" + redirectUrl ;
+//			}
 			return "redirect:/fmem/fmemArea";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());

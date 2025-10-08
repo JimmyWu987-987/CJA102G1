@@ -14,6 +14,12 @@ public class MemLoginInterceptor implements HandlerInterceptor {
 		HttpSession session = request.getSession();
 		if (session.getAttribute("loggedInMember") == null) {
 			
+			String uri = request.getRequestURI();
+			String queryString = request.getQueryString();
+			String fullUrl = uri + (queryString != null ? "?"+queryString : "");
+			
+			session.setAttribute("redirectAfterLogin", fullUrl);
+			
 			response.sendRedirect(request.getContextPath() + "/mem/showMemRegLoginForm");
 			return false;
 		}
