@@ -38,12 +38,10 @@
                         <label for="">密碼</label>
                         <input type="password" th:field="*{memPwdLogin}" class="pwdLogin" placeholder="mem測試密碼:1234">
                     </li>
-
 					<div th:if="${loginError}">
 						<span th:text="${loginError}" class="error error-login"></span>
 					</div>
-					
-					<a th:href="@{/mem/forgetPasswordPage}">忘記密碼</a>
+					<a class="forget-pwd-btn" th:href="@{/mem/forgetPasswordPage}">忘記密碼？</a>
 
 					<input type="submit" value="登入" class="btn link">
                 </ul>
@@ -69,7 +67,7 @@
                     <li>
                         <label for="">再次輸入密碼</label>
                         <input type="password" th:field="*{memPwdCheck}" placeholder="英文或數字或@ , 長度8~20">
-                        <span th:if="${#fields.hasErrors('memPwdCheck')}" th:errors="*{memPwdCheck}" class="error"></span>
+                        <span th:if="${#fields.hasErrors('memPwdCheck')}" th:each="error : ${#fields.errors('memPwdCheck')}" th:text="${error}" class="error"></span>
                     </li>
                     <li>
                         <label for="">姓名</label>

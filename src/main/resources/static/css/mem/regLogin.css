@@ -45,7 +45,7 @@ form.userInfo{
     cursor: pointer;
 }
 .reg-login-btns .btn-login{
-    margin-right: 1px;
+    margin-right: 3px;
 }
 .reg-login-btns .active-btn{
     background-color: #f9bd97;
@@ -121,6 +121,16 @@ form.userInfo .bankAcc{
 }
 
 
+a.forget-pwd-btn{
+	margin-top: 12px;
+	margin-left: 4px;
+}
+a.forget-pwd-btn:hover{
+	color: #744;
+	text-decoration: underline;
+}
+
+
 .error,
 .error-reg,
 .error-zipcode,
@@ -146,8 +156,9 @@ form.userInfo .bankAcc{
 	content: '*';
 }
 
-.error-login{
-	margin-top: 8px;
+.error-login,
+.error-forget{
+	margin-top: 6px;
 }
 
 

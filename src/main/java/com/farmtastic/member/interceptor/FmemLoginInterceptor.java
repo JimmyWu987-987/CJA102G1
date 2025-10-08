@@ -6,18 +6,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-public class LoginInterceptor implements HandlerInterceptor {
-
+public class FmemLoginInterceptor implements HandlerInterceptor{
+	
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
 		HttpSession session = request.getSession();
-		if (session.getAttribute("loggedInMember") == null) {
+		if (session.getAttribute("loggedInFmember") == null) {
 			
-			response.sendRedirect(request.getContextPath() + "/mem/showMemRegLoginForm");
+			response.sendRedirect(request.getContextPath() + "/fmem/showFmemRegLoginForm");
 			return false;
 		}
 
 		return true;
 	}
 }
+
+

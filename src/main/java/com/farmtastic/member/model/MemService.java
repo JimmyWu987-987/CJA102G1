@@ -20,7 +20,7 @@ public class MemService {
 	
 	
 	
-	public Mem Login(String memAccLogin, String memPwdLogin) {
+	public Mem login(String memAccLogin, String memPwdLogin) {
 		
 		// 1.先檢查帳號是否存在
 		Mem mem = repository.findByMemAcc(memAccLogin);
@@ -41,13 +41,27 @@ public class MemService {
 		return mem; //登入成功
 	}
 	
-	public void Register(String memAcc) {
-		//檢查帳號有沒有人使用過
-		Mem mem = repository.findByMemAcc(memAcc);
-		if(mem != null) {
-			throw new IllegalStateException("此帳號已有人註冊過");
-		}
+	public boolean existsByMemAcc(String memAcc) {
+		return repository.findByMemAcc(memAcc) != null;
 	}
+
+	public boolean existsByMemMobile(String memMobile) {
+		return repository.findByMemMobile(memMobile) != null;
+	}
+	
+//	public void register(String memAcc, String memMobile) {
+//		//檢查帳號有沒有人使用過
+//		Mem memByAcc = repository.findByMemAcc(memAcc);
+//		if(memByAcc != null) {
+////			result.rejectValue("memAcc", null, "此帳號已有人註冊過");
+//			throw new IllegalStateException("此帳號已有人註冊過");
+//		}
+//		
+//		Mem memByMobile = repository.findByMemMobile(memMobile);
+//		if(memByMobile != null) {
+//			throw new IllegalStateException("此手機已有人註冊過");
+//		}
+//	}
 	
 
 	

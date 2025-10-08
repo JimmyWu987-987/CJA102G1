@@ -34,7 +34,7 @@ public class Mem implements Serializable {
 	private Integer memId; // auto-increment
 
 	@Column(name = "mem_acc")
-	@NotEmpty(message = "帳號欄位請勿空白")
+	@NotEmpty(message = "帳號欄位請勿空白", groups = RegistrationValidation.class)
 	@Pattern(regexp = "^$|^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{8,20}$", 
 			 message = "帳號格式不符，請輸入英文或數字或_，長度8~20字", 
 			 groups = RegistrationValidation.class)
@@ -58,48 +58,48 @@ public class Mem implements Serializable {
 	private Byte accStatus = 0;
 
 	@Column(name = "mem_name")
-	@NotEmpty(message = "姓名欄位請勿空白")
+	@NotEmpty(message = "姓名欄位請勿空白", groups = RegistrationValidation.class)
 	@Pattern(regexp = "^$|^[\u4e00-\u9fa5a-zA-Z]{2,20}$", 
 			 message = "姓名格式不符，請輸入中文或英文，長度2~20字", 
 			 groups = RegistrationValidation.class)
 	private String memName;
 
 	@Column(name = "mem_birthday")
-	@NotNull(message = "生日欄位請勿空白")
+	@NotNull(message = "生日欄位請勿空白", groups = RegistrationValidation.class)
 	@MinAge(value = 12, message = "您必須年滿 12 歲")
 	private Date memBirthday;
 
 	@Column(name = "mem_mobile")
-	@NotEmpty(message = "手機欄位請勿空白")
+	@NotEmpty(message = "手機欄位請勿空白", groups = RegistrationValidation.class)
 	@Pattern(regexp = "^$|^09[0-9]{2}-[0-9]{6}$", 
 			 message = "手機格式不符，範例: 0912-123456", 
 			 groups = RegistrationValidation.class)
 	private String memMobile;
 
 	@Column(name = "mem_email")
-	@NotEmpty(message = "信箱欄位請勿空白")
+	@NotEmpty(message = "信箱欄位請勿空白", groups = RegistrationValidation.class)
 	@Pattern(regexp = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", 
 				message = "信箱格式不符", 
 				groups = RegistrationValidation.class)
 	private String memEmail;
 
 	@Column(name = "mem_zipcode")
-	@NotEmpty(message = "郵遞區號欄位請勿空白")
+	@NotEmpty(message = "郵遞區號欄位請勿空白", groups = RegistrationValidation.class)
 	@Pattern(regexp = "^$|^[0-9]{3}$", 
 			 message = "郵遞區號格式不符，請輸入3位數字", 
 			 groups = RegistrationValidation.class)
 	private String memZipcode;
 
 	@Column(name = "mem_city")
-	@NotEmpty(message = "縣市欄位請勿空白")
+	@NotEmpty(message = "縣市欄位請勿空白", groups = RegistrationValidation.class)
 	private String memCity;
 
 	@Column(name = "mem_dist")
-	@NotEmpty(message = "區域欄位請勿空白")
+	@NotEmpty(message = "區域欄位請勿空白", groups = RegistrationValidation.class)
 	private String memDist;
 
 	@Column(name = "mem_addr")
-	@NotEmpty(message = "地址欄位請勿空白")
+	@NotEmpty(message = "地址欄位請勿空白", groups = RegistrationValidation.class)
 	@Pattern(regexp = "^$|^[\u4e00-\u9fa5a-zA-Z0-9]{3,100}$", 
 			 message = "地址格式不符，請輸入中文或英文或數字，至少3字", 
 			 groups = RegistrationValidation.class)
