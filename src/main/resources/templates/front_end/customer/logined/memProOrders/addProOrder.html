@@ -11,6 +11,13 @@
 	<span th:text="${session.memName}"></span><br>
 	<span th:text="${cartToProOrder}"></span><br>
 
+	   <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+	
 	
 	<h1>結帳頁面</h1>
 	<form method="post" th:action="@{insert}" th:object="${cartToProOrder}">
@@ -55,7 +62,7 @@
 					<td th:text="${item.productVO.proName}">商品名稱</td> 
 					<td th:text="${item.proUnitPrice}">單價<</td>
 					<td th:text="${item.proAmount}">數量</td>
-					<td th:text="${item.proSubTota}">小計</td>
+					<td th:text="${item.proSubTotal}">小計</td>
 					
 					</tr>
 			</tbody>

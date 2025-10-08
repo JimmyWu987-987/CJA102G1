@@ -155,7 +155,7 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 			ProOrderVO cartToProOrder = cartService.checkout(memId,loggedInMember,PER);
 
 			if (cartToProOrder != null ) {
-				redirectAttributes.addFlashAttribute("successMessage", "結帳成功！您的訂單已送出。");
+				redirectAttributes.addFlashAttribute("successMessage", "成功將購物車轉移到訂單明細，請確認您的訂單。");
 			    // 修正後的程式碼行：使用 Flash Attribute 傳輸物件
 //			    redirectAttributes.addFlashAttribute("cartToProOrder", cartToProOrder);
 			    session.setAttribute("cartToProOrder", cartToProOrder);

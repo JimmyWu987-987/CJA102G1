@@ -126,14 +126,21 @@ public class ProOrderMemController {
 	        return "/front_end/customer/logined/memProOrders/addProOrder"; // 或其他錯誤頁面
 	    }
 		
-	 // 2. 設定 ProOrderVO 的關聯和從表單傳來的值
-	    // 從 Session 取得的 finalProOrderVO 應該是包含明細 (itemsToSave) 的
-	    // 但表單提交的 proOrderVO 包含了收件人等資訊，需要合併。
-
+	    // 2. 合併資料：將計算好的金額/折扣設定給 proOrderVO (表單提交的)
+	    // 🌟 關鍵修正：將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
+	    proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
+	    proOrderVO.setProOrdCpndisc(finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0);
+	    proOrderVO.setProOrdGrandTotal(finalProOrderVO.getProOrdGrandTotal());
+	    proOrderVO.setProTotal(finalProOrderVO.getProTotal());
+	    proOrderVO.setProOrdShipFee(finalProOrderVO.getProOrdShipFee());
+	    proOrderVO.setProOrdPointdisc(finalProOrderVO.getProOrdPointdisc() != null ? finalProOrderVO.getProOrdPointdisc() : 0);
+	    proOrderVO.setProOrdPointGet(finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
+	    
+	    // 3. 設定關聯和明細
 	    proOrderVO.setMemVO(loggedInMember);
-	    proOrderVO.setProOrderItems(itemsToSave); // 💥 將明細列表設定給從表單來的 proOrderVO
+	    proOrderVO.setProOrderItems(itemsToSave); 
 
-	    // 3. 呼叫 Service 進行新增
+	    // 4. 呼叫 Service 進行新增
 	    // 注意：這裡將表單提交的 proOrderVO 和從 Session 來的明細列表傳入
 	    // 這樣 Service 就能處理完整的訂單資訊。
 

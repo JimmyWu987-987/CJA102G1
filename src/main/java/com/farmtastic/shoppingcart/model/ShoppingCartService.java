@@ -200,9 +200,7 @@ public class ShoppingCartService implements Serializable {
      				proOrderItemVO.setProductVO(productVO);
      				proOrderItemVO.setProUnitPrice(shoppingCartVO.getCartUnitPrice());
      				proOrderItemVO.setProAmount(shoppingCartVO.getCartAmount());
-     				
-     				Integer proSubTota = shoppingCartVO.getCartUnitPrice()*shoppingCartVO.getCartAmount();
-     				proOrderItemVO.setProSubTota(proSubTota);
+     				proOrderItemVO.setProSubTotal(shoppingCartVO.getCartSubTotal());
      				
      				// 步驟 5: 將新的 ProOrderItemVO 加入到訂單明細清單中
      				proOrderItemsList.add(proOrderItemVO);
