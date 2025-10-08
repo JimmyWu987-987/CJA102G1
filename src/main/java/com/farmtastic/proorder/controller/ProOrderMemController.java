@@ -47,10 +47,6 @@ public class ProOrderMemController {
 		String memName = (String) session.getAttribute("memName");
 
 		// 錯誤驗證
-		if (loggedInMember == null || memId == null || memName == null || memName.trim().isEmpty()) {
-			// 沒有值則會重導至登入頁面
-			return "redirect:/mem/showMemRegLoginForm";
-		} else {
 			try {
 				Mem MemVO = new Mem();
 				MemVO.setMemId(memId);
@@ -60,10 +56,10 @@ public class ProOrderMemController {
 				model.addAttribute("proOrderList", list);
 			} catch (Exception e) {
 				// TODO: handle exception
-			}
+			
 
-			return "/front_end/customer/logined/memProOrders/listAllProOrder";
 		}
+			return "/front_end/customer/logined/memProOrders/listAllProOrder";
 	}
 
 	// 查詢單筆訂單
