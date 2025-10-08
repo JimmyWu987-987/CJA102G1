@@ -457,46 +457,23 @@ CREATE TABLE pro_cpn(
    CONSTRAINT  pro_cpn_id_pk PRIMARY KEY (pro_cpn_id)
 ) ENGINE=InnoDB;
 
-INSERT INTO pro_cpn  
-(cpn_name, disc_type, disc_value, min_spend, start_date, valid_days, cpn_desc, is_active, appl_scope) 
+INSERT INTO pro_cpn 
+(cpn_name, disc_type, disc_value, min_spend, start_date, valid_days, cpn_desc, is_active, appl_scope)
 VALUES
--- 1. 滿額折抵券（滿500折100，全館）
-('滿500折100', 0, 100.00, 500, '2025-09-01', NULL, '消費滿500折100元', 1, 0),
-
--- 2. 百分比折扣券（全館85折，有效期30天）
-('全館85折', 1, 0.85, NULL, NULL, 30, '領後30天內有效', 1, 0),
-
--- 3. 滿1000折200（全館）
-('滿1000折200', 0, 200.00, 1000, '2025-09-01', NULL, '消費滿1000折200元', 1, 0),
-
--- 4. 9折券（全館，新品專用）
-('全館9折券', 1, 0.90, NULL, '2025-09-15', 15, '全館適用，限新品', 1, 0),
-
--- 5. 滿300折50（尚未啟用）
-('滿300折50 (尚未啟用)', 0, 50.00, 300, '2025-10-01', NULL, '活動預備用券', 0, 0),
-
--- 6. 滿200折20（週末限定）
-('滿200折20', 0, 20.00, 200, '2025-09-05', 7, '週末限定折抵', 1, 0),
-
--- 7. 全館8折券
-('全館8折券', 1, 0.80, NULL, '2025-09-10', 10, '全館適用，限時8折', 1, 0),
-
--- 8. 滿1500折300
-('滿1500折300', 0, 300.00, 1500, '2025-09-20', NULL, '全館滿1500折300元', 1, 0),
-
--- 9. 新客專屬9折券
-('新客專屬9折券', 1, 0.90, NULL, NULL, 14, '新註冊會員14天內使用', 1, 0),
-
--- 10. 預購商品折100
-('預購折100', 0, 100.00, 600, '2025-09-25', 10, '預購商品專屬折抵', 1, 0);
-
+-- 1註冊會員：新客專屬 9 折券（14天內有效）
+('新客專屬9折券', 1, 0.90, NULL, NULL, 14, '新會員註冊後14天內可使用，全館適用', 1, 0),
+('新客專屬抵100', 0, 100, NULL, NULL, 14, '新會員註冊後14天內可使用，全館適用', 1, 0),
+-- 2️生日會員：生日當月 85 折券（30天內有效）
+('生日85折券', 1, 0.85, NULL, NULL, 30, '生日當月發放，全館適用，30天內有效', 1, 0),
+('生日折200', 0,200, NULL, NULL, 30, '生日當月發放，全館適用，30天內有效', 1, 0);
 
 -- 刪除/建立 商品折價卷持有者明細
 DROP TABLE IF EXISTS mem_pro_cpn;
 CREATE TABLE mem_pro_cpn (
     cpn_holder_detail_id INT NOT NULL AUTO_INCREMENT,
-    pro_cpn_id INT NOT NULL, -- FK
-    mem_id INT NOT NULL,     -- FK
+    pro_cpn_id INT NOT NULL,     -- FK
+    mem_id INT NOT NULL,         -- FK
+    pro_ord_id INT  NULL,     -- FK
     cpn_use_status TINYINT NOT NULL COMMENT '0:未使用,1:已使用,2:已過期',
     crt_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
     rcv_at DATETIME NOT NULL,
@@ -507,31 +484,27 @@ CREATE TABLE mem_pro_cpn (
 ) ENGINE=InnoDB;
 
 INSERT INTO mem_pro_cpn
-(pro_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end, used_at)
+(pro_cpn_id, mem_id, pro_ord_id, cpn_use_status, rcv_at, eff_start, eff_end, used_at)
 VALUES
--- 未使用（還在有效期內）
-(1, 1, 0, DATE_SUB(NOW(), INTERVAL 10 DAY), '2025-08-25', '2025-09-25', NULL),
-(2, 2, 0, DATE_SUB(NOW(), INTERVAL 7 DAY), '2025-09-01', '2025-09-30', NULL),
+(2, 1, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NULL),
+(1, 1, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
+(3, 1, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NULL),
+(4, 1, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
+-- 1️⃣ 新註冊會員：未使用中（有效期內）
+(1, 11, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
 
--- 已使用（在有效期內使用過）
-(3, 3, 1, DATE_SUB(NOW(), INTERVAL 15 DAY), '2025-08-20', '2025-09-20', DATE_SUB(NOW(), INTERVAL 3 DAY)),
-(4, 4, 1, DATE_SUB(NOW(), INTERVAL 12 DAY), '2025-08-28', '2025-09-28', DATE_SUB(NOW(), INTERVAL 2 DAY)),
+-- 2️⃣ 生日會員：未使用（今天生日當月）
+(2, 4, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NULL),
+(1, 4, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
 
--- 已過期（沒用到）
-(5, 5, 2, DATE_SUB(NOW(), INTERVAL 25 DAY), '2025-07-20', '2025-08-20', NULL),
-(6, 6, 2, DATE_SUB(NOW(), INTERVAL 30 DAY), '2025-07-25', '2025-08-25', NULL),
+-- 3️⃣ 生日會員：已使用
+(2, 2, 1, 1, '2025-09-01 10:00:00', '2025-09-01', '2025-09-30', '2025-09-15 13:00:00'),
 
--- 未使用（剛領，還有效）
-(7, 7, 0, DATE_SUB(NOW(), INTERVAL 3 DAY), '2025-09-05', '2025-09-30', NULL),
+-- 4️⃣ 測試過期狀況
+(1, 3, NULL, 2, '2025-06-01 09:00:00', '2025-06-01', '2025-06-15', NULL),
 
--- 已使用（昨天用掉）
-(8, 8, 1, DATE_SUB(NOW(), INTERVAL 5 DAY), '2025-09-01', '2025-09-25', DATE_SUB(NOW(), INTERVAL 1 DAY)),
-
--- 已過期（有效期已結束，沒使用）
-(9, 9, 2, DATE_SUB(NOW(), INTERVAL 40 DAY), '2025-07-01', '2025-07-31', NULL),
-
--- 未使用（快到期）
-(10, 10, 0, DATE_SUB(NOW(), INTERVAL 2 DAY), '2025-09-01', '2025-09-10', NULL);
+-- 5️⃣ 新註冊會員：剛領取，未使用
+(1, 12, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY), NULL);
 
 
 -- 刪除/建立 商城訂單
@@ -545,7 +518,7 @@ CREATE TABLE pro_order(
 	pro_pay_status TINYINT NOT NULL default 0,
 	pro_total INT NOT NULL,
 	pro_ord_ship_fee INT NOT NULL default 0,
-	pro_ord_cpndisc INT NOT NULL default 0,
+	pro_ord_cpndisc INT DEFAULT NULL default 0,
 	pro_ord_pointdisc INT NOT NULL default 0,
 	pro_ord_pointget INT NOT NULL,
 	pro_ord_grand_total INT NOT NULL,
@@ -897,29 +870,20 @@ CREATE TABLE act_cpn (
  CONSTRAINT act_cpn_id_pk PRIMARY KEY (act_cpn_id)
 ) ENGINE=InnoDB;
 
-INSERT INTO act_cpn
+INSERT INTO act_cpn 
 (cpn_name, disc_type, disc_value, min_spend, start_date, valid_days, cpn_desc, is_active)
 VALUES
--- 1
-('活動滿500折50', 0, 50.00, 500, '2025-09-01', NULL, '活動消費滿500折50元', 1),
--- 2
-('活動滿1000折200', 0, 200.00, 1000, '2025-09-05', NULL, '活動消費滿1000折200元', 1),
--- 3
-('活動85折券', 1, 0.85, NULL, NULL, 30, '活動報名後30天有效85折', 1),
--- 4
-('活動9折券', 1, 0.90, NULL, '2025-09-10', 15, '活動期間9折', 1),
--- 5
-('早鳥專屬100元券', 0, 100.00, 400, '2025-08-20', NULL, '早鳥報名專屬優惠', 1),
--- 6
-('團體報名8折', 1, 0.80, NULL, '2025-09-15', 10, '三人以上團報享8折', 1),
--- 7
-('學生專屬50元券', 0, 50.00, 200, '2025-09-01', 20, '學生報名專屬，滿200折50', 1),
--- 8
-('VIP專屬7折券', 1, 0.70, NULL, NULL, 7, 'VIP專屬7折，限7天使用', 1),
--- 9
-('預備活動券（尚未啟用）', 0, 150.00, 600, '2025-10-01', NULL, '活動預備用券', 0),
--- 10
-('滿1500折300', 0, 300.00, 1500, '2025-09-20', NULL, '活動消費滿1500折300元', 1);
+-- 1️註冊會員：新客專屬 9 折券（無期限）
+('新客專屬9折券', 1, 0.90, NULL, NULL, NULL, '新會員首次註冊即可獲得，無使用期限，全館適用', 1),
+
+-- 2️註冊會員：新客專屬 折1000（無期限）
+('新客專屬折1000', 0, 1000, NULL, NULL, NULL, '新會員註冊立即獲得，無使用期限，全館適用', 1),
+
+-- 3️生日會員：生日當月 85 折券（30天內有效）
+('生日85折券', 1, 0.85, NULL, NULL, 30, '生日當月發放，全館適用，30天內有效', 1),
+
+-- 4️生日會員：生日當月折500（30天內有效）
+('生日折500', 0, 500, NULL, NULL, 30, '生日當月發放，全館適用，30天內有效', 1);
 
 -- 刪除/建立 活動折價卷持有者明細
 DROP TABLE IF EXISTS mem_act_cpn;
@@ -927,6 +891,7 @@ CREATE TABLE mem_act_cpn (
     cpn_holder_detail_id INT NOT NULL AUTO_INCREMENT,
     act_cpn_id INT NOT NULL, -- FK
     mem_id INT NOT NULL,     -- FK
+    -- reg_id INT NULL;      -- FK
     cpn_use_status TINYINT NOT NULL COMMENT '0:未使用,1:已使用,2:已過期',
     crt_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
     rcv_at DATETIME NOT NULL,-- 領券時間
@@ -937,32 +902,21 @@ CREATE TABLE mem_act_cpn (
 ) ENGINE=InnoDB;
 
 -- 活動折價券持有者明細
-INSERT INTO mem_act_cpn
-(act_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end, used_at)
-VALUES
--- 未使用（有效中）--
-(1, 1, 0, DATE_SUB(NOW(), INTERVAL 10 DAY), '2025-08-20', '2025-09-20', NULL),
-(2, 2, 0, DATE_SUB(NOW(), INTERVAL 5 DAY), '2025-08-25', '2025-09-25', NULL),
+-- 新客專屬9折券 (無期限)
+INSERT INTO mem_act_cpn (act_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end)
+VALUES (1, 1, 0, NOW(), CURDATE(), NULL);
 
--- 已使用
-(3, 3, 1, DATE_SUB(NOW(), INTERVAL 15 DAY), '2025-08-10', '2025-09-10', DATE_SUB(NOW(), INTERVAL 2 DAY)),
-(4, 4, 1, DATE_SUB(NOW(), INTERVAL 20 DAY), '2025-08-05', '2025-09-05', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+-- 新客專屬折1000 (無期限)
+INSERT INTO mem_act_cpn (act_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end)
+VALUES (2, 1, 0, NOW(), CURDATE(), NULL);
 
--- 已過期（沒使用過）
-(5, 5, 2, DATE_SUB(NOW(), INTERVAL 30 DAY), '2025-07-20', '2025-08-20', NULL),
-(6, 6, 2, DATE_SUB(NOW(), INTERVAL 25 DAY), '2025-07-25', '2025-08-25', NULL),
+-- 生日85折券 (30天內有效)
+INSERT INTO mem_act_cpn (act_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end)
+VALUES (3, 1, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY));
 
--- 未使用（剛領，還在有效期）
-(7, 7, 0, DATE_SUB(NOW(), INTERVAL 1 DAY), '2025-09-01', '2025-09-30', NULL),
-
--- 已使用（當日使用）
-(8, 8, 1, DATE_SUB(NOW(), INTERVAL 2 DAY), '2025-08-28', '2025-09-28', NOW()),
-
--- 已過期（有效期已經過去）
-(9, 9, 2, DATE_SUB(NOW(), INTERVAL 40 DAY), '2025-07-01', '2025-07-31', NULL),
-
--- 未使用（即將到期）
-(10, 10, 0, DATE_SUB(NOW(), INTERVAL 3 DAY), '2025-08-29', '2025-09-10', NULL);
+-- 生日折500 (30天內有效)
+INSERT INTO mem_act_cpn (act_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end)
+VALUES (4, 1, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY));
 
 
 
@@ -1141,12 +1095,12 @@ ADD CONSTRAINT pro_com_mem_fk FOREIGN KEY (mem_id) REFERENCES mem(mem_id);
 
 -- (2-5) 活動折價卷
 -- 活動折價卷持有者明細（FK活動折價卷編號）（FK一般會員編號）
-
--- (2-6) 
--- 報名訂單（FK場次編號）（FK一般會員編號）（FK活動折價卷持有者流水號）
 ALTER TABLE mem_act_cpn
 ADD CONSTRAINT mem_act_cpn_fk FOREIGN KEY (act_cpn_id) REFERENCES act_cpn(act_cpn_id),
 ADD CONSTRAINT mem_act_cpn_mem_fk FOREIGN KEY (mem_id) REFERENCES mem(mem_id);
+-- ADD CONSTRAINT mem_act_cpn_reg_fk FOREIGN KEY (reg_id) REFERENCES reg(reg_id) ;
+-- (2-6) 
+-- 報名訂單（FK場次編號）（FK一般會員編號）（FK活動折價卷持有者流水號）
 
 -- (2-7) 
 -- 商品收藏清單（FK一般會員編號）（FK商品編號） 
