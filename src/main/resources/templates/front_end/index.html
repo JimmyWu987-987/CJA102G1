@@ -73,8 +73,7 @@
                 		<span th:text="${session.loggedInMember.memPoint}"></span>
                 	</div>
                 </div>
-                <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
-<!--                 <a th:href="@{/cart/view}" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a> -->
+                <a th:href="@{/cart/view}" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
 
             	<form th:action="@{/mem/logout}" th:if="${session.loggedInMember} != null" method="post" class="logout">
             		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
