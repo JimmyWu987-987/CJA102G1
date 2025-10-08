@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Farmtastic Chat</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      height: 100vh;
+      background: #E8F5E9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 登入畫面 */
+    .login-container {
+      background: white;
+      padding: 40px 50px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .login-container h1 {
+      color: #00BFA5;
+      margin-bottom: 20px;
+    }
+    .login-container input {
+      width: 220px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #b2bec3;
+      font-size: 16px;
+      outline: none;
+    }
+    .login-container button {
+      margin-left: 10px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #00BFA5;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.2s ease;
+    }
+    .login-container button:hover {
+      background: #00A88F;
+    }
+
+    /* 聊天畫面 */
+    .chat-wrapper {
+      display: none;
+      width: 100%;
+      height: 100%;
+      flex-direction: row;
+      background: #E8F5E9;
+    }
+
+    /* 左側側邊欄 */
+    .sidebar {
+      width: 260px;
+      background: #00BFA5;
+      color: #F1F8E9;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #A8E6CF;
+    }
+    .user-info {
+      padding: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      font-weight: bold;
+    }
+    .user-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .user-item {
+      padding: 12px 15px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s ease;
+    }
+    .user-item:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .user-item.active {
+      background: rgba(255,255,255,0.25);
+    }
+    .user-item.unread::after {
+      content: "";
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 10px;
+      height: 10px;
+      background: #ff7675;
+      border-radius: 50%;
+    }
+
+    /* 聊天主區 */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #F1F8E9;
+      border-left: 1px solid #C8E6C9;
+    }
+    .chat-header {
+      padding: 15px;
+      background: #A8E6CF;
+      color: #004D40;
+      font-weight: bold;
+      border-bottom: 1px solid #C8E6C9;
+    }
+    .chat-box {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 訊息氣泡 + 頭像 */
+    .msg-container {
+      display: flex;
+      align-items: flex-end;
+      margin: 6px 0;
+    }
+    .msg-container.left {
+      justify-content: flex-start;
+    }
+    .msg-container.right {
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      margin: 0 8px;
+      background: #00BFA5;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* 單色氣泡 + 浮動陰影 + hover亮度微調 */
+    .msg {
+      padding: 10px 16px;
+      border-radius: 20px;
+      max-width: 65%;
+      word-wrap: break-word;
+      font-size: 14px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      transition: filter 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+    .msg.left {
+      background: #DCF8C6;
+      color: #004D40;
+    }
+    .msg.right {
+      background: #00BFA5;
+      color: white;
+    }
+    .msg:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    .timestamp {
+      font-size: 11px;
+      color: #7b8b7b;
+      margin-top: 2px;
+    }
+    .msg-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .msg-meta.right {
+      align-items: flex-end;
+    }
+
+    /* 輸入框 */
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: #C8E6C9;
+      border-top: 1px solid #A5D6A7;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #A5D6A7;
+      outline: none;
+      background: white;
+    }
+    .chat-input button {
+      margin-left: 10px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      background: #00BFA5;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+      font-size: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .chat-input button:hover {
+      background: #00A88F;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 登入畫面 -->
+  <div class="login-container" id="loginPage">
+    <h1>🌿 Farmtastic Chat</h1>
+    <input type="text" id="userId" placeholder="輸入你的名稱">
+    <button onclick="connect()">連線</button>
+  </div>
+
+  <!-- 聊天室畫面 -->
+  <div class="chat-wrapper" id="chatPage">
+    <!-- 左側用戶列表 -->
+    <div class="sidebar">
+      <div class="user-info" id="userDisplay">使用者：</div>
+      <div class="user-list" id="userList"></div>
+    </div>
+
+    <!-- 右側對話區 -->
+    <div class="chat-area">
+      <div class="chat-header" id="chatHeader">請選擇一個用戶</div>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="chat-input">
+        <input type="text" id="msgInput" placeholder="輸入訊息...">
+        <button onclick="sendMsg()">✈️</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let ws;
+    let myId;
+    let currentChatUser = null;
+
+    function connect() {
+      myId = document.getElementById("userId").value.trim();
+      if (!myId) {
+        alert("請輸入名稱");
+        return;
+      }
+
+      ws = new WebSocket("ws://localhost:8080/ws/chat/" + myId);
+
+      ws.onopen = () => {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("chatPage").style.display = "flex";
+        document.getElementById("userDisplay").textContent = "使用者：" + myId;
+      };
+
+      ws.onclose = () => {
+        alert("❌ 已離線，請重新整理頁面重新連線。");
+      };
+
+      ws.onmessage = (event) => {
+        let data = JSON.parse(event.data);
+        if (data.type === "users") {
+          updateUserList(data.list.split(","));
+        } else if (data.type === "msg") {
+          const isMine = data.from === myId;
+          const isCurrent = data.from === currentChatUser || isMine;
+
+          if (isCurrent) {
+            appendMessage(
+              data.from,
+              data.content,
+              isMine,
+              new Date(data.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+            );
+          }
+
+          if (!isMine && !isCurrent) markUnread(data.from);
+        }
+      };
+    }
+
+    function updateUserList(users) {
+      let list = document.getElementById("userList");
+      list.innerHTML = "";
+      users.forEach(u => {
+        if (u && u !== myId) {
+          let div = document.createElement("div");
+          div.className = "user-item";
+          div.id = "user-" + u;
+          div.textContent = u;
+          div.onclick = () => selectUser(u, div);
+          list.appendChild(div);
+        }
+      });
+    }
+
+    function selectUser(user, element) {
+      currentChatUser = user;
+      document.querySelectorAll(".user-item").forEach(el => el.classList.remove("active"));
+      element.classList.add("active");
+      element.classList.remove("unread");
+      document.getElementById("chatHeader").textContent = "與 " + user + " 的聊天";
+      document.getElementById("chatBox").innerHTML = "";
+
+      fetch(`/history/${myId}/${user}`)
+        .then(res => res.json())
+        .then(messages => {
+          messages.forEach(m => {
+            let msg = JSON.parse(m);
+            appendMessage(
+              msg.from,
+              msg.content,
+              msg.from === myId,
+              new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+            );
+          });
+        });
+    }
+
+    function appendMessage(from, content, isMine, time) {
+      const box = document.getElementById("chatBox");
+      let container = document.createElement("div");
+      container.className = "msg-container " + (isMine ? "right" : "left");
+
+      let avatar = document.createElement("div");
+      avatar.className = "avatar";
+      avatar.textContent = from.charAt(0).toUpperCase();
+
+      let meta = document.createElement("div");
+      meta.className = "msg-meta " + (isMine ? "right" : "left");
+
+      let div = document.createElement("div");
+      div.className = "msg " + (isMine ? "right" : "left");
+      div.textContent = content;
+
+      let ts = document.createElement("div");
+      ts.className = "timestamp";
+      ts.textContent = time;
+
+      meta.appendChild(div);
+      meta.appendChild(ts);
+
+      if (isMine) {
+        container.appendChild(meta);
+        container.appendChild(avatar);
+      } else {
+        container.appendChild(avatar);
+        container.appendChild(meta);
+      }
+
+      box.appendChild(container);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendMsg() {
+      if (!currentChatUser) {
+        alert("請先選擇聊天對象");
+        return;
+      }
+      let input = document.getElementById("msgInput");
+      let content = input.value.trim();
+      if (content === "") return;
+
+      let now = Date.now();
+      let msg = { type: "msg", from: myId, to: currentChatUser, content: content, timestamp: now };
+      ws.send(JSON.stringify(msg));
+      appendMessage(myId, content, true, new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+      input.value = "";
+    }
+
+    function markUnread(userId) {
+      const el = document.getElementById("user-" + userId);
+      if (el) el.classList.add("unread");
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter" && document.getElementById("chatPage").style.display === "flex") {
+        e.preventDefault();
+        sendMsg();
+      }
+    });
+  </script>
+</body>
+</html>
