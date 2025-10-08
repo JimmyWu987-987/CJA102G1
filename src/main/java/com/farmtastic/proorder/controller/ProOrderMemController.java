@@ -116,14 +116,42 @@ public class ProOrderMemController {
 //			model.addAttribute("cartToProOrder", finalProOrderVO);
 //			return "/front_end/customer/logined/memProOrders/addProOrder";
 //		}
-		// 從 ProOrderVO 中取出明細列表
-		List<ProOrderItemVO> proOrderItemVO = finalProOrderVO.getProOrderItems();
-		// 驗證成功後，新增資料
-		proOrdSvc.addProOrder(finalProOrderVO, proOrderItemVO);
-		// 因為要計算會員持有點數，還要寫一個修改Mem的service方法
+	    // 🌟 關鍵修正：確保 proOrderVO 裡面的明細列表是正確的 🌟
+	    List<ProOrderItemVO> itemsToSave = finalProOrderVO.getProOrderItems();
+	    
+	    // 檢查明細列表是否為空
+	    if (itemsToSave == null || itemsToSave.isEmpty()) {
+	        // 處理錯誤，例如重定向回購物車頁面
+	        model.addAttribute("errorMessage", "購物車是空的，無法新增訂單！");
+	        return "/front_end/customer/logined/memProOrders/addProOrder"; // 或其他錯誤頁面
+	    }
+		
+	 // 2. 設定 ProOrderVO 的關聯和從表單傳來的值
+	    // 從 Session 取得的 finalProOrderVO 應該是包含明細 (itemsToSave) 的
+	    // 但表單提交的 proOrderVO 包含了收件人等資訊，需要合併。
 
-		// 將資料交給資料庫
+	    proOrderVO.setMemVO(loggedInMember);
+	    proOrderVO.setProOrderItems(itemsToSave); // 💥 將明細列表設定給從表單來的 proOrderVO
 
-		return "/front_end/customer/logined/memProOrders/addProOrder";
+	    // 3. 呼叫 Service 進行新增
+	    // 注意：這裡將表單提交的 proOrderVO 和從 Session 來的明細列表傳入
+	    // 這樣 Service 就能處理完整的訂單資訊。
+
+	    try {
+	        // proOrdSvc 是 ProOrderSevice 的實例
+	        proOrdSvc.addProOrder(proOrderVO, itemsToSave); 
+	        
+	        // 清除 Session 相關屬性
+	        session.removeAttribute("cartToProOrder");
+	        
+	    } catch (RuntimeException e) {
+	        // 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
+	        model.addAttribute("errorMessage", "新增訂單失敗：" + e.getMessage());
+	        model.addAttribute("memVO", loggedInMember);
+	        model.addAttribute("cartToProOrder", finalProOrderVO);
+	        return "/front_end/customer/logined/memProOrders/addProOrder";
+	    }
+
+		return "redirect:/mem/proorders/listAllProOrder";
 	}
 }

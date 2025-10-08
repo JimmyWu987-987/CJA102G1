@@ -122,5 +122,12 @@ public class ProOrderItemVO implements Serializable{
 	public void setProSubTota(Integer proSubTota) {
 		this.proSubTotal = proSubTota;
 	}
+
+
+	@Override
+	public String toString() {
+		return "ProOrderItemVO [id=" + id + ", productVO=" + productVO + ", proOrderVO=" + proOrderVO
+				+ ", proUnitPrice=" + proUnitPrice + ", proAmount=" + proAmount + ", proSubTotal=" + proSubTotal + "]";
+	}
 	
 }

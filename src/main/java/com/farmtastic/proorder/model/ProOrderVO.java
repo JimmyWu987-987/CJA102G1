@@ -321,5 +321,17 @@ public class ProOrderVO implements Serializable {
 		this.proOrderItems = proOrderItems;
 	}
 
+	@Override
+	public String toString() {
+		return "ProOrderVO [proOrdId=" + proOrdId + ", memVO=" + memVO + ", memProCpnVO=" + memProCpnVO
+				+ ", proOrdDate=" + proOrdDate + ", proOrdStatus=" + proOrdStatus + ", proPayStatus=" + proPayStatus
+				+ ", proTotal=" + proTotal + ", proOrdShipFee=" + proOrdShipFee + ", proOrdCpndisc=" + proOrdCpndisc
+				+ ", proOrdPointdisc=" + proOrdPointdisc + ", proOrdPointGet=" + proOrdPointGet + ", proOrdGrandTotal="
+				+ proOrdGrandTotal + ", proOrdComm=" + proOrdComm + ", proOrdPayment=" + proOrdPayment
+				+ ", proOrdShipment=" + proOrdShipment + ", proTrackingNo=" + proTrackingNo + ", proOrdShipdate="
+				+ proOrdShipdate + ", proOrdName=" + proOrdName + ", proOrdMobile=" + proOrdMobile + ", proOrdEmail="
+				+ proOrdEmail + ", proOrdAddr=" + proOrdAddr + ", proOrderItems=" + proOrderItems + "]";
+	}
+	
 
 }

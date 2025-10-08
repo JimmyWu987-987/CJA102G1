@@ -1,78 +1,89 @@
-package com.farmtastic.shoppingcart.model;
+package com.farmtastic.shoppingcart.model; // 請依據你的專案結構調整 package
 
+import java.io.Serializable;
+
+import com.farmtastic.fmember.model.Fmem; // 假設的賣家實體
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "product")
-public class Product implements java.io.Serializable {
-	private static final long serialVersionUID = 1L;
+public class Product implements Serializable {
 
-	@Id
-	@Column(name = "pro_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer proId;
-	
-	@NotEmpty(message = "產品名稱不能空白")
-	@Size(min =2, max = 50, message = "產品名稱必須介於 {min} 到 {max} 個字元之間")
-	@Column(name = "pro_name")
-	private String proName;
+    private static final long serialVersionUID = 1L;
 
-	@NotNull(message = "庫存不能為空")
-	@Min(value = 0, message = "庫存不能小於0")
-	@Column(name = "pro_stock")
-	private Integer proStock;
+    // 1. 主鍵 (pro_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT)
+    @Id
+    @Column(name = "pro_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer proId;
 
-	@NotNull(message = "價格不能為空")
-	@Min(value = 0, message = "價格不能小於0")
-	@Column(name = "pro_price")
-	private Integer proPrice;
+    // 2. 商品名稱 (pro_name VARCHAR(100) NOT NULL)
+    @NotEmpty(message = "產品名稱不能空白")
+    @Size(min = 2, max = 100, message = "產品名稱長度必須在 2 到 100 個字元之間")
+    @Column(name = "pro_name")
+    private String proName;
 
-	@Column(name = "pro_status")
-	private Integer proStatus;
+    // 3. 庫存 (pro_stock INT NOT NULL)
+    @NotNull(message = "庫存不能為空")
+    @Min(value = 0, message = "庫存不能小於 0")
+    @Column(name = "pro_stock")
+    private Integer proStock;
 
-	@Min(value = 0, message = "分數不能小於0")
-	@Max(value = 5, message = "分數不能高於5")
-	@Column(name = "pro_score")
-	private Integer proScore;
-	
-	@Column(name = "pro_cnt")
-	private Integer proCnt;
+    // 4. 價格 (pro_price INT NOT NULL)
+    @NotNull(message = "價格不能為空")
+    @Min(value = 1, message = "價格必須大於 0")
+    @Column(name = "pro_price")
+    private Integer proPrice;
 
-	@NotEmpty(message = "產地來源不能為空")
-	@Column(name = "pro_from")
-	private String proFrom;
+    // 5. 狀態 (pro_status INT NOT NULL DEFAULT 0)
+    @NotNull
+    @Column(name = "pro_status")
+    private Integer proStatus = 0; // 設定預設值 0
 
-	
-	public Product() {
-		
-	}
+    // 6. 評分 (pro_score INT)
+    @Column(name = "pro_score")
+    private Integer proScore;
 
-	public Product(String proName, Integer proStock, Integer proPrice, Integer proStatus, Integer proScore, Integer proCnt,
-			String proFrom) {
-		super();
+    // 7. 銷量/計數 (pro_cnt INT)
+    @Column(name = "pro_cnt")
+    private Integer proCnt;
 
-		this.proName = proName;
-		this.proStock = proStock;
-		this.proPrice = proPrice;
-		this.proStatus = proStatus;
-		this.proScore = proScore;
-		this.proCnt = proCnt;
-		this.proFrom = proFrom;
-	}
+    // 8. 產地 (pro_from VARCHAR(10))
+    @Size(max = 10, message = "產地名稱不能超過 10 個字元")
+    @Column(name = "pro_from")
+    private String proFrom;
+
+    // 9. 描述 (pro_des VARCHAR(100))
+    @Size(max = 100, message = "描述長度不能超過 100 個字元")
+    @Column(name = "pro_des")
+    private String proDes;
+
+    // 10. 外部鍵：賣家 (fmem_id INT)
+    @ManyToOne 
+    @JoinColumn(name = "fmem_id")
+    private Fmem fmemVO; // 使用 fmemVO 作為關聯實體
+
+    // 11. 外部鍵：商品分類 (pro_cate_id INT)
+//    @ManyToOne 
+//    @JoinColumn(name = "pro_cate_id")
+//    private ProCategory proCategoryVO; // 使用 proCategoryVO 作為關聯實體
+
+    // =============== Constructors, Getters/Setters ===============
+    
+    // JPA 需要一個無參數的建構子
+    public Product() {}
 
 	public Integer getProId() {
 		return proId;
@@ -138,7 +149,21 @@ public class Product implements java.io.Serializable {
 		this.proFrom = proFrom;
 	}
 
-	
+	public String getProDes() {
+		return proDes;
+	}
 
+	public void setProDes(String proDes) {
+		this.proDes = proDes;
+	}
 
+	public Fmem getFmemVO() {
+		return fmemVO;
+	}
+
+	public void setFmemVO(Fmem fmemVO) {
+		this.fmemVO = fmemVO;
+	}
+    
+    
 }
