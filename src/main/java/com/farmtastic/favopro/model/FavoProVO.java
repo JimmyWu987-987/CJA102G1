@@ -1,7 +1,7 @@
 package com.farmtastic.favopro.model;
 
 import com.farmtastic.member.model.Mem;
-import com.farmtastic.product.model.Product;
+import com.farmtastic.shoppingcart.model.Product;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

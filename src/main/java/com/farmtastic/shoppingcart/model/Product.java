@@ -1,4 +1,4 @@
-package com.farmtastic.product.model;
+package com.farmtastic.shoppingcart.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,7 +45,7 @@ public class Product implements java.io.Serializable {
 	private Integer proStatus;
 
 	@Min(value = 0, message = "分數不能小於0")
-	@Max(value = 0, message = "分數不能高於0")
+	@Max(value = 5, message = "分數不能高於5")
 	@Column(name = "pro_score")
 	private Integer proScore;
 	

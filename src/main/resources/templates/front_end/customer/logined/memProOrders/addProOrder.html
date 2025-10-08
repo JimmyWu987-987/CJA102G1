@@ -9,19 +9,22 @@
 	<span th:text="${session.loggedInMember}"></span><br>
 	<span th:text="${session.memId}"></span><br>
 	<span th:text="${session.memName}"></span><br>
+	<span th:text="${cartToProOrder}"></span><br>
+
+	
 	<h1>結帳頁面</h1>
-	<form method="post" action="@{insert}" th:object="${proOrderVO}">
+	<form method="post" action="@{insert}" th:object="${cartToProOrder}">
 		
 		<div>
 		<label>一般會員編號</label>
 		<input type="text" th:field="*{memVO.memId}" readonly/><br>
 		</div>
 		
-		<div>
+<!-- 		<div>
 		<label>一般商品折價卷持有者流水號編號</label>
 		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
-		<!-- 讀取商品折價卷持有者明細，要做下拉式選單 -->
-		</div>
+		讀取商品折價卷持有者明細，要做下拉式選單
+		</div> -->
 		
 		<div>
 		<label>訂單日期</label>
@@ -38,34 +41,58 @@
 		<input type="text" th:field="*{proPayStatus}" readonly/><br>
 		</div> -->
 		<div>
-		=================商品訂單明細的範圍==================
-		</div><br>
-		
-		
-		
+		<span>=================商品訂單明細的範圍==================</span><br>
+		<h2>訂單明細</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>商品 ID</th>
+					<th>商品名稱</th>
+					<th>單價</th>
+					<th>數量</th>
+					<th>小計</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item, stat : *{proOrderItems}">
+					<td th:text="${item.productVO.proId}">商品 ID</td> 
+					<td th:text="${item.productVO.proName}">商品名稱</td> 
+					<td th:text="${item.proUnitPrice}">單價<</td>
+					<td th:text="${item.proAmount}">數量</td>
+					<td th:text="${item.proSubTota}">小計</td>
+					
+					</tr>
+			</tbody>
+		</table>
 		<div>
 		<label>商品總金額</label>
 		<input type="text" th:field="*{proTotal}" readonly/><br>
 		</div>
+		<span>=================商品訂單明細的範圍==================</span>
+		</div><br>
+		
+		
+		
 		
 		<div>
 		<label>商品運費</label>
-		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
+		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
 		</div>
 		
 		<div>
 		<label>折價券折抵金額</label>
-		<input type="text" th:value="${fmemVO.prodFee}" readonly/><br>
+		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
 		</div>
 		
 		<div>
 		<label>會員持有點數</label>
-		<input type="text" th:value="${session.loggedInMember.memPoint}" readonly/><br>
+		<span th:text="${memVO.memPoint}"></span><br>
 		</div>
 		
 		<div>
 		<label>商品訂單折抵會員點數</label>
-		<input type="number" th:field="*{proOrdPointdisc}" value="" min="0" th:max="${session.loggedInMember.memPoint}"/><br>
+		<input type="number" th:field="*{proOrdPointdisc}" value="0" min="0" th:max="${session.loggedInMember.memPoint}"/><br>
+		<!-- 這邊前端JS要寫一個輸入方法方法，當這邊有輸入值的時候，訂單的總金額也要改變-->
 		</div>
 		
 		<div>
@@ -111,10 +138,22 @@
 		<input type="text" th:field="*{proOrdName}"/><br>
 		</div>
 		
-		收件人姓名
-		收件人電話
-		收件人電子郵件
-		收件人地址
+		<div>
+		<label>收件人電話</label>
+		<input type="text" th:field="*{proOrdMobile}"/><br>
+		</div>
+		
+		<div>
+		<label>收件人電子郵件</label>
+		<input type="email" th:field="*{proOrdEmail}"/><br>
+		</div>
+		
+		<div>
+		<label>收件人地址</label>
+		<input type="text" th:field="*{proOrdAddr}"/><br>
+		</div>
+		
+		<div><button type="submit" id="submit"> 送出新增 </button></div>
 		
 	</form>
 <script>

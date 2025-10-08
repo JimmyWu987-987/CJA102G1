@@ -34,7 +34,7 @@ public class ProOrderFmemController {
 	public String listAllProOrder(Model model, HttpSession session) {
 
 		// 取得 session 的會員資訊
-		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInMember");
+		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
 		Integer fmemId = (Integer) session.getAttribute("fmemId");
 		String fmemName = (String) session.getAttribute("fmemName");
 		

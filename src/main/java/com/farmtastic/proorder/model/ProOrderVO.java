@@ -2,7 +2,8 @@ package com.farmtastic.proorder.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -106,7 +107,7 @@ public class ProOrderVO implements Serializable {
 	@OneToMany(mappedBy="proOrderVO", // 指向 ProOrderItemVO 要關聯的屬性
 			   cascade=CascadeType.ALL, // 訂單刪除，明細也刪除
 			   orphanRemoval = true)
-	private Set<ProOrderItemVO> proOrderItems = new HashSet<>();
+	private List<ProOrderItemVO> proOrderItems = new ArrayList<>();
 
 	public ProOrderVO() {
 		super();
@@ -117,7 +118,7 @@ public class ProOrderVO implements Serializable {
 			byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
 			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, byte proOrdPayment,
 			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, String proOrdName, String proOrdMobile,
-			String proOrdEmail, String proOrdAddr, @Valid Set<ProOrderItemVO> proOrderItems) {
+			String proOrdEmail, String proOrdAddr, List<ProOrderItemVO> proOrderItems) {
 		super();
 		this.proOrdId = proOrdId;
 		this.memVO = memVO;
@@ -311,11 +312,11 @@ public class ProOrderVO implements Serializable {
 		this.proOrdAddr = proOrdAddr;
 	}
 
-	public Set<ProOrderItemVO> getProOrderItems() {
+	public List<ProOrderItemVO> getProOrderItems() {
 		return proOrderItems;
 	}
 
-	public void setProOrderItems(Set<ProOrderItemVO> proOrderItems) {
+	public void setProOrderItems(List<ProOrderItemVO> proOrderItems) {
 		this.proOrderItems = proOrderItems;
 	}
 
