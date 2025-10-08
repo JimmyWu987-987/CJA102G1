@@ -1,52 +1,36 @@
-package com.farmtastic.shoppingcart.model; // 建議放在此處
+// com.farmtastic.shoppingcart.model.ProductService.java (修正版)
 
+package com.farmtastic.shoppingcart.model;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
     
-    // **************************** 輔助方法：模擬資料庫查詢 ****************************
-    // 在真實專案中，這裡會注入 ProductRepository 來執行 findById 或 findAll
+    // 🌟 注入真正的 Repository 🌟
+    @Autowired
+    private ProductRepository productRepository; 
 
     /**
-     * 從資料庫中模擬取得單一商品
+     * 從資料庫中取得單一商品
      */
+    // 這裡不需要 @Transactional，因為 ProOrderSevice 已經有
     public Product getProductById(Integer proId) {
-        // 這是從 ShoppingCartController 移過來的邏輯
-        if (proId.equals(101)) {
-            Product p = new Product();
-            p.setProId(101);
-            p.setProName("有機蘋果");
-            p.setProPrice(50); 
-            p.setProStock(100); 
-            return p;
-        } else if (proId.equals(102)) {
-            Product p = new Product();
-            p.setProId(102);
-            p.setProName("新鮮雞蛋");
-            p.setProPrice(12); 
-            p.setProStock(200);
-            return p;
-        }
-        return null;
+        Optional<Product> productOptional = productRepository.findById(proId);
+        
+        // 🚨 建議加上錯誤處理，如果商品 ID 不存在應拋出例外
+        return productOptional.orElseThrow(
+            () -> new RuntimeException("商品 ID: " + proId + " 不存在，無法建立訂單明細。")
+        );
     }
-
-    /**
-     * 從資料庫中模擬取得所有商品 (供 ProductController 呼叫)
-     */
-    public List<Product> getAllProducts() {
-        List<Product> products = new ArrayList<>();
-        
-        // 呼叫 getProductById 模擬取得清單
-        Product p1 = getProductById(101);
-        if (p1 != null) products.add(p1);
-        
-        Product p2 = getProductById(102);
-        if (p2 != null) products.add(p2);
-        
-        return products;
+    
+    public List<Product> getAllProducts(){
+    	return productRepository.findAll();
     }
+    
+    // ... (保留 getAllProducts 或其他方法，並用 Repository 實作)
 }

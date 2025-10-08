@@ -11,20 +11,23 @@
 	<span th:text="${session.memName}"></span><br>
 	<span th:text="${cartToProOrder}"></span><br>
 
+	   <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+	
 	
 	<h1>結帳頁面</h1>
-	<form method="post" action="@{insert}" th:object="${cartToProOrder}">
+	<form method="post" th:action="@{insert}" th:object="${cartToProOrder}">
 		
 		<div>
 		<label>一般會員編號</label>
 		<input type="text" th:field="*{memVO.memId}" readonly/><br>
 		</div>
 		
-<!-- 		<div>
-		<label>一般商品折價卷持有者流水號編號</label>
-		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
-		讀取商品折價卷持有者明細，要做下拉式選單
-		</div> -->
+
 		
 		<div>
 		<label>訂單日期</label>
@@ -59,7 +62,7 @@
 					<td th:text="${item.productVO.proName}">商品名稱</td> 
 					<td th:text="${item.proUnitPrice}">單價<</td>
 					<td th:text="${item.proAmount}">數量</td>
-					<td th:text="${item.proSubTota}">小計</td>
+					<td th:text="${item.proSubTotal}">小計</td>
 					
 					</tr>
 			</tbody>
@@ -79,10 +82,16 @@
 		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
 		</div>
 		
-		<div>
+		<!-- 		<div>
+		<label>一般商品折價卷持有者流水號編號</label>
+		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
+		讀取商品折價卷持有者明細，要做下拉式選單
+		</div> -->
+		
+<!-- 		<div>
 		<label>折價券折抵金額</label>
 		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
-		</div>
+		</div> -->
 		
 		<div>
 		<label>會員持有點數</label>
@@ -153,7 +162,10 @@
 		<input type="text" th:field="*{proOrdAddr}"/><br>
 		</div>
 		
-		<div><button type="submit" id="submit"> 送出新增 </button></div>
+		<div>
+		
+		<button type="submit" id="submit"> 送出新增 </button>
+		</div>
 		
 	</form>
 <script>

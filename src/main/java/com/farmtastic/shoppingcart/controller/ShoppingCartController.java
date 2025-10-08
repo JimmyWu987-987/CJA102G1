@@ -136,7 +136,7 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		// **************************** 6. 結帳 (Checkout) ****************************
 
 		// URL: POST /cart/checkout
-		@PostMapping("/checkout")
+		@GetMapping("/checkout")
 		public String checkout(RedirectAttributes redirectAttributes,HttpSession session,Model model) {
 
 			// *** 登入檢查邏輯 ***
@@ -145,24 +145,17 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 			Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 			Integer memId = (Integer) session.getAttribute("memId");
 			String memName = (String) session.getAttribute("memName");
-			
-			if (loggedInMember == null || memId == null || memName == null || memName.trim().isEmpty()){
-				// 如果未登入，則導向登入頁面，並在 URL 中帶上「要結帳」的指示
-				redirectAttributes.addFlashAttribute("errorMessage", "請先登入或註冊以完成結帳！");
-				// *** 假設您的登入頁面是 /login ***
-				return "redirect:/mem/showMemRegLoginForm";
-			} else {
+		
 				
 				// 這是處理使用者剛才登入的動作
 				cartService.updateMemIdInCart(memId); // <--- 新增：更新購物車所有項目的 memId
-				
-			}
+	
 			
 			// 將訂單+訂單明細存成一個暫存物件，交給addProOrder.html頁面
 			ProOrderVO cartToProOrder = cartService.checkout(memId,loggedInMember,PER);
 
 			if (cartToProOrder != null ) {
-				redirectAttributes.addFlashAttribute("successMessage", "結帳成功！您的訂單已送出。");
+				redirectAttributes.addFlashAttribute("successMessage", "成功將購物車轉移到訂單明細，請確認您的訂單。");
 			    // 修正後的程式碼行：使用 Flash Attribute 傳輸物件
 //			    redirectAttributes.addFlashAttribute("cartToProOrder", cartToProOrder);
 			    session.setAttribute("cartToProOrder", cartToProOrder);

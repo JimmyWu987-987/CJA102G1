@@ -171,9 +171,6 @@ public class ShoppingCartService implements Serializable {
      			memVO.setMemId(memId);
      			proOrderVO.setMemVO(memVO);
 
-     			// 查詢該會員"未使用"的"全部"商品折價卷明細
-     			// 儲存 商品折價卷明細 的 商品折價卷編號
-
      			// 新增訂單日期為當下系統時間
      			// 讀取毫秒
      			// 將日期格式轉成 yyyy-MM-dd HH:mm:ss，由JPA處理日期格式(ProOrderVO第47行)
@@ -203,9 +200,7 @@ public class ShoppingCartService implements Serializable {
      				proOrderItemVO.setProductVO(productVO);
      				proOrderItemVO.setProUnitPrice(shoppingCartVO.getCartUnitPrice());
      				proOrderItemVO.setProAmount(shoppingCartVO.getCartAmount());
-     				
-     				Integer proSubTota = shoppingCartVO.getCartUnitPrice()*shoppingCartVO.getCartAmount();
-     				proOrderItemVO.setProSubTota(proSubTota);
+     				proOrderItemVO.setProSubTotal(shoppingCartVO.getCartSubTotal());
      				
      				// 步驟 5: 將新的 ProOrderItemVO 加入到訂單明細清單中
      				proOrderItemsList.add(proOrderItemVO);
@@ -231,13 +226,18 @@ public class ShoppingCartService implements Serializable {
      			}
      			proOrderVO.setProOrdShipFee(prodFee);
      			
+     			// 查詢該會員"未使用"的"全部"商品折價卷明細
+     			// 儲存 商品折價卷明細 的 商品折價卷編號
+     			// 這邊先預設為null
+     			proOrderVO.setMemProCpnVO(null);
+     			
      			// 折價券折抵金額
      			// 用memId查詢 同學寫好持有者明細
      			// 等同學寫好持有者明細
-     			proOrderVO.setProOrdCpndisc(null);
      			Integer proOrdCpndisc = proOrderVO.getProOrdCpndisc(); // 先手動輸入
      			if(proOrdCpndisc == null) {
      				proOrdCpndisc = 0;
+     				proOrderVO.setProOrdCpndisc(proOrdCpndisc);
      			}
      			
      			// 會員持有點數

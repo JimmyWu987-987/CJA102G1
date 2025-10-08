@@ -38,11 +38,13 @@ public class ProOrderVO implements Serializable {
 	private Integer proOrdId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+
 	@JoinColumn(name = "mem_id")
 	private Mem memVO;
 
 	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name = "cpn_holder_detail_id")
+//	@Column(insertable = false)
 	private MemProCpnVO memProCpnVO;
 //	@Column(name = "cpn_holder_detail_id")
 //	private Integer cpnHolderDetailId;
@@ -320,5 +322,17 @@ public class ProOrderVO implements Serializable {
 		this.proOrderItems = proOrderItems;
 	}
 
+	@Override
+	public String toString() {
+		return "ProOrderVO [proOrdId=" + proOrdId + ", memVO=" + memVO + ", memProCpnVO=" + memProCpnVO
+				+ ", proOrdDate=" + proOrdDate + ", proOrdStatus=" + proOrdStatus + ", proPayStatus=" + proPayStatus
+				+ ", proTotal=" + proTotal + ", proOrdShipFee=" + proOrdShipFee + ", proOrdCpndisc=" + proOrdCpndisc
+				+ ", proOrdPointdisc=" + proOrdPointdisc + ", proOrdPointGet=" + proOrdPointGet + ", proOrdGrandTotal="
+				+ proOrdGrandTotal + ", proOrdComm=" + proOrdComm + ", proOrdPayment=" + proOrdPayment
+				+ ", proOrdShipment=" + proOrdShipment + ", proTrackingNo=" + proTrackingNo + ", proOrdShipdate="
+				+ proOrdShipdate + ", proOrdName=" + proOrdName + ", proOrdMobile=" + proOrdMobile + ", proOrdEmail="
+				+ proOrdEmail + ", proOrdAddr=" + proOrdAddr + ", proOrderItems=" + proOrderItems + "]";
+	}
+	
 
 }
