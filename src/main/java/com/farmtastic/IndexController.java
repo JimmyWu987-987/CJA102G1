@@ -2,33 +2,16 @@ package com.farmtastic;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class IndexController {
 	
-	// 這是測試用網頁
 	@GetMapping("/")
-	public String indexTest() {
+	public String indexTest(HttpSession session) {
 		return "/front_end/index";
 	}
-	
-	
-//	@GetMapping("/fmem/logout")
-//	public String memRegLogin() {
-//		return "/front_end/farmer/unlogined/fmemRegLogin";
-//	}
-//	
-//	
-//
-//
-//	
-////	登入後才能看的 測試用
-//	@GetMapping("/fmem/fmemArea")
-//	public String fmemArea() {
-//		return "/front_end/farmer/logined/fmemArea";
-//	}
-	
 	
 
 }

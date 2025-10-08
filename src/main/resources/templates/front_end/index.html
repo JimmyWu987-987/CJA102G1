@@ -56,7 +56,7 @@
                     <ul th:fragment="memAreaLink">
 			            <li><a th:href="@{/mem/memArea/updateProfilePage}">修改個人資料</a></li>
 			            <li><a th:href="@{/mem/memArea/updatePasswordPage}">修改密碼</a></li>
-                        <li><a href="#">商城訂單查詢</a></li>
+                        <li><a th:href="@{/mem/proorders/listAllProOrder}">商城訂單查詢</a></li>
 			            <li><a href="#">活動訂單查詢</a></li>
 			            <li><a href="#">折價券</a></li>
 			            <li><a href="#">收藏商品/活動</a></li>
@@ -67,10 +67,14 @@
                 <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
                 <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
                 <div class="helloUser" th:if="${session.loggedInMember} != null">
-                	<div th:text="${session.loggedInMember.memName} + '，'"></div>
-                	<div>您好</div>
+                	<div th:text="${session.loggedInMember.memName} + '，您好'"></div>
+                	<div class="point">
+                		<i class="fa-solid fa-coins"></i>
+                		<span th:text="${session.loggedInMember.memPoint}"></span>
+                	</div>
                 </div>
                 <a href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+<!--                 <a th:href="@{/cart/view}" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a> -->
 
             	<form th:action="@{/mem/logout}" th:if="${session.loggedInMember} != null" method="post" class="logout">
             		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>

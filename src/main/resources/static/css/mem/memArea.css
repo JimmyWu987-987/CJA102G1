@@ -5,10 +5,11 @@
 }
 .member-sidebar{
     width: 260px;
-    margin-right: 60px;
+    margin-right: 40px;
     padding: 40px 50px 60px;
-    background-color: #fac9aa08;
-    border: 1px solid #f9bc97cb;
+/*     background-color: #fac9aa08; */
+    background-color: #ffffff;
+/*     border: 1px solid #f9bc97cb; */
     border-radius: 12px;
     box-shadow: 1px 1px 8px 0px #66333330;
 /*     box-shadow: [水平位移] [垂直位移] [模糊半徑] [擴散半徑] [顏色] [inset]; */
@@ -36,8 +37,8 @@
     flex-grow: 1;
     padding: 40px 50px 60px;
     color: #333;
-    background-color: #fac9aa08;
-    border: 1px solid #f9bc97cb;
+    background-color: #ffffff;
+/*     border: 1px solid #f9bc97cb; */
     border-radius: 12px;
     box-shadow: 1px 1px 8px 0px #66333330;
 }

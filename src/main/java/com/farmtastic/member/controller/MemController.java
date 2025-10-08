@@ -112,7 +112,7 @@ public class MemController{
 //	登入後才能看的: 會員專區/修改個人資料頁面
 	@GetMapping("/memArea/updateProfilePage")
 	public String updateProfilePage(
-//			HttpSession session,
+			HttpSession session,
 			@ModelAttribute("loggedInMember") Mem loggedInMember,
 			ModelMap model) {
 		
@@ -437,9 +437,16 @@ public class MemController{
 //			session.setAttribute("loggedInMember", mem);  //@SessionAttributes
 			session.setAttribute("memId", mem.getMemId());
 			session.setAttribute("memName", mem.getMemName());
-			
-			// 4.登入成功後 重導至首頁
+	
+			// 4.登入成功後 重導至原本頁面
+			String redirectUrl  = (String) session.getAttribute("redirectAfterLogin");
+			if ( redirectUrl  != null) {
+				session.removeAttribute("redirectAfterLogin");
+				return "redirect:" + redirectUrl ;
+			}
 			return "redirect:/";
+			
+			
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);
