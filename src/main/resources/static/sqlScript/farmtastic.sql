@@ -259,14 +259,15 @@ create table act (
  act_end			date,
  act_des			varchar(1000),
  act_fee			int not null,
- act_revstat		tinyint default 0,
- act_revupd			datetime not null,
- act_revremark		varchar(1000),
+ act_stat			tinyint default 0,
+ act_upd			datetime not null,
+ act_remark			varchar(1000),
  act_launstat		tinyint,
  act_launupd		datetime,
  fmem_id			int not null,
  act_score			int,
  act_cnt			int,
+ act_mainimg		longblob,		/* 活動主圖, 活動一覽頁面會顯示的圖片 */
  constraint act_fmem_id_fk foreign key (fmem_id) references fmem (fmem_id),
  constraint act_act_id_pk primary key (act_id));
 
@@ -274,27 +275,27 @@ insert into act values
   /*到目前都正常上架&有人評價過*/
  (null, '下田去！一日小農體驗', '2025-07-01','2025-12-30',
  '捲起袖子、赤腳踩在田裡，親手插秧、採收蔬果，感受最真實的農村日常。',
- 200, 2, '2025-05-10 10:20:30', null, 1, '2025-05-15 09:20:30', 1, 101, 23),
+ 200, 2, '2025-05-10 10:20:30', null, 1, '2025-05-15 09:20:30', 1, 101, 23, null),
  
  /*審核未過*/
  (null, '從產地到餐桌的秘密', '2025-10-25','2026-03-31',
  '透過遊戲與教學，讓大小朋友了解食材來源，培養珍惜食物的心。',
- 10000, 3, '2025-08-26 08:20:00', '報名費用有疑慮，請再次確認。', null, null, 3, null, null),
+ 10000, 3, '2025-08-26 08:20:00', '報名費用有疑慮，請再次確認。', null, null, 3, null, null, null),
  
  /*到目前都正常上架&有人評價過*/
  (null, '小小牧場', '2025-03-15','2025-10-31',
  '餵小羊、抱兔子，近距離接觸可愛動物，體驗牧場生活樂趣。',
- 399, 2, '2025-01-10 14:10:30', null, 1, '2025-01-15 16:00:30', 2, 168, 38),
+ 399, 2, '2025-01-10 14:10:30', null, 1, '2025-01-15 16:00:30', 2, 168, 38, null),
  
  /*有人評價過此活動, 此活動已結束並下架*/
  (null, '藍染工藝體驗課程', '2024-12-01','2025-06-10',
  '親手體驗藍染工藝，學習天然染色技巧，創作獨一無二的布藝作品。',
- 700, 2, '2024-10-27 19:10:30', '已修正金額，審核通過', 0, '2025-06-11 00:00:00', 2, 666, 150),
+ 700, 2, '2024-10-27 19:10:30', '已修正金額，審核通過', 0, '2025-06-11 00:00:00', 2, 666, 150, null),
  
  /*審核已通過但還沒上架*/
  (null, '小村莊的故事之旅', '2025-10-01','2026-02-28',
  '在導覽老師帶領下，認識農村的歷史、風俗與文化典故。',
- 299, 2, '2025-08-28 10:20:30', null, 0, null, 1, null, null);
+ 299, 2, '2025-08-28 10:20:30', null, 0, null, 1, null, null, null);
 
 
 
@@ -320,11 +321,12 @@ create table actimg (
  actimg_id			int not null auto_increment,
  act_img			longblob,
  act_id				int not null,
+ actimg_order		int,		/* 活動圖片的順序, 應該會用到, 總之先加進來 */
  constraint actimg_act_id_fk foreign key (act_id) references act (act_id),
  constraint actimg_actimg_id_pk primary key (actimg_id));
 
-insert into actimg values (null, null, 1), (null, null, 1), (null, null, 1),
-						  (null, null, 3), (null, null, 3);
+insert into actimg values (null, null, 1, 1), (null, null, 1, 2), (null, null, 1, 3),
+						  (null, null, 3, 1), (null, null, 3, 2);
                           
                           
 -- 刪除/建立 場次
