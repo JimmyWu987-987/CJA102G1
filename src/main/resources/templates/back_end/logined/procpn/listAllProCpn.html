@@ -46,6 +46,10 @@
     <form th:action="@{/admin/procpn/find}" method="get" class="d-flex">
         <input type="number" name="id" class="form-control me-2" placeholder="輸入折價券編號">
         <button type="submit" class="btn btn-outline-success">查單筆</button>
+       <div class="text-danger small"
+     th:if="${error != null}"
+     th:text="${error}">
+</div>
     </form>
 
     <!-- 新增按鈕 -->

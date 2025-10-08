@@ -13,6 +13,7 @@ import com.farmtastic.common.enums.IsActive;
 import jakarta.transaction.Transactional;
 
 public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
+
 	// 查詢全部啟用或停用的折價券
 	List<ProCpnVO> findByIsActive(IsActive isActive);
 

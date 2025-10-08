@@ -59,17 +59,25 @@ public class ProCpnAdminController {
 		return "/back_end/logined/procpn/listAllProCpn";
 	}
 
-	// 查單一折價券
 	@GetMapping("/find")
-	public String findOneProCpn(@RequestParam("id") Integer id, Model model) {
+	public String findOneProCpn(@RequestParam(required = false) Integer id, Model model) {
+		// 1. 判斷空值
+		if (id == null) {
+			model.addAttribute("error", "請輸入折價券編號！");
+			return "/back_end/logined/procpn/listAllProCpn"; // 返回查詢頁
+		}
+
+		// 2. 查資料
 		Optional<ProCpnAdminDTO> optional = proCpnSvc.getById(id);
-		;
+
+		// 3.處理結果
 		if (optional.isPresent()) {
-			model.addAttribute("coupons", List.of(optional.get())); // 用 List 包起來讓 Thymeleaf 循環能顯示一筆
+			model.addAttribute("coupons", List.of(optional.get()));
 		} else {
 			model.addAttribute("error", "查無此折價券編號：" + id);
 			model.addAttribute("coupons", List.of());
 		}
+
 		return "/back_end/logined/procpn/listAllProCpn";
 	}
 

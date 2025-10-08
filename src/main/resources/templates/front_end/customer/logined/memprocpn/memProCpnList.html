@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>我的折價券 | Farmtastic 會員中心</title>
+  <link rel="stylesheet" href="/css/memberArea.css">
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      margin: 40px;
+      background-color: #fafafa;
+    }
+    h2 {
+      color: #4a8f36;
+      border-bottom: 2px solid #4a8f36;
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+    .welcome {
+      margin-top: 10px;
+      color: #333;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background-color: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f8f5;
+    }
+    tr:hover {
+      background-color: #f9fff9;
+    }
+    .status-unused {
+      color: green;
+      font-weight: bold;
+    }
+    .status-used {
+      color: gray;
+    }
+    .status-expired {
+      color: red;
+    }
+    .empty {
+      text-align: center;
+      margin-top: 40px;
+      color: #777;
+      font-style: italic;
+    }
+    a.back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #4a8f36;
+      border: 1px solid #4a8f36;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    a.back-link:hover {
+      background-color: #4a8f36;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎫 我的折價券</h2>
+  <p class="welcome" th:text="'您好，' + ${member.memName} + '！以下是您目前可使用的折價券：'"></p>
+
+  <!-- 若沒有折價券 -->
+  <div th:if="${#lists.isEmpty(coupons)}" class="empty">
+    <p>目前沒有可使用的折價券。</p>
+  </div>
+
+  <!-- 若有折價券 -->
+  <table th:if="${!#lists.isEmpty(coupons)}">
+    <thead>
+      <tr>
+        <th>折價券名稱</th>
+        <th>折扣類型</th>
+        <th>折扣值</th>
+        <th>最低消費</th>
+        <th>有效期間</th>
+        <th>使用狀態</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="c : ${coupons}">
+        <td th:text="${c.proCpnVO.cpnName}">新客專屬9折券</td>
+        <td th:text="${c.proCpnVO.discType == 0 ? '滿額折抵' : '百分比折扣'}">折扣類型</td>
+        <td th:text="${c.proCpnVO.discType == 0 ? c.proCpnVO.discValue + ' 元' : (c.proCpnVO.discValue * 100) + ' %'}">折扣值</td>
+        <td th:text="${c.proCpnVO.minSpend != null ? c.proCpnVO.minSpend + ' 元' : '無門檻'}">無門檻</td>
+        <td>
+          <span th:text="${#temporals.format(c.effStart, 'yyyy/MM/dd')}"></span> -
+          <span th:text="${#temporals.format(c.effEnd, 'yyyy/MM/dd')}"></span>
+        </td>
+        <td>
+          <span th:switch="${c.cpnUseStatus}">
+            <span th:case="0" class="status-unused">未使用</span>
+            <span th:case="1" class="status-used">已使用</span>
+            <span th:case="2" class="status-expired">已過期</span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <a href="/mem/memArea" class="back-link">⬅ 返回會員中心</a>
+
+</body>
+</html>

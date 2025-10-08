@@ -24,4 +24,5 @@ public interface MemProCpnRepository extends JpaRepository<MemProCpnVO, Integer>
 	// 查某張券「已使用」的紀錄
 	@Query("SELECT m FROM MemProCpnVO m WHERE m.proCpnVO.proCpnId = :cpnId AND m.cpnUseStatus = :status")
 	List<MemProCpnVO> findUsedRecords(@Param("cpnId") Integer couponId, @Param("status") Byte status);
+
 }
