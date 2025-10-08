@@ -110,12 +110,12 @@ public class ProOrderMemController {
 		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
 
 		// 輸入資料的錯誤驗證
-		if (result.hasErrors()) {
-			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
-			model.addAttribute("memVO", loggedInMember);
-			model.addAttribute("cartToProOrder", finalProOrderVO);
-			return "/front_end/customer/logined/memProOrders/addProOrder";
-		}
+//		if (result.hasErrors()) {
+//			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
+//			model.addAttribute("memVO", loggedInMember);
+//			model.addAttribute("cartToProOrder", finalProOrderVO);
+//			return "/front_end/customer/logined/memProOrders/addProOrder";
+//		}
 		// 從 ProOrderVO 中取出明細列表
 		List<ProOrderItemVO> proOrderItemVO = finalProOrderVO.getProOrderItems();
 		// 驗證成功後，新增資料

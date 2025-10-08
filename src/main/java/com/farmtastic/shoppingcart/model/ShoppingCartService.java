@@ -236,10 +236,10 @@ public class ShoppingCartService implements Serializable {
      			// 折價券折抵金額
      			// 用memId查詢 同學寫好持有者明細
      			// 等同學寫好持有者明細
-     			proOrderVO.setProOrdCpndisc(null);
      			Integer proOrdCpndisc = proOrderVO.getProOrdCpndisc(); // 先手動輸入
      			if(proOrdCpndisc == null) {
      				proOrdCpndisc = 0;
+     				proOrderVO.setProOrdCpndisc(proOrdCpndisc);
      			}
      			
      			// 會員持有點數
