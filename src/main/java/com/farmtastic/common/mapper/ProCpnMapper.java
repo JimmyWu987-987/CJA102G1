@@ -1,6 +1,7 @@
 package com.farmtastic.common.mapper;
 
 import com.farmtastic.procpn.dto.ProCpnAdminDTO;
+import com.farmtastic.procpn.dto.ProCpnFormDTO;
 import com.farmtastic.procpn.dto.ProCpnResponseDTO;
 import com.farmtastic.procpn.model.ProCpnVO;
 
@@ -10,6 +11,8 @@ public interface ProCpnMapper {
 
 	ProCpnAdminDTO toAdminDTO(ProCpnVO vo);
 //	ProCpnDetailDTO toDetailDTO(ProCpnVO vo);
+
+	ProCpnVO toEntity(ProCpnFormDTO form);
 
 //	MemberCouponDTO toMemberCouponDTO(ProCpnVO vo);
 }
