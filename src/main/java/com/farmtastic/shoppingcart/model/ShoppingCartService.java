@@ -171,9 +171,6 @@ public class ShoppingCartService implements Serializable {
      			memVO.setMemId(memId);
      			proOrderVO.setMemVO(memVO);
 
-     			// 查詢該會員"未使用"的"全部"商品折價卷明細
-     			// 儲存 商品折價卷明細 的 商品折價卷編號
-
      			// 新增訂單日期為當下系統時間
      			// 讀取毫秒
      			// 將日期格式轉成 yyyy-MM-dd HH:mm:ss，由JPA處理日期格式(ProOrderVO第47行)
@@ -230,6 +227,11 @@ public class ShoppingCartService implements Serializable {
      				prodFee = 0; // 如果小農沒設定運費，則預設為0
      			}
      			proOrderVO.setProOrdShipFee(prodFee);
+     			
+     			// 查詢該會員"未使用"的"全部"商品折價卷明細
+     			// 儲存 商品折價卷明細 的 商品折價卷編號
+     			// 這邊先預設為null
+     			proOrderVO.setMemProCpnVO(null);
      			
      			// 折價券折抵金額
      			// 用memId查詢 同學寫好持有者明細

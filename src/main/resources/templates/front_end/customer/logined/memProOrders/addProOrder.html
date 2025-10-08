@@ -20,11 +20,7 @@
 		<input type="text" th:field="*{memVO.memId}" readonly/><br>
 		</div>
 		
-<!-- 		<div>
-		<label>一般商品折價卷持有者流水號編號</label>
-		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
-		讀取商品折價卷持有者明細，要做下拉式選單
-		</div> -->
+
 		
 		<div>
 		<label>訂單日期</label>
@@ -79,10 +75,16 @@
 		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
 		</div>
 		
-		<div>
+		<!-- 		<div>
+		<label>一般商品折價卷持有者流水號編號</label>
+		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
+		讀取商品折價卷持有者明細，要做下拉式選單
+		</div> -->
+		
+<!-- 		<div>
 		<label>折價券折抵金額</label>
 		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
-		</div>
+		</div> -->
 		
 		<div>
 		<label>會員持有點數</label>
@@ -153,7 +155,10 @@
 		<input type="text" th:field="*{proOrdAddr}"/><br>
 		</div>
 		
-		<div><button type="submit" id="submit"> 送出新增 </button></div>
+		<div>
+		
+		<button type="submit" id="submit"> 送出新增 </button>
+		</div>
 		
 	</form>
 <script>

@@ -80,7 +80,7 @@ public class ProOrderMemController {
 		return "/front_end/customer/logined/memProOrders/listOneProOrder";
 	}
 
-	// 進入新增訂單頁面
+	// 進入新增訂單頁面(view)
 	@GetMapping("addProOrder")
 	public String addProOrder(HttpSession session, ModelMap model) {
 
@@ -115,20 +115,25 @@ public class ProOrderMemController {
 		}
 	}
 
-	// 新增訂單
+	// 新增訂單至DB
 	@PostMapping("insert")
 	public String insert(@Valid ProOrderVO proOrderVO, BindingResult result,
 			HttpSession session, ModelMap model) {
-
+		
+		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
+		
 		// 輸入資料的錯誤驗證
 		if (result.hasErrors()) {
-			// 數入資料錯誤，重新返回訂單頁面
+			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
+			model.addAttribute("memVO",loggedInMember);
+			model.addAttribute("cartToProOrder",finalProOrderVO);
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
 		// 從 ProOrderVO 中取出明細列表
-		List<ProOrderItemVO> proOrderItemVO = proOrderVO.getProOrderItems();
+		List<ProOrderItemVO> proOrderItemVO = finalProOrderVO.getProOrderItems();
 		// 驗證成功後，新增資料
-		proOrdSvc.addProOrder(proOrderVO,proOrderItemVO);
+		proOrdSvc.addProOrder(finalProOrderVO,proOrderItemVO);
 		// 因為要計算會員持有點數，還要寫一個修改Mem的service方法
 		
 		// 將資料交給資料庫
