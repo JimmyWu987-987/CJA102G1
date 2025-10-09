@@ -74,15 +74,17 @@ public class MemController{
 		return "front_end/customer/unlogined/memRegLogin";
 	}
 	
-//	@GetMapping("/toMemArea")
-//	public String toMemArea(HttpSession session){
-//		Mem mem = (Mem) session.getAttribute("loggedInMember");
-//		if(mem != null) {
-//			return "redirect:/mem/memArea";
-//		} else {
-//			return "redirect:/mem/showMemRegLoginForm";
-//		}
-//	}
+	@GetMapping("/farmerStoreProd")
+	public String farmerStoreProd(ModelMap model) {
+		return "front_end/customer/unlogined/farmerStoreProd";
+	}
+	
+	@GetMapping("/farmerStoreAct")
+	public String farmerStoreAct(ModelMap model) {
+		return "front_end/customer/unlogined/farmerStoreAct";
+	}
+	
+
 	
 	
 //	登入後才能看的: 會員專區

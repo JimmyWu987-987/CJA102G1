@@ -108,12 +108,22 @@ public class FmemController{
 //	}
 	
 	@GetMapping("/fmemArea")
-	public String fmemArea() {
+	public String fmemArea(HttpSession session, ModelMap model) {
 //		public String fmemArea(ModelMap model, HttpSession session) {
 //		---------------
 //		Fmem fmemTest = fmemSvc.getOneByFmemId(1).orElse(null);
 //		session.setAttribute("fmemTest", fmemTest);
 //		---------------
+		
+		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
+		
+//		 處理商店樣式
+		Byte styNo = loggedInFmember.getStyNo();
+		Sty sty = stySvc.getOneByStyNo(styNo);
+		session.setAttribute("sty", sty);
+		///////////////////////
+		
+		
 		return "/front_end/farmer/logined/fmemArea";
 	}
 	
@@ -348,16 +358,7 @@ public class FmemController{
 			RedirectAttributes redirectAttrs,
 			HttpServletRequest request) throws IOException {
 		
-		
-		
-//		 處理商店樣式
-		Byte styNo = updateStoreFmem.getStyNo();
-		Sty sty = stySvc.getOneByStyNo(styNo);
-		session.setAttribute("sty", sty);
-		///////////////////////
-		
-		
-
+	
 		// 抓使用者選擇的圖片
 		MultipartFile storePicFile = updateStoreFmem.getStorePic();
 		
