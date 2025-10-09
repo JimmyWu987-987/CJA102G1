@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.member.model.MemService;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemId;
@@ -36,7 +37,10 @@ public class ProOrderMemController {
 	ProOrderSevice proOrdSvc;
 	@Autowired
 	ProOrderItemService proOrderItemSvc;
-	FmemService FemSvc;
+	@Autowired
+	FmemService femSvc;
+	@Autowired
+	MemService memSvc;
 
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
@@ -185,6 +189,16 @@ public class ProOrderMemController {
 				return "/front_end/customer/logined/memProOrders/addProOrder";
 			}
 			// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
+			Integer memPoint = proOrderVO.getMemVO().getMemPoint();
+			Integer memPointDisc = proOrderVO.getProOrdPointdisc();
+			Integer memPointGet = proOrderVO.getProOrdPointGet();
+			Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
+			loggedInMember.setMemPoint(finalMemPoint);
+			// 將最終點數結果，存回DB
+			memSvc.updateMem(loggedInMember);
+			// 更新網頁會員的session的資料
+			session.setAttribute("loggedInMember", loggedInMember);
+			
 
 			// 清除 Session 相關屬性
 			session.removeAttribute("cartToProOrder");
@@ -195,7 +209,7 @@ public class ProOrderMemController {
 	}
 
 	// 修改訂單 (處理點數折抵)
-	@PostMapping("update")
+	@PostMapping("OrdPointDiscUpdate")
 	public String update(@RequestParam("proOrdPointdisc") Integer proOrdPointdisc, HttpSession session,
 			ModelMap model) {
 
@@ -206,15 +220,16 @@ public class ProOrderMemController {
 
 		// 1. 從 Session 取得原始的訂單資訊
 		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
-		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-
+		Integer memId = (Integer) session.getAttribute("memId");
+		
 		if (finalProOrderVO == null) {
 			model.addAttribute("errorMessage", "購物車資訊已遺失，請重新結帳！");
 			return "redirect:/"; // 導回首頁或購物車頁面
 		}
 
 		// 2. 驗證點數折抵值 (防止惡意輸入或超過持有/總額)
-		Integer memPoint = loggedInMember.getMemPoint();
+		Mem memVO = memSvc.getOneByMemId(memId);
+		Integer memPoint = memVO.getMemPoint();
 
 		// (1) 確保折抵點數不超過會員持有總點數
 		if (proOrdPointdisc > memPoint) {

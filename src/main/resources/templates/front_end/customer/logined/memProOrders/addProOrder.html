@@ -163,7 +163,7 @@
 		
 	</form>
 	
-	<form th:action="@{update}" method="post">
+	<form th:action="@{OrdPointDiscUpdate}" method="post">
     <div>
         <label>折抵會員點數</label>
         <input type="number" 
@@ -171,7 +171,7 @@
                value="0" 
                min="0" 
                th:value="${cartToProOrder.proOrdPointdisc}" 
-               th:max="${session.loggedInMember.memPoint}"/><br>
+               th:max="${memVO.memPoint}"/><br>
         <button type="submit">更新折抵</button>
     </div>
 </form>

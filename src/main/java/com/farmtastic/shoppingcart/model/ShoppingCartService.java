@@ -13,6 +13,7 @@ import org.springframework.web.context.annotation.SessionScope;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.member.model.MemService;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
@@ -25,6 +26,8 @@ public class ShoppingCartService implements Serializable {
     
     @Autowired
     FmemService fmemSvc;
+    @Autowired
+    MemService memSvc;
     
     
     // 購物車的核心資料結構：直接儲存 ShoppingCartVO
@@ -165,10 +168,9 @@ public class ShoppingCartService implements Serializable {
      			ProOrderVO proOrderVO = new ProOrderVO();
 
      			// 將session的值儲存至 proOrderVO.memVO.memId
-     			Mem memVO = new Mem();
+     			Mem memVO = memSvc.getOneByMemId(memId);
      			// 設定 memVO 的 memId
      			// 將包含 memId 的 memVO 設定給 proOrderVO
-     			memVO.setMemId(memId);
      			proOrderVO.setMemVO(memVO);
 
      			// 新增訂單日期為當下系統時間
@@ -241,7 +243,8 @@ public class ShoppingCartService implements Serializable {
      			}
      			
      			// 會員持有點數
-     			Integer memPoint = loggedInMember.getMemPoint();
+     			
+     			Integer memPoint = memVO.getMemPoint();
 
      			// 商品訂單折抵會員點數
      			Integer proOrdPointdisc = proOrderVO.getProOrdPointdisc();
@@ -274,19 +277,19 @@ public class ShoppingCartService implements Serializable {
      			// 預設可以null
 
      			// 收件人姓名
-     			proOrderVO.setProOrdName(loggedInMember.getMemName());
+     			proOrderVO.setProOrdName(memVO.getMemName());
      			
      			// 收件人電話
-     			proOrderVO.setProOrdMobile(loggedInMember.getMemMobile());
+     			proOrderVO.setProOrdMobile(memVO.getMemMobile());
      			
      			// 收件人電子郵件
-     			proOrderVO.setProOrdEmail(loggedInMember.getMemEmail());
+     			proOrderVO.setProOrdEmail(memVO.getMemEmail());
      			
      			// 收件人地址
-     			String proOrdAddr = loggedInMember.getMemZipcode();
-     			proOrdAddr += loggedInMember.getMemCity();
-     			proOrdAddr += loggedInMember.getMemDist();
-     			proOrdAddr += loggedInMember.getMemAddr();
+     			String proOrdAddr = memVO.getMemZipcode();
+     			proOrdAddr += memVO.getMemCity();
+     			proOrdAddr += memVO.getMemDist();
+     			proOrdAddr += memVO.getMemAddr();
      			proOrderVO.setProOrdAddr(proOrdAddr);
 
         // 結帳成功後，清空購物車
