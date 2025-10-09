@@ -24,15 +24,17 @@ USE farmtastic;
 
 
 
+
 -- 刪除/建立 商店樣式
 DROP TABLE IF EXISTS sty;
 CREATE TABLE sty (
 	sty_no tinyint NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    sty_css_path varchar(300) NOT NULL
+    sty_css_path varchar(300) NOT NULL,
+    sty_pic longblob DEFAULT NULL
 );
 
 INSERT INTO sty (sty_css_path) VALUES
-('style#1'), ('style#2'), ('style#3');
+('/css/sty/storeSty1.css'), ('/css/sty/storeSty2.css'), ('/css/sty/storeSty3.css');
 
 -- 刪除/建立 小農會員
 DROP TABLE IF EXISTS fmem;
@@ -415,9 +417,9 @@ CREATE TABLE mem (
 INSERT INTO mem (mem_acc, mem_pwd, acc_status, mem_name, mem_birthday, mem_mobile, mem_email, mem_zipcode, mem_city, mem_dist, mem_addr, reg_date, mem_point) VALUES
 ('test', '1234', 1, '謝維綺', '1980-11-26', '0910-380143', 'pamela8508@gmail.com', '320', '桃園市', '中壢區', '仁和街35號', '2022-08-26 10:30:00', 150),
 ('test0002', '00000000', 1, '胡得軒', '1996-10-11', '0916-518593', 'henson1654@hotmail.com', '600', '嘉義市', '西區', '世賢路2段5號', '2022-08-26 11:29:30', 110),
-('test0003', '00000000', 0, '宋柯雯', '1993-08-07', '0961-388330', 'arianna6146@hotmail.com', '511', '彰化縣', '社頭鄉', '中山路1段38號10樓之10', '2022-09-01 12:00:59', 253),
-('valine203', 'echo92Xx@', 0, '郭實祐', '1990-11-01', '0937-453975', 'jeffrey2062@icloud.com', '360', '苗栗縣', '苗栗市', '宜春路62號', '2023-03-05 09:08:05', 20),
-('alphaWolf2031', '7Y2rTPbZ', 0, '林蓁蓓', '1978-09-08', '0972-375934', 'kaylynn3676@hotmail.com', '803', '高雄市', '鹽埕區', '大成街98號', '2023-04-01 01:01:10', 5),
+('test0003', '00000000', 1, '宋柯雯', '1993-08-07', '0961-388330', 'arianna6146@hotmail.com', '511', '彰化縣', '社頭鄉', '中山路1段38號10樓之10', '2022-09-01 12:00:59', 253),
+('valine203', '00000000', 1, '郭實祐', '1990-11-01', '0937-453975', 'jeffrey2062@icloud.com', '360', '苗栗縣', '苗栗市', '宜春路62號', '2023-03-05 09:08:05', 20),
+('alphaWolf2031', '00000000', 1, '林蓁蓓', '1978-09-08', '0972-375934', 'kaylynn3676@hotmail.com', '803', '高雄市', '鹽埕區', '大成街98號', '2023-04-01 01:01:10', 5),
 ('SkyHunter77', 'cDMz4q55', 0, '何俞維', '1979-05-23', '0961-063659', 'hampden3392@gmail.com', '555', '南投縣', '魚池鄉', '日月街24號9樓之11', '2023-10-05 20:58:09', 16),
 ('tiger_XR9821', '82AY43Pw', 1, '連之義', '1992-07-28', '0915-476888', 'richards2316@gmail.com', '931', '屏東縣', '佳冬鄉', '民學路7號', '2024-06-16 22:10:00', 0),
 ('UtFeobef152', 'Jupiter9@Lx', 1, '許洋竹', '1985-05-19', '0956-715009', 'mendoza8324@gmail.com', '803', '高雄市', '鹽埕區', '大勇市場5號', '2024-10-20 14:20:35', 88),

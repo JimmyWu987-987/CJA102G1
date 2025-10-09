@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小農個人首頁</title>
+    <link rel="icon" href="./images/logo.png">
+    
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+
+	<link rel="stylesheet" th:href="@{/css/mem/farmerStore.css}">
+	
+    <style>
+        
+    </style>
+</head>
+<body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
+
+	<div th:replace="~{/front_end/index :: header}"></div>
+
+<!-- --------------------------------------------------------------------- -->
+    
+    <div th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: fbanner}"></div>
+
+    <div class="container container-main">
+    
+    
+        <div th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: sidebar}"></div>
+            
+
+        <div class="store-content">
+<!--             <h3>商品</h3> -->
+            <ul class="activities">
+                <li class="activity" th:fragment="activity">
+                    <div class="pic">
+                    	<a href="#">
+                    		<div class="mask"></div>
+                    		<div class="tag">熱門</div>
+                    		<img th:src="@{/images/activity.png}" alt="">
+                    	</a>
+                   	</div>
+	                <div class="text">
+                    	<a href="#">
+<!--                     		<div class="mask"></div> -->
+	                        <div class="name">騎豬豬體驗</div>
+	                        <div class="intro">騎豬豬體驗是一場趣味與自然結合的農村冒險！適合親子同樂、情侶約會。感受與可愛豬豬的零距離互動，留下難忘回憶！</div>
+	                        <div class="price">
+	                            <span class="prefix">$</span>
+	                            <span class="number">2500</span>
+	                        </div>
+	                	</a>
+                        <div class="date">
+                        	<span>可報名場次日期：</span>
+                        	<span>10/10、10/25、12/25</span>
+                        </div>
+						<button class="addToCart">立馬報名去</button>	                    
+	                </div>
+                </li>
+                
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li>
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li>
+                 
+            </ul>
+        </div>
+        
+    </div>
+
+    
+<!-- --------------------------------------------------------------------- -->
+    
+   
+	<div th:replace="~{/front_end/index :: footer}"></div>
+
+
+    
+</body>
+</html>

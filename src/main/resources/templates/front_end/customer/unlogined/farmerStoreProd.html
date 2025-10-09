@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小農個人首頁</title>
+    <link rel="icon" href="./images/logo.png">
+    
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+
+	<link rel="stylesheet" th:href="@{/css/mem/farmerStore.css}">
+	
+    <style>
+        
+    </style>
+</head>
+<body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
+
+	<div th:replace="~{/front_end/index :: header}"></div>
+
+<!-- --------------------------------------------------------------------- -->
+    
+    <div class="container container-fbanner" th:fragment="fbanner">
+        <div class="fbanner">
+        	<div class="mask"></div>
+            <img th:src="@{/images/farmer-concept.png}" alt="farmer-banner">
+
+            <div class="text">
+                <h2 class="store-name">哞哞農場</h2>
+                <p class="store-intro">我們的目標是建立一個雙向，互動的們的目標是建立一個雙向互動的社群：消費者不再只是購買者，更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p>
+<!--                 <p class="store-intro">更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p> -->
+	            <div class="info">
+	                <span>信箱: support@farm.com</span>
+<!-- 	                <span>電話: 03-4259888</span> -->
+	                <span>地址: 桃園市中壢區農田路66號</span>
+	            </div>
+            </div>
+            
+            <div class="avatar">
+        		<img th:src="@{/images/tomcat.gif}" alt="avatar">
+        	</div>
+        </div>
+    </div>
+
+    <div class="container container-main">
+        <div class="store-sidebar" th:fragment="sidebar">
+            <h3>分類</h3>
+            <ul th:fragment="memAreaLink">
+                <li><a th:href="@{/mem/farmerStoreProd}">所有商品</a></li>
+                <li><a th:href="@{/mem/farmerStoreAct}">所有活動</a></li>
+            </ul>
+        </div>
+
+        <div class="store-content">
+<!--             <h3>商品</h3> -->
+            <ul class="products">
+                <li class="product" th:fragment="product">
+                   	<div class="pic">
+	                    <a href="#">
+	                   		<div class="mask"></div>
+	                   		<div class="tag">熱銷</div>
+	                   		<img th:src="@{/images/orange.png}" alt="">
+	                    </a>
+                   	</div>
+                    <div class="text">
+	                    <a href="#">
+	                        <div class="name">現採柳丁</div>
+	                        <div class="price">
+	                            <span class="prefix">$</span>
+	                            <span class="number">200</span>
+	                        </div>
+	                    </a>
+                    </div>
+					<button class="addToCart">加入購物車</button>	                    
+                </li>
+                
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+
+                
+            </ul>
+        </div>
+        
+    </div>
+
+    
+<!-- --------------------------------------------------------------------- -->
+    
+   
+	<div th:replace="~{/front_end/index :: footer}"></div>
+
+
+    
+</body>
+</html>
