@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
@@ -188,6 +189,7 @@ public class ProOrderMemController {
 				model.addAttribute("cartToProOrder", finalProOrderVO);
 				return "/front_end/customer/logined/memProOrders/addProOrder";
 			}
+			// ================== 會員點數新增修改的邏輯 ======================
 			// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
 			Integer memPoint = proOrderVO.getMemVO().getMemPoint();
 			Integer memPointDisc = proOrderVO.getProOrdPointdisc();
@@ -198,7 +200,8 @@ public class ProOrderMemController {
 			memSvc.updateMem(loggedInMember);
 			// 更新網頁會員的session的資料
 			session.setAttribute("loggedInMember", loggedInMember);
-			
+			// ================== 扣商品庫存的邏輯 ======================
+			// 等同學寫好ORM
 
 			// 清除 Session 相關屬性
 			session.removeAttribute("cartToProOrder");
@@ -210,13 +213,17 @@ public class ProOrderMemController {
 
 	// 修改訂單 (處理點數折抵)
 	@PostMapping("OrdPointDiscUpdate")
-	public String update(@RequestParam("proOrdPointdisc") Integer proOrdPointdisc, HttpSession session,
-			ModelMap model) {
+	public String update(@RequestParam(name="proOrdPointdisc", required = false) String proOrdPointdisc, HttpSession session,ModelMap model,RedirectAttributes redirectAttributes) {
 
-		// proOrdPointdisc 當輸入金額為0，直接返回
-		if (proOrdPointdisc == 0) {
+		// proOrdPointdisc 當輸入金額為0或空字串，直接返回
+		if (proOrdPointdisc == null || proOrdPointdisc.trim().isEmpty()) {
+
+			redirectAttributes.addFlashAttribute("successMessage", "點數折抵沒有更新！"); // 可選：顯示成功訊息
 			return "redirect:addProOrder";
-		}
+		} else {
+			
+	        Integer tempProOrdPointdisc = Integer.valueOf(proOrdPointdisc);
+		
 
 		// 1. 從 Session 取得原始的訂單資訊
 		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
@@ -232,8 +239,8 @@ public class ProOrderMemController {
 		Integer memPoint = memVO.getMemPoint();
 
 		// (1) 確保折抵點數不超過會員持有總點數
-		if (proOrdPointdisc > memPoint) {
-			proOrdPointdisc = memPoint; // 限制最多只能折抵會員持有點數
+		if (tempProOrdPointdisc > memPoint) {
+			tempProOrdPointdisc = memPoint; // 限制最多只能折抵會員持有點數
 		}
 
 		// (2) 確保折抵點數轉換的金額不超過「商品總金額」
@@ -247,18 +254,18 @@ public class ProOrderMemController {
 		Integer maxDiscAmount = proTotal - proOrdCpndisc;
 		Integer maxDiscPoint = maxDiscAmount;
 
-		if (proOrdPointdisc > maxDiscPoint) {
-			proOrdPointdisc = maxDiscPoint; // 限制最多只能折抵到商品總額
+		if (tempProOrdPointdisc > maxDiscPoint) {
+			tempProOrdPointdisc = maxDiscPoint; // 限制最多只能折抵到商品總額
 		}
 
-		if (proOrdPointdisc < 0) {
-			proOrdPointdisc = 0; // 限制最小折抵為 0
+		if (tempProOrdPointdisc < 0) {
+			tempProOrdPointdisc = 0; // 限制最小折抵為 0
 		}
 
 		// 3. 計算並更新 ProOrderVO
 
 		// 實際折抵金額 (假設 1 點 = 1 元)
-		Integer pointDiscountAmount = proOrdPointdisc;
+		Integer pointDiscountAmount = tempProOrdPointdisc;
 
 		// (1) 更新折抵點數
 		finalProOrderVO.setProOrdPointdisc(pointDiscountAmount); // ⚠️ 注意：這裡儲存的是「金額」而不是「點數」 (根據您的 VO 命名判斷)
@@ -276,9 +283,10 @@ public class ProOrderMemController {
 		session.setAttribute("cartToProOrder", finalProOrderVO);
 
 		// 5. 重定向回新增訂單頁面，讓頁面重新載入並顯示新的計算結果
-		model.addAttribute("successMessage", "點數折抵已更新！"); // 可選：顯示成功訊息
+		redirectAttributes.addFlashAttribute("successMessage", "點數折抵已更新！"); // 可選：顯示成功訊息
 
 		// 必須使用 GET 重新導向到 addProOrder 才能正確顯示 (因為 addProOrder 是 @GetMapping)
 		return "redirect:addProOrder";
+		}
 	}
 }
