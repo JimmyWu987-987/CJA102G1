@@ -82,6 +82,7 @@ public class ProOrderMemController {
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		Integer memId = (Integer) session.getAttribute("memId");
 		String memName = (String) session.getAttribute("memName");
+//		ProOrderVO cartToProOrder = (ProOrderVO) model.getAttribute("cartToProOrder");
 		ProOrderVO cartToProOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 
 		// 如果 Model 中沒有 cartToProOrder (即非從結帳頁面重定向而來)，直接返回至首頁。
@@ -89,6 +90,12 @@ public class ProOrderMemController {
 		if (cartToProOrder == null) {
 			return "redirect:/";
 		} else {
+			
+	        if (!model.containsAttribute("cartToProOrder")) {
+	             // 如果 Model 中沒有 'cartToProOrder'，則放入一個新的 ProOrderVO 實例
+	            model.addAttribute("cartToProOrder", new ProOrderVO());
+	        }
+			
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("memVO", loggedInMember);
 			model.addAttribute("cartToProOrder", cartToProOrder);
@@ -108,7 +115,7 @@ public class ProOrderMemController {
 
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
-
+		List<ProOrderItemVO> finalItems = finalProOrderVO.getProOrderItems();
 		// 輸入資料的錯誤驗證
 //		if (result.hasErrors()) {
 //			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
@@ -117,14 +124,14 @@ public class ProOrderMemController {
 //			return "/front_end/customer/logined/memProOrders/addProOrder";
 //		}
 	    // 🌟 關鍵修正：確保 proOrderVO 裡面的明細列表是正確的 🌟
-	    List<ProOrderItemVO> itemsToSave = finalProOrderVO.getProOrderItems();
+	   // List<ProOrderItemVO> itemsToSave = finalProOrderVO.getProOrderItems();
 	    
-	    // 檢查明細列表是否為空
-	    if (itemsToSave == null || itemsToSave.isEmpty()) {
-	        // 處理錯誤，例如重定向回購物車頁面
-	        model.addAttribute("errorMessage", "購物車是空的，無法新增訂單！");
-	        return "/front_end/customer/logined/memProOrders/addProOrder"; // 或其他錯誤頁面
-	    }
+//	    // 檢查明細列表是否為空
+//	    if (itemsToSave == null || itemsToSave.isEmpty()) {
+//	        // 處理錯誤，例如重定向回購物車頁面
+//	        model.addAttribute("errorMessage", "購物車是空的，無法新增訂單！");
+//	        return "/front_end/customer/logined/memProOrders/addProOrder"; // 或其他錯誤頁面
+//	    }
 		
 	    // 2. 合併資料：將計算好的金額/折扣設定給 proOrderVO (表單提交的)
 	    // 🌟 關鍵修正：將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
@@ -135,10 +142,10 @@ public class ProOrderMemController {
 	    proOrderVO.setProOrdShipFee(finalProOrderVO.getProOrdShipFee());
 	    proOrderVO.setProOrdPointdisc(finalProOrderVO.getProOrdPointdisc() != null ? finalProOrderVO.getProOrdPointdisc() : 0);
 	    proOrderVO.setProOrdPointGet(finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
-	    
-	    // 3. 設定關聯和明細
-	    proOrderVO.setMemVO(loggedInMember);
-	    proOrderVO.setProOrderItems(itemsToSave); 
+//	    
+//	    // 3. 設定關聯和明細
+//	    proOrderVO.setMemVO(loggedInMember);
+//	    proOrderVO.setProOrderItems(finalItems); 
 
 	    // 4. 呼叫 Service 進行新增
 	    // 注意：這裡將表單提交的 proOrderVO 和從 Session 來的明細列表傳入
@@ -146,10 +153,9 @@ public class ProOrderMemController {
 
 	    try {
 	        // proOrdSvc 是 ProOrderSevice 的實例
-	        proOrdSvc.addProOrder(proOrderVO, itemsToSave); 
+	        proOrdSvc.addProOrder(proOrderVO); 
 	        
-	        // 清除 Session 相關屬性
-	        session.removeAttribute("cartToProOrder");
+
 	        
 	    } catch (RuntimeException e) {
 	        // 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
@@ -158,7 +164,9 @@ public class ProOrderMemController {
 	        model.addAttribute("cartToProOrder", finalProOrderVO);
 	        return "/front_end/customer/logined/memProOrders/addProOrder";
 	    }
-
+	    
+        // 清除 Session 相關屬性
+        session.removeAttribute("cartToProOrder");
 		return "redirect:/mem/proorders/listAllProOrder";
 	}
 }
