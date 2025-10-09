@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,12 +92,12 @@ public class ProOrderMemController {
 		if (cartToProOrder == null) {
 			return "redirect:/";
 		} else {
-			
-	        if (!model.containsAttribute("cartToProOrder")) {
-	             // 如果 Model 中沒有 'cartToProOrder'，則放入一個新的 ProOrderVO 實例
-	            model.addAttribute("cartToProOrder", new ProOrderVO());
-	        }
-			
+
+			if (!model.containsAttribute("cartToProOrder")) {
+				// 如果 Model 中沒有 'cartToProOrder'，則放入一個新的 ProOrderVO 實例
+				model.addAttribute("cartToProOrder", new ProOrderVO());
+			}
+
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("memVO", loggedInMember);
 			model.addAttribute("cartToProOrder", cartToProOrder);
@@ -118,76 +119,77 @@ public class ProOrderMemController {
 		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
 		List<ProOrderItemVO> finalItems = finalProOrderVO.getProOrderItems();
 		// 輸入資料的錯誤驗證
-//		if (result.hasErrors()) {
-//			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
-//			model.addAttribute("memVO", loggedInMember);
-//			model.addAttribute("cartToProOrder", finalProOrderVO);
-//			return "/front_end/customer/logined/memProOrders/addProOrder";
-//		}
-	    // 🌟 關鍵修正：確保 proOrderVO 裡面的明細列表是正確的 🌟
-	   // List<ProOrderItemVO> itemsToSave = finalProOrderVO.getProOrderItems();
-	    
-//	    // 檢查明細列表是否為空
-//	    if (itemsToSave == null || itemsToSave.isEmpty()) {
-//	        // 處理錯誤，例如重定向回購物車頁面
-//	        model.addAttribute("errorMessage", "購物車是空的，無法新增訂單！");
-//	        return "/front_end/customer/logined/memProOrders/addProOrder"; // 或其他錯誤頁面
-//	    }
-		
-	    // 2. 合併資料：將計算好的金額/折扣設定給 proOrderVO (表單提交的)
-	    // 🌟 關鍵修正：將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
-	    proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
-	    proOrderVO.setProOrdCpndisc(finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0);
-	    proOrderVO.setProOrdGrandTotal(finalProOrderVO.getProOrdGrandTotal());
-	    proOrderVO.setProTotal(finalProOrderVO.getProTotal());
-	    proOrderVO.setProOrdShipFee(finalProOrderVO.getProOrdShipFee());
-	    proOrderVO.setProOrdPointdisc(finalProOrderVO.getProOrdPointdisc() != null ? finalProOrderVO.getProOrdPointdisc() : 0);
-	    proOrderVO.setProOrdPointGet(finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
-//	    
-//	    // 3. 設定關聯和明細
-	    proOrderVO.setMemVO(loggedInMember);
-	    proOrderVO.setProOrderItems(finalItems); 
-	    
-	 // 🌟 關鍵修正 2：在 Controller/Service 確保明細回指主表 **並初始化複合主鍵 (ProId)** 🌟
-	    for (ProOrderItemVO item : finalItems) {
-	        // 1. 建立雙向關聯：讓每個明細知道它屬於哪個訂單 (proOrdId會在儲存時由JPA處理)
-	        item.setProOrderVO(proOrderVO); 
-	        
-	        // 2. 🌟 關鍵修正：手動初始化 ProOrderItemId 並設定 proId 🌟
-	        //    由於 ProOrderItemVO 使用 @EmbeddedId 和 @MapsId 且 proId 是現有外鍵，
-	        //    我們必須確保 ProOrderItemId 實體本身已存在並包含 proId 值。
-	        
-	        // 確保 id 欄位已被初始化
-	        ProOrderItemId id = item.getId();
-	        if (id == null) {
-	            id = new ProOrderItemId();
-	        }
-	        
-	        // 從 Product 實體取得 proId，並設定給複合主鍵
-	        // 假設您的 Product 實體有 getProId() 方法
-	        id.setProId(item.getProductVO().getProId()); 
-	        
-	        // 將設定好 proId 的 ProOrderItemId 設回給 ProOrderItemVO
-	        item.setId(id);
-	    }
-	    
+		if (result.hasErrors()) {
+			// 取得所有錯誤的列表
+			List<ObjectError> errors = result.getAllErrors();
 
-	    try {
-	        // proOrdSvc 是 ProOrderSevice 的實例
-	        proOrdSvc.addProOrder(proOrderVO); 
-	        
+			for (ObjectError error : errors) {
+				// 這裡可以讀取錯誤代碼、錯誤訊息等
+				System.out.println(error.getDefaultMessage());
 
-	        
-	    } catch (RuntimeException e) {
-	        // 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
-	        model.addAttribute("errorMessage", "新增訂單失敗：" + e.getMessage());
-	        model.addAttribute("memVO", loggedInMember);
-	        model.addAttribute("cartToProOrder", finalProOrderVO);
-	        return "/front_end/customer/logined/memProOrders/addProOrder";
-	    }
-	    
-        // 清除 Session 相關屬性
-        session.removeAttribute("cartToProOrder");
-		return "redirect:/mem/proorders/listAllProOrder";
+				model.addAttribute("errorMessage", error.getDefaultMessage());
+			}
+			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
+			model.addAttribute("memVO", loggedInMember);
+			model.addAttribute("cartToProOrder", finalProOrderVO);
+			return "/front_end/customer/logined/memProOrders/addProOrder";
+		} else {
+			// 將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
+			proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
+			proOrderVO.setProOrdCpndisc(
+					finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0);
+			proOrderVO.setProOrdGrandTotal(finalProOrderVO.getProOrdGrandTotal());
+			proOrderVO.setProTotal(finalProOrderVO.getProTotal());
+			proOrderVO.setProOrdShipFee(finalProOrderVO.getProOrdShipFee());
+			proOrderVO.setProOrdPointdisc(
+					finalProOrderVO.getProOrdPointdisc() != null ? finalProOrderVO.getProOrdPointdisc() : 0);
+			proOrderVO.setProOrdPointGet(
+					finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
+
+//		    // 3. 設定關聯和明細
+			proOrderVO.setMemVO(loggedInMember);
+			proOrderVO.setProOrderItems(finalItems);
+
+			// 🌟 關鍵修正 2：在 Controller/Service 確保明細回指主表 **並初始化複合主鍵 (ProId)** 🌟
+			for (ProOrderItemVO item : finalItems) {
+				// 1. 建立雙向關聯：讓每個明細知道它屬於哪個訂單 (proOrdId會在儲存時由JPA處理)
+				item.setProOrderVO(proOrderVO);
+
+				// 2. 🌟 關鍵修正：手動初始化 ProOrderItemId 並設定 proId 🌟
+				// 由於 ProOrderItemVO 使用 @EmbeddedId 和 @MapsId 且 proId 是現有外鍵，
+				// 我們必須確保 ProOrderItemId 實體本身已存在並包含 proId 值。
+
+				// 確保 id 欄位已被初始化
+				ProOrderItemId id = item.getId();
+				if (id == null) {
+					id = new ProOrderItemId();
+				}
+
+				// 從 Product 實體取得 proId，並設定給複合主鍵
+				// 假設您的 Product 實體有 getProId() 方法
+				id.setProId(item.getProductVO().getProId());
+
+				// 將設定好 proId 的 ProOrderItemId 設回給 ProOrderItemVO
+				item.setId(id);
+			}
+
+			try {
+				// proOrdSvc 是 ProOrderSevice 的實例
+				proOrdSvc.addProOrder(proOrderVO);
+
+			} catch (RuntimeException e) {
+				// 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
+				model.addAttribute("errorMessage", "新增訂單失敗：" + e.getMessage());
+				model.addAttribute("memVO", loggedInMember);
+				model.addAttribute("cartToProOrder", finalProOrderVO);
+				return "/front_end/customer/logined/memProOrders/addProOrder";
+			}
+
+			// 清除 Session 相關屬性
+			session.removeAttribute("cartToProOrder");
+			return "redirect:/mem/proorders/listAllProOrder";
+
+		}
+
 	}
 }

@@ -3,8 +3,8 @@ package com.farmtastic.proorder.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -49,9 +49,9 @@ public class ProOrderVO implements Serializable {
 //	@Column(name = "cpn_holder_detail_id")
 //	private Integer cpnHolderDetailId;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_date")
-	private Timestamp proOrdDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date proOrdDate;
 
 	@Column(name = "pro_ord_status")
 	private byte proOrdStatus;
@@ -91,7 +91,7 @@ public class ProOrderVO implements Serializable {
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_shipdate")
-	private Timestamp proOrdShipdate;
+	private Date proOrdShipdate;
 	
 	@Column(name = "PRO_ORD_NAME")
 	private String proOrdName;
@@ -170,11 +170,11 @@ public class ProOrderVO implements Serializable {
 		this.memProCpnVO = memProCpnVO;
 	}
 
-	public Timestamp getProOrdDate() {
+	public Date getProOrdDate() {
 		return proOrdDate;
 	}
 
-	public void setProOrdDate(Timestamp proOrdDate) {
+	public void setProOrdDate(Date proOrdDate) {
 		this.proOrdDate = proOrdDate;
 	}
 
@@ -274,11 +274,11 @@ public class ProOrderVO implements Serializable {
 		this.proTrackingNo = proTrackingNo;
 	}
 
-	public Timestamp getProOrdShipdate() {
+	public Date getProOrdShipdate() {
 		return proOrdShipdate;
 	}
 
-	public void setProOrdShipdate(Timestamp proOrdShipdate) {
+	public void setProOrdShipdate(Date proOrdShipdate) {
 		this.proOrdShipdate = proOrdShipdate;
 	}
 
