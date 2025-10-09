@@ -99,12 +99,6 @@
 		</div>
 		
 		<div>
-		<label>折抵會員點數</label>
-		<input type="number" th:field="*{proOrdPointdisc}" value="0" min="0" th:max="${session.loggedInMember.memPoint}"/><br>
-		<!-- 這邊前端JS要寫一個輸入方法方法，當這邊有輸入值的時候，訂單的總金額也要改變-->
-		</div>
-		
-		<div>
 		<label>實付金額</label>
 		<input type="text" th:field="*{proOrdGrandTotal}" readonly/><br>
 		</div>
@@ -168,6 +162,19 @@
 		</div>
 		
 	</form>
+	
+	<form th:action="@{update}" method="post">
+    <div>
+        <label>折抵會員點數</label>
+        <input type="number" 
+               name="proOrdPointdisc" 
+               value="0" 
+               min="0" 
+               th:value="${cartToProOrder.proOrdPointdisc}" 
+               th:max="${session.loggedInMember.memPoint}"/><br>
+        <button type="submit">更新折抵</button>
+    </div>
+</form>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // 取得所有付款方式的 Radio Button (共用相同的 name: proOrdPayment)

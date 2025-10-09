@@ -193,4 +193,77 @@ public class ProOrderMemController {
 		}
 
 	}
+
+	// 修改訂單 (處理點數折抵)
+	@PostMapping("update")
+	public String update(@RequestParam("proOrdPointdisc") Integer proOrdPointdisc, HttpSession session,
+			ModelMap model) {
+
+		// proOrdPointdisc 當輸入金額為0，直接返回
+		if (proOrdPointdisc == 0) {
+			return "redirect:addProOrder";
+		}
+
+		// 1. 從 Session 取得原始的訂單資訊
+		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
+		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+
+		if (finalProOrderVO == null) {
+			model.addAttribute("errorMessage", "購物車資訊已遺失，請重新結帳！");
+			return "redirect:/"; // 導回首頁或購物車頁面
+		}
+
+		// 2. 驗證點數折抵值 (防止惡意輸入或超過持有/總額)
+		Integer memPoint = loggedInMember.getMemPoint();
+
+		// (1) 確保折抵點數不超過會員持有總點數
+		if (proOrdPointdisc > memPoint) {
+			proOrdPointdisc = memPoint; // 限制最多只能折抵會員持有點數
+		}
+
+		// (2) 確保折抵點數轉換的金額不超過「商品總金額」
+		// (商品總金額 + 運費 - 折價券折抵金額)
+		Integer proTotal = finalProOrderVO.getProTotal();
+		Integer proOrdShipFee = finalProOrderVO.getProOrdShipFee() != null ? finalProOrderVO.getProOrdShipFee() : 0;
+		Integer proOrdCpndisc = finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0;
+
+		// 可用來折抵的最高金額 (不含運費、已扣折價券)
+		// 實務上通常點數不能折抵到 0 以下，甚至會限制不能折抵運費
+		Integer maxDiscAmount = proTotal - proOrdCpndisc;
+		Integer maxDiscPoint = maxDiscAmount;
+
+		if (proOrdPointdisc > maxDiscPoint) {
+			proOrdPointdisc = maxDiscPoint; // 限制最多只能折抵到商品總額
+		}
+
+		if (proOrdPointdisc < 0) {
+			proOrdPointdisc = 0; // 限制最小折抵為 0
+		}
+
+		// 3. 計算並更新 ProOrderVO
+
+		// 實際折抵金額 (假設 1 點 = 1 元)
+		Integer pointDiscountAmount = proOrdPointdisc;
+
+		// (1) 更新折抵點數
+		finalProOrderVO.setProOrdPointdisc(pointDiscountAmount); // ⚠️ 注意：這裡儲存的是「金額」而不是「點數」 (根據您的 VO 命名判斷)
+
+		// (2) 計算新的實付金額 (Grand Total)
+		// 實付金額 = 商品總金額 + 運費 - 折價券折抵金額 - 點數折抵金額
+		Integer proOrdGrandTotal = proTotal + proOrdShipFee - proOrdCpndisc - pointDiscountAmount;
+		finalProOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
+
+		// (3) 計算新的回饋點數 (通常根據「商品總金額」或「實付金額」計算，這裡假設是根據實付金額)
+		Integer proOrdPointGet = (int) (proOrdGrandTotal * PER);
+		finalProOrderVO.setProOrdPointGet(proOrdPointGet);
+
+		// 4. 將更新後的訂單物件存回 Session
+		session.setAttribute("cartToProOrder", finalProOrderVO);
+
+		// 5. 重定向回新增訂單頁面，讓頁面重新載入並顯示新的計算結果
+		model.addAttribute("successMessage", "點數折抵已更新！"); // 可選：顯示成功訊息
+
+		// 必須使用 GET 重新導向到 addProOrder 才能正確顯示 (因為 addProOrder 是 @GetMapping)
+		return "redirect:addProOrder";
+	}
 }
