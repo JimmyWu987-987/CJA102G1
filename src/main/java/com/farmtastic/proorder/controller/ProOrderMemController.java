@@ -184,6 +184,7 @@ public class ProOrderMemController {
 				model.addAttribute("cartToProOrder", finalProOrderVO);
 				return "/front_end/customer/logined/memProOrders/addProOrder";
 			}
+			// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
 
 			// 清除 Session 相關屬性
 			session.removeAttribute("cartToProOrder");
