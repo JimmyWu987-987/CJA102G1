@@ -99,9 +99,4 @@ public class ProOrderItemVO implements Serializable{
 		this.proSubTotal = proSubTotal;
 	}
 
-	@Override
-	public String toString() {
-		return "ProOrderItemVO [id=" + id + ", productVO=" + productVO + ", proOrderVO=" + proOrderVO
-				+ ", proUnitPrice=" + proUnitPrice + ", proAmount=" + proAmount + ", proSubTotal=" + proSubTotal + "]";
-	}
 }

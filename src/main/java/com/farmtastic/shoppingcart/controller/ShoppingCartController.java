@@ -64,7 +64,7 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 			// RedirectAttributes 用於在重定向後傳遞一次性的成功/錯誤訊息
 			RedirectAttributes redirectAttributes) {
 
-		Product product = productService.getProductById(proId);
+		Product product = productService.getOneProduct(proId);
 
 		if (product != null && quantity > 0) {
 			// *** 修正：不再傳遞 memId，由 Service 內部處理 memId = 0 (訪客) ***

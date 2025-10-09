@@ -30,8 +30,32 @@ public class ProOrderSevice {
 	// 新增
 	@Transactional
 	public void addProOrder(ProOrderVO proOrderVO) {
-	    repository.save(proOrderVO);
+		  // 🌟 關鍵修正：將脫管的 Product 實體轉換為受管實體 🌟
+	    if (proOrderVO.getProOrderItems() != null) {
+	        for (ProOrderItemVO item : proOrderVO.getProOrderItems()) {
+	            // 1. 取得脫管 Product 的 ID
+	            Integer proId = item.getProductVO().getProId(); 
+	            
+	            // 2. 從資料庫中重新載入 Product 實體 (受管)
+	            // 假設 productSvc.getOneProduct(proId) 會回傳 Product 實體
+	            Product managedProduct = productSvc.getOneProduct(proId);
+	            
+	            if (managedProduct == null) {
+	                // 如果找不到商品，則拋出錯誤
+	                throw new RuntimeException("商品編號 " + proId + " 不存在，無法新增訂單明號。");
+	            }
+	            
+	            // 3. 將脫管的 Product 實體替換為受管實體
+	            item.setProductVO(managedProduct);
+	            
+	            // 4. 由於您在 Controller 中已設定複合主鍵，此處保持不變。
+                // 確保明細指向當前訂單 (雙向關聯)，雖然在 Controller 中已設定，但多做一次確保
+	            item.setProOrderVO(proOrderVO); 
+	        }
+	    }
 	    
+	    // 執行儲存操作，現在所有關聯的 Product 都是受管實體，不會報錯。
+	    repository.save(proOrderVO);
 	}
 
 

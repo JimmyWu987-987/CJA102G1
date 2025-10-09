@@ -16,6 +16,7 @@ import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
+import com.farmtastic.proorderitem.model.ProOrderItemId;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
@@ -144,12 +145,32 @@ public class ProOrderMemController {
 	    proOrderVO.setProOrdPointGet(finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
 //	    
 //	    // 3. 設定關聯和明細
-//	    proOrderVO.setMemVO(loggedInMember);
-//	    proOrderVO.setProOrderItems(finalItems); 
-
-	    // 4. 呼叫 Service 進行新增
-	    // 注意：這裡將表單提交的 proOrderVO 和從 Session 來的明細列表傳入
-	    // 這樣 Service 就能處理完整的訂單資訊。
+	    proOrderVO.setMemVO(loggedInMember);
+	    proOrderVO.setProOrderItems(finalItems); 
+	    
+	 // 🌟 關鍵修正 2：在 Controller/Service 確保明細回指主表 **並初始化複合主鍵 (ProId)** 🌟
+	    for (ProOrderItemVO item : finalItems) {
+	        // 1. 建立雙向關聯：讓每個明細知道它屬於哪個訂單 (proOrdId會在儲存時由JPA處理)
+	        item.setProOrderVO(proOrderVO); 
+	        
+	        // 2. 🌟 關鍵修正：手動初始化 ProOrderItemId 並設定 proId 🌟
+	        //    由於 ProOrderItemVO 使用 @EmbeddedId 和 @MapsId 且 proId 是現有外鍵，
+	        //    我們必須確保 ProOrderItemId 實體本身已存在並包含 proId 值。
+	        
+	        // 確保 id 欄位已被初始化
+	        ProOrderItemId id = item.getId();
+	        if (id == null) {
+	            id = new ProOrderItemId();
+	        }
+	        
+	        // 從 Product 實體取得 proId，並設定給複合主鍵
+	        // 假設您的 Product 實體有 getProId() 方法
+	        id.setProId(item.getProductVO().getProId()); 
+	        
+	        // 將設定好 proId 的 ProOrderItemId 設回給 ProOrderItemVO
+	        item.setId(id);
+	    }
+	    
 
 	    try {
 	        // proOrdSvc 是 ProOrderSevice 的實例
