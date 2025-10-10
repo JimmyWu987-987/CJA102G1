@@ -6,15 +6,19 @@
 	<link rel="stylesheet" th:href="@{/css/shoppingCart/shoppingCart.css}">
 </head>
 <body>
-	<span>測試有網頁該無參數</span><br>
+<!-- 	<span>測試有網頁該無參數</span><br>
 	<span th:text="${session.loggedInMember}"></span><br>
 	<span th:text="${session.memId}"></span><br>
 	<span th:text="${session.memName}"></span><br>
 	<span th:text="${groupedCartItems}"></span><br>
-	<span>測試有網頁該無參數</span>
-
-
-    <h1>我的購物車 (分組顯示)</h1>
+	<span>測試有網頁該無參數</span> -->
+	<div th:if="${session.memName}">
+    	<h1><span th:text="${session.memName}"></span>的購物車</h1>
+	</div>
+	
+	<div th:unless="${session.memName}">
+	<h1>訪客的購物車</h1>
+	</div>
     
     <a th:href="@{/}">回首頁</a>
     <a th:href="@{/cart/products/list}">繼續購物</a>
