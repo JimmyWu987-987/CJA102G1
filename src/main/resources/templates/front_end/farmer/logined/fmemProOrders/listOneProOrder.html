@@ -97,8 +97,6 @@
 		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd HH:mm')}"></span><br>
 
                     
-
-      
                     	<form method="get" th:action="@{/fmem/proorders/listAllProOrder}">
                     		<input type="submit" value="回上一頁">
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
