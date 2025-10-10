@@ -3,18 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>我的購物車</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .fmem-group { margin-bottom: 40px; border: 1px solid #ccc; padding: 15px; } /* 新增分組樣式 */
-        .fmem-header { background-color: #e6f7ff; padding: 10px; margin: -15px -15px 15px -15px; font-size: 1.2em; font-weight: bold; } /* 小農標題 */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .total { text-align: right; font-weight: bold; }
-        .checkout-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px;} /* 結帳按鈕容器 */
-        .success-message { color: green; font-weight: bold; margin-bottom: 15px; }
-        .error-message { color: red; font-weight: bold; margin-bottom: 15px; }
-    </style>
+	<link rel="stylesheet" th:href="@{/css/shoppingCart/shoppingCart.css}">
 </head>
 <body>
 	<span>測試有網頁該無參數</span><br>
@@ -27,8 +16,8 @@
 
     <h1>我的購物車 (分組顯示)</h1>
     
-    <a th:href="@{/}" style="float: right; margin-top: -40px; margin-right: 100px;">回首頁</a>
-    <a th:href="@{/cart/products/list}" style="float: right; margin-top: -40px;">繼續購物</a>
+    <a th:href="@{/}">回首頁</a>
+    <a th:href="@{/cart/products/list}">繼續購物</a>
     <hr>
 
     <div th:if="${successMessage}" class="success-message">
@@ -89,7 +78,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4" class="total">小農 <span th:text="${fmemId}">10</span> 商品總計金額:</td>
+                        <td colspan="4" class="total">小農 <span th:text="${fmemId}">10</span> 商品總計金額（不含運費）:</td>
                         <td class="total" th:with="total=${#aggregates.sum(cartItemsForFmem.![cartSubTotal])}" th:text="${total}">500</td>
                         <td></td>
                     </tr>
@@ -97,11 +86,6 @@
             </table>
 
 			<div class="checkout-actions">
-    
-    			<div>總金額 (不含運費、點數折扣): 
-        			<span th:with="total=${#aggregates.sum(cartItemsForFmem.![cartSubTotal])}" th:text="${total}">500</span> 元
-    			</div>
-    
     			<form th:action="@{/cart/clearByFmemId}" method="post" 
           			th:onsubmit="|return confirm('確定要清空小農 ${fmemId} 的所有商品嗎？');|"
           			style="margin-right: 10px;">
@@ -119,7 +103,7 @@
     
 		<hr>
 		<form th:action="@{/cart/clearAllCarts}" method="post" onsubmit="return confirm('確定要清空所有小農的購物車嗎？');" style="margin-top: 10px;">
-    		<button type="submit" style="background-color: #ffcccc;">清空所有購物車</button>
+    		<button type="submit">清空所有購物車</button>
 		</form>
 
 </body>
