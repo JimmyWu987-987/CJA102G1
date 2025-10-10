@@ -5,21 +5,28 @@
     <title>我的購物車</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
-        table { width: 80%; border-collapse: collapse; margin-top: 20px; }
+        .fmem-group { margin-bottom: 40px; border: 1px solid #ccc; padding: 15px; } /* 新增分組樣式 */
+        .fmem-header { background-color: #e6f7ff; padding: 10px; margin: -15px -15px 15px -15px; font-size: 1.2em; font-weight: bold; } /* 小農標題 */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #f2f2f2; }
         .total { text-align: right; font-weight: bold; }
+        .checkout-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px;} /* 結帳按鈕容器 */
         .success-message { color: green; font-weight: bold; margin-bottom: 15px; }
         .error-message { color: red; font-weight: bold; margin-bottom: 15px; }
     </style>
 </head>
 <body>
+	<!-- 測試有網頁該無參數 -->
+	<span>測試有網頁該無參數</span>
 	<span th:text="${session.loggedInMember}"></span><br>
 	<span th:text="${session.memId}"></span><br>
 	<span th:text="${session.memName}"></span><br>
-	<span th:text="${cartItems}"></span><br>
-	<span th:text="${cartTotal}"></span><br>
-    <h1>我的購物車</h1>
+	<span th:text="${groupedCartItems}"></span><br>
+	<span>測試有網頁該無參數</span>
+
+
+    <h1>我的購物車 (分組顯示)</h1>
     <a th:href="@{/cart/products/list}" style="float: right; margin-top: -40px;">繼續購物</a>
     <hr>
 
@@ -30,67 +37,83 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <div th:if="${#lists.isEmpty(cartItems)}">
+    <div th:if="${#maps.isEmpty(groupedCartItems)}">
         <p>您的購物車目前是空的。</p>
     </div>
     
-    <div th:unless="${#lists.isEmpty(cartItems)}">
-        <table>
-            <thead>
-                <tr>
-                    <th>商品 ID</th>
-                    <th>商品名稱</th>
-                    <th>單價</th>
-                    <th>數量</th>
-                    <th>小計</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="item : ${cartItems}">
-                    <td th:text="${item.proId}">101</td>
-                    <td th:text="${item.cartName}">有機蘋果</td>
-                    <td th:text="${item.cartUnitPrice}">50</td>
-                    
-                    <td>
-                        <form th:action="@{/cart/update}" method="post" style="display: inline-block;">
-                            <input type="hidden" name="proId" th:value="${item.proId}" />
-                            
-                            <input type="number" name="quantity" 
-                                   th:value="${item.cartAmount}" min="0" style="width: 50px;">
-                            
-                            <button type="submit">更新</button>
-                        </form>
-                    </td>
-                    
-                    <td th:text="${item.cartSubTotal}">100</td>
-                    
-                    <td>
-                        <form th:action="@{/cart/remove}" method="post" onsubmit="return confirm('確定要從購物車移除此商品嗎？');">
-                            <input type="hidden" name="proId" th:value="${item.proId}" />
-                            <button type="submit" style="color: red;">移除</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4" class="total">商品總計金額	(不含運):</td>
-                    <td class="total" th:with="total=${#aggregates.sum(cartItems.![cartSubTotal])}" th:text="${total}">500</td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
+    <div th:unless="${#maps.isEmpty(groupedCartItems)}" th:each="entry : ${groupedCartItems}" class="fmem-group">
         
-        <hr>
-        <form th:action="@{/cart/checkout}" method="get">
-            <button type="submit">前往結帳</button>
-        </form>
-        
-        <form th:action="@{/cart/clear}" method="post" onsubmit="return confirm('確定要清空購物車嗎？');" style="margin-top: 10px;">
-            <button type="submit" style="background-color: #ffcccc;">清空購物車</button>
-        </form>
+        <span th:with="fmemId=${entry.key}, cartItemsForFmem=${entry.value}">
+            
+            <div class="fmem-header">
+                小農編號: <span th:text="${fmemId}">10</span> 的購物車
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>商品 ID</th>
+                        <th>商品名稱</th>
+                        <th>單價</th>
+                        <th>數量</th>
+                        <th>小計</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${cartItemsForFmem}">
+                        <td th:text="${item.proId}">101</td>
+                        <td th:text="${item.cartName}">有機蘋果</td>
+                        <td th:text="${item.cartUnitPrice}">50</td>
+                        
+                        <td>
+                            <form th:action="@{/cart/update}" method="post" style="display: inline-block;">
+                                <input type="hidden" name="proId" th:value="${item.proId}" />
+                                <input type="hidden" name="fmemId" th:value="${fmemId}" /> <input type="number" name="quantity" 
+                                       th:value="${item.cartAmount}" min="0" style="width: 50px;">
+                                
+                                <button type="submit">更新</button>
+                            </form>
+                        </td>
+                        
+                        <td th:text="${item.cartSubTotal}">100</td>
+                        
+                        <td>
+                            <form th:action="@{/cart/remove}" method="post" onsubmit="return confirm('確定要從購物車移除此商品嗎？');">
+                                <input type="hidden" name="proId" th:value="${item.proId}" />
+                                <input type="hidden" name="fmemId" th:value="${fmemId}" /> <button type="submit" style="color: red;">移除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="total">小農 <span th:text="${fmemId}">10</span> 商品總計金額:</td>
+                        <td class="total" th:with="total=${#aggregates.sum(cartItemsForFmem.![cartSubTotal])}" th:text="${total}">500</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="checkout-actions">
+                <div>
+                    總金額 (不含運費、點數折扣): 
+                    <span th:with="total=${#aggregates.sum(cartItemsForFmem.![cartSubTotal])}" th:text="${total}">500</span> 元
+                </div>
+                
+                <form th:action="@{/cart/checkoutByFmemId}" method="get">
+                    <input type="hidden" name="fmemId" th:value="${fmemId}" />
+                    <button type="submit">結帳小農 <span th:text="${fmemId}">10</span> 的商品</button>
+                </form>
+            </div>
+            
+        </span>
     </div>
+    
+    <hr>
+    <form th:action="@{/cart/clear}" method="post" onsubmit="return confirm('確定要清空整個購物車嗎？');" style="margin-top: 10px;">
+        <button type="submit" style="background-color: #ffcccc;">清空整個購物車</button>
+    </form>
 
 </body>
 </html>
