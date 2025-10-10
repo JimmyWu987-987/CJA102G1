@@ -363,7 +363,7 @@ public class ShoppingCartService implements Serializable {
 		proOrdAddr += memVO.getMemAddr();
 		proOrderVO.setProOrdAddr(proOrdAddr);
 
-		System.out.println("--- 傳送購物車資訊到訂購單頁面，購物車已清空 ---");
+		System.out.println("--- 傳送購物車資訊到訂購單頁面 ---");
 		return proOrderVO;
 	}
 

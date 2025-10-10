@@ -85,6 +85,14 @@
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
                     	</form>
                     </td>
+                    
+                    <td th:if="${proOrderVO.proPayStatus == 0}">
+                    	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
+                    		<input type="submit" value="我要付款">
+    						<!-- 未來寫入要傳送的值 -->
+                    	</form>
+                    </td>
+                    
                     <td th:if="${proOrderVO.proOrdStatus != 6}">
                     	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
                     		<input type="submit" value="我要退貨">

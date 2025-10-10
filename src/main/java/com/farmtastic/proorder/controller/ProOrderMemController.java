@@ -112,6 +112,7 @@ public class ProOrderMemController {
 	 */
 	@PostMapping("insert")
 	public String insert(@Valid ProOrderVO proOrderVO,
+			@RequestParam("destination") String destination,
 			BindingResult result,
 			HttpSession session,
 			RedirectAttributes redirectAttributes,
@@ -129,11 +130,12 @@ public class ProOrderMemController {
 				// 這裡可以讀取錯誤代碼、錯誤訊息等
 				System.out.println(error.getDefaultMessage());
 
-				model.addAttribute("errorMessage", error.getDefaultMessage());
+				redirectAttributes.addFlashAttribute("errorMessage", error.getDefaultMessage());
 			}
 			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
 			model.addAttribute("cartToProOrder", finalProOrderVO);
 			return "forward:/mem/proorders/addProOrder?error";
+			
 		} else {
 			// 將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
 			proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
@@ -218,12 +220,21 @@ public class ProOrderMemController {
 			
 			// 重導向到訂單列表頁面
 			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
-			return "redirect:/mem/proorders/listAllProOrder";
+			
+			// 未完成，要將送出訂單後要導向信用卡或者linePay
+	        if ("checkout".equals(destination)) {
+	            // 【先結帳】: 導向到結帳/付款頁面，並帶上剛新增的訂單 ID
+	            // 假設您的結帳頁面 URL 為 /mem/proorders/checkoutPage
+	            return "redirect:/"; 
+	            
+	        } else { // 包含 "query" (先不結帳) 或其他任何值
+	            // 【先不結帳】: 導向查詢全部表單畫面 (您原本的列表頁)
+				return "redirect:/mem/proorders/listAllProOrder";
+	        }
 
 		}
-
+		
 	}
-
 	// 修改訂單 (處理點數折抵)
 	@PostMapping("OrdPointDiscUpdate")
 	public String update(@RequestParam(name="proOrdPointdisc", required = false) String proOrdPointdisc, HttpSession session,ModelMap model,RedirectAttributes redirectAttributes) {

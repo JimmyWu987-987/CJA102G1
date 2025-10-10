@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <title>小農商城 - 訂單結帳</title>
 </head>
 <body>
@@ -21,8 +23,9 @@
     </div>
 	
 	
-	<h1>結帳頁面</h1>
-	<form method="post" th:action="@{insert}" th:object="${cartToProOrder}">
+	<h1>結帳頁面</h1><form method="post" th:action="@{insert}" th:object="${cartToProOrder}" id="orderForm"> 
+    
+    <input type="hidden" id="destination" name="destination" value="" />
 		
 		<div>
 		<label>一般會員編號</label>
@@ -159,8 +162,7 @@
 		</div>
 		
 		<div>
-		
-		<button type="submit" id="submit"> 送出新增 </button>
+		<button type="submit" id="submitButton"> 送出新增 </button>
 		</div>
 		
 	</form>
@@ -174,6 +176,7 @@
                min="0" 
                th:value="${cartToProOrder.proOrdPointdisc}" 
                th:max="${cartToProOrder.memVO.memPoint}"/><br>
+               
         <button type="submit">更新折抵</button>
     </div>
 	</form>
@@ -238,6 +241,51 @@ document.addEventListener('DOMContentLoaded', function() {
         shipmentCVS.style.display = 'inline-block';
     }
 });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('orderForm');
+        const submitButton = document.getElementById('submitButton');
+        const destinationInput = document.getElementById('destination');
+
+        // 【關鍵步驟】：監聽按鈕點擊事件，而不是表單提交事件
+        submitButton.addEventListener('click', function(event) {
+            
+            // 1. 阻止按鈕的預設行為（阻止它立即提交表單）
+            event.preventDefault();
+
+            // 2. 彈出 SweetAlert2 視窗
+            Swal.fire({
+                title: '訂單已送出!',
+                text: '接下來您想要...?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '先結帳 (導向結帳頁)', 
+                cancelButtonText: '先不結帳 (導向查詢頁)',
+                showLoaderOnConfirm: true, 
+                allowOutsideClick: () => !Swal.isLoading() 
+            }).then((result) => {
+                
+                // 3. 根據使用者選擇，設定目標並手動提交
+                if (result.isConfirmed) {
+                    // 使用者點擊「先結帳」
+                    destinationInput.value = 'checkout';
+                    
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // 使用者點擊「先不結帳」
+                    destinationInput.value = 'query';
+                    
+                } else {
+                    // 點擊外部或按 ESC 關閉，不提交表單。
+                    return;
+                }
+                
+                // 【最重要步驟】：手動觸發表單提交
+                // 因為我們已經移除了 onsubmit 屬性，這次提交將不會被任何 JavaScript 邏輯攔截。
+                form.submit();
+            });
+        });        
+    });
 </script>
 </body>
 </html>
