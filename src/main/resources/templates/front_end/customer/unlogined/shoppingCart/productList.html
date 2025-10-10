@@ -29,6 +29,7 @@
     <div class="product-list">
         <div th:each="product : ${products}" class="product-card">
             <h3 th:text="${product.proName}">有機蘋果</h3>
+            <h3 th:text="${product.fmemVO.fmemId}">小農ID</h3>
             <p>價格: <span th:text="${product.proPrice}">50</span> 元</p>
             <p>庫存: <span th:text="${product.proStock}">100</span></p>
 
