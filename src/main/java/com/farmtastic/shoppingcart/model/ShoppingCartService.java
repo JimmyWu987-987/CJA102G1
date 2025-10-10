@@ -318,10 +318,8 @@ public class ShoppingCartService implements Serializable {
 			proOrdCpndisc = 0;
 			proOrderVO.setProOrdCpndisc(proOrdCpndisc);
 		}
-
+		
 		// 會員持有點數
-
-		Integer memPoint = memVO.getMemPoint();
 
 		// 商品訂單折抵會員點數
 		Integer proOrdPointdisc = proOrderVO.getProOrdPointdisc();
@@ -329,10 +327,6 @@ public class ShoppingCartService implements Serializable {
 			proOrdPointdisc = 0;
 		}
 		proOrderVO.setProOrdPointdisc(proOrdPointdisc);
-		// 修改該會員點數
-		// 這邊要寫一個修改mem的service
-		memPoint = memPoint - proOrdPointdisc;
-		memVO.setMemPoint(memPoint);
 
 		// 實付金額
 		// 實付金額 = 商品總金額 + 運費 - 折價券折抵金額 - 訂單折抵會員點數
