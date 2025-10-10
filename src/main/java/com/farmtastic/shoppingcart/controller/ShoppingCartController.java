@@ -134,16 +134,37 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 	
 	// **************************** 5. 清空購物車 ****************************
 
-		// URL: POST /cart/clear
-		@PostMapping("/clear")
-		public String clearCart(RedirectAttributes redirectAttributes) {
+	// URL: POST /cart/clearByFmemId
+	/**
+	 * 🌟 新增功能：清空單一小農的購物車 🌟
+	 */
+	@PostMapping("/clearByFmemId")
+	public String clearCartByFmemId(@RequestParam("fmemId") Integer fmemId, 
+	        RedirectAttributes redirectAttributes) {
 
-			cartService.clearCart();
+	    // 呼叫 Service 的新方法
+	    cartService.clearCartByFmemId(fmemId);
+	    // 等同學的 fmem 單一查詢寫好，查詢該小農的名字
+	    // 未完成
+	    
+	    redirectAttributes.addFlashAttribute("successMessage", "小農 " + fmemId + " 的購物車已清空！");
 
-			redirectAttributes.addFlashAttribute("successMessage", "購物車已清空！");
+	    return "redirect:/cart/view";
+	}
 
-			return "redirect:/cart/view";
-		}
+	// URL: POST /cart/clearAllCarts
+	/**
+	 * 清空所有小農的購物車
+	 */
+	@PostMapping("/clearAllCarts")
+	public String clearAllCarts(RedirectAttributes redirectAttributes) {
+
+	    cartService.clearAllCarts();
+
+	    redirectAttributes.addFlashAttribute("successMessage", "所有購物車已清空！");
+
+	    return "redirect:/cart/view";
+	}
 
 		// **************************** 6. 結帳 (Checkout) ****************************
 

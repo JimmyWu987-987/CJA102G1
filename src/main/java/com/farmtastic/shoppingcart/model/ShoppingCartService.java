@@ -195,11 +195,24 @@ public class ShoppingCartService implements Serializable {
 
 		return removed;
 	}
+	
+	/**
+	 * 🌟 新增功能：清空指定小農 ID 的購物車 (清空 Map 中一個 Key 的 Value) 🌟
+	 * @param fmemId 要清空的指定小農 ID
+	 */
+	public void clearCartByFmemId(Integer fmemId) {
+		if(fmemId != null || groupedCartItems.containsKey(fmemId)) {
+			groupedCartItems.remove(fmemId);
+			System.out.println("--- 成功清空小農 ID: " + fmemId + " 的購物車 ---");
+		} else {
+			System.out.println("--- 警告：找不到小農 ID: " + fmemId + " 的購物車，無法清空 ---");
+		}
+	}
 
 	/**
 	 * 清空購物車 (清空整個 Map)
 	 */
-	public void clearCart() {
+	public void clearAllCarts() {
 		this.groupedCartItems.clear();
 	}
 
