@@ -368,6 +368,7 @@ public class ShoppingCartService implements Serializable {
 	 * * @param fmemId 要計算總金額的小農 ID
 	 * @return Integer 該小農購物車商品的總小計
 	 */
+	
 	public Integer getCartTotalByFmemId(Integer fmemId) {
 		// 1. 根據 fmemId 取得該小農的購物車清單
 		List<ShoppingCartVO> cartItemsForFmem = groupedCartItems.get(fmemId);
