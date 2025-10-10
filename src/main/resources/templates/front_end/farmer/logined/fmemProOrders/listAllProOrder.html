@@ -8,8 +8,8 @@
 	
 	<h1>這是小農會員查詢自己訂單的頁面</h1>
 	
-	<h3>會員編號：<span th:text="${session.fmemId}"></span></h3>
-	<h3>會員姓名：<span th:text="${session.fmemName}"></span> 你好！</h3>
+	<h3>會員編號：<span th:text="${session.loggedInFmember.fmemId}"></span></h3>
+	<h3>會員姓名：<span th:text="${session.loggedInFmember.fmemName}"></span> 你好！</h3>
 
     <h1>客戶訂單列表</h1>
     <div th:if="${#lists.isEmpty(proOrderList)}">
