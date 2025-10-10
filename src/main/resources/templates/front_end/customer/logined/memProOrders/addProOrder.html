@@ -165,7 +165,7 @@
 		
 	</form>
 	
-<!-- 	<form th:action="@{OrdPointDiscUpdate}" method="post">
+	<form th:action="@{OrdPointDiscUpdate}" method="post">
     <div>
         <label>折抵會員點數</label>
         <input type="number" 
@@ -173,10 +173,10 @@
                value="0" 
                min="0" 
                th:value="${cartToProOrder.proOrdPointdisc}" 
-               th:max="${memVO.memPoint}"/><br>
+               th:max="${cartToProOrder.memVO.memPoint}"/><br>
         <button type="submit">更新折抵</button>
     </div>
-	</form> -->
+	</form>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // 取得所有付款方式的 Radio Button (共用相同的 name: proOrdPayment)
