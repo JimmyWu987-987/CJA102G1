@@ -121,9 +121,9 @@
 		<div id="paymentMethods">
     		<label>付款方式</label>
     		<input type="radio" id="paymentCredit" th:field="*{proOrdPayment}" th:value="0"/>信用卡
-    		<input type="radio" id="paymentTransfer" th:field="*{proOrdPayment}" th:value="1"/>轉帳
-    		<input type="radio" id="paymentCOD" th:field="*{proOrdPayment}" th:value="2"/>貨到付款
-    		<input type="radio" id="paymentCSPP" th:field="*{proOrdPayment}" th:value="3"/>超商取貨付款<br>
+    		<input type="radio" id="paymentLinePay" th:field="*{proOrdPayment}" th:value="1"/>LinePay
+<!--     		<input type="radio" id="paymentCOD" th:field="*{proOrdPayment}" th:value="2"/>貨到付款
+    		<input type="radio" id="paymentCSPP" th:field="*{proOrdPayment}" th:value="3"/>超商取貨付款<br> -->
 		</div>
 
 		<div id="shipmentMethods">
@@ -181,7 +181,7 @@
     </div>
 	</form>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+/* document.addEventListener('DOMContentLoaded', function() {
     // 取得所有付款方式的 Radio Button (共用相同的 name: proOrdPayment)
     const paymentRadios = document.querySelectorAll('input[name="proOrdPayment"]');
     
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
         shipmentHomeDelivery.style.display = 'inline-block';
         shipmentCVS.style.display = 'inline-block';
     }
-});
+}); */
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
