@@ -20,8 +20,13 @@ public class FavoProController {
 
 	@PostMapping("/add")
 	public String addFavorite(@RequestParam Integer proId, HttpSession session, RedirectAttributes redirectAttributes) {
-		// 從 Session 取出登入會員
+		// 從 Session 取出登入會員 檢查是否登入
 		Mem loginUser = (Mem) session.getAttribute("loggedInMember");
+		if (loginUser == null) {
+			redirectAttributes.addFlashAttribute("message", "請先登入會員才能收藏商品！");
+			return "redirect:/mem/showMemRegLoginForm";
+		}
+		// 已登入 → 執行收藏流程
 		Integer memId = loginUser.getMemId();
 
 		try {
@@ -35,7 +40,7 @@ public class FavoProController {
 			;
 			// 回到商品詳情頁(不是正確的頁面)
 			// return "frontend/logoned/product/product_detail";
-			return "redirect:/frontend/logoned/product/detail?proId=" + proId;
+			return "redirect:/frontend/logoned/product_test/detail?proId=" + proId;
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("message", "收藏失敗：" + e.getMessage());
 			return "frontend/error_page";
