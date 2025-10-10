@@ -114,9 +114,9 @@ public class Fmem implements Serializable {
 	
 	@Column(name = "bank_code")
 	@NotEmpty(message = "銀行代碼請勿空白", groups = RegistrationValidation.class)
-	@Pattern(regexp = "^$|^[0-9]{3,4}$", 
-			 message = "銀行代碼格式不符，請輸入數字3~4碼", 
-			 groups = RegistrationValidation.class)
+//	@Pattern(regexp = "^$|^[0-9]{3,4}$", 
+//			 message = "銀行代碼格式不符，請輸入數字3~4碼", 
+//			 groups = RegistrationValidation.class)
 	private String bankCode;
 	
 	@Column(name = "bank_acc")

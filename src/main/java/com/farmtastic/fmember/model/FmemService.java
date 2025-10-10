@@ -46,6 +46,10 @@ public class FmemService {
 		return repository.findByFmemMobile(fmemMobile) != null;
 	}
 	
+	public boolean existsByFId(String fId) {
+		return repository.findByFid(fId) != null;
+	}
+	
 //	public void register(String fmemAcc) {
 //		Fmem fmem = repository.findByFmemAcc(fmemAcc);
 //		if(fmem != null) {

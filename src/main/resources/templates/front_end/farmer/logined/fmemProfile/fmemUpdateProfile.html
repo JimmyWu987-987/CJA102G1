@@ -99,8 +99,11 @@
 	                
 	                <li class="list-bank">
 	                    <label>收款帳戶</label>
-	                    <input type="text" th:field="*{bankCode}" class="bankCode" placeholder="銀行代碼" maxlength="5">          
-	                    <input type="text" th:field="*{bankAcc}" class="bankAcc" placeholder="銀行帳號" maxlength="20">
+	                    <select th:field="*{bankCode}" class="bankCode" th:data-saved="${updateProfileFmem.bankCode}">
+	                        <option value=""></option>
+	                    </select>
+	                             
+	                    <input type="text" th:field="*{bankAcc}" class="bankAcc" placeholder="銀行帳號" minlength="7" maxlength="14">
 	                   
 	                    <span th:if="${#fields.hasErrors('bankCode')}" th:errors="*{bankCode}" class="error-bankCode"></span>
 	                    <span th:if="${#fields.hasErrors('bankAcc')}" th:errors="*{bankAcc}" class="error-bankAcc"></span>
@@ -170,6 +173,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script th:src="@{/js/mem/emailAddr.js}"></script>
 	<script th:src="@{/js/fmem/uploadPic.js}"></script>
+	<script th:src="@{/js/fmem/bankCode.js}"></script>
 	<script th:src="@{/js/mem/successUpdateProfileAlert.js}"></script>
 	
 </body>
