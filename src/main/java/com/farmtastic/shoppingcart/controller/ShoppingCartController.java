@@ -81,7 +81,7 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		} else {
 			redirectAttributes.addFlashAttribute("errorMessage", "加入購物車失敗，商品不存在或數量無效。");
 		}
-
+		
 		// 使用重定向 (redirect) 到顯示頁面，遵循 Post/Redirect/Get 模式
 		return "redirect:/cart/products/list";
 	}

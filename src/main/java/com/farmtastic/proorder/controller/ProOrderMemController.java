@@ -22,6 +22,7 @@ import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemId;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
+import com.farmtastic.shoppingcart.model.ShoppingCartService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -42,6 +43,8 @@ public class ProOrderMemController {
 	FmemService femSvc;
 	@Autowired
 	MemService memSvc;
+	@Autowired
+	ShoppingCartService shoppingCartSvc;
 
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
@@ -147,7 +150,7 @@ public class ProOrderMemController {
 //		    // 3. 設定關聯和明細
 			proOrderVO.setMemVO(loggedInMember);
 			proOrderVO.setProOrderItems(finalItems);
-
+			
 			// 🌟 關鍵修正 2：在 Controller/Service 確保明細回指主表 **並初始化複合主鍵 (ProId)** 🌟
 			for (ProOrderItemVO item : finalItems) {
 				// 1. 建立雙向關聯：讓每個明細知道它屬於哪個訂單 (proOrdId會在儲存時由JPA處理)
@@ -169,6 +172,7 @@ public class ProOrderMemController {
 
 				// 將設定好 proId 的 ProOrderItemId 設回給 ProOrderItemVO
 				item.setId(id);
+				
 			}
 
 			try {
@@ -202,8 +206,18 @@ public class ProOrderMemController {
 			// 清除 Session 相關屬性
 			session.removeAttribute("cartToProOrder");
 			
+			// 清除 該訂單的購物車內容
+			// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
+			// 所以直接找集合內的第一個物件，取出fmemId
+			Integer fmemId = proOrderVO.getProOrderItems()
+					.get(0)
+					.getProductVO()
+					.getFmemVO()
+					.getFmemId();
+			shoppingCartSvc.clearCartByFmemId(fmemId);
+			
 			// 重導向到訂單列表頁面
-			redirectAttributes.addFlashAttribute("successMessage", "訂單已成功建立！");
+			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
 			return "redirect:/mem/proorders/listAllProOrder";
 
 		}

@@ -363,10 +363,7 @@ public class ShoppingCartService implements Serializable {
 		proOrdAddr += memVO.getMemAddr();
 		proOrderVO.setProOrdAddr(proOrdAddr);
 
-		// 結帳成功後，清空該小農的購物車
-		groupedCartItems.remove(fmemId);
-
-		System.out.println("--- 模擬結帳成功，購物車已清空 ---");
+		System.out.println("--- 傳送購物車資訊到訂購單頁面，購物車已清空 ---");
 		return proOrderVO;
 	}
 
