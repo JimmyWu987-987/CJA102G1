@@ -52,14 +52,10 @@ public class ProOrderMemController {
 
 		// 取得 session 的會員資訊
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-		Integer memId = (Integer) session.getAttribute("memId");
-		String memName = (String) session.getAttribute("memName");
 
 		// 錯誤驗證
 		try {
-			Mem MemVO = new Mem();
-			MemVO.setMemId(memId);
-			List<ProOrderVO> list = proOrdSvc.getAllByMemId(MemVO);
+			List<ProOrderVO> list = proOrdSvc.getAllByMemId(loggedInMember);
 
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("proOrderList", list);
@@ -251,7 +247,7 @@ public class ProOrderMemController {
 
 		// 1. 從 Session 取得原始的訂單資訊
 		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
-		Integer memId = (Integer) session.getAttribute("memId");
+		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		
 		if (finalProOrderVO == null) {
 			model.addAttribute("errorMessage", "購物車資訊已遺失，請重新結帳！");
@@ -259,8 +255,7 @@ public class ProOrderMemController {
 		}
 
 		// 2. 驗證點數折抵值 (防止惡意輸入或超過持有/總額)
-		Mem memVO = memSvc.getOneByMemId(memId);
-		Integer memPoint = memVO.getMemPoint();
+		Integer memPoint = loggedInMember.getMemPoint();
 
 		// (1) 確保折抵點數不超過會員持有總點數
 		if (tempProOrdPointdisc > memPoint) {

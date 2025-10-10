@@ -92,8 +92,8 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 
 	// URL: POST /cart/update
 	@PostMapping("/update")
-	public String updateCartQuantity(@RequestParam("proId") Integer proId, @RequestParam("fmemId") Integer fmemId, // 從cartView.html
-																													// 表單傳入
+	public String updateCartQuantity(@RequestParam("proId") Integer proId, 
+			@RequestParam("fmemId") Integer fmemId, // 從cartView.html																	// 表單傳入
 			@RequestParam("quantity") Integer quantity, // 這是使用者唯一能修改的欄位
 			RedirectAttributes redirectAttributes) {
 
@@ -138,7 +138,8 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 	 * 🌟 新增功能：清空單一小農的購物車 🌟
 	 */
 	@PostMapping("/clearByFmemId")
-	public String clearCartByFmemId(@RequestParam("fmemId") Integer fmemId, RedirectAttributes redirectAttributes) {
+	public String clearCartByFmemId(@RequestParam("fmemId") Integer fmemId,
+			RedirectAttributes redirectAttributes) {
 
 		// 呼叫 Service 的新方法
 		cartService.clearCartByFmemId(fmemId);
@@ -168,7 +169,8 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 
 	// URL: Get /cart/checkoutByFmemId
 	@GetMapping("/checkoutByFmemId")
-	public String checkout(@RequestParam("fmemId") Integer fmemId, RedirectAttributes redirectAttributes,
+	public String checkout(@RequestParam("fmemId") Integer fmemId,
+			RedirectAttributes redirectAttributes,
 			HttpSession session, Model model) {
 
 		// *** 登入檢查邏輯 ***
@@ -176,15 +178,13 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		// 登入檢查交給 Fitter 處理
 		// 取得 session 的會員資訊
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-		Integer memId = (Integer) session.getAttribute("memId");
-//		String memName = (String) session.getAttribute("memName");
 
 		// *** 登入檢查後，確認有登入 ***
 		// 這是處理使用者剛才登入的動作
-		cartService.updateMemIdInCart(memId); // <--- 新增：更新購物車所有項目的 memId
+		cartService.updateMemIdInCart(loggedInMember.getMemId()); // <--- 新增：更新購物車所有項目的 memId
 
 		// 將訂單+訂單明細存成一個暫存物件，交給addProOrder.html頁面
-		ProOrderVO cartToProOrder = cartService.checkoutByFmemId(fmemId, memId, loggedInMember, PER);
+		ProOrderVO cartToProOrder = cartService.checkoutByFmemId(fmemId, loggedInMember, PER);
 
 		if (cartToProOrder != null) {
 			// 修正後的程式碼行：使用 Flash Attribute 傳輸物件

@@ -229,7 +229,9 @@ public class ShoppingCartService implements Serializable {
 	 * * @return boolean 結帳是否成功
 	 */
 
-	public ProOrderVO checkoutByFmemId(Integer fmemId,Integer memId, Mem loggedInMember, double PER) {
+	public ProOrderVO checkoutByFmemId(Integer fmemId,
+			Mem loggedInMember,
+			double PER) {
 		List<ShoppingCartVO> cartItemsForFmem = groupedCartItems.get(fmemId);
 		
 		if (cartItemsForFmem == null || cartItemsForFmem.isEmpty()) {
@@ -244,11 +246,8 @@ public class ShoppingCartService implements Serializable {
 		// 建立商品訂單
 		ProOrderVO proOrderVO = new ProOrderVO();
 
-		// 將session的值儲存至 proOrderVO.memVO.memId
-		Mem memVO = memSvc.getOneByMemId(memId);
-		// 設定 memVO 的 memId
-		// 將包含 memId 的 memVO 設定給 proOrderVO
-		proOrderVO.setMemVO(memVO);
+		// 將 session 的值儲存至 proOrderVO
+		proOrderVO.setMemVO(loggedInMember);
 
 		// 新增訂單日期為當下系統時間
 		// 讀取毫秒
@@ -294,7 +293,7 @@ public class ShoppingCartService implements Serializable {
 
 		// 計算運費金額
 		// 這邊要寫一個fmem的service的方法
-		Optional<Fmem> fmemlist = fmemSvc.getOneByFmemId(memId);
+		Optional<Fmem> fmemlist = fmemSvc.getOneByFmemId(fmemId);
 		// 如果 Optional 包含 Fmem，則取出它；否則，建立並使用一個新的 Fmem() 物件作為預設值。
 		Fmem fmem = fmemlist.orElse(new Fmem());
 		// 查詢小農的運費
@@ -348,19 +347,19 @@ public class ShoppingCartService implements Serializable {
 		// 預設可以null
 
 		// 收件人姓名
-		proOrderVO.setProOrdName(memVO.getMemName());
+		proOrderVO.setProOrdName(loggedInMember.getMemName());
 
 		// 收件人電話
-		proOrderVO.setProOrdMobile(memVO.getMemMobile());
+		proOrderVO.setProOrdMobile(loggedInMember.getMemMobile());
 
 		// 收件人電子郵件
-		proOrderVO.setProOrdEmail(memVO.getMemEmail());
+		proOrderVO.setProOrdEmail(loggedInMember.getMemEmail());
 
 		// 收件人地址
-		String proOrdAddr = memVO.getMemZipcode();
-		proOrdAddr += memVO.getMemCity();
-		proOrdAddr += memVO.getMemDist();
-		proOrdAddr += memVO.getMemAddr();
+		String proOrdAddr = loggedInMember.getMemZipcode();
+		proOrdAddr += loggedInMember.getMemCity();
+		proOrdAddr += loggedInMember.getMemDist();
+		proOrdAddr += loggedInMember.getMemAddr();
 		proOrderVO.setProOrdAddr(proOrdAddr);
 
 		System.out.println("--- 傳送購物車資訊到訂購單頁面 ---");
