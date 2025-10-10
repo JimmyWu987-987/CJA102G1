@@ -108,7 +108,7 @@
         			<button type="submit" style="background-color: #ffaa99; border: none; padding: 8px 15px;">清空此購物車</button>
     			</form>
 
-    			<form th:action="@{/cart/checkoutByFmemId}" method="post">
+    			<form th:action="@{/cart/checkoutByFmemId}" method="Get">
         			<input type="hidden" name="fmemId" th:value="${fmemId}" /> <button type="submit">結帳小農 <span th:text="${fmemId}">10</span> 的商品</button>
     			</form>
 			</div>

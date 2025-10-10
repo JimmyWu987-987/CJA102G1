@@ -86,29 +86,16 @@ public class ProOrderMemController {
 	public String addProOrder(HttpSession session, ModelMap model) {
 
 		// 取得 session 的會員資訊
-		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-		Integer memId = (Integer) session.getAttribute("memId");
-		String memName = (String) session.getAttribute("memName");
-//		ProOrderVO cartToProOrder = (ProOrderVO) model.getAttribute("cartToProOrder");
 		ProOrderVO cartToProOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 
-		// 如果 Model 中沒有 cartToProOrder (即非從結帳頁面重定向而來)，直接返回至首頁。
+		// 如果沒有 cartToProOrder (即非從結帳頁面重定向而來)，直接返回至購物車頁面。
 		// 這樣可防止用戶直接訪問此 URL 時發生錯誤
 		if (cartToProOrder == null) {
-			return "redirect:/";
+	        // 如果沒有暫存訂單，導回購物車頁面
+	        return "redirect:/cart/view";
 		} else {
-
-			if (!model.containsAttribute("cartToProOrder")) {
-				// 如果 Model 中沒有 'cartToProOrder'，則放入一個新的 ProOrderVO 實例
-				model.addAttribute("cartToProOrder", new ProOrderVO());
-			}
-
 			// 將值回傳至前端thymeleaf
-			model.addAttribute("memVO", loggedInMember);
 			model.addAttribute("cartToProOrder", cartToProOrder);
-//			model.addAttribute("fmemVO", fmem);
-//			model.addAttribute("proOrderVO", proOrderVO);
-//			model.addAttribute("proOrderItemVO", items);
 
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 
@@ -116,9 +103,16 @@ public class ProOrderMemController {
 
 	}
 
-	// 新增訂單至DB
+	// URL: POST /mem/proorders/insert
+	/**
+	 * 處理訂單最終提交的 POST 請求
+	 */
 	@PostMapping("insert")
-	public String insert(@Valid ProOrderVO proOrderVO, BindingResult result, HttpSession session, ModelMap model) {
+	public String insert(@Valid ProOrderVO proOrderVO,
+			BindingResult result,
+			HttpSession session,
+			RedirectAttributes redirectAttributes,
+			ModelMap model) {
 
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
@@ -135,9 +129,8 @@ public class ProOrderMemController {
 				model.addAttribute("errorMessage", error.getDefaultMessage());
 			}
 			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
-			model.addAttribute("memVO", loggedInMember);
 			model.addAttribute("cartToProOrder", finalProOrderVO);
-			return "/front_end/customer/logined/memProOrders/addProOrder";
+			return "forward:/mem/proorders/addProOrder?error";
 		} else {
 			// 將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
 			proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
@@ -196,15 +189,21 @@ public class ProOrderMemController {
 			Integer memPointGet = proOrderVO.getProOrdPointGet();
 			Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
 			loggedInMember.setMemPoint(finalMemPoint);
+			
 			// 將最終點數結果，存回DB
 			memSvc.updateMem(loggedInMember);
+			
 			// 更新網頁會員的session的資料
 			session.setAttribute("loggedInMember", loggedInMember);
 			// ================== 扣商品庫存的邏輯 ======================
 			// 等同學寫好ORM
+			// 未完成
 
 			// 清除 Session 相關屬性
 			session.removeAttribute("cartToProOrder");
+			
+			// 重導向到訂單列表頁面
+			redirectAttributes.addFlashAttribute("successMessage", "訂單已成功建立！");
 			return "redirect:/mem/proorders/listAllProOrder";
 
 		}

@@ -10,6 +10,8 @@
 	<span th:text="${session.memId}"></span><br>
 	<span th:text="${session.memName}"></span><br>
 	<span th:text="${cartToProOrder}"></span><br>
+	<span th:text="${cartToProOrder.memVO}"></span><br>
+	<span th:text="${cartToProOrder.memVO.memPoint}"></span><br>
 
 	   <div th:if="${successMessage}" class="success-message">
         <p th:text="${successMessage}"></p>
@@ -93,10 +95,10 @@
 		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
 		</div> -->
 		
-		<div>
+<!-- 		<div>
 		<label>會員持有點數</label>
 		<span th:text="${memVO.memPoint}"></span><br>
-		</div>
+		</div> -->
 		
 		<div>
 		<label>實付金額</label>
@@ -163,7 +165,7 @@
 		
 	</form>
 	
-	<form th:action="@{OrdPointDiscUpdate}" method="post">
+<!-- 	<form th:action="@{OrdPointDiscUpdate}" method="post">
     <div>
         <label>折抵會員點數</label>
         <input type="number" 
@@ -174,7 +176,7 @@
                th:max="${memVO.memPoint}"/><br>
         <button type="submit">更新折抵</button>
     </div>
-</form>
+	</form> -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // 取得所有付款方式的 Radio Button (共用相同的 name: proOrdPayment)
