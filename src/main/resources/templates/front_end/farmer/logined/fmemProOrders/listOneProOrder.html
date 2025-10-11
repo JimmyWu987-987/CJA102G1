@@ -111,8 +111,16 @@ span {
 		
 		<br>
 		
-		<span>物流追蹤碼:</span><span th:text="${proOrderVO.proTrackingNo}"></span><br>
-		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd HH:mm')}"></span><br>
+		<span>物流追蹤碼:</span>
+			<input type="text" th:field="*{proOrderVO.proTrackingNo}">
+		<br>
+		
+		<!-- 出貨日期只能選訂單日期之後的時間點 -->
+		<span>出貨日期:</span>
+			<input type="date"
+				   th:field="*{proOrderVO.proOrdShipdate}"
+				   th:min="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd')}">
+		<br>
 
 		<form method="post" th:action="@{/fmem/proorders/update}">
 			<input type="submit" value="修改">

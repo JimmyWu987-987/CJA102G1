@@ -89,7 +89,7 @@ public class ProOrderVO implements Serializable {
 	@Column(name = "pro_tracking_no")
 	private String proTrackingNo;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "pro_ord_shipdate")
 	private Date proOrdShipdate;
 	
