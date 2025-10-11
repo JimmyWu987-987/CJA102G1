@@ -72,7 +72,6 @@ public class ProOrderFmemController {
 	public String update(@RequestParam("proOrdId") Integer proOrdId, @RequestParam("proOrdStatus") Byte proOrdStatus,
 			@RequestParam("proTrackingNo") String proTrackingNo,
 			@RequestParam(value = "proOrdShipdate", required = false) String proOrdShipdate,
-			RedirectAttributes redirectAttributes,
 			ModelMap model) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
@@ -90,7 +89,7 @@ public class ProOrderFmemController {
 			} catch (ParseException e) {
 				// 處理日期格式錯誤，例如：記錄錯誤或加入 Model 讓前端顯示
 				System.err.println("日期格式錯誤: " + e.getMessage());
-				redirectAttributes.addFlashAttribute("errorMessage", "日期格式錯誤");
+				model.addAttribute("errorMessage", "日期格式錯誤");
 			}
 		} else {
 			try {
@@ -102,12 +101,12 @@ public class ProOrderFmemController {
 			} catch (ParseException e) {
 				// 處理日期格式錯誤，例如：記錄錯誤或加入 Model 讓前端顯示
 				System.err.println("日期格式錯誤: " + e.getMessage());
-				redirectAttributes.addFlashAttribute("errorMessage", "日期格式錯誤");
+				model.addAttribute("errorMessage", "日期格式錯誤");
 			}
 		}
 
 		proOrdSvc.updateProOrder(proOrderVO);
-		redirectAttributes.addFlashAttribute("successMessage", "訂單狀態更新成功！");
+		model.addAttribute("successMessage", "訂單狀態更新成功！");
 
 		// 放入 model 傳送至前端
 		model.addAttribute("proOrderVO", proOrderVO);
