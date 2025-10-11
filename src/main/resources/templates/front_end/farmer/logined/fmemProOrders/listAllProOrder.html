@@ -2,6 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<!-- jquery datatables 設定 -->
+<script th:src="@{/js/dataTable/dataTable.js}"></script>
 <title>小農會員專區 - 客戶訂單列表</title>
 </head>
 <body>
@@ -17,7 +22,7 @@
     </div>
     
     <div th:unless="${#lists.isEmpty(proOrderList)}">
-        <table border="1">
+        <table id="example" class="display">
             <thead>
                 <tr>
                     <th>訂單編號</th>
@@ -25,14 +30,15 @@
                     <th>訂購客戶姓名</th>
                     <th>訂單日期</th>
                     <th>總金額</th>
+                    <th>訂單狀態</th>
+                    <th>付款狀態</th>
                     <th>付款方式</th>
                     <th>物流方式</th>
                     <th>訂單備註</th>
-                    <th>訂單狀態</th>
-                    <th>付款狀態</th>
                     <th>平台撥款狀態</th>
                     <th>平台撥款金額</th>
-                    </tr>
+                    <th>操作</th>
+               </tr>
             </thead>
             <tbody>
                 <tr th:each="proOrderVO : ${proOrderList}">
@@ -40,24 +46,7 @@
                     <td th:text="${proOrderVO.memId}">M001</td> 
                     <td th:text="${proOrderVO.memName}">M001</td> 
                     <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
-                    <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>       
-                    
-                    <td>
-                    	<div th:switch="${proOrderVO.proOrdPayment}">
-                    		<span th:case="0">信用卡</span>
-                    		<span th:case="1">LinePay</span>
-                    		<span th:case="*">N/A</span>
-                    	</div>
-                    </td>
-                    <td>
-                    	<div th:switch="${proOrderVO.proOrdShipment}">
-                    		<span th:case="0">宅配</span>
-                    		<span th:case="1">超商取貨</span>
-                    		<span th:case="*"></span>
-                    	</div>
-                    </td>
-                    
-                    <td th:text="${proOrderVO.proOrdComm}">訂單備註</td>
+                    <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>
                     
                     <td>
                     	<div th:switch="${proOrderVO.proOrdStatus}">
@@ -78,6 +67,25 @@
                             <span th:case="*">N/A</span>
                     	</div>
                     </td>
+                    
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdPayment}">
+                    		<span th:case="0">信用卡</span>
+                    		<span th:case="1">LinePay</span>
+                    		<span th:case="*">N/A</span>
+                    	</div>
+                    </td>
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdShipment}">
+                    		<span th:case="0">宅配</span>
+                    		<span th:case="1">超商取貨</span>
+                    		<span th:case="*"></span>
+                    	</div>
+                    </td>
+                    
+                    <td th:text="${proOrderVO.proOrdComm}">訂單備註</td>
+                    
+
                     <td>
                     	<div th:switch="${proOrderVO.proOrdAllocStatus}">
                     		<span th:case="0">未撥款</span>
@@ -93,13 +101,10 @@
                     		<input type="submit" value="訂單明細">
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
                     	</form>
-                    </td>
-                    
-                   
+                    </td>             
                 </tr>
             </tbody>
         </table>
     </div>
-    
 </body>
 </html>

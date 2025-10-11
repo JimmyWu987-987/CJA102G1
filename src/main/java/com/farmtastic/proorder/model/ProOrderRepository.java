@@ -41,7 +41,7 @@ public interface ProOrderRepository extends JpaRepository<ProOrderVO,Integer>{
 	        WHERE
 	            P.FMEM_ID = :fmemId
 	        GROUP BY PO.PRO_ORD_ID
-	        ORDER BY PO.PRO_ORD_DATE DESC
+	        ORDER BY PO.PRO_ORD_DATE DESC, PO.PRO_ORD_STATUS DESC
 	    """, nativeQuery = true)
 	    List<FmemOrderSummary> findFmemProOrders(Integer fmemId);
 	

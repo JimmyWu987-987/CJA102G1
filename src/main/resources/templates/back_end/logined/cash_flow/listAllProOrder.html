@@ -2,7 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>全部產品訂單列表</title>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<!-- jquery datatables 設定 -->
+<script th:src="@{/js/dataTable/dataTable.js}"></script>
+<title>金流管理系統</title>
 </head>
 <body>
 	<h1>這是金流管理系統的頁面</h1>
@@ -13,7 +18,7 @@
     </div>
     
     <div th:unless="${#lists.isEmpty(proOrderList)}">
-        <table border="1">
+        <table id="example" class="display">
             <thead>
                 <tr>
                     <th>訂單編號</th>
