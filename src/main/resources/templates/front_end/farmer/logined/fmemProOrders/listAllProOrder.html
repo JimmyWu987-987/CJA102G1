@@ -29,8 +29,8 @@
                     <th>付款方式</th>
                     <th>物流方式</th>
                     <th>訂單狀態</th>
-
-
+                    <th>平台撥款狀態</th>
+                    <th>平台撥款金額</th>
                     </tr>
             </thead>
             <tbody>
@@ -75,6 +75,16 @@
                     		<span th:case="6">已退貨</span>
                     		<span th:case="*">N/A</span>
                     	</div>
+                    </td>
+                    <td>
+                    	<div th:switch="${proOrderVO.proOrdAllocStatus}">
+                    		<span th:case="0">未撥款</span>
+                    		<span th:case="1">已撥款</span>
+                    		<span th:case="*">N/A</span>
+                    	</div>
+                    </td>
+                    <td>
+                    	<div th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定金額'"></div>
                     </td>
                     <td>
                     	<form method="post" th:action="@{/fmem/proorders/listOneProOrder}">

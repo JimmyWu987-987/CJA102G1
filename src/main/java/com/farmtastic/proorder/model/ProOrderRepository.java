@@ -17,16 +17,18 @@ public interface ProOrderRepository extends JpaRepository<ProOrderVO,Integer>{
 	// 小農查詢自己的全部表單
 	@Query(value = """
 	        SELECT
-	            PO.PRO_ORD_ID AS proOrdId,
-	            PO.PRO_ORD_DATE AS proOrdDate,
-	            M.MEM_ID AS memId,
-	            M.MEM_NAME AS memName,
-	            PO.PRO_ORD_GRAND_TOTAL AS proOrdGrandTotal,
-	            PO.PRO_ORD_STATUS AS proOrdStatus,
-	            PO.PRO_PAY_STATUS AS proPayStatus,
-	            PO.PRO_ORD_PAYMENT AS proOrdPayment,    -- 新增欄位
-	            PO.PRO_ORD_SHIPMENT AS proOrdShipment,  -- 新增欄位
-	            PO.PRO_ORD_SHIPDATE AS proOrdShipdate   -- 新增欄位
+				PO.PRO_ORD_ID,
+				PO.PRO_ORD_DATE,
+				M.MEM_ID,
+				M.MEM_NAME,
+				PO.PRO_ORD_GRAND_TOTAL,
+				PO.PRO_ORD_STATUS,
+				PO.PRO_PAY_STATUS,
+				PO.PRO_ORD_PAYMENT,
+				PO.PRO_ORD_SHIPMENT,
+				PO.PRO_ORD_SHIPDATE,
+				PO.PRO_ORD_ALLOC_STATUS,
+				PO.PRO_ORD_ALLOC_TOTAL
 	        FROM
 	            product AS P
 	        JOIN

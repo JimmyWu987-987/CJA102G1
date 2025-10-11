@@ -3,6 +3,7 @@
 package com.farmtastic.proorder.model;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 // DTO Projection 介面
 public interface FmemOrderSummary {
@@ -18,6 +19,8 @@ public interface FmemOrderSummary {
     Byte getProOrdPayment();    // 對應 SQL: PO.PRO_ORD_PAYMENT
     Byte getProOrdShipment();   // 對應 SQL: PO.PRO_ORD_SHIPMENT
     Timestamp getProOrdShipdate(); // 對應 SQL: PO.PRO_ORD_SHIPDATE
+    Byte getProOrdAllocStatus();
+    Integer getProOrdAllocTotal();
 
     // 關聯會員資訊
     Integer getMemId(); 

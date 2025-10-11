@@ -317,8 +317,6 @@ public class ShoppingCartService implements Serializable {
 			proOrdCpndisc = 0;
 			proOrderVO.setProOrdCpndisc(proOrdCpndisc);
 		}
-		
-		// 會員持有點數
 
 		// 商品訂單折抵會員點數
 		Integer proOrdPointdisc = proOrderVO.getProOrdPointdisc();
@@ -337,6 +335,11 @@ public class ShoppingCartService implements Serializable {
 		// 無條件捨去小數點
 		Integer proOrdPointGet = (int) (Math.floor(proTotal * PER));
 		proOrderVO.setProOrdPointGet(proOrdPointGet);
+		
+		// 物流方式，預設為0(宅配)
+		proOrderVO.setProOrdPayment((byte)0);
+		// 付款方式，預設為0(信用卡)
+		proOrderVO.setProOrdShipment((byte)0);
 
 		// 物流追蹤碼
 		// 小農前台做修改
@@ -361,7 +364,13 @@ public class ShoppingCartService implements Serializable {
 		proOrdAddr += loggedInMember.getMemDist();
 		proOrdAddr += loggedInMember.getMemAddr();
 		proOrderVO.setProOrdAddr(proOrdAddr);
-
+		
+		// 平台撥款狀態，預設為0(未撥款)
+		proOrderVO.setProOrdAllocStatus((byte)0);
+		
+		// 平台撥款金額，預設為null(未給金額)
+		proOrderVO.setProOrdAllocTotal(null);
+		
 		System.out.println("--- 傳送購物車資訊到訂購單頁面 ---");
 		return proOrderVO;
 	}

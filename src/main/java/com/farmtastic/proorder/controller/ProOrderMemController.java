@@ -144,7 +144,21 @@ public class ProOrderMemController {
 					finalProOrderVO.getProOrdPointdisc() != null ? finalProOrderVO.getProOrdPointdisc() : 0);
 			proOrderVO.setProOrdPointGet(
 					finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
+			
+			// 訂單狀態
+			proOrderVO.setProOrdStatus(finalProOrderVO.getProOrdStatus());
+			
+			// 訂單付款狀態
+			proOrderVO.setProPayStatus(finalProOrderVO.getProPayStatus());
+			
 
+			
+			// 平台撥款狀態，預設為0(未撥款)
+			proOrderVO.setProOrdAllocStatus((byte)0);
+			
+			// 平台撥款金額，預設為null(未給金額)
+			proOrderVO.setProOrdAllocTotal(null);
+			
 //		    // 3. 設定關聯和明細
 			proOrderVO.setMemVO(loggedInMember);
 			proOrderVO.setProOrderItems(finalItems);

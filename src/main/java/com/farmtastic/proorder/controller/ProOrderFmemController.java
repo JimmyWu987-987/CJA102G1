@@ -35,16 +35,14 @@ public class ProOrderFmemController {
 
 		// 取得 session 的會員資訊
 		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
-		Integer fmemId = (Integer) session.getAttribute("fmemId");
-		String fmemName = (String) session.getAttribute("fmemName");
 		
 		// 錯誤驗證
-		if (loggedInFmember == null || fmemId == null || fmemName == null || fmemName.trim().isEmpty()) {
+		if (loggedInFmember == null ) {
 			// 沒有值則會重導至登入頁面
 			return "redirect:/fmem/showFmemRegLoginForm";
 		} else {
 			try {
-				List<FmemOrderSummary> list = proOrdSvc.getAllByFmemId(fmemId);
+				List<FmemOrderSummary> list = proOrdSvc.getAllByFmemId(loggedInFmember.getFmemId());
 				model.addAttribute("proOrderList", list);
 			} catch (Exception e) {
 				// TODO: handle exception
