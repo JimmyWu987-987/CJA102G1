@@ -1,5 +1,7 @@
 $(document).ready(function() {
 		$('#example').DataTable({
+			"order": [[ 0, 'desc' ]], // 預設排序為第0欄，訂單日期
+			"displayLength": 5, // 預設顯示
 			"lengthMenu": [3 ,5, 10, 20, 50, 100],
 			"searching": true,  //搜尋功能, 預設是開啟
 		    "paging": true,     //分頁功能, 預設是開啟

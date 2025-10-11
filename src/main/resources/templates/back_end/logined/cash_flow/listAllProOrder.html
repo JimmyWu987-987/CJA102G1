@@ -21,9 +21,9 @@
         <table id="example" class="display">
             <thead>
                 <tr>
+                    <th>訂單日期</th>
                     <th>訂單編號</th>
                     <th>訂購會員ID</th>
-                    <th>訂單日期</th>
                     <th>總金額</th>
                     <th>付款方式</th>
                     <th>物流方式</th>
@@ -36,9 +36,9 @@
             </thead>
             <tbody>
                 <tr th:each="proOrderVO : ${proOrderList}">
+                    <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                     <td th:text="${proOrderVO.proOrdId}">1</td>
                     <td th:text="${proOrderVO.memVO.memId}">M001</td> 
-                    <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                     <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>       
                     
                     <td>
