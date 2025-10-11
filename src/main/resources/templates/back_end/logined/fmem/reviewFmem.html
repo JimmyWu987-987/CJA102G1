@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一般會員資料</title>
+    <link rel="icon" href="./images/logo.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/css/admin/reviewFmem.css}">
+    
+   
+</head>
+<body>
+    
+    <div class="container container-table">
+		
+		<table class="table table-personal">
+			<thead>
+				<tr class="table-header">
+				    <th colspan="5">後台審核小農會員<span class="status"> 待審核</span></th>
+				</tr>
+			</thead>
+			<tbody>
+<!-- 				<tr class="gap"></tr> -->
+				<tr>
+					<th>會員編號</th>
+			        <td class="myId"><span th:text="${fmem.fmemId}"></span></td>
+			        <td class="gap"></td>
+					<th class="myAcc">帳號</th>
+					<td class="myAcc"><span th:text="${fmem.fmemAcc}"></span></td>
+				</tr>
+				
+				<tr>
+					<th class="myFid">身分證字號</th>
+					<td class="myFid"><span th:text="${fmem.fId}"></span></td>
+					<td class="gap"></td>
+				    <th class="myName">姓名</th>
+					<td class="myName"><span th:text="${fmem.fmemName}"></span></td>
+				</tr>
+				
+				<tr>
+				    <th class="myMobile">連絡電話</th>
+					<td class="myMobile">
+						<span th:text="${fmem.fmemMobile}"></span>
+						<span th:text="'/ ' + ${fmem.fmemTel}"></span>
+					</td>
+					<td class="gap"></td>
+				    <th class="myEmail">信箱</th>
+					<td class="myEmail"><span th:text="${fmem.fmemEmail}"></span></td>
+				</tr>
+				
+				<tr>
+					<th class="myRegDate">註冊時間</th>
+			        <td class="myRegDate"><span th:text="${fmem.regDate}"></span></td>
+					<td class="gap"></td>
+			        <th class="myZipcode">地址</th>
+					<td class="myZipcode">
+						<span th:text="${fmem.fmemZipcode}"></span>
+						<span th:text="${fmem.fmemCity}"></span><span th:text="${fmem.fmemDist}"></span><span th:text="${fmem.fmemAddr}"></span>
+					</td>
+				</tr>
+			
+				<tr>
+			        <th class="myBankCode">銀行代碼</th>
+					<td class="myBankCode"><span th:text="${fmem.bankCode}"></span></td>
+					<td class="gap"></td>
+			        <th class="myBankAcc">銀行帳號</th>
+					<td class="myBankAcc"><span th:text="${fmem.bankAcc}"></span></td>
+				</tr>
+				
+				<tr>
+			        <th class="myInsurPic">農保證明</th>
+			        <td class="myInsurPic"><img th:src="'data:image/jpeg;base64,' + ${insurPicBase64}" alt="農保證明"></td>
+			        <td class="gap"></td>
+			        <th class="myLandInsurPic">土地證明</th>
+			        <td class="myLandInsurPic"><img th:src="'data:image/jpeg;base64,' + ${landPicBase64}" alt="土地證明"></td>
+				</tr>
+			</tbody>
+		</table>
+		
+		
+		<form method="post" th:action="@{/admin/decideAccReview}" class="review">
+			<div class="review-content">
+				<input type="hidden" name="fmemId" th:value="${fmem.fmemId}">
+				
+				<div class="status-options options">
+					<div class="status-title">審核結果：</div>
+					<div class="status-option option">
+						<input class="" type="radio" name="accStatus" id="pass" value="1">
+					  	<label class="" for="pass">審核通過</label>
+					</div>
+					<div class="status-option option">
+						<input class="" type="radio" name="accStatus" id="fail" value="3">
+						<label class="" for="fail">審核未過</label>
+					</div>
+				</div>
+				
+				<div class="desc-options options">
+					<div class="desc-title">退件理由：</div>
+					<div class="desc-option option">
+						<input class="" type="radio" name="accDesc" id="missing" value="資料有缺漏">
+					  	<label class="" for="missing">資料有缺漏</label>
+					</div>
+					<div class="desc-option option">
+						<input class="" type="radio" name="accDesc" id="incorrect" value="資料不正確">
+					  	<label class="" for="incorrect">資料不正確</label>
+					</div>
+					<div class="desc-option option option-other">
+						<input class="" type="radio" name="accDesc" id="other">
+					  	<label class="" for="other">其他</label>
+						<textarea name="accDescText" placeholder="請輸入其他內容..." ></textarea>
+					</div>
+				</div>
+				<input type="submit" class="btn" value="確認送出">
+			</div>
+		</form>
+   
+    </div>
+
+<!-- 	<script th:src="@{/js/admin/switchEditMode.js}"></script> -->
+</body>
+</html>
+

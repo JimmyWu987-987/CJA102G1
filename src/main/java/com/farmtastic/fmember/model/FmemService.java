@@ -87,11 +87,19 @@ public class FmemService {
 		return repository.findByFmemAcc(fmemAcc);
 	}
 	
-	public Optional<Fmem> getOneByFmemId(Integer fmemId) {
-		return repository.findById(fmemId);
+	public Fmem getOneByFmemId(Integer fmemId) {
+		return repository.findById(fmemId).orElse(null);
 	}
 	
 	public List<Fmem> getAll(){
 		return repository.findAll();
+	}
+	
+	public void updateAccStatus(Integer fmemId, Byte accStatus) {
+		Fmem fmem = repository.findById(fmemId).orElse(null);
+		if(fmem != null) {
+			fmem.setAccStatus(accStatus);
+			repository.save(fmem);
+		}
 	}
 }

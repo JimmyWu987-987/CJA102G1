@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一般會員資料</title>
+    <link rel="icon" href="./images/logo.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/css/admin/listAllMems.css}">
+    
+   
+</head>
+<body>
+    <div class="container container-main">
+            <h1>後台管理一般會員</h1>
+			
+        <div class="panel">
+			<ul class="selectors">
+<!-- 				<li class="switch-list"> -->
+<!-- 					<input type="checkbox" id="myAcc" checked> -->
+<!-- 					<label for="myAcc">帳號</label> -->
+<!-- 				</li> -->
+				<li class="switch-list">
+					<input type="checkbox" id="myName" checked>
+					<label for="myName">姓名</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myBirthday" checked>
+					<label for="myBirthday">生日</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myMobile">
+					<label for="myMobile">手機</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myEmail" checked>
+					<label for="myEmail">信箱</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myZipcode">
+					<label for="myZipcode">郵遞區號</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myCity">
+					<label for="myCity">縣市</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myDist">
+					<label for="myDist">區域</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myAddr">
+					<label for="myAddr">地址</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myRegDate" checked>
+					<label for="myRegDate">註冊時間</label>
+				</li>
+				<li class="switch-list">
+					<input type="checkbox" id="myPoint" checked>
+					<label for="myPoint">會員點數</label>
+				</li>
+				
+			</ul>
+        
+        	<div class="search-bar">
+				<input type="text" class="fuzzy-search" placeholder="請輸入會員編號或姓名">
+				<button class="btn btn-fuzzy-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+			</div>
+        </div>
+    
+	</div>
+    <div class="container container-table">
+		<div class="table-wrapper">
+		
+			<table class="table">
+				<thead>
+					<tr class="table-header">
+					    <th>會員編號</th>
+					    <th class="myAcc">帳號</th>
+					    <th class="myName">姓名</th>
+					    <th class="myBirthday">生日</th>
+					    <th class="myMobile">手機</th>
+					    <th class="myEmail">信箱</th>
+					    <th class="myZipcode">郵遞區號</th>
+					    <th class="myCity">縣市</th>
+					    <th class="myDist">區域</th>
+					    <th class="myAddr">地址</th>
+					    <th class="myRegDate">註冊時間</th>
+					    <th class="myPoint">會員點數</th>
+					    <th class="myStatus">
+					    	審核狀態
+					    	<select class="status-search-select">
+				                <option value="99">顯示全部</option>
+				                <option value="0">未開通</option>
+				                <option value="1">已啟用</option>
+				                <option value="2">停權</option>
+				            </select>
+					    </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="mem : ${listMem}"
+						th:class="(${lastEditMemId == mem.memId} ? 'activeRow' : '')">
+				        <td class="myId">
+					        
+				        	<span th:text="${mem.memId}"></span>
+				        </td>
+				        <td class="myAcc"><span th:text="${mem.memAcc}"></span></td>
+				
+				        <td class="myName"><span th:text="${mem.memName}"></span></td>
+				        <td class="myBirthday"><span th:text="${mem.memBirthday}"></span></td>
+				        <td class="myMobile"><span th:text="${mem.memMobile}"></span></td>
+				        <td class="myEmail"><span th:text="${mem.memEmail}"></span></td>
+				        <td class="myZipcode"><span th:text="${mem.memZipcode}"></span></td>
+				        <td class="myCity"><span th:text="${mem.memCity}"></span></td>
+				        <td class="myDist"><span th:text="${mem.memDist}"></span></td>
+				        <td class="myAddr"><span th:text="${mem.memAddr}"></span></td>
+				        <td class="myRegDate"><span th:text="${mem.regDate}"></span></td>
+				        <td class="myPoint"><span th:text="${mem.memPoint}"></span></td>
+				
+				        <td class="status-data">
+					        <form method="post" th:action="@{/admin/updateMemAccStatus}" class="table-row">
+					        	<input type="hidden" name="memId" th:value="${mem.memId}">
+					        	<span th:switch="${mem.accStatus}" class="status-text">
+					                <span th:case="0">未開通</span>
+					                <span th:case="1">已啟用</span>
+					                <span th:case="2">停權</span>
+					            </span>
+					            <select name="accStatus" class="status-select">
+					                <option value="0" th:selected="${mem.accStatus == 0}">未開通</option>
+					                <option value="1" th:selected="${mem.accStatus == 1}">已啟用</option>
+					                <option value="2" th:selected="${mem.accStatus == 2}">停權</option>
+					            </select>
+					            <button type="button" class="btn btn-edit">編輯</button>
+					            <button type="submit" class="btn btn-save">儲存</button>			        
+					        </form>
+				        </td>
+					</tr>
+					<tr class="resultMsg"></tr>
+				</tbody>
+			</table>
+		</div>
+				
+   
+    </div>
+
+	<script th:src="@{/js/admin/switchEditMode.js}"></script>
+</body>
+</html>
+

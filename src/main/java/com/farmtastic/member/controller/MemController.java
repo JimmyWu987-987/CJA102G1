@@ -2,12 +2,14 @@ package com.farmtastic.member.controller;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -84,8 +86,6 @@ public class MemController{
 		return "front_end/customer/unlogined/farmerStoreAct";
 	}
 	
-
-	
 	
 //	登入後才能看的: 會員專區
 	@GetMapping("/memArea")
@@ -93,19 +93,7 @@ public class MemController{
 		return "/front_end/customer/logined/memArea";
 	}
 
-	
 
-	
-//	@GetMapping("/toUpdateProfile")
-//	public String toUpdateProfile(HttpSession session){
-//		Mem mem = (Mem) session.getAttribute("loggedInMember");
-//		if(mem != null) {
-//			return "redirect:/mem/memArea/updateProfilePage";
-//		} else {
-//			return "redirect:/mem/showMemRegLoginForm";
-//		}
-//	}
-	
 	
 //	怎麼分辨是「表單送來的」還是「Session 裡的」？
 //	Spring 的處理順序大致是這樣：
@@ -153,16 +141,7 @@ public class MemController{
 	
 	
 	
-	
-//	@GetMapping("/toUpdatePassword")
-//	public String toUpdatePassword(HttpSession session){
-//		Mem mem = (Mem) session.getAttribute("loggedInMember");
-//		if(mem != null) {
-//			return "redirect:/mem/memArea/updatePasswordPage";
-//		} else {
-//			return "redirect:/mem/showMemRegLoginForm";
-//		}
-//	}
+
 	
 	@GetMapping("/memArea/updatePasswordPage")
 	public String updatePasswordPage(
@@ -331,12 +310,8 @@ public class MemController{
 	
 	
 	
-//	------------------重設密碼----------------
 	
-//	@GetMapping("/memVerifyFailPage")
-//	public String memVerifyFailPage(){
-//		return "/front_end/customer/unlogined/memVerifyFail";
-//	}
+//	------------------重設密碼----------------
 	
 	@GetMapping("/resetPasswordPage")
 	public String resetPasswordPage(
@@ -433,12 +408,12 @@ public class MemController{
 			
 			model.addAttribute("loggedInMember", mem);
 
-			model.addAttribute("memId", mem.getMemId());
-			model.addAttribute("memName", mem.getMemName());
+//			model.addAttribute("memId", mem.getMemId());
+//			model.addAttribute("memName", mem.getMemName());
 			
 //			session.setAttribute("loggedInMember", mem);  //@SessionAttributes
-			session.setAttribute("memId", mem.getMemId());
-			session.setAttribute("memName", mem.getMemName());
+//			session.setAttribute("memId", mem.getMemId());
+//			session.setAttribute("memName", mem.getMemName());
 	
 			// 4.登入成功後 重導至原本頁面
 			String redirectUrl  = (String) session.getAttribute("redirectAfterLogin");
@@ -447,7 +422,6 @@ public class MemController{
 				return "redirect:" + redirectUrl ;
 			}
 			return "redirect:/";
-			
 			
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
@@ -470,6 +444,11 @@ public class MemController{
 		// 3. 重導到首頁
 		return "redirect:/";
 	}
+	
+	
+	
+
+	
 
 }
 	
