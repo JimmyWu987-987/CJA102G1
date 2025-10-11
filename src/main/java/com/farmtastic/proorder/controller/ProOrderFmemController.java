@@ -68,7 +68,7 @@ public class ProOrderFmemController {
 	}
 
 	// 小農會員修改訂各欄位的狀態
-	@PostMapping("update")
+	@PostMapping("updateStatus")
 	public String update(@RequestParam("proOrdId") Integer proOrdId, @RequestParam("proOrdStatus") Byte proOrdStatus,
 			@RequestParam("proTrackingNo") String proTrackingNo,
 			@RequestParam(value = "proOrdShipdate", required = false) String proOrdShipdate,
