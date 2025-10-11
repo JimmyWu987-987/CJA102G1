@@ -25,10 +25,11 @@
                     <th>訂購客戶姓名</th>
                     <th>訂單日期</th>
                     <th>總金額</th>
-                    <th>付款狀態</th>
                     <th>付款方式</th>
                     <th>物流方式</th>
+                    <th>訂單備註</th>
                     <th>訂單狀態</th>
+                    <th>付款狀態</th>
                     <th>平台撥款狀態</th>
                     <th>平台撥款金額</th>
                     </tr>
@@ -42,18 +43,9 @@
                     <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>       
                     
                     <td>
-                    	<div th:switch="${proOrderVO.proPayStatus}">
-                        	<span th:case="0">未付款</span>
-                            <span th:case="1">已付款</span>
-                            <span th:case="*">N/A</span>
-                    	</div>
-                    </td>
-                    <td>
                     	<div th:switch="${proOrderVO.proOrdPayment}">
                     		<span th:case="0">信用卡</span>
                     		<span th:case="1">LinePay</span>
-<!--                     		<span th:case="2">貨到付款</span>
-                    		<span th:case="3">超商付款</span> -->
                     		<span th:case="*">N/A</span>
                     	</div>
                     </td>
@@ -64,16 +56,26 @@
                     		<span th:case="*"></span>
                     	</div>
                     </td>
+                    
+                    <td th:text="${proOrderVO.proOrdComm}">訂單備註</td>
+                    
                     <td>
                     	<div th:switch="${proOrderVO.proOrdStatus}">
                     		<span th:case="0">成立訂單</span>
-                    		<span th:case="1">取消訂單(未出貨)取貨</span>
+                    		<span th:case="1">取消訂單(未出貨)</span>
                     		<span th:case="2">出貨中</span>
                     		<span th:case="3">已到貨</span>
                     		<span th:case="4">申請退貨(已出貨)</span>
                     		<span th:case="5">退貨中</span>
                     		<span th:case="6">已退貨</span>
                     		<span th:case="*">N/A</span>
+                    	</div>
+                    </td>
+                    <td>
+                    	<div th:switch="${proOrderVO.proPayStatus}">
+                        	<span th:case="0">未付款</span>
+                            <span th:case="1">已付款</span>
+                            <span th:case="*">N/A</span>
                     	</div>
                     </td>
                     <td>

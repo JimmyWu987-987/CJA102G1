@@ -14,6 +14,7 @@ public interface FmemOrderSummary {
     Integer getProOrdGrandTotal();
     Byte getProOrdStatus();
     Byte getProPayStatus();
+    String getProOrdComm();
     
     // 【新增/更新的欄位】
     Byte getProOrdPayment();    // 對應 SQL: PO.PRO_ORD_PAYMENT

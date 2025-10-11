@@ -22,6 +22,7 @@ public interface ProOrderRepository extends JpaRepository<ProOrderVO,Integer>{
 				M.MEM_ID,
 				M.MEM_NAME,
 				PO.PRO_ORD_GRAND_TOTAL,
+				PO.PRO_ORD_COMM,
 				PO.PRO_ORD_STATUS,
 				PO.PRO_PAY_STATUS,
 				PO.PRO_ORD_PAYMENT,
