@@ -8,6 +8,7 @@ public class ShoppingCartVO implements Serializable{
 	
 	private Integer memId;
 	private Integer proId;
+	private Integer fmemId;
 	private String cartName;
 	private Integer cartUnitPrice;
 	private Integer cartAmount;
@@ -18,18 +19,20 @@ public class ShoppingCartVO implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public ShoppingCartVO(Integer memId, Integer proId, String cartName, Integer cartUnitPrice, Integer cartAmount,
-			Integer cartSubTotal) {
+	
+	public ShoppingCartVO(Integer memId, Integer proId, Integer fmemId, String cartName, Integer cartUnitPrice,
+			Integer cartAmount, Integer cartSubTotal) {
 		super();
 		this.memId = memId;
 		this.proId = proId;
+		this.fmemId = fmemId;
 		this.cartName = cartName;
 		this.cartUnitPrice = cartUnitPrice;
 		this.cartAmount = cartAmount;
 		this.cartSubTotal = cartSubTotal;
 	}
-	
-	
+
+
 	public Integer getMemId() {
 		return memId;
 	}
@@ -44,6 +47,14 @@ public class ShoppingCartVO implements Serializable{
 
 	public void setProId(Integer proId) {
 		this.proId = proId;
+	}
+
+	public Integer getFmemId() {
+		return fmemId;
+	}
+
+	public void setFmemId(Integer fmemId) {
+		this.fmemId = fmemId;
 	}
 
 	public String getCartName() {

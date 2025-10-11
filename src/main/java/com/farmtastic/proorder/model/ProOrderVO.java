@@ -3,8 +3,8 @@ package com.farmtastic.proorder.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -49,15 +49,15 @@ public class ProOrderVO implements Serializable {
 //	@Column(name = "cpn_holder_detail_id")
 //	private Integer cpnHolderDetailId;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_date")
-	private Timestamp proOrdDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date proOrdDate;
 
 	@Column(name = "pro_ord_status")
-	private byte proOrdStatus;
+	private Byte proOrdStatus;
 
 	@Column(name = "pro_pay_status")
-	private byte proPayStatus;
+	private Byte proPayStatus;
 
 	@Column(name = "pro_total")
 	private Integer proTotal;
@@ -81,17 +81,17 @@ public class ProOrderVO implements Serializable {
 	private String proOrdComm;
 
 	@Column(name = "pro_ord_payment")
-	private byte proOrdPayment;
+	private Byte proOrdPayment;
 
 	@Column(name = "pro_ord_shipment")
-	private byte proOrdShipment;
+	private Byte proOrdShipment;
 
 	@Column(name = "pro_tracking_no")
 	private String proTrackingNo;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "pro_ord_shipdate")
-	private Timestamp proOrdShipdate;
+	private Date proOrdShipdate;
 	
 	@Column(name = "PRO_ORD_NAME")
 	private String proOrdName;
@@ -104,6 +104,12 @@ public class ProOrderVO implements Serializable {
 	
 	@Column(name = "PRO_ORD_ADDR")
 	private String proOrdAddr;
+	
+	@Column(name = "PRO_ORD_ALLOC_STATUS")
+	private Byte proOrdAllocStatus;
+
+	@Column(name = "PRO_ORD_ALLOC_TOTAL")
+	private Integer proOrdAllocTotal;
 
 	@Valid
 	@OneToMany(mappedBy="proOrderVO", // 指向 ProOrderItemVO 要關聯的屬性
@@ -116,11 +122,12 @@ public class ProOrderVO implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProOrderVO(Integer proOrdId, Mem memVO, MemProCpnVO memProCpnVO, Timestamp proOrdDate, byte proOrdStatus,
-			byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
-			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, byte proOrdPayment,
-			byte proOrdShipment, String proTrackingNo, Timestamp proOrdShipdate, String proOrdName, String proOrdMobile,
-			String proOrdEmail, String proOrdAddr, List<ProOrderItemVO> proOrderItems) {
+	public ProOrderVO(Integer proOrdId, Mem memVO, MemProCpnVO memProCpnVO, Date proOrdDate, Byte proOrdStatus,
+			Byte proPayStatus, Integer proTotal, Integer proOrdShipFee, Integer proOrdCpndisc, Integer proOrdPointdisc,
+			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, Byte proOrdPayment,
+			Byte proOrdShipment, String proTrackingNo, Date proOrdShipdate, String proOrdName, String proOrdMobile,
+			String proOrdEmail, String proOrdAddr, Byte proOrdAllocStatus, Integer proOrdAllocTotal,
+			@Valid List<ProOrderItemVO> proOrderItems) {
 		super();
 		this.proOrdId = proOrdId;
 		this.memVO = memVO;
@@ -143,6 +150,8 @@ public class ProOrderVO implements Serializable {
 		this.proOrdMobile = proOrdMobile;
 		this.proOrdEmail = proOrdEmail;
 		this.proOrdAddr = proOrdAddr;
+		this.proOrdAllocStatus = proOrdAllocStatus;
+		this.proOrdAllocTotal = proOrdAllocTotal;
 		this.proOrderItems = proOrderItems;
 	}
 
@@ -170,27 +179,27 @@ public class ProOrderVO implements Serializable {
 		this.memProCpnVO = memProCpnVO;
 	}
 
-	public Timestamp getProOrdDate() {
+	public Date getProOrdDate() {
 		return proOrdDate;
 	}
 
-	public void setProOrdDate(Timestamp proOrdDate) {
+	public void setProOrdDate(Date proOrdDate) {
 		this.proOrdDate = proOrdDate;
 	}
 
-	public byte getProOrdStatus() {
+	public Byte getProOrdStatus() {
 		return proOrdStatus;
 	}
 
-	public void setProOrdStatus(byte proOrdStatus) {
+	public void setProOrdStatus(Byte proOrdStatus) {
 		this.proOrdStatus = proOrdStatus;
 	}
 
-	public byte getProPayStatus() {
+	public Byte getProPayStatus() {
 		return proPayStatus;
 	}
 
-	public void setProPayStatus(byte proPayStatus) {
+	public void setProPayStatus(Byte proPayStatus) {
 		this.proPayStatus = proPayStatus;
 	}
 
@@ -250,19 +259,19 @@ public class ProOrderVO implements Serializable {
 		this.proOrdComm = proOrdComm;
 	}
 
-	public byte getProOrdPayment() {
+	public Byte getProOrdPayment() {
 		return proOrdPayment;
 	}
 
-	public void setProOrdPayment(byte proOrdPayment) {
+	public void setProOrdPayment(Byte proOrdPayment) {
 		this.proOrdPayment = proOrdPayment;
 	}
 
-	public byte getProOrdShipment() {
+	public Byte getProOrdShipment() {
 		return proOrdShipment;
 	}
 
-	public void setProOrdShipment(byte proOrdShipment) {
+	public void setProOrdShipment(Byte proOrdShipment) {
 		this.proOrdShipment = proOrdShipment;
 	}
 
@@ -274,11 +283,11 @@ public class ProOrderVO implements Serializable {
 		this.proTrackingNo = proTrackingNo;
 	}
 
-	public Timestamp getProOrdShipdate() {
+	public Date getProOrdShipdate() {
 		return proOrdShipdate;
 	}
 
-	public void setProOrdShipdate(Timestamp proOrdShipdate) {
+	public void setProOrdShipdate(Date proOrdShipdate) {
 		this.proOrdShipdate = proOrdShipdate;
 	}
 
@@ -314,6 +323,22 @@ public class ProOrderVO implements Serializable {
 		this.proOrdAddr = proOrdAddr;
 	}
 
+	public Byte getProOrdAllocStatus() {
+		return proOrdAllocStatus;
+	}
+
+	public void setProOrdAllocStatus(Byte proOrdAllocStatus) {
+		this.proOrdAllocStatus = proOrdAllocStatus;
+	}
+
+	public Integer getProOrdAllocTotal() {
+		return proOrdAllocTotal;
+	}
+
+	public void setProOrdAllocTotal(Integer proOrdAllocTotal) {
+		this.proOrdAllocTotal = proOrdAllocTotal;
+	}
+
 	public List<ProOrderItemVO> getProOrderItems() {
 		return proOrderItems;
 	}
@@ -321,18 +346,7 @@ public class ProOrderVO implements Serializable {
 	public void setProOrderItems(List<ProOrderItemVO> proOrderItems) {
 		this.proOrderItems = proOrderItems;
 	}
-
-	@Override
-	public String toString() {
-		return "ProOrderVO [proOrdId=" + proOrdId + ", memVO=" + memVO + ", memProCpnVO=" + memProCpnVO
-				+ ", proOrdDate=" + proOrdDate + ", proOrdStatus=" + proOrdStatus + ", proPayStatus=" + proPayStatus
-				+ ", proTotal=" + proTotal + ", proOrdShipFee=" + proOrdShipFee + ", proOrdCpndisc=" + proOrdCpndisc
-				+ ", proOrdPointdisc=" + proOrdPointdisc + ", proOrdPointGet=" + proOrdPointGet + ", proOrdGrandTotal="
-				+ proOrdGrandTotal + ", proOrdComm=" + proOrdComm + ", proOrdPayment=" + proOrdPayment
-				+ ", proOrdShipment=" + proOrdShipment + ", proTrackingNo=" + proTrackingNo + ", proOrdShipdate="
-				+ proOrdShipdate + ", proOrdName=" + proOrdName + ", proOrdMobile=" + proOrdMobile + ", proOrdEmail="
-				+ proOrdEmail + ", proOrdAddr=" + proOrdAddr + ", proOrderItems=" + proOrderItems + "]";
-	}
 	
-
+	
+	
 }

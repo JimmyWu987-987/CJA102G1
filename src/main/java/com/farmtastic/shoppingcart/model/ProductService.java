@@ -19,7 +19,7 @@ public class ProductService {
      * 從資料庫中取得單一商品
      */
     // 這裡不需要 @Transactional，因為 ProOrderSevice 已經有
-    public Product getProductById(Integer proId) {
+    public Product getOneProduct(Integer proId) {
         Optional<Product> productOptional = productRepository.findById(proId);
         
         // 🚨 建議加上錯誤處理，如果商品 ID 不存在應拋出例外

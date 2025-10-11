@@ -1,13 +1,16 @@
 package com.farmtastic.proorderitem.model;
 
-import com.farmtastic.shoppingcart.model.Product;
 import java.io.Serializable;
+
 import com.farmtastic.proorder.model.ProOrderVO;
+import com.farmtastic.shoppingcart.model.Product;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -21,13 +24,14 @@ public class ProOrderItemVO implements Serializable{
 	@EmbeddedId
 	private ProOrderItemId id;
 	
-	// ❌ 移除 @MapsId，改用手動設定
+	@MapsId("proId")
 	@ManyToOne
-	@JoinColumn(name="pro_id", insertable = false, updatable = false)
+	@JoinColumn(name="pro_id")
 	private Product productVO;
 	
+	@MapsId("proOrdId")
 	@ManyToOne
-	@JoinColumn(name="pro_ord_id", insertable = false, updatable = false)
+	@JoinColumn(name="pro_ord_id")
 	private ProOrderVO proOrderVO;
 	
 	@NotNull(message = "商品單價不能為空")
@@ -95,9 +99,4 @@ public class ProOrderItemVO implements Serializable{
 		this.proSubTotal = proSubTotal;
 	}
 
-	@Override
-	public String toString() {
-		return "ProOrderItemVO [id=" + id + ", productVO=" + productVO + ", proOrderVO=" + proOrderVO
-				+ ", proUnitPrice=" + proUnitPrice + ", proAmount=" + proAmount + ", proSubTotal=" + proSubTotal + "]";
-	}
 }

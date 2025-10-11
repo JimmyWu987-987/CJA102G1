@@ -1,6 +1,7 @@
 package com.farmtastic.shoppingcart.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,11 +24,11 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/cart")
 public class ShoppingCartController { // 類別名稱修正為標準的 Controller
-	
+
 	// Points Earning Rate
 	// 計算消費商品的總金額(金額不含運費)
 	private final static double PER = 0.01;
-	
+
 	// 注入 @SessionScope 的購物車服務
 	// 使用 final 確保 Service 不變，並透過建構子注入，是 Spring 推薦的做法
 	private final ShoppingCartService cartService;
@@ -44,10 +45,17 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 	// URL: GET /cart/view
 	@GetMapping("/view")
 	public String viewCart(Model model) {
-		// 取得購物車清單和總金額，傳遞給 Thymeleaf 頁面
-		List<ShoppingCartVO> items = cartService.getCartItems();
-		model.addAttribute("cartItems", items);
-		model.addAttribute("cartTotal", cartService.getCartTotal());
+		// 取得Map<fmemId, List<ShoppingCartVO>>的分組資料，傳遞給 Thymeleaf 頁面
+		Map<Integer, List<ShoppingCartVO>> groupedCartItems = cartService.getGroupedCartItems();
+		model.addAttribute("groupedCartItems", groupedCartItems);
+
+		// 傳遞一個 Map<fmemId, 總金額> 給前端計算每個小農的總額
+		// 這裡為了簡化，讓前端自行計算，或者您可以在此處計算後傳遞：
+		// Map<Integer, Integer> cartTotals = new HashMap<>();
+		// for (Integer fmemId : groupedItems.keySet()) {
+		// cartTotals.put(fmemId, cartService.getCartTotalByFmemId(fmemId));
+		// }
+		// model.addAttribute("cartTotals", cartTotals);
 
 		// 返回 Thymeleaf 模板名稱 (對應 /src/main/resources/templates/cart/cartView.html)
 		return "front_end/customer/unlogined/shoppingCart/cartView";
@@ -64,16 +72,16 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 			// RedirectAttributes 用於在重定向後傳遞一次性的成功/錯誤訊息
 			RedirectAttributes redirectAttributes) {
 
-		Product product = productService.getProductById(proId);
+		// 取得 Product，Product 中包含 FmemVO，進而取得 fmemId
+		Product product = productService.getOneProduct(proId);
 
 		if (product != null && quantity > 0) {
-			// *** 修正：不再傳遞 memId，由 Service 內部處理 memId = 0 (訪客) ***
 			cartService.addProduct(product, quantity);
 			redirectAttributes.addFlashAttribute("successMessage", product.getProName() + " 成功加入購物車！");
 		} else {
 			redirectAttributes.addFlashAttribute("errorMessage", "加入購物車失敗，商品不存在或數量無效。");
 		}
-
+		
 		// 使用重定向 (redirect) 到顯示頁面，遵循 Post/Redirect/Get 模式
 		return "redirect:/cart/products/list";
 	}
@@ -84,10 +92,12 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 
 	// URL: POST /cart/update
 	@PostMapping("/update")
-	public String updateCartQuantity(@RequestParam("proId") Integer proId, @RequestParam("quantity") Integer quantity, // 這是使用者唯一能修改的欄位
+	public String updateCartQuantity(@RequestParam("proId") Integer proId, 
+			@RequestParam("fmemId") Integer fmemId, // 從cartView.html																	// 表單傳入
+			@RequestParam("quantity") Integer quantity, // 這是使用者唯一能修改的欄位
 			RedirectAttributes redirectAttributes) {
 
-		boolean success = cartService.updateQuantity(proId, quantity);
+		boolean success = cartService.updateQuantity(proId, fmemId, quantity);
 
 		if (success) {
 			redirectAttributes.addFlashAttribute("successMessage", "商品數量已更新！");
@@ -107,9 +117,10 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 
 	// URL: POST /cart/remove
 	@PostMapping("/remove")
-	public String removeProductFromCart(@RequestParam("proId") Integer proId, RedirectAttributes redirectAttributes) {
+	public String removeProductFromCart(@RequestParam("proId") Integer proId, @RequestParam("fmemId") Integer fmemId,
+			RedirectAttributes redirectAttributes) {
 
-		boolean removed = cartService.removeProduct(proId);
+		boolean removed = cartService.removeProduct(proId, fmemId);
 
 		if (removed) {
 			redirectAttributes.addFlashAttribute("successMessage", "商品已成功移除。");
@@ -119,56 +130,76 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 
 		return "redirect:/cart/view";
 	}
-	
+
 	// **************************** 5. 清空購物車 ****************************
 
-		// URL: POST /cart/clear
-		@PostMapping("/clear")
-		public String clearCart(RedirectAttributes redirectAttributes) {
+	// URL: POST /cart/clearByFmemId
+	/**
+	 * 🌟 新增功能：清空單一小農的購物車 🌟
+	 */
+	@PostMapping("/clearByFmemId")
+	public String clearCartByFmemId(@RequestParam("fmemId") Integer fmemId,
+			RedirectAttributes redirectAttributes) {
 
-			cartService.clearCart();
+		// 呼叫 Service 的新方法
+		cartService.clearCartByFmemId(fmemId);
+		// 等同學的 fmem 單一查詢寫好，查詢該小農的名字
+		// 未完成
 
-			redirectAttributes.addFlashAttribute("successMessage", "購物車已清空！");
+		redirectAttributes.addFlashAttribute("successMessage", "小農 " + fmemId + " 的購物車已清空！");
 
-			return "redirect:/cart/view";
-		}
-
-		// **************************** 6. 結帳 (Checkout) ****************************
-
-		// URL: POST /cart/checkout
-		@GetMapping("/checkout")
-		public String checkout(RedirectAttributes redirectAttributes,HttpSession session,Model model) {
-
-			// *** 登入檢查邏輯 ***
-			// 在真實專案中，這裡會檢查 Spring Security 的 Context 或 Session 中是否有使用者物件
-			// 取得 session 的會員資訊
-			Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-			Integer memId = (Integer) session.getAttribute("memId");
-			String memName = (String) session.getAttribute("memName");
-		
-				
-				// 這是處理使用者剛才登入的動作
-				cartService.updateMemIdInCart(memId); // <--- 新增：更新購物車所有項目的 memId
-	
-			
-			// 將訂單+訂單明細存成一個暫存物件，交給addProOrder.html頁面
-			ProOrderVO cartToProOrder = cartService.checkout(memId,loggedInMember,PER);
-
-			if (cartToProOrder != null ) {
-				redirectAttributes.addFlashAttribute("successMessage", "成功將購物車轉移到訂單明細，請確認您的訂單。");
-			    // 修正後的程式碼行：使用 Flash Attribute 傳輸物件
-//			    redirectAttributes.addFlashAttribute("cartToProOrder", cartToProOrder);
-			    session.setAttribute("cartToProOrder", cartToProOrder);
-
-				return "redirect:/mem/proorders/addProOrder";
-			} else {
-				redirectAttributes.addFlashAttribute("errorMessage", "結帳失敗！您的購物車是空的。");
-				// 返回商品頁面
-				return "/cart/products/list";
-			}
-
-
-			
-		}
+		return "redirect:/cart/view";
 	}
-	
+
+	// URL: POST /cart/clearAllCarts
+	/**
+	 * 清空所有小農的購物車
+	 */
+	@PostMapping("/clearAllCarts")
+	public String clearAllCarts(RedirectAttributes redirectAttributes) {
+
+		cartService.clearAllCarts();
+
+		redirectAttributes.addFlashAttribute("successMessage", "所有購物車已清空！");
+
+		return "redirect:/cart/view";
+	}
+
+	// **************************** 6. 結帳 (Checkout) ****************************
+
+	// URL: Get /cart/checkoutByFmemId
+	@GetMapping("/checkoutByFmemId")
+	public String checkout(@RequestParam("fmemId") Integer fmemId,
+			RedirectAttributes redirectAttributes,
+			HttpSession session, Model model) {
+
+		// *** 登入檢查邏輯 ***
+		// 這裡會檢查 Spring Security 的 Context 或 Session 中是否有使用者物件
+		// 登入檢查交給 Fitter 處理
+		// 取得 session 的會員資訊
+		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+
+		// *** 登入檢查後，確認有登入 ***
+		// 這是處理使用者剛才登入的動作
+		cartService.updateMemIdInCart(loggedInMember.getMemId()); // <--- 新增：更新購物車所有項目的 memId
+
+		// 將訂單+訂單明細存成一個暫存物件，交給addProOrder.html頁面
+		ProOrderVO cartToProOrder = cartService.checkoutByFmemId(fmemId, loggedInMember, PER);
+
+		if (cartToProOrder != null) {
+			// 修正後的程式碼行：使用 Flash Attribute 傳輸物件
+//			    redirectAttributes.addFlashAttribute("cartToProOrder", cartToProOrder);
+
+			// 將訂單暫存到 Session，讓下一個頁面 (addProOrder.html) 處理
+			session.setAttribute("cartToProOrder", cartToProOrder);
+			redirectAttributes.addFlashAttribute("successMessage", "成功將購物車轉移到訂單明細，請確認您的訂單。");
+
+			return "redirect:/mem/proorders/addProOrder";
+		} else {
+			redirectAttributes.addFlashAttribute("errorMessage", "結帳失敗！您的購物車是空的。");
+			// 返回商品頁面
+			return "/cart/products/list";
+		}
+
+	}
+}

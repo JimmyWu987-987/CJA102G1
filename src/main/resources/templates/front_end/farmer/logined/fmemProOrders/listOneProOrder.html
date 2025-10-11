@@ -45,7 +45,7 @@
                     		<span th:case="4">申請退貨(已出貨)</span>
                     		<span th:case="5">退貨中</span>
                     		<span th:case="6">已退貨</span>
-                    		<span th:case="*">XXX</span></span><br>
+                    		<span th:case="*">N/A</span></span><br>
 		<span>付款狀態:</span><span th:switch="${proOrderVO.proPayStatus}">
 		                    <span th:case="0">未付款</span>
                             <span th:case="1">已付款</span>
@@ -72,7 +72,7 @@
             			<td th:text="${proOrderItemsVO.productVO.proName}"></td>
             			<td th:text="${proOrderItemsVO.proUnitPrice}"></td>
             			<td th:text="${proOrderItemsVO.proAmount}"></td>
-            			<td th:text="${proOrderItemsVO.proSubTota}"></td>
+            			<td th:text="${proOrderItemsVO.proSubTotal}"></td>
             </tbody>
 		</table>		
 		==========================</br>
@@ -85,10 +85,10 @@
 		<span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span><br>
 		<span>付款方式:</span><span th:switch="${proOrderVO.proOrdPayment}">
                    <span th:case="0">信用卡</span>
-                   <span th:case="1">轉帳</span>
-                   <span th:case="2">貨到付款</span>
-                   <span th:case="3">超商付款</span>
-                   <span th:case="*">XXX</span></span><br>
+                   <span th:case="1">LinePay</span>
+<!--                    <span th:case="2">貨到付款</span>
+                   <span th:case="3">超商付款</span> -->
+                   <span th:case="*">N/A</span></span><br>
 		<span>物流方式:</span><span th:switch="${proOrderVO.proOrdShipment}">
                    <span th:case="0">宅配</span>
                    <span th:case="1">超商取貨</span>
@@ -97,8 +97,6 @@
 		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd HH:mm')}"></span><br>
 
                     
-
-      
                     	<form method="get" th:action="@{/fmem/proorders/listAllProOrder}">
                     		<input type="submit" value="回上一頁">
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
