@@ -3,6 +3,7 @@ package com.farmtastic.fmember.model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.farmtastic.validator.FileSize;
+import com.farmtastic.validator.RegistrationValidation;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,13 +45,11 @@ public class UpdateProfileFmem {
 	private String fmemAddr;
 	
 	@NotEmpty(message = "銀行代碼請勿空白")
-	@Pattern(regexp = "^$|^[0-9]{3,10}$", 
-			 message = "銀行代碼格式不符，請輸入數字，至少3碼")
 	private String bankCode;
 	
 	@NotEmpty(message = "銀行帳號請勿空白")
-	@Pattern(regexp = "^$|^[0-9]{10,20}$", 
-			 message = "銀行帳號格式不符，請輸入數字，至少10碼")
+	@Pattern(regexp = "^$|^[0-9]{7,14}$", 
+			 message = "銀行帳號格式不符，請輸入數字7~14碼")
 	private String bankAcc;
 	
 	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")

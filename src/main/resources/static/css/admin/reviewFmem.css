@@ -1,0 +1,157 @@
+*{	
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style: none;
+/*     outline: 1px solid #f00; */
+ }
+ img{
+ 	max-width: 180px;
+ 	max-height: 140px;
+ }
+
+/*   #eef3f1; */
+.container-table{
+    width: 80%;
+    min-width: 768px;
+    max-width: 1200px;
+	margin: 12px auto 30px;
+/*     border: 1px solid #a5b3d6; */
+    border-radius: 4px;
+    text-align: center;
+    color: #313f38;
+}
+
+
+table{
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 4px 11px;
+}
+thead tr{
+	width: 100%;
+	background-color: #c7d3e9;
+	font-size: 26px;
+}
+thead tr th{
+	padding: 10px;	
+}
+tbody tr th{
+	width: 124px;
+	padding: 6px 18px;
+	border-radius: 18px; 
+	text-align: center;
+	background-color: #c5dad0;
+}
+tbody tr td{
+	padding: 6px 18px;
+	border-radius: 18px; 
+	text-align: left;
+	background-color: #edf3f0;
+}
+tbody tr td.gap{
+	padding: 0;
+	background-color: transparent;
+/* 	欄與欄間距 */
+	width: 8px;
+/* 	列與列間距   */
+	height: 0px;
+}
+
+
+thead tr th:first-child{
+	border-top-left-radius: 12px;
+	border-bottom-left-radius: 12px;
+}
+thead tr th:last-child{
+	border-top-right-radius: 12px;
+	border-bottom-right-radius: 12px;
+}
+
+thead span.status{
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 8px;
+	margin-left: 12px;
+	font-size: 24px;
+	background-color: #ffffff90;
+}
+
+ 
+/*      *{outline: 1px solid #f00;} */
+     
+/* 審核區塊 */
+form{
+	padding: 30px 0;
+	margin: 0 4px;
+	background-color: #ebedf1;
+	border-radius: 12px;
+}
+form .review-content{
+	width: 668px;
+	margin: 0 auto;
+	font-size: 18px;
+	
+	display: flex;
+	flex-direction: column;
+}
+form .options{
+	display: flex;
+	text-align: left;
+	align-items: center;
+	margin-bottom: 10px;
+}
+form .option{
+	width: 130px;
+	padding: 0 8px;
+}
+form .option:last-of-type{
+	padding-right: 0;
+}
+form .option-other{
+/* 	width: 76px; */
+	width: 318px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+form .option-other label{
+	margin-right: 4px;
+}
+form textarea{
+	width: 240px;
+	height: 60px;
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 16px;
+	border: 1px solid #99a8d0;
+}
+form textarea:focus{
+	outline: 1px solid #5a9fde;
+}
+
+input.btn{
+	width: 160px;
+    padding: 10px;
+    margin: 10px auto 0;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #4e9173;            
+    font-size: 18px;
+}
+input.btn:hover{
+    background-color: #f38f45;
+    transition: 0.4s;
+    cursor: pointer;    
+}
+
+     
+
+
+
+
+
+
+
+     

@@ -152,6 +152,8 @@ public class FmemController{
 			model.addAttribute("tempInsurPicBase64", insurPicBase64);
 		}
 		
+	
+		
 		UpdateProfileFmem updateProfileFmem = new UpdateProfileFmem();
 		BeanUtils.copyProperties(loggedInFmember, updateProfileFmem);
 		model.addAttribute("updateProfileFmem", updateProfileFmem);
@@ -434,14 +436,18 @@ public class FmemController{
 			ModelMap model, 
 			RedirectAttributes redirectAttrs) {
 	
-		// 驗證帳號、手機不能跟別人重複
+		// 驗證帳號、手機、身分證不能跟別人重複
 		String fmemAcc = fmem.getFmemAcc();
 		String fmemMobile = fmem.getFmemMobile();
+		String fId = fmem.getFId();
 		if (fmemSvc.existsByFmemAcc(fmemAcc)) {
 			result.rejectValue("fmemAcc", null, "此帳號已有人註冊過");
 		}
 		if (fmemSvc.existsByFmemMobile(fmemMobile)) {
 			result.rejectValue("fmemMobile", null, "此手機已有人註冊過");
+		}
+		if (fmemSvc.existsByFId(fId)) {
+			result.rejectValue("fId", null, "此身分證已有人註冊過");
 		}
 		
 		if (result.hasErrors()) {

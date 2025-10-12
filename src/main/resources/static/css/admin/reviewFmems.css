@@ -1,0 +1,17 @@
+
+
+.fuzzy-search{
+	margin-left: auto;
+}
+
+.myMobile,
+.myZipcode,
+.myCity,
+.myDist,
+.myAddr{
+	display: table-cell;
+}
+
+td.status-data form{
+	min-width: 94px;
+}

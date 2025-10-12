@@ -94,7 +94,7 @@ form.userInfo .dist{
     color: #333;
 }
 form.userInfo .addr{
-    margin-top: 8px;
+    margin-top: 7px;
 }
 form.userInfo li *:focus{
     outline: 1px solid #6873ed;
@@ -112,12 +112,18 @@ form.userInfo input.btn:hover{
 }
 
 form.userInfo .bankCode{
-	width: 30%;
-	margin-right: 2%;
+	width: 100%;
+    height: 40px;
+    padding: 8px;
+	margin-top: 3px;
+    border: 1px solid #bcbcbc;
+    border-radius: 5px;
+    color: #333;
+    font-size: 16px;
 }
 form.userInfo .bankAcc{
-	width: 68%;
-	
+	width: 100%;
+	margin-top: 7px;
 }
 
 

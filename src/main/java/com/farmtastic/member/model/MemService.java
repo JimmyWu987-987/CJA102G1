@@ -49,21 +49,6 @@ public class MemService {
 		return repository.findByMemMobile(memMobile) != null;
 	}
 	
-//	public void register(String memAcc, String memMobile) {
-//		//檢查帳號有沒有人使用過
-//		Mem memByAcc = repository.findByMemAcc(memAcc);
-//		if(memByAcc != null) {
-////			result.rejectValue("memAcc", null, "此帳號已有人註冊過");
-//			throw new IllegalStateException("此帳號已有人註冊過");
-//		}
-//		
-//		Mem memByMobile = repository.findByMemMobile(memMobile);
-//		if(memByMobile != null) {
-//			throw new IllegalStateException("此手機已有人註冊過");
-//		}
-//	}
-	
-
 	
 	public Mem forgetPassword(String memMobile, String memEmail) {
 		Mem mem = repository.findByMemMobile(memMobile);
@@ -104,6 +89,14 @@ public class MemService {
 	
 	public List<Mem> getAll(){
 		return repository.findAll();
+	}
+	
+	public void updateAccStatus(Integer memId, Byte accStatus) {
+		Mem mem = repository.findById(memId).orElse(null);
+		if(memId != null) {
+			mem.setAccStatus(accStatus);
+			repository.save(mem);
+		}
 	}
 
 }

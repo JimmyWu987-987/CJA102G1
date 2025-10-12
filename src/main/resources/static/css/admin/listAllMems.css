@@ -1,0 +1,298 @@
+*{	
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style: none;
+/*     outline: 1px solid #f00; */
+ }
+
+ .container{
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background: #eaf2ec;
+    min-width: 996px;
+    border-radius: 8px;
+    color: #333;
+}
+.container-table{
+	margin: 10px auto 30px;
+    border: 1px solid #a5b3d6;
+    border-radius: 8px;
+    text-align: center;
+    color: #313f38;
+    /* x 軸-位移 | y 軸-位移 | 模糊值 blur-radius｜擴散值 spread-radius｜顏色 */
+    box-shadow: 2px 2px 9px rgba(160, 194, 160, 0.5);
+}
+
+
+.table-wrapper{
+	overflow-x: auto;
+  	max-width: 100%;
+}
+table{
+	width: 100%;
+/* 	右上角 tr包select導致無法正常設定圓角 */
+	border-top-right-radius: 10px; 
+	overflow: hidden;
+}
+/* *{outline: 1px solid #f00;} */
+
+thead tr{
+	width: 100%;
+	background-color: #c7d3e9;
+}
+tbody tr:nth-child(2n){
+	background-color: #d8e7df;
+}
+tbody tr:hover{
+/* 	background-color: #e2e1cf; */
+	background-color: #bfd7cc;
+}
+tbody tr.activeRow{
+	outline: 2px solid #789bed;
+	background-color: #d1e6f5;
+	border-radius: 5px;
+}
+thead tr th{
+	padding: 12px 12px;
+}
+thead tr th:first-child{
+	border-top-left-radius: 8px;
+}
+thead tr th:last-child{
+	border-top-right-radius: 8px;
+}
+tbody tr td{
+	padding: 8px 12px;
+}
+
+td.myName{
+	min-width: 76px;
+}
+td.myEmail{
+	min-width: 120px;
+	word-break: break-all;
+}
+td.myBirthday{
+	min-width: 104px;
+}
+td.myMobile{
+	min-width: 114px;
+}
+td.myId,
+td.myZipcode,
+td.myPoint{
+	min-width: 90px;
+}
+td.myCity,
+td.myDist{
+	min-width: 76px;
+}
+td.myAddr{
+	min-width: 80px;
+}
+td.myRegDate{
+	min-width: 100px;
+}
+
+input.btn,
+button.btn{
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #4e9173;            
+    vertical-align: bottom;
+    font-size: 16px;
+}
+input.btn:hover,
+button.btn:hover{
+    background-color: #5284c9;
+    transition: 0.4s;
+    cursor: pointer;    
+}
+
+     
+td.status-data form{
+	min-width: 176px;
+	display: flex;
+	justify-content: center;
+}
+
+.status-text{
+/* 	outline:1px solid #f00; */
+	width: 82px;
+    height: 38px; 
+    line-height: 38px;
+    margin: auto 10px auto 0px;
+    border: 1px solid #10401070;
+    border-radius: 5px;
+    background-color: #ffffff90;
+    
+    /* 編輯功能 */
+/* 	display: none;   */
+/* 	display: block; */
+}
+td.status-data .status-select{
+/* 	display: block; 編輯功能 */
+	display: none;  
+	width: 80px;
+    height: 38px; 
+    line-height: 38px;
+    font-size: 16px;
+    padding-left: 5px;
+    margin: auto 10px auto 0px;
+    border: 1px solid #bcbcbc;
+    border-radius: 5px;
+    color: #333;
+}
+
+td.status-data .status-select:focus{
+    outline: 1px solid #6873ed;
+}
+td.status-data button{
+	width: 56px;
+    height: 38px; 
+    font-size: 16px;
+}
+td.status-data .btn-save{
+	background-color: #fb7259;
+/* 	預設未開啟編輯模式 */
+	display: none; 
+}
+td.status-data .btn-save:hover{
+	background-color: #fb654a;
+}
+.myMobile,
+.myZipcode,
+.myCity,
+.myDist,
+.myAddr{
+	display: none;
+}
+
+
+/* *{outline: 1px solid #f00;} */
+/* ------------ checkbox -------------- */
+.container-main{
+	margin-top: 20px;
+	padding: 20px 30px;
+}
+.container-main h1{
+	color: #333;
+	text-align: center;
+	font-size: 32px;
+}
+.container-main .panel{
+	margin-top: 24px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	
+}
+
+/* *{outline: 1px solid #f00;} */
+.container-main .start-review a.btn{
+	display: block;
+	width: 100%;
+	padding: 6px;
+    border: none;
+    border-radius: 5px;
+	margin-bottom: 12px;
+
+	text-decoration: none;
+	text-align: center;
+    color: #fff;
+    background-color: #ed7141;            
+    font-size: 18px;
+}
+.container-main .start-review a.btn:hover{
+    background-color: #ec8139;
+    transition: 0.4s;
+    cursor: pointer;    
+}
+
+.container-main .search-area{
+	display: flex;
+	flex-direction: column;
+}
+.container-main .search-bar{
+	display: flex;
+}
+.search-bar .fuzzy-search{
+	width: 190px;
+    height: 40px; 
+    padding-left: 10px;
+    margin-right: 6px;
+    border: 1px solid #bcbcbc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+}
+.search-bar .btn-fuzzy-search{
+	width: 40px;
+}
+.search-bar .fuzzy-search:focus{
+    outline: 1px solid #6873ed;
+}
+
+/* 審核狀態裡的選項 */
+.myStatus{
+	display: flex;
+	align-items: center;     
+	gap: 10px;        
+ 	justify-content: center;
+	height: 100%;          
+}
+.myStatus .status-search-select{
+	width: auto;
+	padding: 6px 6px 6px 10px;
+    border: none;
+    border-radius: 15px;
+    color: #333;
+    background-color: #ffffff90;            
+    font-size: 16px;
+    text-align: center;
+/*     text-indent: 2px; */
+}
+.status-search-select:focus{
+    outline: 1px solid #6873ed;
+}
+
+.container-main .panel .selectors{
+	max-width: 550px;
+	display: flex;
+	flex-wrap: wrap;
+/* 	border: 2px solid #b5c5b4; */
+	border-radius: 15px;
+/*     background-color: #ffffff50; */
+}
+
+.selectors .switch-list{
+	width: 110px;
+	padding: 4px 8px;
+	margin: 1px 0;
+	font-size: 17px;
+}
+.selectors .switch-list input[type="checkbox"]{
+	margin-left: 5px;
+	margin-right: 3px;
+	transform: scale(1.5);
+	accent-color: #1d9bb1;
+	cursor: pointer;
+}
+.selectors .switch-list label{
+	display: inline-block;
+	height: 100%;
+	cursor: pointer;
+}
+
+
+
+.resultMsg{
+	line-height: 3;
+	font-size: 24px;
+}
+
+     

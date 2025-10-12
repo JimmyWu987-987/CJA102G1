@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一般會員資料</title>
+    <link rel="icon" href="./images/logo.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/css/admin/listAllMems.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/ReviewFmems.css}">
+    
+   
+</head>
+<body>
+    <div class="container container-main">
+            <h1>後台審核小農會員</h1>
+	
+        	<div class="search-bar">
+				<input type="text" class="fuzzy-search" placeholder="請輸入會員編號或姓名">
+				<button class="btn btn-fuzzy-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+			</div>
+        </div>
+    
+	</div>
+    <div class="container container-table">
+		<div class="table-wrapper">
+		
+			<table class="table">
+				<thead>
+					<tr class="table-header">
+					    <th>會員編號</th>
+					    <th class="myAcc">帳號</th>
+			    		<th class="myFid">身分證字號</th>
+					    <th class="myName">姓名</th>
+					    <th class="myMobile">手機</th>
+					    <th class="myEmail">信箱</th>
+					    <th class="myCity">縣市</th>
+					    <th class="myRegDate">註冊時間</th>
+					    <th class="myStatus">待審核</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="fmem : ${listFmem}" th:if="${fmem.accStatus == 0}"
+						th:class="(${lastEditFmemId == fmem.fmemId} ? 'activeRow' : '')">
+				        <td class="myId"><span th:text="${fmem.fmemId}"></span></td>
+				        <td class="myAcc"><span th:text="${fmem.fmemAcc}"></span></td>
+				        <td class="myFid"><span th:text="${fmem.fId}"></span></td>
+				        <td class="myName"><span th:text="${fmem.fmemName}"></span></td>
+				        <td class="myMobile"><span th:text="${fmem.fmemMobile}"></span></td>
+				        <td class="myEmail"><span th:text="${fmem.fmemEmail}"></span></td>
+				        <td class="myCity"><span th:text="${fmem.fmemCity}"></span></td>
+				        <td class="myRegDate"><span th:text="${fmem.regDate}"></span></td>
+				
+				        <td class="status-data">
+<!-- 				        	<a th:href="@{/admin/reviewFmems}" class="btn btn-edit">開始審核</a> -->
+				        	
+				        	<form method="post" th:action="@{/admin/reviewFmem}">
+					        	<input type="hidden" name="fmemId" th:value="${fmem.fmemId}">
+					        	<input type="submit" class="btn btn-review" value="開始審核">
+				        	</form>
+				        </td>
+					</tr>
+					<tr class="resultMsg"></tr>
+				</tbody>
+			</table>
+		</div>
+				
+   
+    </div>
+
+	<script th:src="@{/js/admin/switchEditMode.js}"></script>
+</body>
+</html>
+

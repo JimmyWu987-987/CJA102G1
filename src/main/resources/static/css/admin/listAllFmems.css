@@ -1,0 +1,91 @@
+
+
+/* *{outline: 1px solid #f00;} */
+
+.container-main .panel .selectors{
+	min-width: 550px;
+	max-width: 850px;
+	display: flex;
+	flex-wrap: wrap;
+	border-radius: 15px;
+}
+
+.selectors .switch-list{
+	width: 130px;
+}
+
+
+td.status-data form{
+	min-width: 140px;
+}
+.status-text{
+/* 	outline:1px solid #f00; */
+	width: auto;
+	min-width: 174px;
+    border: none;
+    margin-right: 0;
+    background-color: transparent;
+    /* 編輯功能 */
+/* 	display: none;   */
+/* 	display: block; */
+}
+
+.status-text > div{
+	display: flex;	
+	align-items: center;
+	justify-content: center;
+	
+}
+
+.status-text > div > span{
+	display: inline-block;
+	height: 38px; 
+    line-height: 38px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border: 1px solid #10401070;
+    border-radius: 5px;
+    background-color: #ffffff90;
+}
+.status-text input.btn{
+	width: 56px;
+    height: 38px; 
+	padding: 4px 10px;
+	margin-left: 8px;
+    font-size: 16px;
+}
+
+td.myStoreName{
+	min-width: 90px;
+}
+td.myTel{
+	min-width: 110px;
+}
+td.myBankCode{
+	min-width: 90px;
+}
+td.myMktAvg,
+td.myActAvg,
+td.myRptCnt{
+	min-width: 104px;
+}
+
+.myMobile,
+.myTel,
+.myBankCode,
+.myBankAcc,
+.myZipcode,
+.myCity,
+.myDist,
+.myAddr,
+.myMktAvg,
+.myActAvg,
+.myRptCnt{
+	display: none;
+}
+
+
+
+
+
+

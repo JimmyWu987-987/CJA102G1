@@ -40,7 +40,7 @@ INSERT INTO sty (sty_css_path) VALUES
 DROP TABLE IF EXISTS fmem;
 CREATE TABLE fmem (
 	fmem_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	f_id varchar(10) NOT NULL,
+	f_id varchar(10) NOT NULL UNIQUE,
 	fmem_acc varchar(40) NOT NULL UNIQUE,
 	fmem_pwd varchar(20) NOT NULL,
 	acc_status tinyint NOT NULL DEFAULT 0,

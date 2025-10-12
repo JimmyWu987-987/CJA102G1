@@ -139,7 +139,11 @@
                     </li>
                     <li class="list-bank">
                         <label>收款資訊</label>
-                        <input type="text" th:field="*{bankCode}" class="bankCode" placeholder="銀行代碼" maxlength="5">          
+<!--                         <input type="text" th:field="*{bankCode}" class="bankCode" placeholder="銀行代碼" maxlength="5">           -->
+                        <select th:field="*{bankCode}" class="bankCode">
+	                        <option value=""></option>
+	                    </select>
+                        
                         <input type="text" th:field="*{bankAcc}" class="bankAcc" placeholder="銀行帳號" maxlength="20">
                         
                         <span th:if="${#fields.hasErrors('bankCode')}" th:errors="*{bankCode}" class="error-bankCode"></span>
@@ -159,6 +163,7 @@
     <script th:src="@{/js/mem/regLogin.js}"></script>
     <script th:src="@{/js/mem/regBank.js}"></script>
     <script th:src="@{/js/mem/successUpdatePasswordAlert.js}"></script>
+    <script th:src="@{/js/fmem/bankCode.js}"></script>
     
     
 </body>
