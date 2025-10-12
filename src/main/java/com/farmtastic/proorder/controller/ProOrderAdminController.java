@@ -27,25 +27,36 @@ public class ProOrderAdminController {
 	ProOrderSevice proOrdSvc;
 	@Autowired
 	ProOrderItemService ProOrderItemSvc;
+	
+	// 金流管理首頁
+	@GetMapping("/")
+	public String index(Model model) {
+		
+		List<ProOrderVO> list = proOrdSvc.getAll();
+
+		model.addAttribute("proOrderList", list);
+		
+		return "/back_end/logined/cash_flow/index.html";
+	}
 
 	// 查詢全部訂單
 	@GetMapping("listAllProOrder")
 	public String listAll(Model model) {
 		
 		// 計算訂單列表需要抽成的金額，
-		List<ProOrderVO> CalculateListsAllocTotal = proOrdSvc.getAll();
-		for (int i = 1; i <= CalculateListsAllocTotal.size(); i++) {
-			
-			ProOrderVO saveAllocTotal = proOrdSvc.getOneProOrder(i);
-			
-			if(saveAllocTotal.getProOrdAllocTotal() == null) {
-				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
-				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
-				
-				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
-				proOrdSvc.updateProOrder(saveAllocTotal);
-			}
-		}
+//		List<ProOrderVO> CalculateListsAllocTotal = proOrdSvc.getAll();
+//		for (int i = 1; i <= CalculateListsAllocTotal.size(); i++) {
+//			
+//			ProOrderVO saveAllocTotal = proOrdSvc.getOneProOrder(i);
+//			
+//			if(saveAllocTotal.getProOrdAllocTotal() == null) {
+//				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+//				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
+//				
+//				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
+//				proOrdSvc.updateProOrder(saveAllocTotal);
+//			}
+//		}
 
 		List<ProOrderVO> list = proOrdSvc.getAll();
 

@@ -13,11 +13,11 @@
 	<h1>這是金流管理系統的頁面</h1>
     <h1>全部產品訂單列表</h1>
     
-    <div th:if="${#lists.isEmpty(proOrderList)}">
+    <div th:if="${#lists.isEmpty(proOrderList)}" th:fragment="pro-order-div">
         <p>目前沒有任何訂單資料。</p>
     </div>
     
-    <div th:unless="${#lists.isEmpty(proOrderList)}">
+    <div th:unless="${#lists.isEmpty(proOrderList)}" th:fragment="pro-order-div">
         <table id="example" class="display">
             <thead>
                 <tr>
@@ -91,6 +91,5 @@
             </tbody>
         </table>
     </div>
-    
 </body>
 </html>
