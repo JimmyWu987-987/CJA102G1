@@ -89,7 +89,7 @@ public class ProOrderVO implements Serializable {
 	@Column(name = "pro_tracking_no")
 	private String proTrackingNo;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "pro_ord_shipdate")
 	private Date proOrdShipdate;
 	
@@ -110,6 +110,9 @@ public class ProOrderVO implements Serializable {
 
 	@Column(name = "PRO_ORD_ALLOC_TOTAL")
 	private Integer proOrdAllocTotal;
+	
+	@Column(name = "PRO_ORD_ALLOC_SEND_FMEM")
+	private Integer proOrdAllocSendFmem;
 
 	@Valid
 	@OneToMany(mappedBy="proOrderVO", // 指向 ProOrderItemVO 要關聯的屬性
@@ -127,7 +130,7 @@ public class ProOrderVO implements Serializable {
 			Integer proOrdPointGet, Integer proOrdGrandTotal, String proOrdComm, Byte proOrdPayment,
 			Byte proOrdShipment, String proTrackingNo, Date proOrdShipdate, String proOrdName, String proOrdMobile,
 			String proOrdEmail, String proOrdAddr, Byte proOrdAllocStatus, Integer proOrdAllocTotal,
-			@Valid List<ProOrderItemVO> proOrderItems) {
+			Integer proOrdAllocSendFmem, @Valid List<ProOrderItemVO> proOrderItems) {
 		super();
 		this.proOrdId = proOrdId;
 		this.memVO = memVO;
@@ -152,6 +155,7 @@ public class ProOrderVO implements Serializable {
 		this.proOrdAddr = proOrdAddr;
 		this.proOrdAllocStatus = proOrdAllocStatus;
 		this.proOrdAllocTotal = proOrdAllocTotal;
+		this.proOrdAllocSendFmem = proOrdAllocSendFmem;
 		this.proOrderItems = proOrderItems;
 	}
 
@@ -337,6 +341,15 @@ public class ProOrderVO implements Serializable {
 
 	public void setProOrdAllocTotal(Integer proOrdAllocTotal) {
 		this.proOrdAllocTotal = proOrdAllocTotal;
+	}
+
+	
+	public Integer getProOrdAllocSendFmem() {
+		return proOrdAllocSendFmem;
+	}
+
+	public void setProOrdAllocSendFmem(Integer proOrdAllocSendFmem) {
+		this.proOrdAllocSendFmem = proOrdAllocSendFmem;
 	}
 
 	public List<ProOrderItemVO> getProOrderItems() {

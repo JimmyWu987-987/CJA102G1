@@ -11,9 +11,11 @@ public interface FmemOrderSummary {
     // 基礎訂單資訊
     Integer getProOrdId();
     Timestamp getProOrdDate();
+    Integer getProTotal();
     Integer getProOrdGrandTotal();
     Byte getProOrdStatus();
     Byte getProPayStatus();
+    String getProOrdComm();
     
     // 【新增/更新的欄位】
     Byte getProOrdPayment();    // 對應 SQL: PO.PRO_ORD_PAYMENT
@@ -21,6 +23,7 @@ public interface FmemOrderSummary {
     Timestamp getProOrdShipdate(); // 對應 SQL: PO.PRO_ORD_SHIPDATE
     Byte getProOrdAllocStatus();
     Integer getProOrdAllocTotal();
+    Integer getProOrdAllocSendFmem();
 
     // 關聯會員資訊
     Integer getMemId(); 

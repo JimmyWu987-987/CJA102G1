@@ -1,6 +1,7 @@
 package com.farmtastic.proorder.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,28 +11,68 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.fmember.model.FmemService;
+import com.farmtastic.proorder.model.FmemOrderSummary;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/admin/cashflow")
 public class ProOrderAdminController {
+	
+	// 每筆訂單的抽成百分筆
+	private static final double ALLOC_PER = 0.1;
 
 	@Autowired
 	ProOrderSevice proOrdSvc;
 	@Autowired
 	ProOrderItemService ProOrderItemSvc;
+	@Autowired
+	FmemService fmemSvc;
+	
+	// 金流管理首頁
+	@GetMapping("/")
+	public String index(Model model) {
+		
+		return "/back_end/logined/cash_flow/index.html";
+	}
 
 	// 查詢全部訂單
 	@GetMapping("listAllProOrder")
 	public String listAll(Model model) {
-
-		List<ProOrderVO> list = proOrdSvc.getAll();
-
-		model.addAttribute("proOrderList", list);
+		
+		// 計算訂單列表需要抽成的金額，
+		List<ProOrderVO> CalculateListsAllocTotal = proOrdSvc.getAll();
+		for (int i = 1; i <= CalculateListsAllocTotal.size(); i++) {
+			
+			ProOrderVO saveAllocTotal = proOrdSvc.getOneProOrder(i);
+			
+			if(saveAllocTotal.getProOrdAllocTotal() == null) {
+				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
+				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
+				// 計算平台撥款金額
+				Integer proOrdAllocSendFmem = saveAllocTotal.getProTotal() - saveAllocTotal.getProOrdAllocTotal();
+				saveAllocTotal.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+				
+				proOrdSvc.updateProOrder(saveAllocTotal);
+			}
+		}
+		
+//		// 取全部訂單傳送到前端
+//		List<ProOrderVO> proOrderList = proOrdSvc.getAll();
+//		model.addAttribute("proOrderList", proOrderList);
+		
+		// 取該全部小農會員的id
+		List<Fmem> fmemList = fmemSvc.getAll();
+		model.addAttribute("fmemList", fmemList);
 
 		return "/back_end/logined/cash_flow/listAllProOrder";
 	}
@@ -54,6 +95,49 @@ public class ProOrderAdminController {
 
 			return "/back_end/logined/cash_flow/listOneProOrder";
 		}
+	}
+	
+	// 金流系統首頁導向搜尋商品訂單的功能
+	@PostMapping("fmemProOrder")
+	public String cashFlowIndexToSelectFmemProOrder(ModelMap model) {
+		
+		model.addAttribute("fmemProOrder", "fmemProOrder");
+		
+		// 取該全部小農會員的id
+		List<Fmem> fmemList = fmemSvc.getAll();
+		model.addAttribute("fmemList", fmemList);
+		
+		return "/back_end/logined/cash_flow/index.html";
+	}
+	
+	// 搜尋該小農的全部訂單
+	@PostMapping("selectFmemProOrder")
+	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, 
+			ModelMap model,
+			HttpSession session) {
+		
+		
+		// 維持金流系統首頁是商品分支
+		model.addAttribute("fmemProOrder", "fmemProOrder");
+		
+		// 取該小農可以撥款的表單（已出貨以及已退款）
+		List<FmemOrderSummary> proOrderList = proOrdSvc.getAllByFmemIdCanAlloc(fmemId);
+		model.addAttribute("proOrderList", proOrderList);
+		
+		// 取該小農的姓名
+		Optional<Fmem> fmemOptional = fmemSvc.getOneByFmemId(fmemId);
+		Fmem fmem = fmemOptional.orElse(new Fmem());
+		model.addAttribute("fmemName", fmem.getFmemName());
+		
+		// 進入詳細資料，按下回上一頁，保持列表為該小農的商品訂單列表
+		session.setAttribute("fmemId", fmem.getFmemId());
+		
+		// 取該全部小農會員的id，給搜尋特定小農用。
+		List<Fmem> fmemList = fmemSvc.getAll();
+		model.addAttribute("fmemList", fmemList);
+		
+		
+		return "/back_end/logined/cash_flow/index.html";
 	}
 
 }

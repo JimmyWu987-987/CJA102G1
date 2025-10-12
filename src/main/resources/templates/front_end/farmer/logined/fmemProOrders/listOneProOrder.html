@@ -5,77 +5,75 @@
 <title>全部產品訂單列表</title>
 
 <style type="text/css">
-	
-    span {
-		display: inline-block;
-		width: 200px;
-		text-align: left;
-		font-weight: bold;
-	}
+span {
+	display: inline-block;
+	width: 200px;
+	text-align: left;
+	font-weight: bold;
+}
 </style>
 
 </head>
 <body>
-    <h1>這是單一查詢訂單列表</h1>
-    
-    
-    <div th:if="${#lists.isEmpty(proOrderVO)}">
-        <p>目前沒有任何訂單資料。</p>
+	<h1>這是單一查詢訂單列表</h1>
+	
+	<div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
     </div>
     
-    <div th:unless="${#lists.isEmpty(proOrderVO)}">	
+	<div th:if="${#lists.isEmpty(proOrderVO)}">
+		<p>目前沒有任何訂單資料。</p>
+	</div>
+
+	<div th:unless="${#lists.isEmpty(proOrderVO)}">
 		<h2>訂單明細</h2>
-				
+
 		<span>訂單編號:</span><span th:text="${proOrderVO.proOrdId}"></span><br>
 		<span>一般會員編號:</span><span th:text="${proOrderVO.memVO.memId}"></span><br>
 
 		<div th:if="${proOrderVO.memProCpnVO}">
-			<span>商品折價卷持有者流水號:</span>
-			<span th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span><br>
+			<span>商品折價卷持有者流水號:</span> <span
+				th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span><br>
 		</div>
+		
 		<div th:unless="${proOrderVO.memProCpnVO}">
 			<span>商品折價卷持有者流水號:</span><span>無/未使用</span><br>
 		</div>
-		<span>訂單日期:</span><span th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}"></span><br>
-		<span>訂單狀態:</span><span th:switch="${proOrderVO.proOrdStatus}">
-                    		<span th:case="0">成立訂單</span>
-                    		<span th:case="1">取消訂單(未出貨)取貨</span>
-                    		<span th:case="2">出貨中</span>
-                    		<span th:case="3">已到貨</span>
-                    		<span th:case="4">申請退貨(已出貨)</span>
-                    		<span th:case="5">退貨中</span>
-                    		<span th:case="6">已退貨</span>
-                    		<span th:case="*">N/A</span></span><br>
-		<span>付款狀態:</span><span th:switch="${proOrderVO.proPayStatus}">
-		                    <span th:case="0">未付款</span>
-                            <span th:case="1">已付款</span>
-                            <span th:case="*">N/A</span></span><br>
-        <span>收件人姓名:</span><span th:text="${proOrderVO.proOrdName}"></span><br>
-        <span>收件人電話:</span><span th:text="${proOrderVO.proOrdMobile}"></span><br>
-        <span>收件人地址:</span><span th:text="${proOrderVO.proOrdAddr}"></span><br>
-        <span>收件人電子信箱:</span><span th:text="${proOrderVO.proOrdEmail}"></span>
-                            
-		<br>==========================</br>
-				<table border="1">
+		
+		<span>訂單日期:</span><span
+			th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}"></span><br>
+		
+		<br>
+		
+		<span>收件人姓名:</span><span th:text="${proOrderVO.proOrdName}"></span><br>
+		<span>收件人電話:</span><span th:text="${proOrderVO.proOrdMobile}"></span><br>
+		<span>收件人地址:</span><span th:text="${proOrderVO.proOrdAddr}"></span><br>
+		<span>收件人電子信箱:</span><span th:text="${proOrderVO.proOrdEmail}"></span><br>
+		==========================
+		<table border="1">
 			<thead>
-                <tr>
-                    <th>商品編號</th>
-                    <th>商品名稱</th>
-                    <th>購買單價</th>
-                    <th>購買數量</th>
-                    <th>商品小計</th>
-                 </tr>
-            </thead>
-            <tbody>
-            		<tr th:each="proOrderItemsVO : ${proOrderItems}">
-            			<td th:text="${proOrderItemsVO.productVO.proId}"></td>
-            			<td th:text="${proOrderItemsVO.productVO.proName}"></td>
-            			<td th:text="${proOrderItemsVO.proUnitPrice}"></td>
-            			<td th:text="${proOrderItemsVO.proAmount}"></td>
-            			<td th:text="${proOrderItemsVO.proSubTotal}"></td>
-            </tbody>
-		</table>		
-		==========================</br>
+				<tr>
+					<th>商品編號</th>
+					<th>商品名稱</th>
+					<th>購買單價</th>
+					<th>購買數量</th>
+					<th>商品小計</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="proOrderItemsVO : ${proOrderItems}">
+					<td th:text="${proOrderItemsVO.productVO.proId}"></td>
+					<td th:text="${proOrderItemsVO.productVO.proName}"></td>
+					<td th:text="${proOrderItemsVO.proUnitPrice}"></td>
+					<td th:text="${proOrderItemsVO.proAmount}"></td>
+					<td th:text="${proOrderItemsVO.proSubTotal}"></td>
+			</tbody>
+		</table>
+		==========================
+		<br>
 		<span>商品總金額:</span><span th:text="${proOrderVO.proTotal}"></span><br>
 		<span>運費:</span><span th:text="${proOrderVO.proOrdShipFee}"></span><br>
 		<span>折價券折抵金額:</span><span th:text="${proOrderVO.proOrdCpndisc}"></span><br>
@@ -83,26 +81,79 @@
 		<span>商品訂單回饋會員點數:</span><span th:text="${proOrderVO.proOrdPointGet}"></span><br>
 		<span>實付金額:</span><span th:text="${proOrderVO.proOrdGrandTotal}"></span><br>
 		<span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span><br>
-		<span>付款方式:</span><span th:switch="${proOrderVO.proOrdPayment}">
-                   <span th:case="0">信用卡</span>
-                   <span th:case="1">LinePay</span>
-<!--                    <span th:case="2">貨到付款</span>
-                   <span th:case="3">超商付款</span> -->
-                   <span th:case="*">N/A</span></span><br>
-		<span>物流方式:</span><span th:switch="${proOrderVO.proOrdShipment}">
-                   <span th:case="0">宅配</span>
-                   <span th:case="1">超商取貨</span>
-                   <span th:case="*"></span></span><br>
-		<span>物流追蹤碼:</span><span th:text="${proOrderVO.proTrackingNo}"></span><br>
-		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd HH:mm')}"></span><br>
+		
+		<span>付款方式:</span>
+		<span th:switch="${proOrderVO.proOrdPayment}">
+			<span th:case="0">信用卡</span>
+			<span th:case="1">LinePay</span>
+			<span th:case="*">N/A</span>
+		</span>
+		<br>
+		
+		<span>物流方式:</span>
+		<span th:switch="${proOrderVO.proOrdShipment}">
+			<span th:case="0">宅配</span>
+			<span th:case="1">超商取貨</span>
+			<span th:case="*"></span>
+		</span>
+		<br>
+		
+		<span>平台撥款狀態:</span>
+		<span th:switch="${proOrderVO.proOrdAllocStatus}">
+        	<span th:case="0">未撥款</span>
+        	<span th:case="1">已撥款</span>
+        	<span th:case="*">N/A</span>
+        </span>
+		<br>
+		
+		<span>平台抽成金額:</span>
+		<span th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定抽成金額'"></span>
+		<br>
+		
+		<span>平台撥款金額:</span>
+		<span th:text="${proOrderVO.proOrdAllocSendFmem} != null ? ${proOrderVO.proOrdAllocSendFmem} : '未決定撥款金額'"></span>
+		<br>
+		
+		<span>付款狀態:</span>
+			<span th:switch="${proOrderVO.proPayStatus}">
+        		<span th:case="0">未付款</span>
+        		<span th:case="1">已付款</span>
+        		<span th:case="*">N/A</span>
+        </span>
+ 		<br>
+ 		
+		<form method="post" th:action="@{/fmem/proorders/updateStatus}">
+		
+		<span>訂單狀態:</span>
+		<select name="proOrdStatus">
+			<option th:each="entry : ${proOrdStatus}" 
+					th:value="${entry.key}" 
+					th:text="${entry.value}"
+					th:selected="${entry.key == proOrderVO.proOrdStatus}">
+			</option>
+		</select>
+		<br>
+		
+		<span>物流追蹤碼:</span>
+			<input type="text" name="proTrackingNo" th:value="${proOrderVO.proTrackingNo}">
+		<br>
+		
+		<!-- 出貨日期只能選訂單日期之後的時間點 -->
+		<!-- 讀取 model 物件的 proOrderVO.proOrdDate -->
+		<span>出貨日期:</span>
+			<input type="date" name="proOrdShipdate"
+				   th:value="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"
+				   th:min="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd')}">
+		<br>
+			<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+			<input type="submit" value="修改">
+		</form>
 
-                    
-                    	<form method="get" th:action="@{/fmem/proorders/listAllProOrder}">
-                    		<input type="submit" value="回上一頁">
-                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
-                    	</form>
+		<form method="get" th:action="@{/fmem/proorders/listAllProOrder}">
+			<input type="submit" value="回上一頁">
+			<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+		</form>
 
-    </div>
-    
+	</div>
 </body>
 </html>

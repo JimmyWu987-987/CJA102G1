@@ -8,7 +8,7 @@
 	
     span {
 		display: inline-block;
-		width: 150px;
+		width: 200px;
 		text-align: left;
 		font-weight: bold;
 	}
@@ -23,12 +23,19 @@
         <p>目前沒有任何訂單資料。</p>
     </div>
     
-    <div th:unless="${#lists.isEmpty(proOrderVO)}">
+    <div th:unless="${#lists.isEmpty(proOrderVO)}">	
 		<h2>訂單明細</h2>
 				
 		<span>訂單編號:</span><span th:text="${proOrderVO.proOrdId}"></span><br>
 		<span>一般會員編號:</span><span th:text="${proOrderVO.memVO.memId}"></span><br>
-		<span>商品折價卷持有者流水號:</span><span th:text="${proOrderVO.cpnHolderDetailId}"></span><br>
+
+		<div th:if="${proOrderVO.memProCpnVO}">
+			<span>商品折價卷持有者流水號:</span>
+			<span th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span><br>
+		</div>
+		<div th:unless="${proOrderVO.memProCpnVO}">
+			<span>商品折價卷持有者流水號:</span><span>無/未使用</span><br>
+		</div>
 		<span>訂單日期:</span><span th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}"></span><br>
 		<span>訂單狀態:</span><span th:switch="${proOrderVO.proOrdStatus}">
                     		<span th:case="0">成立訂單</span>
@@ -38,10 +45,18 @@
                     		<span th:case="4">申請退貨(已出貨)</span>
                     		<span th:case="5">退貨中</span>
                     		<span th:case="6">已退貨</span>
-                    		<span th:case="*">XXX</span></span><br>
-		<span>付款狀態:</span><span th:text="${proOrderVO.proPayStatus}"></span>
+                    		<span th:case="*">N/A</span></span><br>
+		<span>付款狀態:</span><span th:switch="${proOrderVO.proPayStatus}">
+		                    <span th:case="0">未付款</span>
+                            <span th:case="1">已付款</span>
+                            <span th:case="*">N/A</span></span><br>
+        <span>收件人姓名:</span><span th:text="${proOrderVO.proOrdName}"></span><br>
+        <span>收件人電話:</span><span th:text="${proOrderVO.proOrdMobile}"></span><br>
+        <span>收件人地址:</span><span th:text="${proOrderVO.proOrdAddr}"></span><br>
+        <span>收件人電子信箱:</span><span th:text="${proOrderVO.proOrdEmail}"></span>
+                            
 		<br>==========================</br>
-		<table border="1">
+				<table border="1">
 			<thead>
                 <tr>
                     <th>商品編號</th>
@@ -57,7 +72,7 @@
             			<td th:text="${proOrderItemsVO.productVO.proName}"></td>
             			<td th:text="${proOrderItemsVO.proUnitPrice}"></td>
             			<td th:text="${proOrderItemsVO.proAmount}"></td>
-            			<td th:text="${proOrderItemsVO.proSubTota}"></td>
+            			<td th:text="${proOrderItemsVO.proSubTotal}"></td>
             </tbody>
 		</table>		
 		==========================</br>
@@ -70,24 +85,35 @@
 		<span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span><br>
 		<span>付款方式:</span><span th:switch="${proOrderVO.proOrdPayment}">
                    <span th:case="0">信用卡</span>
-                   <span th:case="1">轉帳</span>
-                   <span th:case="2">貨到付款</span>
-                   <span th:case="3">超商付款</span>
-                   <span th:case="*">XXX</span></span><br>
+                   <span th:case="1">LinePay</span>
+                   <span th:case="*">N/A</span></span><br>
 		<span>物流方式:</span><span th:switch="${proOrderVO.proOrdShipment}">
                    <span th:case="0">宅配</span>
                    <span th:case="1">超商取貨</span>
                    <span th:case="*"></span></span><br>
 		<span>物流追蹤碼:</span><span th:text="${proOrderVO.proTrackingNo}"></span><br>
-		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd HH:mm')}"></span><br>
-
-                    
-
-      
-                    	<form method="Get" th:action="@{/admin/cashflow/listAllProOrder}">
-                    		<input type="submit" value="回上一頁">
-                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
-                    	</form>
+		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"></span><br>
+		
+		<span>平台撥款狀態:</span>
+		<span th:switch="${proOrderVO.proOrdAllocStatus}">
+        	<span th:case="0">未撥款</span>
+        	<span th:case="1">已撥款</span>
+        	<span th:case="*">N/A</span>
+        </span>
+		<br>
+		
+		<span>平台抽成金額:</span>
+		<span th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定抽成金額'"></span>
+		<br>
+		
+		<span>平台撥款金額:</span>
+		<span th:text="${proOrderVO.proOrdAllocSendFmem} != null ? ${proOrderVO.proOrdAllocSendFmem} : '未決定撥款金額'"></span>
+		<br>
+  
+        <form method="post" th:action="@{/admin/cashflow/selectFmemProOrder}">
+        	<input type="submit" value="回上一頁">
+            <input type="hidden" name="fmemId" th:value="${session.fmemId}">
+        </form>
 
     </div>
     

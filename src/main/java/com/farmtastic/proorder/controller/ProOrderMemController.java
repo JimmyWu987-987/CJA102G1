@@ -31,9 +31,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/mem/proorders")
 public class ProOrderMemController {
 
-	// Points Earning Rate
+	// Points Earning Rate 單筆訂單點數回饋
 	// 計算消費商品的總金額(金額不含運費)
-	private final static double PER = 0.01;
+	private final static double POINTS_PER = 0.01;
+	
+	// 計算單筆訂單的抽成百分筆
+	private static final double ALLOC_PER = 0.1;
 
 	@Autowired
 	ProOrderSevice proOrdSvc;
@@ -151,13 +154,19 @@ public class ProOrderMemController {
 			// 訂單付款狀態
 			proOrderVO.setProPayStatus(finalProOrderVO.getProPayStatus());
 			
-
-			
 			// 平台撥款狀態，預設為0(未撥款)
 			proOrderVO.setProOrdAllocStatus((byte)0);
 			
-			// 平台撥款金額，預設為null(未給金額)
-			proOrderVO.setProOrdAllocTotal(null);
+			// 平台抽成金額
+			// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+			Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
+			proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
+			
+			// 平台撥款給小農的金額
+			// 假設運費為小農自行處理，已經扣出金流手續費。
+			// 假設 平台撥款金額 = 商品總金額 - 	平台抽成金額。
+			Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
+			proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
 			
 //		    // 3. 設定關聯和明細
 			proOrderVO.setMemVO(loggedInMember);
@@ -309,7 +318,7 @@ public class ProOrderMemController {
 		finalProOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
 
 		// (3) 計算新的回饋點數 (通常根據「商品總金額」或「實付金額」計算，這裡假設是根據實付金額)
-		Integer proOrdPointGet = (int) (proOrdGrandTotal * PER);
+		Integer proOrdPointGet = (int) (proOrdGrandTotal * POINTS_PER);
 		finalProOrderVO.setProOrdPointGet(proOrdPointGet);
 
 		// 4. 將更新後的訂單物件存回 Session

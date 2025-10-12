@@ -91,4 +91,9 @@ public class ProOrderSevice {
 	public List<FmemOrderSummary> getAllByFmemId(Integer fmemId) {
 		return repository.findFmemProOrders(fmemId);
 	}
+	
+	// 查詢該小農“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
+	public List<FmemOrderSummary> getAllByFmemIdCanAlloc(Integer fmemId) {
+		return repository.findFmemProOrdersCanAlloc(fmemId);
+	}
 }
