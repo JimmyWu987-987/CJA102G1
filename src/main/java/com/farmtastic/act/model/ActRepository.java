@@ -22,7 +22,7 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
     List<Act> findByFmemIdAndActStat(Integer fmemId, Integer actStat, Sort sort);
 
     // 複合查詢(用Repository + Sort/JPQL), 練習不用原生sql...
-    @Query("SELECT DISTINCT a FROM act a " +
+    @Query("SELECT DISTINCT a FROM Act a " +
            "JOIN a.actCate ac " +
            "WHERE (:fmemId IS NULL OR a.fmemId = :fmemId) " +
            "AND (:actStat IS NULL OR a.actStat = :actStat) " +
@@ -39,6 +39,6 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM act a WHERE a.actId = :actId")
+    @Query("DELETE FROM Act a WHERE a.actId = :actId")
     void deleteByActId(@Param("actId") Integer actId);
 }
