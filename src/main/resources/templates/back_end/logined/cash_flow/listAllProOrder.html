@@ -13,17 +13,28 @@
 	<h1>這是金流管理系統的頁面</h1>
     <h1>全部產品訂單列表</h1>
     
+    <form method="post" th:action="@{selectFmemProOrder}">
+		選擇小農編號:
+		<select name="fmemId">
+			<option th:each="fmemList : ${fmemList}" th:value="${fmemList.fmemId}" th:text="[+${fmemList.fmemId}+]+${fmemList.fmemName}" />
+		</select>
+		<input type="submit" value="送出">
+	</form>
+
+    
     <div th:if="${#lists.isEmpty(proOrderList)}" th:fragment="pro-order-div">
         <p>目前沒有任何訂單資料。</p>
     </div>
     
     <div th:unless="${#lists.isEmpty(proOrderList)}" th:fragment="pro-order-div">
+    	
+    	<span th:text="${fmemName}"></span><span>的商品訂單資料</span>
+    	<hr>
         <table id="example" class="display">
             <thead>
                 <tr>
                     <th>訂單日期</th>
                     <th>訂單編號</th>
-                    <th>訂購會員ID</th>
                     <th>總金額</th>
                     <th>付款方式</th>
                     <th>物流方式</th>
@@ -38,7 +49,6 @@
                 <tr th:each="proOrderVO : ${proOrderList}">
                     <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                     <td th:text="${proOrderVO.proOrdId}">1</td>
-                    <td th:text="${proOrderVO.memVO.memId}">M001</td> 
                     <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>       
                     
                     <td>
