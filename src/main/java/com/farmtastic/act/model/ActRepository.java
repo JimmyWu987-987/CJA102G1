@@ -30,7 +30,6 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
            "AND (:actcateId IS NULL OR ac.actCateId = :actcateId) " +
            "AND (:keyword IS NULL OR a.actName LIKE CONCAT('%', :keyword, '%') " +
            "OR a.actDes LIKE CONCAT('%', :keyword, '%'))")
-    
     List<Act> findActByCQ(@Param("fmemId") Integer fmemId,
                                @Param("actStat") Integer actStat,
                                @Param("actLaunStat") Integer actLaunStat,
