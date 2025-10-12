@@ -38,9 +38,9 @@ public class ProOrderAdminController {
 	@GetMapping("/")
 	public String index(Model model) {
 		
-		List<ProOrderVO> list = proOrdSvc.getAll();
-
-		model.addAttribute("proOrderList", list);
+		// 取該全部小農會員的id
+		List<Fmem> fmemList = fmemSvc.getAll();
+		model.addAttribute("fmemList", fmemList);
 		
 		return "/back_end/logined/cash_flow/index.html";
 	}
@@ -115,7 +115,7 @@ public class ProOrderAdminController {
 	
 
 		
-		return "/back_end/logined/cash_flow/listAllProOrder";
+		return "/back_end/logined/cash_flow/index.html";
 	}
 
 }

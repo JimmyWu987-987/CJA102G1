@@ -12,7 +12,8 @@
 <body>
 	<h1>這是金流管理系統的頁面</h1>
     <h1>全部產品訂單列表</h1>
-    
+    <div th:fragment="pro-order-div">
+
     <form method="post" th:action="@{selectFmemProOrder}">
 		選擇小農編號:
 		<select name="fmemId">
@@ -22,11 +23,11 @@
 	</form>
 
     
-    <div th:if="${#lists.isEmpty(proOrderList)}" th:fragment="pro-order-div">
+    <div th:if="${#lists.isEmpty(proOrderList)}">
         <p>目前沒有任何訂單資料。</p>
     </div>
     
-    <div th:unless="${#lists.isEmpty(proOrderList)}" th:fragment="pro-order-div">
+    <div th:unless="${#lists.isEmpty(proOrderList)}">
     	
     	<span th:text="${fmemName}"></span><span>的商品訂單資料</span>
     	<hr>
@@ -101,5 +102,6 @@
             </tbody>
         </table>
     </div>
+</div>
 </body>
 </html>
