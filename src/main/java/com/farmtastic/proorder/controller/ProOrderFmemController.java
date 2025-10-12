@@ -41,9 +41,12 @@ public class ProOrderFmemController {
 
 		// 取得 session 的會員資訊
 		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
-
+		
 		// 登入驗證交給 Fitter 攔截
+		
+		// 取得該小農的所有客戶訂單
 		List<FmemOrderSummary> list = proOrdSvc.getAllByFmemId(loggedInFmember.getFmemId());
+
 		model.addAttribute("proOrderList", list);
 
 		return "/front_end/farmer/logined/fmemProOrders/listAllProOrder";
@@ -71,8 +74,7 @@ public class ProOrderFmemController {
 	@PostMapping("updateStatus")
 	public String update(@RequestParam("proOrdId") Integer proOrdId, @RequestParam("proOrdStatus") Byte proOrdStatus,
 			@RequestParam("proTrackingNo") String proTrackingNo,
-			@RequestParam(value = "proOrdShipdate", required = false) String proOrdShipdate,
-			ModelMap model) {
+			@RequestParam(value = "proOrdShipdate", required = false) String proOrdShipdate, ModelMap model) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
 		proOrderVO.setProOrdStatus(proOrdStatus);

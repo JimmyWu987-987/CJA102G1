@@ -43,6 +43,7 @@
                     <th>操作</th>
                     <th>操作</th>
                     <th>操作</th>
+                    <th>操作</th>
                  </tr>
             </thead>
             <tbody>
@@ -101,6 +102,15 @@
                     	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
                     		<input type="submit" value="我要付款">
     						<!-- 未來寫入要傳送的值 -->
+                    	</form>
+                    	</div>
+                    </td>
+                    <td>
+                    	<div th:if="${proOrderVO.proOrdStatus == 3}">
+                    	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
+                    		<input type="submit" value="我要評論">
+    						<!-- 未來寫入要傳送的值 -->
+    						<!-- 連結到商品評論新增的URL -->
                     	</form>
                     	</div>
                     </td>

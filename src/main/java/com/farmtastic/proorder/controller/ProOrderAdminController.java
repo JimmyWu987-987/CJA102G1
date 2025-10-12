@@ -19,6 +19,9 @@ import com.farmtastic.proorderitem.model.ProOrderItemVO;
 @Controller
 @RequestMapping("/admin/cashflow")
 public class ProOrderAdminController {
+	
+	// 每筆訂單的抽成百分筆
+	private static final double ALLOC_PER = 0.1;
 
 	@Autowired
 	ProOrderSevice proOrdSvc;
@@ -28,6 +31,21 @@ public class ProOrderAdminController {
 	// 查詢全部訂單
 	@GetMapping("listAllProOrder")
 	public String listAll(Model model) {
+		
+		// 計算訂單列表需要抽成的金額，
+		List<ProOrderVO> CalculateListsAllocTotal = proOrdSvc.getAll();
+		for (int i = 1; i <= CalculateListsAllocTotal.size(); i++) {
+			
+			ProOrderVO saveAllocTotal = proOrdSvc.getOneProOrder(i);
+			
+			if(saveAllocTotal.getProOrdAllocTotal() == null) {
+				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
+				
+				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
+				proOrdSvc.updateProOrder(saveAllocTotal);
+			}
+		}
 
 		List<ProOrderVO> list = proOrdSvc.getAll();
 
