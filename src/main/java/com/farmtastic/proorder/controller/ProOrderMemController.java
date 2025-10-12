@@ -157,10 +157,16 @@ public class ProOrderMemController {
 			// 平台撥款狀態，預設為0(未撥款)
 			proOrderVO.setProOrdAllocStatus((byte)0);
 			
-			// 平台撥款金額
+			// 平台抽成金額
 			// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
 			Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
 			proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
+			
+			// 平台撥款給小農的金額
+			// 假設運費為小農自行處理，已經扣出金流手續費。
+			// 假設 平台撥款金額 = 商品總金額 - 	平台抽成金額。
+			Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
+			proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
 			
 //		    // 3. 設定關聯和明細
 			proOrderVO.setMemVO(loggedInMember);

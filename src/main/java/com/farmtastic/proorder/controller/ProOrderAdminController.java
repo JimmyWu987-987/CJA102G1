@@ -49,19 +49,22 @@ public class ProOrderAdminController {
 	public String listAll(Model model) {
 		
 		// 計算訂單列表需要抽成的金額，
-//		List<ProOrderVO> CalculateListsAllocTotal = proOrdSvc.getAll();
-//		for (int i = 1; i <= CalculateListsAllocTotal.size(); i++) {
-//			
-//			ProOrderVO saveAllocTotal = proOrdSvc.getOneProOrder(i);
-//			
-//			if(saveAllocTotal.getProOrdAllocTotal() == null) {
-//				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
-//				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
-//				
-//				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
-//				proOrdSvc.updateProOrder(saveAllocTotal);
-//			}
-//		}
+		List<ProOrderVO> CalculateListsAllocTotal = proOrdSvc.getAll();
+		for (int i = 1; i <= CalculateListsAllocTotal.size(); i++) {
+			
+			ProOrderVO saveAllocTotal = proOrdSvc.getOneProOrder(i);
+			
+			if(saveAllocTotal.getProOrdAllocTotal() == null) {
+				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
+				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
+				// 計算平台撥款金額
+				Integer proOrdAllocSendFmem = saveAllocTotal.getProTotal() - saveAllocTotal.getProOrdAllocTotal();
+				saveAllocTotal.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+				
+				proOrdSvc.updateProOrder(saveAllocTotal);
+			}
+		}
 		
 //		// 取全部訂單傳送到前端
 //		List<ProOrderVO> proOrderList = proOrdSvc.getAll();
@@ -117,8 +120,8 @@ public class ProOrderAdminController {
 		// 維持金流系統首頁是商品分支
 		model.addAttribute("fmemProOrder", "fmemProOrder");
 		
-		// 取該小農全部的訂單
-		List<FmemOrderSummary> proOrderList = proOrdSvc.getAllByFmemId(fmemId);
+		// 取該小農可以撥款的表單（已出貨以及已退款）
+		List<FmemOrderSummary> proOrderList = proOrdSvc.getAllByFmemIdCanAlloc(fmemId);
 		model.addAttribute("proOrderList", proOrderList);
 		
 		// 取該小農的姓名

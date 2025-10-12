@@ -29,13 +29,15 @@
                     <th>訂單編號</th>
                     <th>訂購客戶ID</th>
                     <th>訂購客戶姓名</th>
-                    <th>總金額</th>
+                    <th>商品總金額</th>
+                    <th>訂單總金額</th>
                     <th>訂單狀態</th>
                     <th>付款狀態</th>
                     <th>付款方式</th>
                     <th>物流方式</th>
                     <th>訂單備註</th>
                     <th>平台撥款狀態</th>
+                    <th>平台抽成金額</th>
                     <th>平台撥款金額</th>
                     <th>操作</th>
                </tr>
@@ -46,6 +48,7 @@
                     <td th:text="${proOrderVO.proOrdId}">1</td>
                     <td th:text="${proOrderVO.memId}">M001</td> 
                     <td th:text="${proOrderVO.memName}">M001</td> 
+                    <td th:text="${proOrderVO.proTotal}"></td> 
                     <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>
                     
                     <td>
@@ -94,7 +97,10 @@
                     	</div>
                     </td>
                     <td>
-                    	<div th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定金額'"></div>
+                    	<div th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定抽成金額'"></div>
+                    </td>
+                    <td>
+                    	<div th:text="${proOrderVO.proOrdAllocSendFmem} != null ? ${proOrderVO.proOrdAllocSendFmem} : '未決定撥款金額'"></div>
                     </td>
                     <td>
                     	<form method="post" th:action="@{/fmem/proorders/listOneProOrder}">

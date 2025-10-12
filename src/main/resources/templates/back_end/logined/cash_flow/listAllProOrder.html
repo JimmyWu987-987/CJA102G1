@@ -24,6 +24,7 @@
 
     
     <div th:if="${#lists.isEmpty(proOrderList)}">
+    <span th:text="${fmemName}"></span><span>的商品訂單資料</span> 
         <p>目前沒有任何訂單資料。</p>
     </div>
     
@@ -36,13 +37,15 @@
                 <tr>
                     <th>訂單日期</th>
                     <th>訂單編號</th>
-                    <th>總金額</th>
+                    <th>商品總金額</th>
+                    <th>訂單總金額</th>
                     <th>付款方式</th>
                     <th>物流方式</th>
                     <th>訂單狀態</th>
                     <th>平台撥款狀態</th>
+                    <th>平台抽成金額</th>
                     <th>平台撥款金額</th>
-                    <th></th>
+                    <th>操作</th>
 
                     </tr>
             </thead>
@@ -50,6 +53,7 @@
                 <tr th:each="proOrderVO : ${proOrderList}">
                     <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                     <td th:text="${proOrderVO.proOrdId}">1</td>
+                    <td th:text="${proOrderVO.proTotal}">1</td>
                     <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>       
                     
                     <td>
@@ -81,14 +85,17 @@
                     	</div>
                     </td>
                     <td>
-                    <div th:switch="${proOrderVO.proOrdAllocStatus}">
+                    	<div th:switch="${proOrderVO.proOrdAllocStatus}">
                     		<span th:case="0">未撥款</span>
                     		<span th:case="1">已撥款</span>
                     		<span th:case="*">N/A</span>
                     	</div>
                     </td>
                     <td>
-                    <div th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定金額'"></div>
+                    	<div th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定抽成金額'"></div>
+                    </td>
+                    <td>
+                    	<div th:text="${proOrderVO.proOrdAllocSendFmem} != null ? ${proOrderVO.proOrdAllocSendFmem} : '未決定撥款金額'"></div>
                     </td>
                     <td>
                     	<form method="post" th:action="@{/admin/cashflow/listOneProOrder}">
