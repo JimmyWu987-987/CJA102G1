@@ -10,7 +10,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-	@Data
+//	@Data
 	@Entity
  	@Table(name = "product_image")
 	public class ProImage implements java.io.Serializable {
@@ -27,6 +27,34 @@ import lombok.Data;
 	@Lob
 	@Column(name = "pro_img", columnDefinition="LONGBLOB")
 	private byte[] proImg;
+
+	public Long getProImgId() {
+		return proImgId;
+	}
+
+	public void setProImgId(Long proImgId) {
+		this.proImgId = proImgId;
+	}
+
+	public Long getProId() {
+		return proId;
+	}
+
+	public void setProId(Long proId) {
+		this.proId = proId;
+	}
+
+	public byte[] getProImg() {
+		return proImg;
+	}
+
+	public void setProImg(byte[] proImg) {
+		this.proImg = proImg;
+	}
+
+	public ProImage() {
+		super();
+	}
 	
 	
 
