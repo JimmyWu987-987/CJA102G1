@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.farmtastic.act.enums.ActStat;
 import com.farmtastic.act.enums.LaunStat;
 import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.ses.model.Ses;
 import com.farmtastic.validator.FileSize;
 
 import jakarta.persistence.CascadeType;
@@ -122,9 +123,9 @@ public class Act implements java.io.Serializable {
 	@OrderBy("actimgOrder ASC")
     private List<ActImg> actImg = new ArrayList<>();
 	
-////	對到多個場次
-//    @OneToMany(mappedBy = "act", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<SesVO> ses = new ArrayList<>();
+//	對到多個場次
+    @OneToMany(mappedBy = "act", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ses> ses = new ArrayList<>();
 	
 //	反向查出小農資料用
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -274,14 +275,14 @@ public class Act implements java.io.Serializable {
         this.actImg = actImg;
     }
     
-////  for 場次
-//    public List<SesVO> getSes() {
-//        return ses;
-//    }
-//    
-//    public void setSes(List<SesVO> ses) {
-//        this.ses = ses;
-//    }
+//  for 場次
+    public List<Ses> getSes() {
+        return ses;
+    }
+    
+    public void setSes(List<Ses> ses) {
+        this.ses = ses;
+    }
 
 	public Integer getFmemId() {
 		return fmemId;

@@ -6,12 +6,16 @@ import java.time.LocalTime;
 
 import com.farmtastic.act.enums.LaunStat;
 import com.farmtastic.act.enums.RegStat;
+import com.farmtastic.act.model.Act;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -62,8 +66,14 @@ public class Ses {
 	@Column(name = "headcount")
 	private Integer headCount = 0;	// 預設0
 
-	@Column(name = "act_id", nullable = false)
+	@Column(name="act_id", insertable=false, updatable=false)
 	private Integer actId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "act_id")  // 對應資料庫的 act_id 欄位
+	private Act act;
+	
+	
 
 	public Integer getSesId() {
 		return sesId;
@@ -125,7 +135,7 @@ public class Ses {
 		return maxPpl;
 	}
 
-	public void setMaxppl(Integer maxPpl) {
+	public void setMaxPpl(Integer maxPpl) {
 		this.maxPpl = maxPpl;
 	}
 
@@ -151,7 +161,7 @@ public class Ses {
 		return sesLaunStat;
 	}
 
-	public void setSesLaunstat(Integer sesLaunStat) {
+	public void setSesLaunStat(Integer sesLaunStat) {
 		this.sesLaunStat = sesLaunStat;
 	}
 
@@ -172,7 +182,7 @@ public class Ses {
 		return sesLaunUpd;
 	}
 
-	public void setSesLaunupd(LocalDateTime sesLaunUpd) {
+	public void setSesLaunUpd(LocalDateTime sesLaunUpd) {
 		this.sesLaunUpd = sesLaunUpd;
 	}
 
@@ -180,7 +190,7 @@ public class Ses {
 		return headCount;
 	}
 
-	public void setHeadcount(Integer headCount) {
+	public void setHeadCount(Integer headCount) {
 		this.headCount = headCount;
 	}
 
