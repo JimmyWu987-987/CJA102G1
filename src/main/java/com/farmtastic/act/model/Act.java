@@ -13,7 +13,6 @@ import com.farmtastic.act.enums.ActStat;
 import com.farmtastic.act.enums.LaunStat;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.ses.model.Ses;
-import com.farmtastic.validator.FileSize;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -104,7 +103,6 @@ public class Act implements java.io.Serializable {
 	
 	@Lob
     @Column(name = "act_mainimg", nullable = false, columnDefinition = "LONGBLOB")
-	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
 	@NotNull(message="必須要有活動主照片")
     private byte[] actMainImg;
 	
@@ -298,8 +296,8 @@ public class Act implements java.io.Serializable {
 	}
 	
 	// 拿上下架狀態文字
-		public String getActLaunStatText() {
-			return LaunStat.getLaunStatDesc(this.actLaunStat);
-		}
+	public String getActLaunStatText() {
+		return LaunStat.getLaunStatDesc(this.actLaunStat);
+	}
 	
 }

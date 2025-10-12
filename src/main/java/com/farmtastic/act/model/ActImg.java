@@ -26,7 +26,6 @@ public class ActImg implements java.io.Serializable {
 	
 	@Lob
 	@Column(name = "act_img", columnDefinition = "LONGBLOB")
-	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
 	private byte[] actImg;
 
 	

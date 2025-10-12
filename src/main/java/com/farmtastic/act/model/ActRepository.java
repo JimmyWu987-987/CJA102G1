@@ -36,6 +36,9 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
                                @Param("actcateId") Integer actcateId,
                                @Param("keyword") String keyword,
                                Sort sort);
+    
+    @Query("SELECT a FROM Act a LEFT JOIN FETCH a.actImg WHERE a.actId = :actId")
+	Act findByActIdWithImgs(@Param("actId") Integer actId);
 
     @Transactional
     @Modifying
