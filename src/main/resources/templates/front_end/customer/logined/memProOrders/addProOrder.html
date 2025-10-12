@@ -5,17 +5,27 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <title>小農商城 - 訂單結帳</title>
+<style>
+.error-input {
+    border: 2px solid red !important;
+    background-color: #fff5f5;
+}
+.error {
+    display: block;
+    margin-top: 5px;
+}
+</style>
 </head>
 <body>
 	<h1>這是一般會員新增訂單的頁面</h1>
-	<span th:text="${session.loggedInMember}"></span><br>
+<!-- 	<span th:text="${session.loggedInMember}"></span><br>
 	<span th:text="${session.memId}"></span><br>
 	<span th:text="${session.memName}"></span><br>
 	<span th:text="${cartToProOrder}"></span><br>
 	<span th:text="${cartToProOrder.memVO}"></span><br>
-	<span th:text="${cartToProOrder.memVO.memPoint}"></span><br>
+	<span th:text="${cartToProOrder.memVO.memPoint}"></span><br> -->
 
-	   <div th:if="${successMessage}" class="success-message">
+	 <div th:if="${successMessage}" class="success-message">
         <p th:text="${successMessage}"></p>
     </div>
     <div th:if="${errorMessage}" class="error-message">
@@ -23,7 +33,7 @@
     </div>
 	
 	
-	<h1>結帳頁面</h1><form method="post" th:action="@{insert}" th:object="${cartToProOrder}" id="orderForm"> 
+	<h1>結帳頁面</h1><form method="post" th:action="@{insert}" th:object="${cartToProOrder}"> 
     
     <input type="hidden" id="destination" name="destination" value="" />
 		
@@ -140,26 +150,72 @@
     		</span>
     		<br>
 		</div>
-		<label>*預設為會員資料</label>
-		<div>
-		<label>收件人姓名</label>
-		<input type="text" th:field="*{proOrdName}"/><br>
-		</div>
 		
-		<div>
-		<label>收件人電話</label>
-		<input type="text" th:field="*{proOrdMobile}"/><br>
-		</div>
-		
-		<div>
-		<label>收件人電子郵件</label>
-		<input type="email" th:field="*{proOrdEmail}"/><br>
-		</div>
-		
-		<div>
-		<label>收件人地址</label>
-		<input type="text" th:field="*{proOrdAddr}"/><br>
-		</div>
+<!-- 在表單內，收件人資訊區塊前添加全局錯誤顯示 -->
+<!-- <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+    <h4>⚠️ 請修正以下錯誤：</h4>
+    <ul>
+        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+    </ul>
+</div> -->
+
+<label>*預設為會員資料</label>
+
+<!-- 收件人姓名 -->
+<div>
+    <label>收件人姓名 <span style="color: red;">*</span></label>
+    <input type="text" 
+           th:field="*{proOrdName}" 
+           th:classappend="${#fields.hasErrors('proOrdName')} ? 'error-input' : ''"
+           placeholder="請輸入收件人姓名"/>
+    <br>
+    <span th:if="${#fields.hasErrors('proOrdName')}" 
+          th:errors="*{proOrdName}" 
+          class="error" 
+          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+</div>
+
+<!-- 收件人電話 -->
+<div>
+    <label>收件人電話 <span style="color: red;">*</span></label>
+    <input type="text" 
+           th:field="*{proOrdMobile}"
+           th:classappend="${#fields.hasErrors('proOrdMobile')} ? 'error-input' : ''"
+           placeholder="範例: 0912-123456"/>
+    <br>
+    <span th:if="${#fields.hasErrors('proOrdMobile')}" 
+          th:errors="*{proOrdMobile}" 
+          class="error"
+          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+</div>
+
+<!-- 收件人電子郵件 -->
+<div>
+    <label>收件人電子郵件 <span style="color: red;">*</span></label>
+    <input type="email" 
+           th:field="*{proOrdEmail}"
+           th:classappend="${#fields.hasErrors('proOrdEmail')} ? 'error-input' : ''"
+           placeholder="請輸入電子郵件"/>
+    <br>
+    <span th:if="${#fields.hasErrors('proOrdEmail')}" 
+          th:errors="*{proOrdEmail}" 
+          class="error"
+          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+</div>
+
+<!-- 收件人地址 -->
+<div>
+    <label>收件人地址 <span style="color: red;">*</span></label>
+    <input type="text" 
+           th:field="*{proOrdAddr}"
+           th:classappend="${#fields.hasErrors('proOrdAddr')} ? 'error-input' : ''"
+           placeholder="請輸入收件地址"/>
+    <br>
+    <span th:if="${#fields.hasErrors('proOrdAddr')}" 
+          th:errors="*{proOrdAddr}" 
+          class="error"
+          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+</div>
 		
 		<div>
 		<button type="submit" id="submitButton"> 送出新增 </button>
@@ -167,131 +223,34 @@
 		
 	</form>
 	
-	<form th:action="@{OrdPointDiscUpdate}" method="post">
+<form th:action="@{OrdPointDiscUpdate}" method="post">
     <div>
         <label>折抵會員點數</label>
         <input type="number" 
                name="proOrdPointdisc" 
-               value="0" 
-               min="0" 
-               th:value="${cartToProOrder.proOrdPointdisc}" 
-               th:max="${cartToProOrder.memVO.memPoint}"/><br>
+               min="0"
+               th:value="${inputPointDisc != null ? inputPointDisc : (cartToProOrder.proOrdPointdisc != null ? cartToProOrder.proOrdPointdisc : 0)}"
+               placeholder="請輸入折抵點數"
                
-        <button type="submit">更新折抵</button>
+               th:classappend="${pointDiscError != null} ? 'error-input' : ''"
+               />
+        <br>
+        
+        <span th:if="${pointDiscError != null}" 
+              th:text="${pointDiscError}" 
+              class="error"
+              style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
     </div>
-	</form>
+    
+    <div>
+        <button type="submit"> 重新計算折抵 </button>
+    </div>
+</form>
 	
 	<form th:action="@{/cart/view}" method="get">
     <div>
         <button type="submit">回購物車</button>
     </div>
 	</form>
-<script>
-/* document.addEventListener('DOMContentLoaded', function() {
-    // 取得所有付款方式的 Radio Button (共用相同的 name: proOrdPayment)
-    const paymentRadios = document.querySelectorAll('input[name="proOrdPayment"]');
-    
-    // 取得物流方式的容器元素
-    const shipmentHomeDelivery = document.getElementById('shipmentHomeDelivery'); // 宅配
-    const shipmentCVS = document.getElementById('shipmentCVS'); // 超商取貨
-
-    // 定義顯示/隱藏的函式
-    function updateShipmentOptions(selectedValue) {
-        // 先隱藏所有選項
-        shipmentHomeDelivery.style.display = 'none';
-        shipmentCVS.style.display = 'none';
-
-        // 確保所有物流 Radio Button 都不被選中 (避免提交錯誤的值)
-        document.getElementById('inputShipmentHome').checked = false;
-        document.getElementById('inputShipmentCVS').checked = false;
-
-
-        // 根據選擇的值決定顯示哪個選項
-        switch (selectedValue) {
-            case '2': // 選擇「2: 貨到付款」
-                // 需求：只顯示「宅配」
-                shipmentHomeDelivery.style.display = 'inline-block';
-                // 超商取貨 (shipmentCVS) 保持隱藏 (因為在函式開頭已經隱藏了)
-                // 自動選中「宅配」
-                document.getElementById('inputShipmentHome').checked = true;
-                break;
-            case '3': // 選擇「3: 超商取貨付款」
-                // 需求：只顯示「超商取貨」
-                shipmentCVS.style.display = 'inline-block';
-                // 自動選中「超商取貨」
-                document.getElementById('inputShipmentCVS').checked = true;
-                break;
-            default: // 選擇其他付款方式 (0:信用卡, 1:轉帳)
-                // 需求：兩個物流選項都顯示
-                shipmentHomeDelivery.style.display = 'inline-block';
-                shipmentCVS.style.display = 'inline-block';
-                document.getElementById('inputShipmentHome').checked = true;
-                break;
-        }
-    }
-
-    // 監聽所有付款 Radio Button 的變化
-    paymentRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            updateShipmentOptions(this.value);
-        });
-    });
-
-    // 頁面載入時執行一次，確保初始狀態正確
-    let initialSelected = document.querySelector('input[name="proOrdPayment"]:checked');
-    if (initialSelected) {
-        updateShipmentOptions(initialSelected.value);
-    } else {
-        // 如果一開始沒有選取任何付款方式，預設顯示所有物流選項
-        shipmentHomeDelivery.style.display = 'inline-block';
-        shipmentCVS.style.display = 'inline-block';
-    }
-}); */
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('orderForm');
-        const submitButton = document.getElementById('submitButton');
-        const destinationInput = document.getElementById('destination');
-
-        // 【關鍵步驟】：監聽按鈕點擊事件，而不是表單提交事件
-        submitButton.addEventListener('click', function(event) {
-            
-            // 1. 阻止按鈕的預設行為（阻止它立即提交表單）
-            event.preventDefault();
-
-            // 2. 彈出 SweetAlert2 視窗
-            Swal.fire({
-                title: '訂單已送出!',
-                text: '接下來您想要...?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: '先結帳 (導向結帳頁)', 
-                cancelButtonText: '先不結帳 (導向查詢頁)',
-                showLoaderOnConfirm: true, 
-                allowOutsideClick: () => !Swal.isLoading() 
-            }).then((result) => {
-                
-                // 3. 根據使用者選擇，設定目標並手動提交
-                if (result.isConfirmed) {
-                    // 使用者點擊「先結帳」
-                    destinationInput.value = 'checkout';
-                    
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    // 使用者點擊「先不結帳」
-                    destinationInput.value = 'query';
-                    
-                } else {
-                    // 點擊外部或按 ESC 關閉，不提交表單。
-                    return;
-                }
-                
-                // 【最重要步驟】：手動觸發表單提交
-                // 因為我們已經移除了 onsubmit 屬性，這次提交將不會被任何 JavaScript 邏輯攔截。
-                form.submit();
-            });
-        });        
-    });
-</script>
 </body>
 </html>

@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,9 +25,9 @@ import com.farmtastic.proorderitem.model.ProOrderItemId;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 import com.farmtastic.shoppingcart.model.ShoppingCartService;
+import com.farmtastic.validator.RegistrationValidation;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/mem/proorders")
@@ -34,7 +36,7 @@ public class ProOrderMemController {
 	// Points Earning Rate 單筆訂單點數回饋
 	// 計算消費商品的總金額(金額不含運費)
 	private final static double POINTS_PER = 0.01;
-	
+
 	// 計算單筆訂單的抽成百分筆
 	private static final double ALLOC_PER = 0.1;
 
@@ -93,8 +95,8 @@ public class ProOrderMemController {
 		// 如果沒有 cartToProOrder (即非從結帳頁面重定向而來)，直接返回至購物車頁面。
 		// 這樣可防止用戶直接訪問此 URL 時發生錯誤
 		if (cartToProOrder == null) {
-	        // 如果沒有暫存訂單，導回購物車頁面
-	        return "redirect:/cart/view";
+			// 如果沒有暫存訂單，導回購物車頁面
+			return "redirect:/cart/view";
 		} else {
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("cartToProOrder", cartToProOrder);
@@ -110,32 +112,58 @@ public class ProOrderMemController {
 	 * 處理訂單最終提交的 POST 請求
 	 */
 	@PostMapping("insert")
-	public String insert(@Valid ProOrderVO proOrderVO,
-			@RequestParam("destination") String destination,
-			BindingResult result,
-			HttpSession session,
-			RedirectAttributes redirectAttributes,
-			ModelMap model) {
+	public String insert(@Validated(RegistrationValidation.class)
+	@ModelAttribute("cartToProOrder")ProOrderVO proOrderVO, 
+	                     BindingResult result,
+	                     HttpSession session, 
+	                     RedirectAttributes redirectAttributes, 
+	                     ModelMap model) {
 
-		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
-		List<ProOrderItemVO> finalItems = finalProOrderVO.getProOrderItems();
-		// 輸入資料的錯誤驗證
-		if (result.hasErrors()) {
-			// 取得所有錯誤的列表
-			List<ObjectError> errors = result.getAllErrors();
-
-			for (ObjectError error : errors) {
-				// 這裡可以讀取錯誤代碼、錯誤訊息等
-				System.out.println(error.getDefaultMessage());
-
-				redirectAttributes.addFlashAttribute("errorMessage", error.getDefaultMessage());
-			}
-			// 如果有錯誤，將原始的 cartToProOrder 和其他必要資料重新傳回頁面
-			model.addAttribute("cartToProOrder", finalProOrderVO);
-			return "forward:/mem/proorders/addProOrder?error";
-			
-		} else {
+	    Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+	    ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
+	    List<ProOrderItemVO> finalItems = finalProOrderVO.getProOrderItems();
+	    
+	    // 🌟 除錯點 1: 檢查是否有驗證錯誤
+	    System.out.println("===== 驗證結果 =====");
+	    System.out.println("是否有錯誤: " + result.hasErrors());
+	    System.out.println("錯誤數量: " + result.getErrorCount());
+	    
+	    if (result.hasErrors()) {
+	        System.out.println("===== 錯誤詳情 =====");
+	        List<ObjectError> errors = result.getAllErrors();
+	        for (ObjectError error : errors) {
+	            System.out.println("欄位: " + error.getObjectName());
+	            System.out.println("錯誤碼: " + error.getCode());
+	            System.out.println("錯誤訊息: " + error.getDefaultMessage());
+	            System.out.println("---");
+	        }
+	        
+	        // 🌟 除錯點 2: 檢查輸入值
+	        System.out.println("===== 輸入值 =====");
+	        System.out.println("姓名: [" + proOrderVO.getProOrdName() + "]");
+	        System.out.println("電話: [" + proOrderVO.getProOrdMobile() + "]");
+	        System.out.println("Email: [" + proOrderVO.getProOrdEmail() + "]");
+	        System.out.println("地址: [" + proOrderVO.getProOrdAddr() + "]");
+	        
+	        // 設置必要欄位
+	        proOrderVO.setProOrderItems(finalItems);
+	        proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
+	        proOrderVO.setProTotal(finalProOrderVO.getProTotal());
+	        proOrderVO.setProOrdShipFee(finalProOrderVO.getProOrdShipFee());
+	        proOrderVO.setProOrdGrandTotal(finalProOrderVO.getProOrdGrandTotal());
+	        proOrderVO.setProOrdPointGet(finalProOrderVO.getProOrdPointGet());
+	        proOrderVO.setProOrdPointdisc(finalProOrderVO.getProOrdPointdisc());
+	        proOrderVO.setProOrdCpndisc(finalProOrderVO.getProOrdCpndisc());
+	        proOrderVO.setMemVO(loggedInMember);
+	        
+	        // 🌟 除錯點 3: 檢查 Model 屬性
+	        model.addAttribute("cartToProOrder", proOrderVO);
+	        System.out.println("===== Model 屬性 =====");
+	        System.out.println("cartToProOrder 已添加到 model");
+	        System.out.println("BindingResult 錯誤數: " + result.getErrorCount());
+	        
+	        return "/front_end/customer/logined/memProOrders/addProOrder";
+	    }  else {
 			// 將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
 			proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
 			proOrderVO.setProOrdCpndisc(
@@ -147,31 +175,31 @@ public class ProOrderMemController {
 					finalProOrderVO.getProOrdPointdisc() != null ? finalProOrderVO.getProOrdPointdisc() : 0);
 			proOrderVO.setProOrdPointGet(
 					finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
-			
+
 			// 訂單狀態
 			proOrderVO.setProOrdStatus(finalProOrderVO.getProOrdStatus());
-			
+
 			// 訂單付款狀態
 			proOrderVO.setProPayStatus(finalProOrderVO.getProPayStatus());
-			
+
 			// 平台撥款狀態，預設為0(未撥款)
-			proOrderVO.setProOrdAllocStatus((byte)0);
-			
+			proOrderVO.setProOrdAllocStatus((byte) 0);
+
 			// 平台抽成金額
 			// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
 			Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
 			proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
-			
+
 			// 平台撥款給小農的金額
 			// 假設運費為小農自行處理，已經扣出金流手續費。
-			// 假設 平台撥款金額 = 商品總金額 - 	平台抽成金額。
+			// 假設 平台撥款金額 = 商品總金額 - 平台抽成金額。
 			Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
 			proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
-			
+
 //		    // 3. 設定關聯和明細
 			proOrderVO.setMemVO(loggedInMember);
 			proOrderVO.setProOrderItems(finalItems);
-			
+
 			// 🌟 關鍵修正 2：在 Controller/Service 確保明細回指主表 **並初始化複合主鍵 (ProId)** 🌟
 			for (ProOrderItemVO item : finalItems) {
 				// 1. 建立雙向關聯：讓每個明細知道它屬於哪個訂單 (proOrdId會在儲存時由JPA處理)
@@ -193,7 +221,7 @@ public class ProOrderMemController {
 
 				// 將設定好 proId 的 ProOrderItemId 設回給 ProOrderItemVO
 				item.setId(id);
-				
+
 			}
 
 			try {
@@ -214,10 +242,10 @@ public class ProOrderMemController {
 			Integer memPointGet = proOrderVO.getProOrdPointGet();
 			Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
 			loggedInMember.setMemPoint(finalMemPoint);
-			
+
 			// 將最終點數結果，存回DB
 			memSvc.updateMem(loggedInMember);
-			
+
 			// 更新網頁會員的session的資料
 			session.setAttribute("loggedInMember", loggedInMember);
 			// ================== 扣商品庫存的邏輯 ======================
@@ -226,109 +254,133 @@ public class ProOrderMemController {
 
 			// 清除 Session 相關屬性
 			session.removeAttribute("cartToProOrder");
-			
+
 			// 清除 該訂單的購物車內容
 			// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
 			// 所以直接找集合內的第一個物件，取出fmemId
-			Integer fmemId = proOrderVO.getProOrderItems()
-					.get(0)
-					.getProductVO()
-					.getFmemVO()
-					.getFmemId();
+			Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemVO().getFmemId();
 			shoppingCartSvc.clearCartByFmemId(fmemId);
-			
+
 			// 重導向到訂單列表頁面
 			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
-			
-			// 未完成，要將送出訂單後要導向信用卡或者linePay
-	        if ("checkout".equals(destination)) {
-	            // 【先結帳】: 導向到結帳/付款頁面，並帶上剛新增的訂單 ID
-	            // 假設您的結帳頁面 URL 為 /mem/proorders/checkoutPage
-	            return "redirect:/"; 
-	            
-	        } else { // 包含 "query" (先不結帳) 或其他任何值
-	            // 【先不結帳】: 導向查詢全部表單畫面 (您原本的列表頁)
-				return "redirect:/mem/proorders/listAllProOrder";
-	        }
-
+			return "redirect:/mem/proorders/listAllProOrder";
 		}
-		
+
 	}
+
+	// ProOrderMemController.java 的修改片段
+
 	// 修改訂單 (處理點數折抵)
 	@PostMapping("OrdPointDiscUpdate")
-	public String update(@RequestParam(name="proOrdPointdisc", required = false) String proOrdPointdisc, HttpSession session,ModelMap model,RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam(name = "proOrdPointdisc", required = false) String proOrdPointdiscStr, // 參數名稱變更，方便驗證
+	                     HttpSession session, 
+	                     ModelMap model, 
+	                     RedirectAttributes redirectAttributes) {
 
-		// proOrdPointdisc 當輸入金額為0或空字串，直接返回
-		if (proOrdPointdisc == null || proOrdPointdisc.trim().isEmpty()) {
+	    // 取得 session 中的必要資訊
+	    ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
+	    Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
+	    
+	    // 預設沒有錯誤
+	    boolean hasError = false;
+	    Integer tempProOrdPointdisc = 0; // 用於儲存有效的點數折抵值
 
-			redirectAttributes.addFlashAttribute("successMessage", "點數折抵沒有更新！"); // 可選：顯示成功訊息
-			return "redirect:addProOrder";
-		} else {
-			
-	        Integer tempProOrdPointdisc = Integer.valueOf(proOrdPointdisc);
-		
+	    if (finalProOrderVO == null) {
+	        // 如果沒有暫存訂單，直接導回購物車
+	        return "redirect:/cart/view";
+	    }
 
-		// 1. 從 Session 取得原始的訂單資訊
-		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
-		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-		
-		if (finalProOrderVO == null) {
-			model.addAttribute("errorMessage", "購物車資訊已遺失，請重新結帳！");
-			return "redirect:/"; // 導回首頁或購物車頁面
-		}
+	    // 將 finalProOrderVO 重新放回 Model，以便在驗證失敗時，其他訂單資訊能被保留
+	    // 雖然這個請求最終是 redirect，但為了在發生錯誤時能直接 return 頁面，我們先放
+	    model.addAttribute("cartToProOrder", finalProOrderVO);
 
-		// 2. 驗證點數折抵值 (防止惡意輸入或超過持有/總額)
-		Integer memPoint = loggedInMember.getMemPoint();
 
-		// (1) 確保折抵點數不超過會員持有總點數
-		if (tempProOrdPointdisc > memPoint) {
-			tempProOrdPointdisc = memPoint; // 限制最多只能折抵會員持有點數
-		}
+	    // 1. 驗證空值/無效輸入
+	    if (proOrdPointdiscStr == null || proOrdPointdiscStr.trim().isEmpty()) {
+	        // 如果為空，我們將其視為 0 折抵，並繼續執行，或您可以選擇添加錯誤
+	        tempProOrdPointdisc = 0;
+	    } else {
+	        try {
+	            tempProOrdPointdisc = Integer.valueOf(proOrdPointdiscStr);
+	        } catch (NumberFormatException e) {
+	            // 處理非數字輸入
+	            model.addAttribute("pointDiscError", "請輸入有效的數字作為折抵點數。");
+	            model.addAttribute("inputPointDisc", proOrdPointdiscStr); // 保留錯誤輸入值
+	            hasError = true;
+	        }
+	    }
+	    
+	    // 如果有格式錯誤，直接返回
+	    if (hasError) {
+	        return "/front_end/customer/logined/memProOrders/addProOrder";
+	    }
+	    
+	    // 2. 驗證點數的邏輯
+	    Integer memPoint = loggedInMember.getMemPoint();
+	    Integer proTotal = finalProOrderVO.getProTotal();
+	    Integer proOrdCpndisc = finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0;
+	    
+	    // 可用來折抵的最高金額 (商品總金額 - 折價券折抵)
+	    Integer maxDiscAmount = proTotal - proOrdCpndisc; 
+	    
+	    // 3. 處理負數、超過持有/超過最高可折抵金額
 
-		// (2) 確保折抵點數轉換的金額不超過「商品總金額」
-		// (商品總金額 + 運費 - 折價券折抵金額)
-		Integer proTotal = finalProOrderVO.getProTotal();
-		Integer proOrdShipFee = finalProOrderVO.getProOrdShipFee() != null ? finalProOrderVO.getProOrdShipFee() : 0;
-		Integer proOrdCpndisc = finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0;
+	    if (tempProOrdPointdisc < 0) {
+	        model.addAttribute("pointDiscError", "折抵點數不能是負數。");
+	        hasError = true;
+	    } else if (tempProOrdPointdisc > memPoint) {
+	        model.addAttribute("pointDiscError", "您的折抵點數 (" + tempProOrdPointdisc + ") 超過您持有的總點數 (" + memPoint + ")。");
+	        hasError = true;
+	    } else if (tempProOrdPointdisc > maxDiscAmount) {
+	        model.addAttribute("pointDiscError", "折抵點數不能超過商品實付總金額 ($" + maxDiscAmount + ")。");
+	        hasError = true;
+	    }
 
-		// 可用來折抵的最高金額 (不含運費、已扣折價券)
-		// 實務上通常點數不能折抵到 0 以下，甚至會限制不能折抵運費
-		Integer maxDiscAmount = proTotal - proOrdCpndisc;
-		Integer maxDiscPoint = maxDiscAmount;
+	    // 如果有邏輯錯誤，返回原頁面
+	    if (hasError) {
+	        // 由於我們是手動返回頁面，必須確保將用戶輸入的值也放回 Model
+	        model.addAttribute("inputPointDisc", tempProOrdPointdisc);
+	        return "/front_end/customer/logined/memProOrders/addProOrder";
+	    }
 
-		if (tempProOrdPointdisc > maxDiscPoint) {
-			tempProOrdPointdisc = maxDiscPoint; // 限制最多只能折抵到商品總額
-		}
+	    // 4. 成功執行 (原有的邏輯)
+	    
+	    // 實際折抵金額 (假設 1 點 = 1 元)
+	    Integer pointDiscountAmount = tempProOrdPointdisc; 
 
-		if (tempProOrdPointdisc < 0) {
-			tempProOrdPointdisc = 0; // 限制最小折抵為 0
-		}
+	    // (1) 更新折抵點數
+	    finalProOrderVO.setProOrdPointdisc(pointDiscountAmount);
 
-		// 3. 計算並更新 ProOrderVO
+	    // (2) 計算新的實付金額 (Grand Total)
+	    Integer proOrdShipFee = finalProOrderVO.getProOrdShipFee() != null ? finalProOrderVO.getProOrdShipFee() : 0;
+	    Integer proOrdGrandTotal = proTotal + proOrdShipFee - proOrdCpndisc - pointDiscountAmount;
+	    finalProOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
 
-		// 實際折抵金額 (假設 1 點 = 1 元)
-		Integer pointDiscountAmount = tempProOrdPointdisc;
+	    // (3) 計算新的回饋點數
+	    Integer proOrdPointGet = (int) (proOrdGrandTotal * 0.01); // 假設 POINTS_PER = 0.01
+	    finalProOrderVO.setProOrdPointGet(proOrdPointGet);
 
-		// (1) 更新折抵點數
-		finalProOrderVO.setProOrdPointdisc(pointDiscountAmount); // ⚠️ 注意：這裡儲存的是「金額」而不是「點數」 (根據您的 VO 命名判斷)
+	    // 5. 將更新後的訂單物件存回 Session
+	    session.setAttribute("cartToProOrder", finalProOrderVO);
 
-		// (2) 計算新的實付金額 (Grand Total)
-		// 實付金額 = 商品總金額 + 運費 - 折價券折抵金額 - 點數折抵金額
-		Integer proOrdGrandTotal = proTotal + proOrdShipFee - proOrdCpndisc - pointDiscountAmount;
-		finalProOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
+	    // 6. 成功重定向
+	    redirectAttributes.addFlashAttribute("successMessage", "點數折抵已更新！");
+	    return "redirect:addProOrder";
+	}
 
-		// (3) 計算新的回饋點數 (通常根據「商品總金額」或「實付金額」計算，這裡假設是根據實付金額)
-		Integer proOrdPointGet = (int) (proOrdGrandTotal * POINTS_PER);
-		finalProOrderVO.setProOrdPointGet(proOrdPointGet);
+	// 確定新增訂單後，選則先付款還是先不付款
+	@PostMapping("doInsert")
+	public String diInsert(@RequestParam("destination") String destination) {
 
-		// 4. 將更新後的訂單物件存回 Session
-		session.setAttribute("cartToProOrder", finalProOrderVO);
+		// 未完成，要將送出訂單後要導向信用卡或者linePay
+		if ("checkout".equals(destination)) {
+			// 【先結帳】: 導向到結帳/付款頁面，並帶上剛新增的訂單 ID
+			// 假設您的結帳頁面 URL 為 /mem/proorders/checkoutPage
+			return "redirect:/";
 
-		// 5. 重定向回新增訂單頁面，讓頁面重新載入並顯示新的計算結果
-		redirectAttributes.addFlashAttribute("successMessage", "點數折抵已更新！"); // 可選：顯示成功訊息
-
-		// 必須使用 GET 重新導向到 addProOrder 才能正確顯示 (因為 addProOrder 是 @GetMapping)
-		return "redirect:addProOrder";
+		} else { // 包含 "query" (先不結帳) 或其他任何值
+			// 【先不結帳】: 導向查詢全部表單畫面 (您原本的列表頁)
+			return "redirect:/mem/proorders/listAllProOrder";
 		}
 	}
 }
