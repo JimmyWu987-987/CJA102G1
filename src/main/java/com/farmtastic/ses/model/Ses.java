@@ -193,7 +193,7 @@ public class Ses {
 	}
 	
 	// 拿報名狀態文字
-	public String getSesStatText() {
+	public String getRegStatText() {
 		return RegStat.getRegStatDesc(this.regStat);
 	}
 	
