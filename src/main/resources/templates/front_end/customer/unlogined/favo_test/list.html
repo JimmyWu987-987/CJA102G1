@@ -24,7 +24,12 @@
 </div>
 <!-- 商品資訊 -->
 <h1>農產品清單</h1>
-
+<!-- 我的收藏清單按鈕 -->
+<div style="margin-bottom: 20px;">
+    <a th:href="@{/mem/favopro/list}">
+        <button type="button">我的收藏清單</button>
+    </a>
+</div>
  <div class="product-list">
         <div th:each="product : ${products}" class="product-card">
             <h3 th:text="${product.proName}">有機蘋果</h3>
