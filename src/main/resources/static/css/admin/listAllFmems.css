@@ -2,6 +2,34 @@
 
 /* *{outline: 1px solid #f00;} */
 
+.container-main{
+	position: relative;
+}
+.back-links{
+	display: inline-block;
+	position: absolute;
+	top: 29px;
+	left: 40px;
+}
+
+a.back-link{
+	display: inline-block;
+	width: 40px;
+	padding: 9px 4px;
+	color: #fff;
+	background-color: #72a0e0;
+	border-radius: 6px;
+	font-size: 18px;
+	text-decoration: none;
+	text-align: center;
+}
+a.back-link:hover{
+	background-color: #4383c9;
+}
+
+
+
+
 .container-main .panel .selectors{
 	min-width: 550px;
 	max-width: 850px;
@@ -43,9 +71,9 @@ td.status-data form{
     line-height: 38px;
     padding-right: 10px;
     padding-left: 10px;
-    border: 1px solid #10401070;
+/*     border: 1px solid #10401070; */
     border-radius: 5px;
-    background-color: #ffffff90;
+/*     background-color: #ffffff90; */
 }
 .status-text input.btn{
 	width: 56px;

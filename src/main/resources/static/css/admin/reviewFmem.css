@@ -16,7 +16,6 @@
     min-width: 768px;
     max-width: 1200px;
 	margin: 12px auto 30px;
-/*     border: 1px solid #a5b3d6; */
     border-radius: 4px;
     text-align: center;
     color: #313f38;
@@ -32,10 +31,49 @@ thead tr{
 	width: 100%;
 	background-color: #c7d3e9;
 	font-size: 26px;
+	position: relative;
 }
 thead tr th{
 	padding: 10px;	
 }
+
+
+
+.back-links{
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	left: 14px;
+	transform: translateY(-50%);
+}
+
+.back-links a.back-link{
+	display: inline-block;
+/* 	width: 100%; */
+	height: 38px;
+	line-height: 26px;
+	padding: 6px 10px;
+	color: #fff;
+	background-color: #72a0e0;
+	border-radius: 6px;
+	font-size: 18px;
+	font-weight: normal;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+	
+}
+.back-links a.back-link:not(:last-of-type){
+	margin-right: 2px;
+}
+.back-links a.back-link:hover{
+	background-color: #4383c9;
+}
+
+
+
+
+
 tbody tr th{
 	width: 124px;
 	padding: 6px 18px;
@@ -94,6 +132,9 @@ form .review-content{
 	
 	display: flex;
 	flex-direction: column;
+	
+	/*********/
+/* 	align-items: center; */
 }
 form .options{
 	display: flex;
@@ -101,12 +142,27 @@ form .options{
 	align-items: center;
 	margin-bottom: 10px;
 }
+/* *{outline: 1px solid #f00;} */
+
+ /* 預設隱藏，審核未過才開 */
+form .desc-options{
+	display: none;
+}
+
+
+
 form .option{
 	width: 130px;
 	padding: 0 8px;
 }
 form .option:last-of-type{
 	padding-right: 0;
+}
+form .option label{
+	cursor: pointer;
+}
+form .option label:hover{
+	color: #c03c03;
 }
 form .option-other{
 /* 	width: 76px; */
@@ -133,7 +189,7 @@ form textarea:focus{
 input.btn{
 	width: 160px;
     padding: 10px;
-    margin: 10px auto 0;
+    margin: 14px auto 0;
     border: none;
     border-radius: 5px;
     color: #fff;

@@ -123,12 +123,18 @@ public class adminMemController {
 			Model model,
 			@RequestParam("fmemId") String fmemId,
 			@RequestParam("accStatus") String accStatus,
-			@RequestParam("accDescText") String accDesc) {
+			@RequestParam(value = "accDesc", required = false) String accDesc,
+			@RequestParam(value = "accDescText", required = false) String accDescText) {
 		
 		Fmem fmem = fmemSvc.getOneByFmemId(Integer.valueOf(fmemId));
 		
 		fmem.setAccStatus(Byte.valueOf(accStatus));
-		fmem.setAccDesc(accDesc);
+		if("其他".equals(accDesc)) {
+			fmem.setAccDesc(accDescText);
+		} else {
+			fmem.setAccDesc(accDesc);
+		}
+		
 		fmemSvc.updateFmem(fmem);
 		return "redirect:/admin/reviewFmems";
 	}

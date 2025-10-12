@@ -15,11 +15,24 @@
 <body>
     
     <div class="container container-table">
+    
+    	
+    	
 		
 		<table class="table table-personal">
 			<thead>
 				<tr class="table-header">
-				    <th colspan="5">後台審核小農會員<span class="status"> 待審核</span></th>
+				    <th colspan="5">
+				    	待審核小農會員
+<!-- 				    	<span class="status"> </span> -->
+				    	
+				    	<div class="back-links">
+				    		<a th:href="@{/admin/}" class="back-link"><i class="fa-solid fa-house"></i></a>
+				           	<a th:href="@{/admin/listAllFmems}" class="back-link">回小農總覽</a>
+				        	<a th:href="@{/admin/reviewFmems}" class="back-link">回前一頁</a>
+				        </div>
+				    
+				    </th>
 				</tr>
 			</thead>
 			<tbody>
@@ -108,9 +121,9 @@
 					  	<label class="" for="incorrect">資料不正確</label>
 					</div>
 					<div class="desc-option option option-other">
-						<input class="" type="radio" name="accDesc" id="other">
+						<input class="" type="radio" name="accDesc" id="other" value="其他">
 					  	<label class="" for="other">其他</label>
-						<textarea name="accDescText" placeholder="請輸入其他內容..." ></textarea>
+						<textarea name="accDescText" placeholder="請輸入其他內容..." disabled></textarea>
 					</div>
 				</div>
 				<input type="submit" class="btn" value="確認送出">
@@ -119,7 +132,7 @@
    
     </div>
 
-<!-- 	<script th:src="@{/js/admin/switchEditMode.js}"></script> -->
+	<script th:src="@{/js/admin/reviewFmem.js}"></script>
 </body>
 </html>
 

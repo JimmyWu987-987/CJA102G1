@@ -34,7 +34,12 @@ CREATE TABLE sty (
 );
 
 INSERT INTO sty (sty_css_path) VALUES
-('/css/sty/storeSty1.css'), ('/css/sty/storeSty2.css'), ('/css/sty/storeSty3.css');
+('/css/sty/storeSty1.css'), 
+('/css/sty/storeSty2.css'), 
+('/css/sty/storeSty3.css'), 
+('/css/sty/storeSty4.css'), 
+('/css/sty/storeSty5.css'), 
+('/css/sty/storeSty6.css');
 
 -- 刪除/建立 小農會員
 DROP TABLE IF EXISTS fmem;
@@ -77,16 +82,27 @@ INSERT INTO fmem (f_id, fmem_acc, fmem_pwd, acc_status, acc_desc, fmem_name, fme
 				   fmem_zipcode, fmem_city, fmem_dist, fmem_addr,  bank_code, bank_acc, reg_date, 
 				   certi_status, fmem_pic, organic_pic, land_pic, insur_pic, store_pic, store_name, store_intro, sty_no, 
 				   mkt_score, mkt_cnt, act_score, act_cnt, rpt_cnt, prod_fee) VALUES
-('H237230756', 'test', '1234', 1, NULL, '王小明', '0912-345678', NULL, 'user001@example.com', '101', '台北市', '中正區', '仁愛路一段100號', '004', '1234567890123456', '2024-05-01 10:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('A182893231', 'test0002', '00000000', 1, NULL, '林小美', '0922-333444', NULL, 'user002@example.com', '102', '新北市', '板橋區', '文化路200號', '822', '2233445566778899', '2024-05-02 11:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('A119254857', 'test0003', '00000000', 1, NULL, '陳大華', '0933-445566', NULL, 'user003@example.com', '103', '台中市', '西屯區', '市政路300號', '700', '3344556677889900', '2024-05-03 12:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('E118270271', 'user004', 'pwd12345', 1, NULL, '張美麗', '0955-667788', NULL, 'user004@example.com', '104', '高雄市', '苓雅區', '光華路88號', '012', '4455667788990011', '2024-05-04 13:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('F133927325', 'user005', 'pwd12345', 0, NULL, '吳志強', '0966-778899', NULL, 'user005@example.com', '221', '台南市', '東區', '東門路199號', '005', '5566778899001122', '2024-05-05 14:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('J179726256', 'user006', 'pwd12345', 2, NULL, '葉志豪', '0977-889900', NULL, 'user006@example.com', '106', '新竹市', '東區', '關新路300號', '822', '6677889900112233', '2024-05-06 15:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('L158944504', 'user007', 'pwd12345', 2, NULL, '簡文君', '0911-222333', NULL, 'user007@example.com', '107', '基隆市', '仁愛區', '忠孝路18號', '004', '7788990011223344', '2024-05-07 16:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('M160270421', 'user008', 'pwd12345', 1, NULL, '朱庭瑜', '0933-777888', NULL, 'user008@example.com', '108', '桃園市', '中壢區', '中山路350號', '012', '8899001122334455', '2024-05-08 17:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('N108676213', 'user009', 'pwd12345', 1, NULL, '劉家豪', '0922-111333', NULL, 'user009@example.com', '109', '宜蘭縣', '宜蘭市', '民權路68號', '700', '9900112233445566', '2024-05-09 18:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-('Q193833164', 'user010', 'pwd12345', 0, NULL, '黃靜怡', '0966-111222', NULL, 'user010@example.com', '100', '花蓮縣', '花蓮市', '和平路88號', '005', '0011223344556677', '2024-05-10 19:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
+('H237230756', 'test', '1234', 2, NULL, '王小明', '0912-345678', '03-29123456', 'user001@example.com', '103', '台北市', '大安區', '仁愛路一段100號', '004', '1234567890123456', '2024-05-01 10:00:00', 0, NULL, NULL, NULL, NULL, NULL, '有機田園', '我們致力提供無毒有機蔬菜，讓您吃得安心健康。', 1, 245, 60, 155, 32, NULL, 90),
+('A182893231', 'test0002', '00000000', 2, NULL, '林小美', '0922-333444', '02-29123456', 'user002@example.com', '406', '台中市', '北屯區', '文化路200號', '822', '22334456778899', '2024-05-02 11:00:00', 0, NULL, NULL, NULL, NULL, NULL, '果園市集', '果園市集堅持新鮮採摘當天配送，給您最自然的好味道。', 2, 200, 43, NULL, NULL, 1, 60),
+('A119254857', 'test0003', '00000000', 2, NULL, '陳大華', '0933-445566', '06-27889911', 'user003@example.com', '600', '嘉義市', '東區', '市政路300號', '700', '3344556889900', '2024-05-03 12:00:00', 0, NULL, NULL, NULL, NULL, NULL, '自然之家', '以自然農法種植，拒絕農藥，打造健康生活。', 3, 60, 16, NULL, NULL, NULL, 120),
+('E118270271', 'user004', 'pwd12345', 2, NULL, '張美麗', '0955-667788', NULL, 'user004@example.com', '300', '新竹市', '東區', '光華路88號', '012', '4455667788990011', '2024-05-04 13:00:00', 0, NULL, NULL, NULL, NULL, NULL, '自然坊', '自然坊致力於打造無添加的蔬果選擇，純粹無毒。', 4, 100, 20, 15, 4, NULL, 100),
+('F133927325', 'user005', 'pwd12345', 2, NULL, '吳志強', '0966-778899', '03-3522334', 'user005@example.com', '802', '高雄市', '苓雅區', '東門路199號', '005', '5578899001122', '2024-05-05 14:00:00', 0, NULL, NULL, NULL, NULL, NULL, '慧君園地', '我們販售無毒栽種的蔬果，希望您吃得安心。', 5, 90, 22, 12, 3, NULL, 30),
+('J179726256', 'user006', 'pwd12345', 2, NULL, '葉志豪', '0977-889900', '02-26543210', 'user006@example.com', '106', '台北市', '大安區', '關新路300號', '822', '6677889900112233', '2024-05-06 15:00:00', 0, NULL, NULL, NULL, NULL, NULL, '柏宏農園', '天然農法、友善土地，我們與自然共生。', 6, 55, 14, 5, 1, NULL, 200),
+('L158944504', 'user007', 'pwd12345', 1, NULL, '簡文君', '0911-222333', NULL, 'user007@example.com', '320', '桃園市', '中壢區', '關新路555號', '004', '7788990344', '2024-05-07 16:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('M160270421', 'user008', 'pwd12345', 0, NULL, '朱庭瑜', '0933-777888', NULL, 'user008@example.com', '320', '桃園市', '中壢區', '中山路350號', '012', '88990011223455', '2024-05-08 17:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('N108676213', 'user009', 'pwd12345', 4, NULL, '劉家豪', '0922-111333', '03-3876543', 'user009@example.com', '701', '台南市', '安平區', '民權路68號', '700', '99001133445566', '2024-05-09 18:00:00', 0, NULL, NULL, NULL, NULL, NULL, '鄉村小鋪', '鄉村小鋪主打純天然的農產品，無添加、無毒，守護您的健康。', 4, 50, 13, 25, 6, NULL, 120),
+('Q193833164', 'user010', 'pwd12345', 3, '資料有缺漏', '黃靜怡', '0966-111222', NULL, 'user010@example.com', '630', '雲林縣', '斗六市', '和平路88號', '005', '001122334455677', '2024-05-10 19:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+
+('B167802934', 'user011', 'pwd12345', 1, NULL, '林冠廷', '0930-123456', NULL, 'user011@example.com', '115', '台北市', '信義區', '信義路五段88號', '812', '12345678912411', '2024-05-11 10:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL),
+('C138927483', 'user012', 'pwd12345', 2, NULL, '張語心', '0988-223344', NULL, 'user012@example.com', '320', '桃園市', '桃園區', '中正路123號', '700', '9988776433220', '2024-05-12 11:00:00', 0, NULL, NULL, NULL, NULL, NULL, '禾田農莊', '我們堅持自然農法，用心耕耘每一寸土地。', 2, 480, 115, 87, 20, 2, 60),
+('D189273645', 'user013', 'pwd12345', 2, NULL, '周子洋', '0911-556677', '06-2678990', 'user013@example.com', '700', '台南市', '北區', '開元路1號', '005', '445566778890000', '2024-05-13 12:00:00', 0, NULL, NULL, NULL, NULL, NULL, '農鮮市集', '農鮮市集專營在地小農產品，讓您吃出健康與安心。', 5, 162, 33, 101, 23, NULL, 120),
+('E145987231', 'user014', 'pwd12345', 1, NULL, '黃柏睿', '0922-778899', '04-22334455', 'user014@example.com', '403', '台中市', '北屯區', '昌平路二段200號', '012', '3344577889911', '2024-05-14 13:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('F176543219', 'user015', 'pwd12345', 3, '資料有缺漏', '陳姿妤', '0900-112233', '07-5511223', 'user015@example.com', '800', '高雄市', '三民區', '建工路188號', '822', '112455667788', '2024-05-15 14:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('G133648294', 'user016', 'pwd12345', 3, '資料不正確', '賴政文', '0966-889977', NULL, 'user016@example.com', '114', '台北市', '內湖區', '成功路四段50號', '004', '7788990011223344', '2024-05-16 15:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('H178234981', 'user017', 'pwd12345', 4, NULL, '吳書宏', '0977-112244', '05-22334455', 'user017@example.com', '600', '嘉義市', '西區', '文化路二段320號', '700', '9988776655443311', '2024-05-17 16:00:00', 0, NULL, NULL, NULL, NULL, NULL, '愛鄉有機', '愛鄉有機以守護土地為理念，提供最純粹的農產品。', 6, 5, 1, NULL, NULL, 5, 100),
+('I192837465', 'user018', 'pwd12345', 0, NULL, '曾雅婷', '0933-667788', NULL, 'user018@example.com', '302', '新竹縣', '竹北市', '縣政二路20號', '822', '12344321121', '2024-05-18 17:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('J203948576', 'user019', 'pwd12345', 1, NULL, '簡詠恩', '0955-334455', '02-22119988', 'user019@example.com', '220', '新北市', '板橋區', '新海路66號', '005', '6900112233', '2024-05-19 18:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+('K209384756', 'user020', 'pwd12345', 0, NULL, '徐宏文', '0911-889900', NULL, 'user020@example.com', '701', '台南市', '東區', '中華東路一段1號', '012', '1122490011', '2024-05-20 19:00:00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- 設定區分大小寫 (登入才會辨識大小寫)
 ALTER TABLE fmem
