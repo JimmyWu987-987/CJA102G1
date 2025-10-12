@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
@@ -19,6 +20,8 @@ import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/admin/cashflow")
@@ -37,10 +40,6 @@ public class ProOrderAdminController {
 	// 金流管理首頁
 	@GetMapping("/")
 	public String index(Model model) {
-		
-		// 取該全部小農會員的id
-		List<Fmem> fmemList = fmemSvc.getAll();
-		model.addAttribute("fmemList", fmemList);
 		
 		return "/back_end/logined/cash_flow/index.html";
 	}
@@ -95,9 +94,28 @@ public class ProOrderAdminController {
 		}
 	}
 	
+	// 金流系統首頁導向搜尋商品訂單的功能
+	@PostMapping("fmemProOrder")
+	public String cashFlowIndexToSelectFmemProOrder(ModelMap model) {
+		
+		model.addAttribute("fmemProOrder", "fmemProOrder");
+		
+		// 取該全部小農會員的id
+		List<Fmem> fmemList = fmemSvc.getAll();
+		model.addAttribute("fmemList", fmemList);
+		
+		return "/back_end/logined/cash_flow/index.html";
+	}
+	
 	// 搜尋該小農的全部訂單
 	@PostMapping("selectFmemProOrder")
-	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, ModelMap model) {
+	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, 
+			ModelMap model,
+			HttpSession session) {
+		
+		
+		// 維持金流系統首頁是商品分支
+		model.addAttribute("fmemProOrder", "fmemProOrder");
 		
 		// 取該小農全部的訂單
 		List<FmemOrderSummary> proOrderList = proOrdSvc.getAllByFmemId(fmemId);
@@ -107,13 +125,12 @@ public class ProOrderAdminController {
 		Optional<Fmem> fmemOptional = fmemSvc.getOneByFmemId(fmemId);
 		Fmem fmem = fmemOptional.orElse(new Fmem());
 		model.addAttribute("fmemName", fmem.getFmemName());
+		session.setAttribute("fmemId", fmem.getFmemId());
 		
-		// 取該全部小農會員的id
+		// 取該全部小農會員的id，給搜尋特定小農用。
 		List<Fmem> fmemList = fmemSvc.getAll();
 		model.addAttribute("fmemList", fmemList);
 		
-	
-
 		
 		return "/back_end/logined/cash_flow/index.html";
 	}

@@ -99,9 +99,9 @@
                     
 
       
-                    	<form method="get" th:action="@{/admin/cashflow/listAllProOrder}">
+                    	<form method="post" th:action="@{/admin/cashflow/selectFmemProOrder}">
                     		<input type="submit" value="回上一頁">
-                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+                    		<input type="hidden" name="fmemId" th:value="${session.fmemId}">
                     	</form>
 
     </div>
