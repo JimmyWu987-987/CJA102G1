@@ -15,6 +15,7 @@ public class MemLoginConfig implements WebMvcConfigurer {
 				.addPathPatterns(
 						"/mem/memArea/**", 
 						"/mem/proorders/**",
+						"/mem/favopro/**" ,
 						"/cart/checkoutByFmemId");
 //				.excludePathPatterns(
 //						"/mem/showMemRegLoginForm",
