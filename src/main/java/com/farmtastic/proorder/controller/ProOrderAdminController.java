@@ -125,8 +125,7 @@ public class ProOrderAdminController {
 		model.addAttribute("proOrderList", proOrderList);
 		
 		// 取該小農的姓名
-		Optional<Fmem> fmemOptional = fmemSvc.getOneByFmemId(fmemId);
-		Fmem fmem = fmemOptional.orElse(new Fmem());
+		Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
 		model.addAttribute("fmemName", fmem.getFmemName());
 		
 		// 進入詳細資料，按下回上一頁，保持列表為該小農的商品訂單列表
