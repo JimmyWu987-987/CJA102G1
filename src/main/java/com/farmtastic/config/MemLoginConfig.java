@@ -11,17 +11,8 @@ public class MemLoginConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-<<<<<<< Upstream, based on branch 'develop' of https://github.com/JimmyWu987-987/CJA102G1.git
-		registry.addInterceptor(new MemLoginInterceptor())
-				.addPathPatterns(
-						"/mem/memArea/**", 
-						"/mem/proorders/**",
-						"/mem/favopro/**" ,
-						"/cart/checkoutByFmemId");
-=======
 		registry.addInterceptor(new MemLoginInterceptor()).addPathPatterns("/mem/memArea/**", "/mem/proorders/**",
-				"/cart/checkoutByFmemId");
->>>>>>> 6945c41 攔截更新
+				"/mem/favopro/**", "/mem/memprocpn/**", "/cart/checkoutByFmemId");
 //				.excludePathPatterns(
 //						"/mem/showMemRegLoginForm",
 //						"/mem/forgetPasswordPage",
