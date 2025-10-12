@@ -268,8 +268,6 @@ public class ProOrderMemController {
 
 	}
 
-	// ProOrderMemController.java 的修改片段
-
 	// 修改訂單 (處理點數折抵)
 	@PostMapping("OrdPointDiscUpdate")
 	public String update(@RequestParam(name = "proOrdPointdisc", required = false) String proOrdPointdiscStr, // 參數名稱變更，方便驗證
@@ -357,7 +355,7 @@ public class ProOrderMemController {
 	    finalProOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
 
 	    // (3) 計算新的回饋點數
-	    Integer proOrdPointGet = (int) (proOrdGrandTotal * 0.01); // 假設 POINTS_PER = 0.01
+	    Integer proOrdPointGet = (int) (proOrdGrandTotal * POINTS_PER);
 	    finalProOrderVO.setProOrdPointGet(proOrdPointGet);
 
 	    // 5. 將更新後的訂單物件存回 Session
