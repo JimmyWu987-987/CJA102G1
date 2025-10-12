@@ -24,7 +24,7 @@ import jakarta.validation.constraints.Min;
 //import org.hibernate.validator.constraints.NotEmpty;
 import jakarta.validation.constraints.NotEmpty;
 
-@Data
+//@Data
 @Entity
 @Table(name = "product")
 public class Pro implements java.io.Serializable {
@@ -98,6 +98,102 @@ public class Pro implements java.io.Serializable {
 		this.proDes = proDes;
 	}
 
+	public Integer getProId() {
+		return proId;
+	}
 
+	public void setProId(Integer proId) {
+		this.proId = proId;
+	}
+
+	public String getProName() {
+		return proName;
+	}
+
+	public void setProName(String proName) {
+		this.proName = proName;
+	}
+
+	public Integer getProStock() {
+		return proStock;
+	}
+
+	public void setProStock(Integer proStock) {
+		this.proStock = proStock;
+	}
+
+	public Integer getProPrice() {
+		return proPrice;
+	}
+
+	public void setProPrice(Integer proPrice) {
+		this.proPrice = proPrice;
+	}
+
+	public Integer getProStatus() {
+		return proStatus;
+	}
+
+	public void setProStatus(Integer proStatus) {
+		this.proStatus = proStatus;
+	}
+
+	public Integer getProScore() {
+		return proScore;
+	}
+
+	public void setProScore(Integer proScore) {
+		this.proScore = proScore;
+	}
+
+	public Integer getProCnt() {
+		return proCnt;
+	}
+
+	public void setProCnt(Integer proCnt) {
+		this.proCnt = proCnt;
+	}
+
+	public String getProFrom() {
+		return proFrom;
+	}
+
+	public void setProFrom(String proFrom) {
+		this.proFrom = proFrom;
+	}
+
+	public String getProDes() {
+		return proDes;
+	}
+
+	public void setProDes(String proDes) {
+		this.proDes = proDes;
+	}
+
+	public Fmem getFmemId() {
+		return fmemId;
+	}
+
+	public void setFmemId(Fmem fmemId) {
+		this.fmemId = fmemId;
+	}
+
+	public Procate getProcateId() {
+		return procateId;
+	}
+
+	public void setProcateId(Procate procateId) {
+		this.procateId = procateId;
+	}
+
+	public ProImage getProImage() {
+		return proImage;
+	}
+
+	public void setProImage(ProImage proImage) {
+		this.proImage = proImage;
+	}
+
+	
 	
 }
