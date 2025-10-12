@@ -293,9 +293,7 @@ public class ShoppingCartService implements Serializable {
 
 		// 計算運費金額
 		// 這邊要寫一個fmem的service的方法
-		Optional<Fmem> fmemOptional = fmemSvc.getOneByFmemId(fmemId);
-		// 如果 Optional 包含 Fmem，則取出它；否則，建立並使用一個新的 Fmem() 物件作為預設值。
-		Fmem fmem = fmemOptional.orElse(new Fmem());
+		Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
 		// 查詢小農的運費
 		Integer prodFee = fmem.getProdFee();
 		// 判斷運費欄位是否為null
