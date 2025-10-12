@@ -26,7 +26,7 @@ public enum RegStat {
     
 	public static String getRegStatDesc(Integer code) {
 		if (code == null) return "";
-		for (ActStat status : ActStat.values()) {
+		for (RegStat status : RegStat.values()) {
 			if (Integer.valueOf(status.getCode()).equals(code)) {
 				return status.getDesc();
 			}
