@@ -11,6 +11,7 @@ import com.farmtastic.shoppingcart.model.ProductRepository;
 import jakarta.transaction.Transactional;
 
 @Service("favoProService")
+@Transactional
 public class FavoProServiceImp {
 	@Autowired
 	FavoProRepository favoRepository;
@@ -24,6 +25,7 @@ public class FavoProServiceImp {
 	// 新增收藏
 	public void addFavoPro(Integer memId, Integer proId) {
 		FavoProId favoProId = new FavoProId(memId, proId);
+
 		if (favoRepository.existsById(favoProId)) {
 			throw new IllegalStateException("該會員已收藏此商品");
 		}
@@ -35,7 +37,6 @@ public class FavoProServiceImp {
 	}
 
 	// 取消收藏
-	@Transactional
 	public void removeFavoPro(Integer memId, Integer proId) {
 		FavoProId id = new FavoProId(memId, proId);
 		if (!favoRepository.existsById(id)) {

@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.farmtastic.favopro.model.FavoProServiceImp;
 import com.farmtastic.member.model.Mem;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -19,18 +20,13 @@ public class FavoProController {
 	FavoProServiceImp favoProSvc;
 
 	@PostMapping("/add")
-	public String addFavorite(@RequestParam Integer proId, HttpSession session, RedirectAttributes redirectAttributes) {
-		// 從 Session 取出登入會員 檢查是否登入
+	public String addFavorite(@RequestParam Integer proId, HttpServletRequest request, HttpSession session,
+			RedirectAttributes redirectAttributes) {
+		// 1.取得登入會員
 		Mem loginUser = (Mem) session.getAttribute("loggedInMember");
-		if (loginUser == null) {
-			redirectAttributes.addFlashAttribute("message", "請先登入會員才能收藏商品！");
-			return "redirect:/mem/showMemRegLoginForm";
-		}
-		// 已登入 → 執行收藏流程
 		Integer memId = loginUser.getMemId();
-
+		// 2️.呼叫 Service 新增收藏
 		try {
-			// 檢查是否已收藏
 			if (favoProSvc.isFavorite(memId, proId)) {
 				redirectAttributes.addFlashAttribute("message", "該商品已收藏");
 			} else {
@@ -39,11 +35,31 @@ public class FavoProController {
 			}
 			;
 			// 回到商品詳情頁(不是正確的頁面)
-			// return "frontend/logoned/product/product_detail";
-			return "redirect:/frontend/logoned/product_test/detail?proId=" + proId;
+			// 3.重導回收藏清單頁
+			return "redirect:/favo/products/list";
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("message", "收藏失敗：" + e.getMessage());
-			return "frontend/error_page";
+			return "redirect:/favo/products/list";
 		}
+	}
+
+	@PostMapping("/remove")
+	public String removeFavorite(@RequestParam Integer proId, HttpSession session,
+			RedirectAttributes redirectAttributes) {
+		// 1.取得登入會員
+		Mem loginUser = (Mem) session.getAttribute("loggedInMember");
+		Integer memId = loginUser.getMemId();
+		// 2️.呼叫 Service 刪除收藏
+		try {
+			favoProSvc.removeFavoPro(memId, proId);
+			redirectAttributes.addFlashAttribute("message", "已從收藏中移除！");
+		} catch (IllegalArgumentException e) {
+			redirectAttributes.addFlashAttribute("message", "收藏不存在或已被刪除。");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("message", "移除收藏時發生錯誤：" + e.getMessage());
+		}
+
+		// 3.重導回收藏清單頁
+		return "redirect:/favo/products/list";
 	}
 }
