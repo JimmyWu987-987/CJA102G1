@@ -81,14 +81,13 @@
                 <td th:text="${c.discValue}"></td>
                 <td th:text="${c.minSpend != null ? c.minSpend : '-'}"></td>
                 <td>
-                    <span class="scope-badge" th:text="${c.applScopeText}"></span>
+                    <span class="scope-badge" th:text="${c.applScope.text}"></span>
                 </td>
                 <td th:text="${c.startDate != null ? c.startDate : '-'}"></td>
                 <td th:text="${c.validDays != null ? c.validDays + ' 天' : '-'}"></td>
                 <td th:text="${c.expDate != null ? c.expDate : '-'}"></td>
                 <td>
-                    <span th:text="${c.statusText}"
-                          th:classappend="${c.isActive == 'ACTIVE'} ? 'status-active' : 'status-inactive'"></span>
+                    <span th:text="${c.isActive.text}"></span>
                 </td>
                 <td th:text="${c.crtAt}"></td>
                 <td>

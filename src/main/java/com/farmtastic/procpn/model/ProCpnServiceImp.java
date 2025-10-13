@@ -56,9 +56,13 @@ public class ProCpnServiceImp implements ProCpnService {
 
 	// 單筆查詢
 	@Override
-	public Optional<ProCpnAdminDTO> getById(Integer proCpnId) {
-		// (vo) -> mapper.toResponseDTO(vo)
-		return repository.findById(proCpnId).map(mapper::toAdminDTO);
+//	public Optional<ProCpnAdminDTO> getById(Integer proCpnId) {
+//		// (vo) -> mapper.toResponseDTO(vo)
+//		return repository.findById(proCpnId).map(mapper::toAdminDTO);
+//	}
+	// 單筆查詢
+	public Optional<ProCpnVO> getById(Integer proCpnId) {
+		return repository.findById(proCpnId);
 	}
 
 	// 查啟用券

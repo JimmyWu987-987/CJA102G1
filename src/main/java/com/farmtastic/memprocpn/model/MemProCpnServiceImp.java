@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.common.mapper.MemProCpnMapperImp;
 import com.farmtastic.member.model.Mem;
@@ -36,6 +37,22 @@ public class MemProCpnServiceImp {
 		memProCpnRepository.save(memProCpnVO);
 	}
 
+//修改卷狀態
+	// proCpnId 前端購物車選的折價券
+	public void changeMemProCpnStatus(Integer memId, Integer cpnHolderDetailId) {
+		// 查出這筆券
+		MemProCpnVO vo = memProCpnRepository.findByMemVO_MemIdAndProCpnVO_ProCpnId(memId, cpnHolderDetailId)
+				.orElseThrow(() -> new RuntimeException("找不到會員折價券記錄"));
+
+		// 更新使用狀態
+		vo.setCpnUseStatus(CpnUseStatus.USED); // 1 = 已使用
+		// vo.setProOrdVO(orderVO); // 綁定訂單
+		vo.setUsedAt(LocalDateTime.now()); // 使用時間
+
+		// 儲存更新
+		memProCpnRepository.save(vo);
+	}
+
 	// 查全部
 	public List<MemProCpnVO> getAll() {
 		return memProCpnRepository.findAll();
@@ -47,6 +64,12 @@ public class MemProCpnServiceImp {
 //    public List<MemProCpnVO> getCouponsByMember(Integer memId) {
 //        return memProCpnRepo.findByMemVO_MemIdOrderByCrtAtDesc(memId);
 //    }
+
+	// 查「某會員」所有效折價券
+	public List<MemProCpnVO> getCpnsByMember(Integer memId) {
+		return memProCpnRepository.findAllByMember(memId);
+	}
+
 	// 查「某會員」未使用且有效折價券
 	public List<MemProCpnVO> getValidCpnsByMember(Integer memId) {
 		return memProCpnRepository.findValidCpnByMember(memId);
@@ -61,23 +84,23 @@ public class MemProCpnServiceImp {
 		Mem mem = memRepository.findById(memId).orElseThrow(() -> new RuntimeException("找不到該會員：" + memId));
 
 		// ✅ 建立會員折價券關聯紀錄
-		MemProCpnVO memCpn = new MemProCpnVO();
-		memCpn.setMemVO(mem);
-		memCpn.setProCpnVO(coupon);
-		memCpn.setCpnUseStatus((byte) 0); // 0=未使用
-		memCpn.setRcvAt(LocalDateTime.now());
-		memCpn.setCrtAt(LocalDateTime.now());
-		memCpn.setEffStart(LocalDate.now());
+		MemProCpnVO memProCpn = new MemProCpnVO();
+		memProCpn.setMemVO(mem);
+		memProCpn.setProCpnVO(coupon);
+		memProCpn.setCpnUseStatus(CpnUseStatus.UNUSED); // 0=未使用
+		memProCpn.setRcvAt(LocalDateTime.now());
+		memProCpn.setCrtAt(LocalDateTime.now());
+		memProCpn.setEffStart(LocalDate.now());
 
 		// 設定有效期限（用 valid_days）
 		if (coupon.getValidDays() != null) {
-			memCpn.setEffEnd(LocalDate.now().plusDays(coupon.getValidDays()));
+			memProCpn.setEffEnd(LocalDate.now().plusDays(coupon.getValidDays()));
 		} else {
-			memCpn.setEffEnd(LocalDate.now().plusDays(30)); // 沒設定就給預設30天
+			memProCpn.setEffEnd(LocalDate.now().plusDays(30)); // 沒設定就給預設30天
 		}
 
 		// ✅ 儲存
-		memProCpnRepository.save(memCpn);
+		memProCpnRepository.save(memProCpn);
 	}
 
 //發放生日折價券（每天執行）	

@@ -3,6 +3,7 @@ package com.farmtastic.procpn.model;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import com.farmtastic.common.converter.EnumConverters;
 import com.farmtastic.common.enums.ApplScope;
@@ -16,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -187,4 +189,15 @@ public class ProCpnVO implements java.io.Serializable {
 				+ ", cpnDesc=" + cpnDesc + ", isActive=" + isActive + ", crtAt=" + crtAt + ", applScope=" + applScope
 				+ "]";
 	}
+
+	@Transient
+	public java.sql.Date getExpDate() {
+		if (startDate == null || validDays == null)
+			return null;
+
+		// 把 Date 轉成 LocalDate 加天數後再轉回 Date
+		LocalDate exp = startDate.toLocalDate().plusDays(validDays);
+		return java.sql.Date.valueOf(exp);
+	}
+
 }

@@ -5,11 +5,11 @@ public enum DiscountType implements PersistableEnum<Byte> {
 	FULL_REDUCTION((byte) 0, "滿額折抵"), PERCENTAGE((byte) 1, "百分比折扣");
 
 	private final byte code; // 資料庫代碼
-	private final String label; // 中文顯示文字
+	private final String text; // 中文顯示文字
 
-	DiscountType(byte code, String label) {
+	DiscountType(byte code, String text) {
 		this.code = code;
-		this.label = label;
+		this.text = text;
 	}
 
 	@Override
@@ -17,8 +17,8 @@ public enum DiscountType implements PersistableEnum<Byte> {
 		return code;
 	}
 
-	public String getLabel() {
-		return label;
+	public String getText() {
+		return text;
 	}
 
 	public static DiscountType fromCode(Byte code) {

@@ -22,7 +22,8 @@ public interface ProCpnService {
 
 	void changeProCpnStatus(Integer proCpnId, IsActive status);// 改變卷狀態
 
-	Optional<ProCpnAdminDTO> getById(Integer id); // 查單一折價券 (DTO)
+	// Optional<ProCpnAdminDTO> getById(Integer id); // 查單一折價券 (DTO)
+	public Optional<ProCpnVO> getById(Integer proCpnId);
 
 	List<ProCpnAdminDTO> searchProCpnByName(String keyword);// 名稱模糊搜尋
 

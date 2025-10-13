@@ -23,13 +23,13 @@ public class MemProCpnFrontendController {
 	/**
 	 * 會員查看自己的折價券列表
 	 */
-	@GetMapping("/coupons")
+	@GetMapping("/list")
 	public String viewMyCoupons(HttpSession session, Model model) {
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		Integer memId = loggedInMember.getMemId();
 
 		// 查詢該會員所有折價券
-		List<MemProCpnVO> coupons = memProCpnSvc.getValidCpnsByMember(memId);
+		List<MemProCpnVO> coupons = memProCpnSvc.getCpnsByMember(memId);
 
 		model.addAttribute("member", loggedInMember);
 		model.addAttribute("coupons", coupons);

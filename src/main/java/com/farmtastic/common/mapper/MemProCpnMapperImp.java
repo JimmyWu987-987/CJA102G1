@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
+import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.memprocpn.dto.MemProCpnFormDTO;
 import com.farmtastic.memprocpn.model.MemProCpnVO;
@@ -52,7 +53,7 @@ public class MemProCpnMapperImp {
 		proCpn.setProCpnId(dto.getProCpnId());
 		vo.setProCpnVO(proCpn);
 
-		vo.setCpnUseStatus((byte) 0);// 要改成Enum
+		vo.setCpnUseStatus(CpnUseStatus.UNUSED);// 要改成Enum
 		vo.setCrtAt(LocalDateTime.now());
 		vo.setRcvAt(LocalDateTime.now());
 		vo.setEffStart(dto.getEffStart());
