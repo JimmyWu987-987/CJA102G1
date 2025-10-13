@@ -32,9 +32,46 @@ window.addEventListener('load', function(){
 		if(e.key === "Enter") fuzzySearch(); //按enter = 搜尋
 	})
 
+//	後台管理總覽 更改帳號狀態前 跳出alert視窗
+	let fmemForms = document.querySelectorAll(".fmemForm");
+	if(fmemForms){
+		fmemForms.forEach(fmemForm => {
+			 fmemForm.addEventListener('submit', showAlert);
+		})
+	}
+	
+	let memForms = document.querySelectorAll(".memForm");
+	if(memForms){
+		memForms.forEach(memForm => {
+			 memForm.addEventListener('submit', showAlert);
+		})
+	}
 })
 
 
+function showAlert(e) {
+    e.preventDefault();
+    Swal.fire({
+        title: '確定更改帳號狀態',
+		text: '送出後系統會自動發送email通知會員',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+		customClass: {
+			icon: 'custom-icon',
+		    popup: 'custom-swal',
+		    title: 'custom-swal-title',
+		    htmlContainer: 'custom-swal-content',
+		    confirmButton: 'custom-swal-confirm',
+		    cancelButton: 'custom-swal-cancel'
+		}
+    }).then((result) => {
+        if (result.isConfirmed) {
+            e.target.submit(); // 使用者點確認再送出表單
+        }
+    });
+}
 
 
 function switchEditMode(){

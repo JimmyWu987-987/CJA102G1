@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一般會員資料</title>
+    <title>小農會員資料</title>
     <link rel="icon" href="./images/logo.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -95,7 +95,7 @@
 		
 		<div id="img-display"></div>
 		
-		<form method="post" th:action="@{/admin/decideAccReview}" class="review">
+		<form method="post" th:action="@{/admin/decideAccReview}" class="review" id="review">
 			<div class="review-content">
 				<input type="hidden" name="fmemId" th:value="${fmem.fmemId}">
 				
@@ -132,7 +132,8 @@
 		</form>
    
     </div>
-
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script th:src="@{/js/admin/reviewFmem.js}"></script>
 </body>
 </html>

@@ -35,8 +35,8 @@ public class FmemService {
 		}
 		
 		return fmem;
-		
 	}
+	
 	
 	public boolean existsByFmemAcc(String fmemAcc) {
 		return repository.findByFmemAcc(fmemAcc) != null;
@@ -50,13 +50,6 @@ public class FmemService {
 		return repository.findByFid(fId) != null;
 	}
 	
-//	public void register(String fmemAcc) {
-//		Fmem fmem = repository.findByFmemAcc(fmemAcc);
-//		if(fmem != null) {
-//			throw new IllegalStateException("此帳號已有人註冊過");
-//		}
-//		
-//	}
 
 	public Fmem forgetPassword(String fmemMobile, String fmemEmail) {
 		Fmem fmem = repository.findByFmemMobile(fmemMobile);
@@ -68,8 +61,8 @@ public class FmemService {
 			return null;
 		}
 		
-		if (fmem.getAccStatus() != 1) {
-			throw new IllegalStateException("帳號尚未開通或已被停權");
+		if ((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
+			System.out.println("fmem.getAccStatus()"+ fmem.getAccStatus());
 		}
 		
 		return fmem;
@@ -102,4 +95,5 @@ public class FmemService {
 			repository.save(fmem);
 		}
 	}
+	
 }

@@ -1,4 +1,6 @@
 
+
+
 window.addEventListener('load', function(){
 	
 	const statusRadios = document.querySelectorAll('.status-option input');
@@ -15,7 +17,37 @@ window.addEventListener('load', function(){
 	imgNails.forEach(imgNail => {
 	    imgNail.addEventListener('click', previewImage);
 	})
+	
+	//送出表單前確認alert
+	document.querySelector("#review").addEventListener("submit", showAlert);
 })
+
+
+function showAlert(e) {
+    e.preventDefault(); // 先不要真的送出
+    Swal.fire({
+        title: '送出審核結果',
+		text: '送出後系統會自動發送email通知小農審核結果',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '確認送出',
+        cancelButtonText: '取消',
+		customClass: {
+			icon: 'custom-icon',
+		    popup: 'custom-swal',
+		    title: 'custom-swal-title',
+		    htmlContainer: 'custom-swal-content',
+		    confirmButton: 'custom-swal-confirm',
+		    cancelButton: 'custom-swal-cancel'
+		}
+    }).then((result) => {
+        if (result.isConfirmed) {
+            e.target.submit(); // 使用者點確認再送出表單
+        }
+    });
+}
+
+
 
 function showDescRadios(e){
 //	console.log(e.target);

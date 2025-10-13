@@ -27,6 +27,7 @@ import jakarta.validation.constraints.Pattern;
 @Table(name = "mem")
 @PasswordMatches(groups = {RegistrationValidation.class, UpdatePasswordValidation.class}) // 只在註冊時驗證
 public class Mem implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

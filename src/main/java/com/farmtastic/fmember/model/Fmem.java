@@ -27,7 +27,8 @@ import jakarta.validation.constraints.Pattern;
 @Table(name = "fmem")
 @FmemPasswordMatches(groups = {RegistrationValidation.class, UpdatePasswordValidation.class})
 public class Fmem implements Serializable {
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "fmem_id", updatable = false)
