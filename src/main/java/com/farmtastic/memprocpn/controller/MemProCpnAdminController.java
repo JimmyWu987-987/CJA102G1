@@ -1,5 +1,7 @@
 package com.farmtastic.memprocpn.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,10 +47,18 @@ public class MemProCpnAdminController {
 		return "redirect:/admin/procpn/listAllProCpn"; // 新增後回列表
 	}
 
+	@GetMapping("listAllMemProCpn")
+	public String listAll(Model model) {
+		List<MemProCpnVO> list = memProCpnSvc.getAll();
+		model.addAttribute("list", list);
+		return "/back_end/logined/memprocpn/listAllMemProCpn";
+	}
+
 	@GetMapping("/listValidByMember")
 	// 查「某會員」未使用且有效折價券
 	public String listValidCpn(@RequestParam Integer memId, Model model) {
 		model.addAttribute("coupons", memProCpnSvc.getValidCpnsByMember(memId));
 		return "/back_end/logined/memprocpn/listValidByMember";
 	}
+
 }

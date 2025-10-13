@@ -8,21 +8,17 @@ import com.farmtastic.member.interceptor.MemLoginInterceptor;
 
 @Configuration
 public class MemLoginConfig implements WebMvcConfigurer {
-	
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new MemLoginInterceptor())
-				.addPathPatterns(
-						"/mem/memArea/**", 
-						"/mem/proorders/**",
-						"/cart/checkoutByFmemId");
+		registry.addInterceptor(new MemLoginInterceptor()).addPathPatterns("/mem/memArea/**", "/mem/proorders/**",
+				"/mem/favopro/**", "/mem/memprocpn/**", "/cart/checkoutByFmemId");
 //				.excludePathPatterns(
 //						"/mem/showMemRegLoginForm",
 //						"/mem/forgetPasswordPage",
 //						"/mem/resetPasswordPage");
 	}
 }
-
 
 //@GetMapping("/showMemRegLoginForm")
 //@PostMapping("/register")
@@ -34,11 +30,11 @@ public class MemLoginConfig implements WebMvcConfigurer {
 //@PostMapping("/login")
 //	
 //@PostMapping("/logout")
-							//@GetMapping("/toMemArea")
+// @GetMapping("/toMemArea")
 //@GetMapping("/memArea")
-							//@GetMapping("/toUpdateProfile")
+// @GetMapping("/toUpdateProfile")
 //@GetMapping("/memArea/updateProfilePage")
 //@PostMapping("/memArea/updateProfile")
-							//@GetMapping("/toUpdatePassword")
+// @GetMapping("/toUpdatePassword")
 //@GetMapping("/memArea/updatePasswordPage")
 //@PostMapping("/memArea/updatePassword")
