@@ -36,6 +36,7 @@ import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.validator.RegistrationValidation;
 import com.farmtastic.validator.UpdatePasswordValidation;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -216,6 +217,7 @@ public class MemController{
 //	送出註冊"表單"
 	@PostMapping("/register")
 	public String register(
+			HttpServletRequest request,
 			@Validated(RegistrationValidation.class) @ModelAttribute("mem") Mem mem, 
 			BindingResult result, 
 			ModelMap model,
@@ -241,9 +243,12 @@ public class MemController{
 		
 		//Redis 驗證碼
 		String verificationCode = UUID.randomUUID().toString(); 
-
 		redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), 60);
-		String verifyUrl = "開通帳號請點擊此連結: http://localhost:8080/mem/verifyEmail?code=" + verificationCode;
+		
+		String baseUrl = request.getScheme() + "://" + request.getServerName() + 
+				 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
+		String verifyUrl = "開通帳號請點擊此連結: \n" 
+				 		   + baseUrl + "/mem/verifyEmail?code=" + verificationCode;
 		mailSvc.sendMail(mem.getMemEmail(), "帳號開通信", verifyUrl);
 		
 		redirectAttrs.addFlashAttribute("success", "註冊成功");
@@ -289,6 +294,7 @@ public class MemController{
 
 	@PostMapping("/forgetPassword")
 	public String forgetPassword(
+			HttpServletRequest request,
 			ForgetPwdRequest forgetPwdRequest, 
 			HttpSession session, 
 			ModelMap model,
@@ -323,8 +329,10 @@ public class MemController{
 			redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), timeoutMinutes);
 			
 			String mailTitle = "農作物與它們的產地：一般會員-重設密碼驗證信";
+			String baseUrl = request.getScheme() + "://" + request.getServerName() + 
+					 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
 			String verifyUrl = "重設密碼請點擊下列連結：\n"
-			        + "http://localhost:8080/mem/resetPasswordPage?code=" + verificationCode + "\n\n"
+					+ baseUrl + "/mem/resetPasswordPage?code=" + verificationCode + "\n\n"
 			        + "此連結" + timeoutMinutes +"分鐘內有效，逾時請重新操作。";
 			
 			mailSvc.sendMail(mem.getMemEmail(), mailTitle, verifyUrl);

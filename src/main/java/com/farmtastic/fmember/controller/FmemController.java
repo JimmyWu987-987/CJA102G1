@@ -433,11 +433,9 @@ public class FmemController{
 		}
 		
 
-		
 		// 取得上傳的圖片
 		MultipartFile landPicFile = fmem.getLandPicFile();
 		MultipartFile insurPicFile = fmem.getInsurPicFile();
-		
 		
 		// 取得 tempPic
 		TempPic tempPic = (TempPic) session.getAttribute("tempPic");
@@ -459,41 +457,26 @@ public class FmemController{
 			System.out.println("tempPic.setInsurPic(insurPicFile.getBytes())");
 		}
 		
-		
-//		**************
-//		if(tempPic.getLandPic() == null || tempPic.getLandPic().length == 0) {
-//			result.rejectValue("landPicFile", null, "農地證明圖片請勿空白");
-//		}
-//		if(tempPic.getInsurPic() == null || tempPic.getInsurPic().length == 0) {
-//			result.rejectValue("insurPicFile", null, "保險證明圖片請勿空白");
-//		}
-//		***************
-		
-		
-		
-		
 		String tempLandPicBase64 = null;
 		String tempInsurPicBase64 = null;
 		
 		if(tempPic.getLandPic() != null && tempPic.getLandPic().length != 0) {
 			tempLandPicBase64 = Base64.getEncoder().encodeToString(tempPic.getLandPic());
 			model.addAttribute("tempLandPicBase64", tempLandPicBase64);
-		} else {
+		} else if(!result.hasFieldErrors("landPicFile")) {
 			result.rejectValue("landPicFile", null, "農地證明圖片請勿空白");
 		}
-		
 		
 		if(tempPic.getInsurPic() != null && tempPic.getInsurPic().length != 0) {
 			tempInsurPicBase64 = Base64.getEncoder().encodeToString(tempPic.getInsurPic());
 			model.addAttribute("tempInsurPicBase64", tempInsurPicBase64);
-		} else {
+		} else if(!result.hasFieldErrors("insurPicFile")) {
 			result.rejectValue("insurPicFile", null, "保險證明圖片請勿空白");
 		}
 		
 		
 		if(result.hasErrors()) {
-			session.setAttribute("tempPic", tempPic);
-
+			session.setAttribute("tempPic", tempPic);  // 更新session裡的資料
 			model.addAttribute("loginRequest", new LoginRequest()); // 給login用
 			model.addAttribute("activeTab", "register"); //標記目前所在頁籤
 			return "front_end/farmer/unlogined/fmemRegLogin";
@@ -514,12 +497,9 @@ public class FmemController{
 		} else if (tempInsurPic != null && tempInsurPic.length > 0) {
 			fmem.setInsurPic(tempInsurPic);
 		}
-
 		
 		fmemSvc.addFmem(fmem);
-		
 		session.removeAttribute("tempPic");
-		
 		redirectAttrs.addFlashAttribute("success", "小農會員註冊成功");
 		return "redirect:/"; //要重導到小農首頁
 	}
@@ -538,6 +518,7 @@ public class FmemController{
 
 	@PostMapping("/forgetPassword")
 	public String forgetPassword(
+			HttpServletRequest request,
 			ForgetPwdRequest forgetPwdRequest, 
 			HttpSession session, 
 			ModelMap model,
@@ -571,9 +552,11 @@ public class FmemController{
 			long timeoutMinutes = 10;  //設定有效時間(分鐘)
 			redisSvc.setVerificationCode(verificationCode, fmem.getFmemAcc(), timeoutMinutes);
 			
+			String baseUrl = request.getScheme() + "://" + request.getServerName() + 
+					 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
 			String mailTitle = "農作物與它們的產地：一般會員-重設密碼驗證信";
 			String verifyUrl = "重設密碼請點擊下列連結：\n"
-			        + "http://localhost:8080/fmem/resetPasswordPage?code=" + verificationCode + "\n\n"
+			        + baseUrl + "/fmem/resetPasswordPage?code=" + verificationCode + "\n\n"
 			        + "此連結" + timeoutMinutes +"分鐘內有效，逾時請重新操作。";
 			
 			mailSvc.sendMail(fmem.getFmemEmail(), mailTitle, verifyUrl);
@@ -587,6 +570,8 @@ public class FmemController{
 			return "front_end/farmer/unlogined/fmemForgetPassword";
 		}
 	}
+	
+	
 	
 	
 	
