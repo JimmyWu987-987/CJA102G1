@@ -1,5 +1,7 @@
 package com.farmtastic.act.model;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,11 @@ public class ActService {
 		actRepository.save(act);
 	}
 	
-	// ========== 依活動ID查單一活動 ==========
+	// ========== 依活動ID查單一活動 (也撈圖) ==========
+	@Transactional(readOnly = true)
 	public Act getOneAct(Integer actId) {
-		return actRepository.findById(actId).orElse(null);
-    }
+	    return actRepository.findByActIdWithImgs(actId);
+	}
 
     // ========== 查全部活動 ==========
 	public List<Act> getAllAct(Sort sort) {
@@ -62,6 +65,30 @@ public class ActService {
 			actRepository.deleteByActId(actId);
 		}
 	}
-	
-	
+
+	// ========== 挖活動圖片 ===========
+	@Transactional
+	public List<byte[]> getAllActImagesForCarousel(Integer actId) {
+	    Act act = actRepository.findById(actId).orElse(null);
+	    if (act == null) {
+	        return List.of(); // 找不到活動就回空列表
+	    }
+
+	    List<byte[]> imgList = new ArrayList<>();
+
+	    // 主圖先加進列表
+	    if (act.getActMainImg() != null) {
+	        imgList.add(act.getActMainImg());
+	    }
+
+	    // 初始化 Lazy 的活動圖片集合
+	    act.getActImg().size();
+
+	    // 依照 actImgOrder 排序後加進列表
+	    act.getActImg().stream()
+	    .sorted(Comparator.comparing(ActImg::getActimgOrder))
+	    .forEach(a -> imgList.add(a.getActImg()));
+
+	    return imgList;
+	}
 }
