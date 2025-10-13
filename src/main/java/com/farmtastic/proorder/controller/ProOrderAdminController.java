@@ -59,18 +59,28 @@ public class ProOrderAdminController {
 		
 		for (ProOrderVO saveAllocTotal : CalculateListsAllocTotal) {
 			
+			// 判斷是否有需要更新資料
+			boolean update = false;
+			
 			if(saveAllocTotal.getProOrdAllocTotal() == null) {
 				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
 				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
 				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
 				
-				proOrdSvc.updateProOrder(saveAllocTotal);
+				update = true;
 			}
 			
 			if(saveAllocTotal.getProOrdAllocSendFmem() == null) {
 				// 計算平台撥款金額
 				Integer proOrdAllocSendFmem = saveAllocTotal.getProTotal() - saveAllocTotal.getProOrdAllocTotal();
 				saveAllocTotal.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+				
+				update = true;
+			}
+			
+			
+			// 如果有更新資料，才做更新。
+			if(update) {		
 				proOrdSvc.updateProOrder(saveAllocTotal);
 			}
 		}
