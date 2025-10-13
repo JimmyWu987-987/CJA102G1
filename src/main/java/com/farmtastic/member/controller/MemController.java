@@ -2,14 +2,13 @@ package com.farmtastic.member.controller;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Base64;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.ForgetPwdRequest;
 import com.farmtastic.member.model.LoginRequest;
 import com.farmtastic.member.model.Mem;
@@ -46,6 +47,9 @@ public class MemController{
 	
 	@Autowired
 	MemService memSvc;
+	
+	@Autowired
+	FmemService fmemSvc;
 	
 	@Autowired
 	RedisService redisSvc;
@@ -77,12 +81,39 @@ public class MemController{
 	}
 	
 	@GetMapping("/farmerStoreProd")
-	public String farmerStoreProd(ModelMap model) {
+	public String farmerStoreProd(
+			ModelMap model, 
+			@RequestParam("fmemId") String fmemId,
+			HttpSession session) {
+		
+		Fmem fmem = fmemSvc.getOneByFmemId(Integer.valueOf(fmemId));
+		
+		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
+		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
+		
+		model.addAttribute("fmem", fmem);
+		model.addAttribute("fmemId", fmemId);
+		model.addAttribute("StorePicBase64", StorePicBase64);
+		model.addAttribute("fmemPicBase64", fmemPicBase64);
+		
 		return "front_end/customer/unlogined/farmerStoreProd";
 	}
 	
 	@GetMapping("/farmerStoreAct")
-	public String farmerStoreAct(ModelMap model) {
+	public String farmerStoreAct(
+			ModelMap model, 
+			@RequestParam("fmemId") String fmemId) {
+		
+		Fmem fmem = fmemSvc.getOneByFmemId(Integer.valueOf(fmemId));
+		
+		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
+		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
+		
+		model.addAttribute("fmem", fmem);
+		model.addAttribute("fmemId", fmemId);
+		model.addAttribute("StorePicBase64", StorePicBase64);
+		model.addAttribute("fmemPicBase64", fmemPicBase64);
+		
 		return "front_end/customer/unlogined/farmerStoreAct";
 	}
 	

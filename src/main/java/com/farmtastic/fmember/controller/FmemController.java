@@ -96,25 +96,10 @@ public class FmemController{
 		return "/front_end/farmer/logined/home";
 	}
 	
-	
-//	@GetMapping("/toFmemArea")
-//	public String toFmemArea(HttpSession session){
-//		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");
-//		if(fmem != null) {
-//			return "redirect:/fmem/fmemArea";
-//		} else {
-//			return "redirect:/fmem/showFmemRegLoginForm";
-//		}
-//	}
+
 	
 	@GetMapping("/fmemArea")
 	public String fmemArea(HttpSession session, ModelMap model) {
-//		public String fmemArea(ModelMap model, HttpSession session) {
-//		---------------
-//		Fmem fmemTest = fmemSvc.getOneByFmemId(1).orElse(null);
-//		session.setAttribute("fmemTest", fmemTest);
-//		---------------
-		
 		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
 		
 //		 處理商店樣式
@@ -122,7 +107,6 @@ public class FmemController{
 		Sty sty = stySvc.getOneByStyNo(styNo);
 		session.setAttribute("sty", sty);
 		///////////////////////
-		
 		
 		return "/front_end/farmer/logined/fmemArea";
 	}
@@ -151,8 +135,6 @@ public class FmemController{
 			String insurPicBase64 = Base64.getEncoder().encodeToString(loggedInFmember.getInsurPic());
 			model.addAttribute("tempInsurPicBase64", insurPicBase64);
 		}
-		
-	
 		
 		UpdateProfileFmem updateProfileFmem = new UpdateProfileFmem();
 		BeanUtils.copyProperties(loggedInFmember, updateProfileFmem);
@@ -430,11 +412,11 @@ public class FmemController{
 //	送出註冊"表單"
 	@PostMapping("/register")
 	public String register(
-			@Validated(RegistrationValidation.class) @ModelAttribute("fmem") 
-			Fmem fmem, 
+			@Validated(RegistrationValidation.class) @ModelAttribute("fmem") Fmem fmem, 
 			BindingResult result, 
 			ModelMap model, 
-			RedirectAttributes redirectAttrs) {
+			RedirectAttributes redirectAttrs,
+			HttpSession session) throws IOException {
 	
 		// 驗證帳號、手機、身分證不能跟別人重複
 		String fmemAcc = fmem.getFmemAcc();
@@ -450,13 +432,94 @@ public class FmemController{
 			result.rejectValue("fId", null, "此身分證已有人註冊過");
 		}
 		
-		if (result.hasErrors()) {
+
+		
+		// 取得上傳的圖片
+		MultipartFile landPicFile = fmem.getLandPicFile();
+		MultipartFile insurPicFile = fmem.getInsurPicFile();
+		
+		
+		// 取得 tempPic
+		TempPic tempPic = (TempPic) session.getAttribute("tempPic");
+		if(tempPic == null) {
+			tempPic = new TempPic();
+			session.setAttribute("tempPic", tempPic);
+			System.out.println("tempPic = new TempPic()");
+		}
+		
+		// 先處理新上傳的圖片
+	    // 如果這次有上傳新圖且沒錯誤 > 更新 tempPic
+	    // 如果這次沒上傳或有錯誤 > 用舊的 tempPic
+		if(landPicFile != null && !landPicFile.isEmpty() && !result.hasFieldErrors("landPicFile")) {
+			tempPic.setLandPic(landPicFile.getBytes());
+			System.out.println("tempPic.setLandPic(landPicFile.getBytes()");
+		}
+		if(insurPicFile != null && !insurPicFile.isEmpty() && !result.hasFieldErrors("insurPicFile")) {
+			tempPic.setInsurPic(insurPicFile.getBytes());
+			System.out.println("tempPic.setInsurPic(insurPicFile.getBytes())");
+		}
+		
+		
+//		**************
+//		if(tempPic.getLandPic() == null || tempPic.getLandPic().length == 0) {
+//			result.rejectValue("landPicFile", null, "農地證明圖片請勿空白");
+//		}
+//		if(tempPic.getInsurPic() == null || tempPic.getInsurPic().length == 0) {
+//			result.rejectValue("insurPicFile", null, "保險證明圖片請勿空白");
+//		}
+//		***************
+		
+		
+		
+		
+		String tempLandPicBase64 = null;
+		String tempInsurPicBase64 = null;
+		
+		if(tempPic.getLandPic() != null && tempPic.getLandPic().length != 0) {
+			tempLandPicBase64 = Base64.getEncoder().encodeToString(tempPic.getLandPic());
+			model.addAttribute("tempLandPicBase64", tempLandPicBase64);
+		} else {
+			result.rejectValue("landPicFile", null, "農地證明圖片請勿空白");
+		}
+		
+		
+		if(tempPic.getInsurPic() != null && tempPic.getInsurPic().length != 0) {
+			tempInsurPicBase64 = Base64.getEncoder().encodeToString(tempPic.getInsurPic());
+			model.addAttribute("tempInsurPicBase64", tempInsurPicBase64);
+		} else {
+			result.rejectValue("insurPicFile", null, "保險證明圖片請勿空白");
+		}
+		
+		
+		if(result.hasErrors()) {
+			session.setAttribute("tempPic", tempPic);
+
 			model.addAttribute("loginRequest", new LoginRequest()); // 給login用
 			model.addAttribute("activeTab", "register"); //標記目前所在頁籤
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
 		
+		// 沒有錯誤，準備存入資料庫
+		byte[] tempLandPic = tempPic.getLandPic();
+		byte[] tempInsurPic = tempPic.getInsurPic();
+		
+		if (landPicFile != null && !landPicFile.isEmpty()) {
+			fmem.setLandPic(landPicFile.getBytes());
+		} else if (tempLandPic != null && tempLandPic.length > 0) {
+			fmem.setLandPic(tempLandPic);
+		}
+		
+		if (insurPicFile != null && !insurPicFile.isEmpty()) {
+			fmem.setInsurPic(insurPicFile.getBytes());
+		} else if (tempInsurPic != null && tempInsurPic.length > 0) {
+			fmem.setInsurPic(tempInsurPic);
+		}
+
+		
 		fmemSvc.addFmem(fmem);
+		
+		session.removeAttribute("tempPic");
+		
 		redirectAttrs.addFlashAttribute("success", "小農會員註冊成功");
 		return "redirect:/"; //要重導到小農首頁
 	}

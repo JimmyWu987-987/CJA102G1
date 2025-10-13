@@ -30,7 +30,7 @@ public class FmemService {
 			return null;
 		}
 		
-		if(fmem.getAccStatus() != 1) {
+		if((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
 			throw new IllegalStateException("帳號尚未通過審核或已被停權");
 		}
 		

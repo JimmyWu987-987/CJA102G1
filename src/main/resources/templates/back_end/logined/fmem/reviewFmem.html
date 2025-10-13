@@ -85,14 +85,15 @@
 				
 				<tr>
 			        <th class="myInsurPic">農保證明</th>
-			        <td class="myInsurPic"><img th:src="'data:image/jpeg;base64,' + ${insurPicBase64}" alt="農保證明"></td>
+			        <td class="myInsurPic"><img class="img-nail" th:src="'data:image/jpeg;base64,' + ${insurPicBase64}" alt="農保證明"></td>
 			        <td class="gap"></td>
 			        <th class="myLandInsurPic">土地證明</th>
-			        <td class="myLandInsurPic"><img th:src="'data:image/jpeg;base64,' + ${landPicBase64}" alt="土地證明"></td>
+			        <td class="myLandInsurPic"><img class="img-nail" th:src="'data:image/jpeg;base64,' + ${landPicBase64}" alt="土地證明"></td>
 				</tr>
 			</tbody>
 		</table>
 		
+		<div id="img-display"></div>
 		
 		<form method="post" th:action="@{/admin/decideAccReview}" class="review">
 			<div class="review-content">

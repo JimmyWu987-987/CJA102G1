@@ -10,6 +10,11 @@ window.addEventListener('load', function(){
 	descRadios.forEach(descRadio => {
 		descRadio.addEventListener('change', openTextarea);
 	})
+	
+	const imgNails = document.querySelectorAll('.img-nail');
+	imgNails.forEach(imgNail => {
+	    imgNail.addEventListener('click', previewImage);
+	})
 })
 
 function showDescRadios(e){
@@ -34,3 +39,27 @@ function openTextarea(e){
 		}
 	}
 }
+
+
+function previewImage(){
+	const imgDisplay = document.querySelector('#img-display');
+	imgDisplay.style.display = 'flex';
+	targetSrc = this.getAttribute('src');
+	imgDisplay.innerHTML = '<i class="fa-regular fa-circle-xmark" id="close"></i><img src="' + targetSrc + '" class="img-display" alt="樣式圖片" />';
+    
+    let close = document.querySelector('#close');
+    close.addEventListener('click', function(){
+        imgDisplay.style.display = 'none';
+    })
+    let container = document.querySelector('.container');
+    imgDisplay.addEventListener('click', function(e){
+        if(e.target === imgDisplay){
+            imgDisplay.style.display = 'none';
+        }
+    })
+}
+
+
+
+
+

@@ -23,21 +23,20 @@
     <div class="container container-fbanner" th:fragment="fbanner">
         <div class="fbanner">
         	<div class="mask"></div>
-            <img th:src="@{/images/farmer-concept.png}" alt="farmer-banner">
+            <img th:src="'data:image/jpeg;base64,' + ${StorePicBase64}" alt="farmer-banner">
 
             <div class="text">
-                <h2 class="store-name">哞哞農場</h2>
-                <p class="store-intro">我們的目標是建立一個雙向，互動的們的目標是建立一個雙向互動的社群：消費者不再只是購買者，更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p>
-<!--                 <p class="store-intro">更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p> -->
+                <h2 class="store-name" th:text="${fmem.storeName}"></h2>
+                <p class="store-intro" th:text="${fmem.storeIntro}"></p>
 	            <div class="info">
-	                <span>信箱: support@farm.com</span>
+	                <span th:if="${fmem.fmemEmail}">信箱: <span th:text="${fmem.fmemEmail}"></span></span>
 <!-- 	                <span>電話: 03-4259888</span> -->
-	                <span>地址: 桃園市中壢區農田路66號</span>
+	                <span th:if="${fmem.fmemAddr}">地址: <span th:text="${fmem.fmemAddr}"></span></span>
 	            </div>
             </div>
             
             <div class="avatar">
-        		<img th:src="@{/images/tomcat.gif}" alt="avatar">
+        		<img th:src="'data:image/jpeg;base64,' + ${fmemPicBase64}" alt="avatar">
         	</div>
         </div>
     </div>
@@ -46,8 +45,8 @@
         <div class="store-sidebar" th:fragment="sidebar">
             <h3>分類</h3>
             <ul th:fragment="memAreaLink">
-                <li><a th:href="@{/mem/farmerStoreProd}">所有商品</a></li>
-                <li><a th:href="@{/mem/farmerStoreAct}">所有活動</a></li>
+                <li><a th:href="@{'/mem/farmerStoreProd'(fmemId=${fmemId})}">所有商品</a></li>
+                <li><a th:href="@{'/mem/farmerStoreAct'(fmemId=${fmemId})}">所有活動</a></li>
             </ul>
         </div>
 

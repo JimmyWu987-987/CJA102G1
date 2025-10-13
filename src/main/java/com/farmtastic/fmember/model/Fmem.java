@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.farmtastic.validator.FileSize;
 import com.farmtastic.validator.FmemPasswordMatches;
 import com.farmtastic.validator.RegistrationValidation;
 import com.farmtastic.validator.UpdatePasswordValidation;
@@ -17,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
@@ -139,11 +142,23 @@ public class Fmem implements Serializable {
 	@Column(name = "organic_pic", insertable = false)
 	private byte[] organicPic;
 	
-	@Column(name = "land_pic", insertable = false)
+	@Column(name = "land_pic")
 	private byte[] landPic;
 	
-	@Column(name = "insur_pic", insertable = false)
+	@Column(name = "insur_pic")
 	private byte[] insurPic;
+	
+	
+	@FileSize(max = 1 * 1024 * 1024, message = "圖片大小不能超過1MB", groups = RegistrationValidation.class)
+	@Transient
+	private MultipartFile landPicFile;
+	
+	@FileSize(max = 1 * 1024 * 1024, message = "圖片大小不能超過1MB", groups = RegistrationValidation.class)
+	@Transient
+	private MultipartFile insurPicFile;
+	
+	
+	
 	
 	@Column(name = "store_pic", insertable = false)
 	private byte[] storePic;
@@ -343,6 +358,24 @@ public class Fmem implements Serializable {
 	public void setInsurPic(byte[] insurPic) {
 		this.insurPic = insurPic;
 	}
+	
+	
+	
+	public MultipartFile getLandPicFile() {
+		return landPicFile;
+	}
+	public void setLandPicFile(MultipartFile landPicFile) {
+		this.landPicFile = landPicFile;
+	}
+	public MultipartFile getInsurPicFile() {
+		return insurPicFile;
+	}
+	public void setInsurPicFile(MultipartFile insurPicFile) {
+		this.insurPicFile = insurPicFile;
+	}
+	
+	
+
 	public byte[] getStorePic() {
 		return storePic;
 	}
