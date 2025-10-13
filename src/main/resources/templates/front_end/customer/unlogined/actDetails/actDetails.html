@@ -70,7 +70,7 @@
                     <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
                     <td th:text="${#temporals.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
                     <td>
-                        <a th:href="@{'#'}" class="btn btn-primary">我要報名</a>
+                        <a th:href="@{'#'}" class="btn btn-primary">我要報名</a>  <!-- # 塞報名表單的路徑 -->
                     </td>
                 </tr>
             </tbody>
