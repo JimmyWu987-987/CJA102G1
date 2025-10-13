@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一般會員資料</title>
+    <title>小農會員資料</title>
     <link rel="icon" href="./images/logo.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -174,7 +174,7 @@
 				        <td class="myRegDate"><span th:text="${fmem.regDate}"></span></td>
 				
 				        <td class="status-data">
-					        <form method="post" th:action="@{/admin/updateFmemAccStatus}" class="table-row">
+					        <form method="post" th:action="@{/admin/updateFmemAccStatus}" class="table-row fmemForm">
 					        	<input type="hidden" name="fmemId" th:value="${fmem.fmemId}">
 					        	<div th:switch="${fmem.accStatus}" class="status-text">
 					                <div th:case="0" data-status="0"><span>待審核</span></div>
@@ -202,8 +202,9 @@
 				
    
     </div>
-
-	<script th:src="@{/js/admin/switchEditMode.js}"></script>
+    
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script th:src="@{/js/admin/listAllMems.js}"></script>
 	<script th:src="@{/js/admin/fmemSearchByStatus.js}"></script>
 </body>
 </html>

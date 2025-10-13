@@ -122,7 +122,7 @@
 				        <td class="myPoint"><span th:text="${mem.memPoint}"></span></td>
 				
 				        <td class="status-data">
-					        <form method="post" th:action="@{/admin/updateMemAccStatus}" class="table-row">
+					        <form method="post" th:action="@{/admin/updateMemAccStatus}" class="table-row memForm">
 					        	<input type="hidden" name="memId" th:value="${mem.memId}">
 					        	<span th:switch="${mem.accStatus}" class="status-text">
 					                <span th:case="0">未開通</span>
@@ -147,7 +147,8 @@
    
     </div>
 
-	<script th:src="@{/js/admin/switchEditMode.js}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script th:src="@{/js/admin/listAllMems.js}"></script>
 </body>
 </html>
 
