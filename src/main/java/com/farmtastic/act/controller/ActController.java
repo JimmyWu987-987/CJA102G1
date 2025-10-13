@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.farmtastic.act.model.Act;
 import com.farmtastic.act.model.ActCate;
@@ -32,10 +35,12 @@ import com.farmtastic.ses.model.Ses;
 import com.farmtastic.ses.model.SesService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @Controller
 @Validated
-@RequestMapping("/act")
+@RequestMapping("/fmem/act")
+//@SessionAttributes({"sessionAct"})
 public class ActController {
 
     @Autowired
@@ -50,13 +55,55 @@ public class ActController {
     @Autowired
     private ActRepository actRepo;
 
-//    // =========== 新增活動 ============
+    // =========== 新增活動 ============
 //	@GetMapping("addAct")
 //	public String addAct(ModelMap model) {
 //		Act act = new Act();
 //		model.addAttribute("act", act);
 //		return "front_end/farmer/logined/fmemAct/addAct";
 //	}
+//	
+//	@PostMapping("addAllActImg")
+//	public String addActImg(@Valid Act act, BindingResult result, ModelMap model,
+//	@RequestParam("upActMainImg") MultipartFile mainImg,
+//	@RequestParam("upActImg") MultipartFile[] actImgs)
+//	throws IOException {
+//		
+//		Integer order = 1;
+//		
+//		// 主圖
+//		if (mainImg == null || mainImg.isEmpty()) {
+//			model.addAttribute("errorMessage", "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+//			return "front_end/farmer/logined/fmemAct/addEmp";
+//		}
+//		
+//		act.setActMainImg(mainImg.getBytes());
+//		
+//		// 活動圖片 (可有可無) 
+//		if (actImgs != null) {
+//			for (MultipartFile file : actImgs) {
+//				if (! file.isEmpty()) {
+//					ActImg actImg = new ActImg();
+//					actImg.setActImg(file.getBytes());
+//					actImg.setActimgOrder(order);
+//					order++;
+//				}
+//			}
+//		}
+//		
+//		if (result.hasErrors()) {
+//			 return "front_end/farmer/logined/fmemAct/addEmp";
+//		}
+//		
+//		/*************************** 2.開始新增資料 *****************************************/
+//		actSvc.addAct(act);
+//		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
+//		List<Act> list = actSvc.getAllAct();
+//			model.addAttribute("actListData", list);
+//			model.addAttribute("success", "- (新增成功)");
+//			return "redirect:front_end/farmer/logined/fmemAct/listAllAct";
+//	}
+    
 //
 //	@PostMapping("insert")
 //	public String insertAct(@ModelAttribute("act") Act act, ModelMap model) {
@@ -187,6 +234,7 @@ public class ActController {
             .toList();
         model.addAttribute("sesList", launchedSes);
         model.addAttribute("act", act);
+//        model.addAttribute("sessionAct", act);
         
         return "front_end/customer/unlogined/actDetails/actDetails";
         
