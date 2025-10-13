@@ -328,7 +328,9 @@ create table actimg (
  constraint actimg_actimg_id_pk primary key (actimg_id));
 
 insert into actimg values (null, null, 1, 1), (null, null, 1, 2), (null, null, 1, 3),
-						  (null, null, 3, 1), (null, null, 3, 2);
+						  (null, null, 3, 1), (null, null, 3, 2),
+                          (null, null, 4, 1),
+                          (null, null, 5, 1), (null, null, 5, 2), (null, null, 5, 3), (null, null, 5, 4), (null, null, 5, 5);
                           
                           
 -- 刪除/建立 場次
@@ -974,12 +976,13 @@ CREATE TABLE news (
 	news_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	news_title VARCHAR(50) NOT NULL,
 	news_cont VARCHAR(1000) NOT NULL,
-	news_at DATETIME NOT NULL
+	news_at DATETIME NOT NULL,
+    news_status INT NOT NULL
 );
 
-INSERT INTO news (news_title, news_cont, news_at) VALUES
-('網站更新', '我們的網站已經更新至最新版本，提供更好的使用者體驗。', '2024-05-20 10:30:00'),
-('夏季特賣會', '所有商品8折優惠，只到月底！', '2024-06-01 15:00:00');
+INSERT INTO news (news_title, news_cont, news_at, news_status) VALUES
+('網站更新', '我們的網站已經更新至最新版本，提供更好的使用者體驗。', '2024-05-20 10:30:00', 0),
+('夏季特賣會', '所有商品8折優惠，只到月底！', '2024-06-01 15:00:00', 1);
 
 
 -- 常見QA清單
