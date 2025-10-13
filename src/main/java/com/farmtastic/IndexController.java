@@ -10,6 +10,7 @@ public class IndexController {
 	
 	@GetMapping("/")
 	public String indexTest(HttpSession session) {
+		session.removeAttribute("tempPic");
 		return "/front_end/index";
 	}
 	

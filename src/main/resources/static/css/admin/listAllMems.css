@@ -126,9 +126,9 @@ td.status-data form{
     height: 38px; 
     line-height: 38px;
     margin: auto 10px auto 0px;
-    border: 1px solid #10401070;
+/*     border: 1px solid #10401070; */
     border-radius: 5px;
-    background-color: #ffffff90;
+/*     background-color: #ffffff90; */
     
     /* 編輯功能 */
 /* 	display: none;   */

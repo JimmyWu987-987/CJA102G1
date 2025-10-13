@@ -73,7 +73,7 @@
         </div>
         
         <div class="register" id="register">
-            <form method="post" th:action="@{/fmem/register}" th:object="${fmem}" class="userInfo">
+            <form method="post" th:action="@{/fmem/register}" th:object="${fmem}" class="userInfo" enctype="multipart/form-data">
                 <ul>
                     <li>
                         <label for="">帳號</label>
@@ -150,6 +150,34 @@
                         <span th:if="${#fields.hasErrors('bankAcc')}" th:errors="*{bankAcc}" class="error-bankAcc"></span>
                     </li>
                     
+                    
+                    <li class="list-pic">
+	               		<label>農地證明文件(點選下框以新增或更換圖片)</label>
+               			<div class="picBox">
+                   			<img th:if="${tempLandPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempLandPicBase64}}"
+                   				 alt="農地證明文件">
+					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+                   			<input type="file" th:field="*{landPicFile}" class="landPic pic" accept="image/*">
+					    </div>
+					    <div class="picInfo"></div>
+					    <span th:if="${#fields.hasErrors('landPicFile')}" th:errors="*{landPicFile}" class="error"></span>
+	               </li>
+	               <li class="list-pic">
+	               		<label>農保證明文件(點選下框以新增或更換圖片)</label>
+               			<div class="picBox">
+                   			<img th:if="${tempInsurPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempInsurPicBase64}}"
+                   				 alt="農保證明文件">
+					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+                   			<input type="file" th:field="*{insurPicFile}" class="insurPic pic" accept="image/*">
+					    </div>
+					    <div class="picInfo"></div>
+					    <span th:if="${#fields.hasErrors('insurPicFile')}" th:errors="*{insurPicFile}" class="error"></span>
+	               </li>
+	               
+	               
+                    
                     <input type="submit" value="送出" class="btn link" id="btn-submitReg">
                 </ul>
             </form>
@@ -165,6 +193,7 @@
     <script th:src="@{/js/mem/successUpdatePasswordAlert.js}"></script>
     <script th:src="@{/js/fmem/bankCode.js}"></script>
     
+    <script th:src="@{/js/fmem/uploadPic.js}"></script>
     
 </body>
 </html>

@@ -2,14 +2,13 @@ package com.farmtastic.member.controller;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Base64;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.ForgetPwdRequest;
 import com.farmtastic.member.model.LoginRequest;
 import com.farmtastic.member.model.Mem;
@@ -35,6 +36,7 @@ import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.validator.RegistrationValidation;
 import com.farmtastic.validator.UpdatePasswordValidation;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -46,6 +48,9 @@ public class MemController{
 	
 	@Autowired
 	MemService memSvc;
+	
+	@Autowired
+	FmemService fmemSvc;
 	
 	@Autowired
 	RedisService redisSvc;
@@ -77,12 +82,39 @@ public class MemController{
 	}
 	
 	@GetMapping("/farmerStoreProd")
-	public String farmerStoreProd(ModelMap model) {
+	public String farmerStoreProd(
+			ModelMap model, 
+			@RequestParam("fmemId") String fmemId,
+			HttpSession session) {
+		
+		Fmem fmem = fmemSvc.getOneByFmemId(Integer.valueOf(fmemId));
+		
+		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
+		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
+		
+		model.addAttribute("fmem", fmem);
+		model.addAttribute("fmemId", fmemId);
+		model.addAttribute("StorePicBase64", StorePicBase64);
+		model.addAttribute("fmemPicBase64", fmemPicBase64);
+		
 		return "front_end/customer/unlogined/farmerStoreProd";
 	}
 	
 	@GetMapping("/farmerStoreAct")
-	public String farmerStoreAct(ModelMap model) {
+	public String farmerStoreAct(
+			ModelMap model, 
+			@RequestParam("fmemId") String fmemId) {
+		
+		Fmem fmem = fmemSvc.getOneByFmemId(Integer.valueOf(fmemId));
+		
+		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
+		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
+		
+		model.addAttribute("fmem", fmem);
+		model.addAttribute("fmemId", fmemId);
+		model.addAttribute("StorePicBase64", StorePicBase64);
+		model.addAttribute("fmemPicBase64", fmemPicBase64);
+		
 		return "front_end/customer/unlogined/farmerStoreAct";
 	}
 	
@@ -185,6 +217,7 @@ public class MemController{
 //	送出註冊"表單"
 	@PostMapping("/register")
 	public String register(
+			HttpServletRequest request,
 			@Validated(RegistrationValidation.class) @ModelAttribute("mem") Mem mem, 
 			BindingResult result, 
 			ModelMap model,
@@ -210,9 +243,12 @@ public class MemController{
 		
 		//Redis 驗證碼
 		String verificationCode = UUID.randomUUID().toString(); 
-
 		redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), 60);
-		String verifyUrl = "開通帳號請點擊此連結: http://localhost:8080/mem/verifyEmail?code=" + verificationCode;
+		
+		String baseUrl = request.getScheme() + "://" + request.getServerName() + 
+				 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
+		String verifyUrl = "開通帳號請點擊此連結: \n" 
+				 		   + baseUrl + "/mem/verifyEmail?code=" + verificationCode;
 		mailSvc.sendMail(mem.getMemEmail(), "帳號開通信", verifyUrl);
 		
 		redirectAttrs.addFlashAttribute("success", "註冊成功");
@@ -258,6 +294,7 @@ public class MemController{
 
 	@PostMapping("/forgetPassword")
 	public String forgetPassword(
+			HttpServletRequest request,
 			ForgetPwdRequest forgetPwdRequest, 
 			HttpSession session, 
 			ModelMap model,
@@ -292,8 +329,10 @@ public class MemController{
 			redisSvc.setVerificationCode(verificationCode, mem.getMemAcc(), timeoutMinutes);
 			
 			String mailTitle = "農作物與它們的產地：一般會員-重設密碼驗證信";
+			String baseUrl = request.getScheme() + "://" + request.getServerName() + 
+					 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
 			String verifyUrl = "重設密碼請點擊下列連結：\n"
-			        + "http://localhost:8080/mem/resetPasswordPage?code=" + verificationCode + "\n\n"
+					+ baseUrl + "/mem/resetPasswordPage?code=" + verificationCode + "\n\n"
 			        + "此連結" + timeoutMinutes +"分鐘內有效，逾時請重新操作。";
 			
 			mailSvc.sendMail(mem.getMemEmail(), mailTitle, verifyUrl);

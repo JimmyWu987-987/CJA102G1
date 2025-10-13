@@ -4,11 +4,54 @@
     box-sizing: border-box;
     list-style: none;
 /*     outline: 1px solid #f00; */
- }
- img{
- 	max-width: 180px;
- 	max-height: 140px;
- }
+}
+
+
+td img{
+	max-width: 180px;
+	max-height: 140px;
+	cursor: pointer;
+}
+td img:hover{
+	transition: .3s;
+	border: 1px solid #f1955c;
+	transform: scale(1.1);
+}
+
+/*  點擊小圖圖片放大 */
+#img-display{
+    box-sizing: border-box;
+    display: none;
+	position: fixed;
+    top: 5vh;
+    left: 5vw;
+	width: 90vw;
+	height: 90vh;
+    padding: 40px;
+    margin: auto;
+	background-color: #00000085;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+}
+#img-display #close{
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    color: #fff;
+    font-size: 50px;
+}
+#img-display #close:hover{
+    cursor: pointer;
+}
+#img-display img{
+    max-width: 100%;
+	max-height: 100%;
+    border-radius: 10px;
+}
+ 
+ 
+ 
 
 /*   #eef3f1; */
 .container-table{
@@ -16,7 +59,6 @@
     min-width: 768px;
     max-width: 1200px;
 	margin: 12px auto 30px;
-/*     border: 1px solid #a5b3d6; */
     border-radius: 4px;
     text-align: center;
     color: #313f38;
@@ -32,10 +74,49 @@ thead tr{
 	width: 100%;
 	background-color: #c7d3e9;
 	font-size: 26px;
+	position: relative;
 }
 thead tr th{
 	padding: 10px;	
 }
+
+
+
+.back-links{
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	left: 14px;
+	transform: translateY(-50%);
+}
+
+.back-links a.back-link{
+	display: inline-block;
+/* 	width: 100%; */
+	height: 38px;
+	line-height: 26px;
+	padding: 6px 10px;
+	color: #fff;
+	background-color: #72a0e0;
+	border-radius: 6px;
+	font-size: 18px;
+	font-weight: normal;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+	
+}
+.back-links a.back-link:not(:last-of-type){
+	margin-right: 2px;
+}
+.back-links a.back-link:hover{
+	background-color: #4383c9;
+}
+
+
+
+
+
 tbody tr th{
 	width: 124px;
 	padding: 6px 18px;
@@ -94,6 +175,9 @@ form .review-content{
 	
 	display: flex;
 	flex-direction: column;
+	
+	/*********/
+/* 	align-items: center; */
 }
 form .options{
 	display: flex;
@@ -101,12 +185,27 @@ form .options{
 	align-items: center;
 	margin-bottom: 10px;
 }
+/* *{outline: 1px solid #f00;} */
+
+ /* 預設隱藏，審核未過才開 */
+form .desc-options{
+	display: none;
+}
+
+
+
 form .option{
 	width: 130px;
 	padding: 0 8px;
 }
 form .option:last-of-type{
 	padding-right: 0;
+}
+form .option label{
+	cursor: pointer;
+}
+form .option label:hover{
+	color: #c03c03;
 }
 form .option-other{
 /* 	width: 76px; */
@@ -133,7 +232,7 @@ form textarea:focus{
 input.btn{
 	width: 160px;
     padding: 10px;
-    margin: 10px auto 0;
+    margin: 14px auto 0;
     border: none;
     border-radius: 5px;
     color: #fff;
