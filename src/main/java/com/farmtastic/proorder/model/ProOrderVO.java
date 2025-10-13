@@ -72,9 +72,9 @@ public class ProOrderVO implements Serializable {
 	@Column(name = "pro_ord_cpndisc")
 	private Integer proOrdCpndisc;
 
-	@Column(name = "pro_ord_pointdisc")
-	@NotBlank(message = "請輸入收件人Email！")
-	@Min(value = 1, message = "折扣點數必須大於 0")
+//	@Column(name = "pro_ord_pointdisc")
+//	@NotNull(message = "請輸入收件人Email！")
+//	@Min(value = 1, message = "折扣點數必須大於 0")
 	private Integer proOrdPointdisc;
 
 	@Column(name = "pro_ord_pointget")
