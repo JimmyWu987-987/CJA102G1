@@ -30,13 +30,15 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
            "AND (:actcateId IS NULL OR ac.actCateId = :actcateId) " +
            "AND (:keyword IS NULL OR a.actName LIKE CONCAT('%', :keyword, '%') " +
            "OR a.actDes LIKE CONCAT('%', :keyword, '%'))")
-    
     List<Act> findActByCQ(@Param("fmemId") Integer fmemId,
                                @Param("actStat") Integer actStat,
                                @Param("actLaunStat") Integer actLaunStat,
                                @Param("actcateId") Integer actcateId,
                                @Param("keyword") String keyword,
                                Sort sort);
+    
+    @Query("SELECT a FROM Act a LEFT JOIN FETCH a.actImg WHERE a.actId = :actId")
+	Act findByActIdWithImgs(@Param("actId") Integer actId);
 
     @Transactional
     @Modifying

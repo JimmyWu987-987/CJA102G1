@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<meta charset="UTF-8">
+<title>小農活動專區 - 已過審活動一覽</title>
+
+<style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        img { max-width: 100px; max-height: 80px; }
+        .btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
+</style>
+</head>
+<body>
+    <h1>活動列表</h1>
+
+	<div th:if="${#lists.isEmpty(actList)}">
+    	<p>目前無已過審之活動</p>
+	</div>
+
+	<div th:unless="${#lists.isEmpty(actList)}">
+		<table border="1">
+		<thead>
+			<tr>
+				<th>活動ID</th>
+				<th>活動主照片</th>
+				<th>活動名稱</th>
+				<th>開始日期</th>
+				<th>結束日期</th>
+				<th>費用</th>
+				<th>活動狀態</th>
+				<th>活動上下架狀態</th>
+				<th>操作</th>
+            </tr>
+		</thead>
+		<tbody>
+			<tr th:each="act : ${actList}">
+				<td th:text="${act.actId}"></td>
+				<td>
+					<img th:if="${act.actMainImg != null}" th:src="@{'/act/mainImg/' + ${act.actId}}" alt="主照片"/>
+				</td>
+				<td th:text="${act.actName}"></td>
+				<td th:text="${act.actStart}"></td>
+				<td th:text="${act.actEnd}"></td>
+				<td th:text="${act.actFee}"></td>
+				<td th:text="${act.actStatText}"></td>
+				<td th:text="${act.actLaunStatText}"></td>
+				<td>
+					<a th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>

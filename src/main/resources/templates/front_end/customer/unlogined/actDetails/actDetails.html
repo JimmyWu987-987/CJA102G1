@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>活動詳情</title>
+    
+    <!-- 原本引用的 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    
+    <!-- 活動詳情專用 CSS -->
+    <link rel="stylesheet" th:href="@{/css/act/actDetails.css}">
+</head>
+<body>
+    <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
+
+    <!-- 輪播器 -->
+    <div class="carousel">
+        <div class="carousel-track">
+            <!-- 主圖 -->
+            <div class="carousel-item">
+                <img th:src="@{/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
+            </div>
+            <!-- 活動多圖 -->
+            <div class="carousel-item" th:each="img : ${act.actImg}">
+                <img th:src="@{/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
+            </div>
+        </div>
+        <button class="carousel-btn prev">&#10094;</button>
+        <button class="carousel-btn next">&#10095;</button>
+        <div class="carousel-dots">
+            <span class="dot" th:each="img, iterStat : ${act.actImg}" th:data-index="${iterStat.index}"></span>
+        </div>
+    </div>
+<div class="act-info">
+<div class="act-details">
+    <p><strong>活動日期:</strong> <span th:text="${act.actStart} + ' ~ ' + ${act.actEnd}"></span></p><br>
+    <p><strong>活動基本價:</strong> <span th:text="${act.actFee}"></span> 元</p><br>
+    <p><strong>分類:</strong>
+        <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
+    </p><br>
+    <p><strong>活動說明:</strong></p>
+    <p th:text="${act.actDes}"></p>
+</div>
+</div>
+
+<div class="ses-info">
+    <div th:if="${#lists.isEmpty(sesList)}"> 
+        <p>此活動目前尚無場次</p> 
+    </div>
+
+    <div th:if="${!#lists.isEmpty(sesList)}">
+        <h2 class="ses-title">場次一覽</h2> 
+        <table class="ses-table">
+            <thead>
+                <tr>
+                    <th>場次日期</th>
+                    <th>場次進行時間</th>
+                    <th>報名費用</th>
+                    <th>可參加人數</th>
+                    <th>報名截止日期</th>
+                    <th>進行報名</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ses : ${sesList}">
+                    <td th:text="${#temporals.format(ses.sesDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#temporals.format(ses.sesStart, 'HH:mm')} + ' ~ ' + ${#temporals.format(ses.sesEnd, 'HH:mm')}"></td>
+                    <td th:text="${ses.sesFee}" ></td>
+                    <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
+                    <td th:text="${#temporals.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
+                    <td>
+                        <a th:href="@{'#'}" class="btn btn-primary">我要報名</a>  <!-- # 塞報名表單的路徑 -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <!-- 分離 JS -->
+    <script th:src="@{/js/act/actCarousel.js}"></script>
+</body>
+</html>
