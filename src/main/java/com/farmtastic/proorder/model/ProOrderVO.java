@@ -1,7 +1,6 @@
 package com.farmtastic.proorder.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
+import com.farmtastic.validator.RegistrationValidation;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,6 +25,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "pro_order")
@@ -58,7 +62,7 @@ public class ProOrderVO implements Serializable {
 
 	@Column(name = "pro_pay_status")
 	private Byte proPayStatus;
-
+	
 	@Column(name = "pro_total")
 	private Integer proTotal;
 
@@ -69,6 +73,8 @@ public class ProOrderVO implements Serializable {
 	private Integer proOrdCpndisc;
 
 	@Column(name = "pro_ord_pointdisc")
+	@NotBlank(message = "請輸入收件人Email！")
+	@Min(value = 1, message = "折扣點數必須大於 0")
 	private Integer proOrdPointdisc;
 
 	@Column(name = "pro_ord_pointget")
@@ -94,15 +100,31 @@ public class ProOrderVO implements Serializable {
 	private Date proOrdShipdate;
 	
 	@Column(name = "PRO_ORD_NAME")
+	@NotBlank(message = "請輸入收件人姓名！", groups = RegistrationValidation.class)
+	@Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z]{2,20}$", 
+	 message = "姓名格式不符，請輸入中文或英文，長度2~20字", 
+	 groups = RegistrationValidation.class)
 	private String proOrdName;
-	
+
 	@Column(name = "PRO_ORD_MOBILE")
+	@NotBlank(message = "請輸入收件人電話！", groups = RegistrationValidation.class)  // 🌟 改用 @NotBlank
+	@Pattern(regexp = "^09[0-9]{2}-[0-9]{6}$",  // 🌟 移除 ^$| 部分
+	 message = "手機格式不符，範例: 0912-123456", 
+	 groups = RegistrationValidation.class)
 	private String proOrdMobile;
-	
+
 	@Column(name = "PRO_ORD_EMAIL")
+	@NotBlank(message = "請輸入收件人Email！", groups = RegistrationValidation.class)  // 🌟 改用 @NotBlank
+	@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",  // 🌟 移除 ^$| 部分
+	 message = "信箱格式不符", 
+	 groups = RegistrationValidation.class)
 	private String proOrdEmail;
-	
+
 	@Column(name = "PRO_ORD_ADDR")
+	@NotBlank(message = "請輸入收件人地址！", groups = RegistrationValidation.class)  // 🌟 改用 @NotBlank
+	@Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z0-9]{3,100}$",  // 🌟 移除 ^$| 部分
+	 message = "地址格式不符，請輸入中文或英文或數字，至少3字", 
+	 groups = RegistrationValidation.class)
 	private String proOrdAddr;
 	
 	@Column(name = "PRO_ORD_ALLOC_STATUS")
