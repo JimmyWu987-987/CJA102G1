@@ -4,32 +4,34 @@
     <meta charset="UTF-8">
     <title>我的購物車</title>
 	<link rel="stylesheet" th:href="@{/css/shoppingCart/shoppingCart.css}">
+	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+
 </head>
 <body>
+	<div th:replace="~{/front_end/index :: header}"></div>
 <!-- 	<span>測試有網頁該無參數</span><br>
 	<span th:text="${session.loggedInMember}"></span><br>
 	<span th:text="${session.memId}"></span><br>
 	<span th:text="${session.memName}"></span><br>
 	<span th:text="${groupedCartItems}"></span><br>
 	<span>測試有網頁該無參數</span> -->
-	<div th:if="${session.memName}">
+<!-- 	<div th:if="${session.memName}">
     	<h1><span th:text="${session.memName}"></span>的購物車</h1>
-	</div>
+	</div> -->
 	
-	<div th:unless="${session.memName}">
+<!-- 	<div th:unless="${session.memName}">
 	<h1>訪客的購物車</h1>
-	</div>
+	</div> -->
     
-    <a th:href="@{/}">回首頁</a>
-    <a th:href="@{/cart/products/list}">繼續購物</a>
-    <hr>
-
+<div class="container">
     <div th:if="${successMessage}" class="success-message">
         <p th:text="${successMessage}"></p>
     </div>
     <div th:if="${errorMessage}" class="error-message">
         <p th:text="${errorMessage}"></p>
     </div>
+    <a th:href="@{/cart/products/list}">繼續購物</a>
+    <hr>
 
     <div th:if="${#maps.isEmpty(groupedCartItems)}">
         <p>您的購物車目前是空的。</p>
@@ -104,12 +106,14 @@
             
         </span>
     </div>
-    
+
 		<hr>
 		<form th:action="@{/cart/clearAllCarts}" method="post" onsubmit="return confirm('確定要清空所有小農的購物車嗎？');" style="margin-top: 10px;">
     		<button type="submit">清空所有購物車</button>
 		</form>
-
+		
+</div>
+<div th:replace="~{/front_end/index :: footer}"></div>
 </body>
 </html>
 
