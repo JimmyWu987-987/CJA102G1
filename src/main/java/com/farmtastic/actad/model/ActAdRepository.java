@@ -27,6 +27,11 @@ public interface ActAdRepository extends JpaRepository<ActAdVO, Integer>  {
 		@Query(" SELECT a.actAdId FROM ActAdVO a WHERE a.actAdRevStat = 5 AND a.actAdLaunStat = 1 AND a.actAdStart <= CURRENT_DATE AND a.actAdEnd   >= CURRENT_DATE ORDER BY a.actAdStart DESC")
 		List<Integer> findPassedAds();
 		
+		// 活動首頁廣告圖片導入活動頁面
+		@Query("select a.actId from ActAdVO a where a.actAdId = :adId")
+		Integer findActIdByAdId(@Param("adId") Integer adId);
+		
+
 		
 		
 		

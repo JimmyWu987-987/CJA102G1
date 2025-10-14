@@ -8,6 +8,7 @@
   	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 <!--搜尋功能及分頁 -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/list.pagination.js/0.1.1/list.pagination.min.js"></script>
@@ -169,13 +170,15 @@
 
 	/* 熱門排行 */
     .left-area ol {
-      margin: 0;
+      list-style-position: outside;
+      margin: 10px 0;
       padding-left: 40px; 
       font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.4;
     }
 
     .left-area ol li {
+      list-style: decimal;
       margin-bottom: 4px;
     }
 
@@ -189,10 +192,6 @@
       color: #2d6cdf;
     }
 	
-	
-	
-
-
 
     /* 右側主欄 */
     .right-area{
@@ -226,6 +225,36 @@
   inset: 0; 
 }
 
+
+
+/* 把 nav 拉到左右置中 */
+.act-adarea .owl-nav{
+  position:absolute; top:50%; left:0; right:0;
+  transform:translateY(-50%);
+  display:flex; justify-content:space-between;
+  padding:0; z-index:5;
+}
+
+/* 預設背景/陰影/邊框*/
+.act-adarea .owl-nav button{
+  font-size:0 !important;
+  width:33px; height:33px;
+  display:flex; align-items:center; justify-content:center;
+  border: none !important;
+  box-shadow: none !important;
+  padding:0;
+  cursor:pointer;
+}
+
+/* 真正的箭頭放在內層 span 設超大字 */
+.act-adarea .owl-nav .oc-arrow{
+  color:white;
+  font-size:22px; 
+}
+
+.act-adarea .owl-nav button:hover{ 
+transform:scale(1.1); 
+}
 
 	.actad-img{
 	  width: 100%;
@@ -265,6 +294,9 @@
       border-radius: 10px;         
       height: 250px;   
     }
+    a.act-box:visited { 
+    color: inherit; 
+    }
 
     .act-box:hover {
     transform: scale(1.05); 
@@ -284,7 +316,7 @@
       height: 100%;  
       max-width: 100%;   
       max-height: 100%; 
-      object-fit: cover;
+      object-fit: fill;
       display: block;
       border-radius: 8px 0 0 8px;
     }
@@ -373,29 +405,30 @@
 	</div>
    
   <!-- 熱門排行 -->
-  <div class="hot-list">
-    <h2>🔥 熱門排行</h2>
-    <ol>
-      <li><a href="#">藍染體驗｜手作藍布巾</a></li>
-      <li><a href="#">農場採草莓一日遊</a></li>
-      <li><a href="#">蜂蜜小旅行｜認識養蜂</a></li>
-      <li><a href="#">陶藝課程｜捏一個馬克杯</a></li>
-      <li><a href="#">插秧體驗｜認識稻米</a></li>
-    </ol>
-  </div>
+	<div class="hot-list">
+	  <h2>🔥 熱門排行</h2>
+	  <ol>
+  <li th:each="id : ${@topFiveRedisService.top5()}">
+    <th:block th:each="act : ${actInfo}"
+              th:if="${act.actId.toString() == id}">
+      <a th:href="@{/hot/hit/{aid}(aid=${id})}"
+         th:text="${act.actName}">活動名稱</a>
+    </th:block>
+  </li>
+</ol>
+	</div>
 </aside>
 
 
     <main class="right-area">
 
-      <section class="act-adarea">
-         <div class="owl-carousel" >
-		    <a class="item" th:each="id : ${adIds}">
-<!--     <a class="item" th:each="id : ${adIds}" th:href="@{|/act/ad/${id}|}">  等活動API-->
-    		<img class="actad-img" th:src="@{/actAd/img/{id}(id=${id})}" th:alt="${'ad-'+id}">
+		<section class="act-adarea">
+		  <div class="owl-carousel owl-theme">
+		    <a class="item" th:each="adId : ${adIds}" th:href="@{/hot/hitByAd/{adId}(adId=${adId})}">
+		      <img class="actad-img" th:src="@{/actAd/img/{id}(id=${adId})}" th:alt="${'ad-'+adId}">
 		    </a>
-		 </div>
-      </section>
+		  </div>
+		</section>
 
 
       
@@ -404,10 +437,10 @@
 		  <div id="actList">
 		    <div class="act-list list" th:if="${actInfo}">
 
-            <div class="act-box" th:each="act : ${actInfo}">
-<!--             th:href="@{|/act/${act.actId}|}"  等活動API-->
+            <a class="act-box" th:each="act : ${actInfo}"
+   				th:href="@{/hot/hit/{id}(id=${act.actId})}">
               <div class="act-img">
-                <img src="./act1.PNG" alt="活動一">
+                <img th:src="@{/act/img/{id}(id=${act.actId})}" th:alt="${act.actName}">
               </div>
 
               <div class="act-text">
@@ -419,8 +452,9 @@
                 <p th:text="|金額：$${#numbers.formatDecimal(act.actFee, 1, 'COMMA', 0, 'POINT')}|">
 				  金額：$
 				</p><p>《 點我查看詳情 》</p>
+				<span class="cate-id" th:each="c : ${act.actCate}" th:text="${c.actCateId}" style="display:none"></span>
               </div>
-            </div>
+            </a>
            </div>
             <div class="pagination"></div>
         </div>
@@ -468,15 +502,18 @@
       autoWidth: false,
       smartSpeed: 600,
       dots: true,
-      nav: false
-      
+      nav:true,
+      navText: [
+    	    '<span class="oc-arrow">⯇</span>',
+    	    '<span class="oc-arrow">⯈</span>'
+    	  ] 
     });
   });
   
 	
 	//搜尋功能 及分頁功能
   $(function () {
-	  const list = new List('actList', {
+	  window.list = new List('actList', {
 		    valueNames: ['act-name','act-intro','act-dates'],
 		    page: 3,
 		    pagination: [{
@@ -498,8 +535,45 @@
   });
 	
 
+// 分類篩選功能
+$(function () {
+    const $cateArea = $('.cate-area');
+    
+    // 篩選主函式 (使用傳統 function 語法)
+    function cateFilter() {
+        
+        // 取得所有被勾選的分類 ID 陣列
+        const selectedIds = $cateArea.find('input:checked')
+            .map(function() { 
+                return this.value; 
+            }) 
+            .get();
 
+        // 執行 List.js 內建的篩選方法
+        list.filter(function(item) {
+            
+            // 如果沒有勾選任何項目，則顯示全部
+            if (selectedIds.length === 0) {
+                return true; 
+            }
 
+            // 使用 const 取得目前活動項目包含的所有分類 ID
+            const itemCateIds = $(item.elm).find('.cate-id')
+                .map(function() {
+                    return $(this).text().trim();
+                })
+                .get();
+            
+            // 判斷：活動的分類 ID (itemCateIds) 中，
+            return itemCateIds.some(function(id) {
+                return selectedIds.indexOf(id) > -1;
+            });
+        });
+    }
+    
+    // 3. 綁定事件監聽
+    $cateArea.on('change', 'input', cateFilter);
+});
 </script>
 
 

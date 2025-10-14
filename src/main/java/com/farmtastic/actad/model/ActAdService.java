@@ -148,6 +148,15 @@ public class ActAdService {
     }
     
     
+    // 活動首頁廣告圖片導入活動頁面
+    public Integer findActIdByAdId(Integer adId) {
+        return repository.findActIdByAdId(adId);
+    }
+
+    
+    
+    
+    
     
   
 }
