@@ -66,7 +66,8 @@
         <p th:text="${errorMessage}"></p>
     </div>
     
-    
+    <h2>商品訂單查詢</h2>
+    <br>
     
 
     <div th:if="${#lists.isEmpty(proOrderList)}">
@@ -83,10 +84,10 @@
                     <th>付款方式</th>
                     <th>物流方式</th>
                     <th>訂單狀態</th>
-                    <th>操作</th>
-                    <th>操作</th>
-                    <th>操作</th>
-                    <th>操作</th>
+                    <th>查看明細</th>
+                    <th>功能</th>
+
+
                  </tr>
             </thead>
             <tbody>
@@ -140,31 +141,33 @@
                     	</form>
                     </td>
                     <td>
-                    	<div th:if="${proOrderVO.proPayStatus == 0}">
+                    	
+                    	<div th:if="${proOrderVO.proPayStatus == 0 || proOrderVO.proPayStatus == 0}">
                     	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
-                    		<input type="submit" value="我要付款">
+                    		<input type="submit" value="付款">
     						<!-- 未來寫入要傳送的值 -->
                     	</form>
                     	</div>
-                    </td>
-                    <td>
+                    	
                     	<div th:if="${proOrderVO.proOrdStatus == 3}">
                     	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
-                    		<input type="submit" value="我要評論">
+                    		<input type="submit" value="評論">
     						<!-- 未來寫入要傳送的值 -->
     						<!-- 連結到商品評論新增的URL -->
                     	</form>
                     	</div>
-                    </td>
-                    <td>
+                    	
+                    	
                     	<div th:if="${proOrderVO.proOrdStatus != 6}">
                     	<form method="post" th:action="@{/mem/proorders/listOneProOrder}">
-                    		<input type="submit" value="我要退貨">
+                    		<input type="submit" value="退貨">
                     		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
                     		<input type="hidden" name="proOrdStatus" th:value="${proOrderVO.proOrdStatus}">
                     	</form>
                     	</div>
                     </td>
+
+
                 </tr>
             </tbody>
         </table>
