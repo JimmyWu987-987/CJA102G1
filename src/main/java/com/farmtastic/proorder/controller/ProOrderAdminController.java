@@ -48,20 +48,39 @@ public class ProOrderAdminController {
 	@GetMapping("listAllProOrder")
 	public String listAll(Model model) {
 		
+		
 		// 計算訂單列表需要抽成的金額，
 		List<ProOrderVO> CalculateListsAllocTotal = proOrdSvc.getAll();
-		for (int i = 1; i <= CalculateListsAllocTotal.size(); i++) {
+		
+//		CalculateListsAllocTotal.stream()
+//								.filter(AllocTotal -> AllocTotal.getProOrdAllocTotal()==null)
+//								.filter(AllocTotal -> AllocTotal.getProOrdAllocSendFmem()==null)
+//								.forEach(null);
+		
+		for (ProOrderVO saveAllocTotal : CalculateListsAllocTotal) {
 			
-			ProOrderVO saveAllocTotal = proOrdSvc.getOneProOrder(i);
+			// 判斷是否有需要更新資料
+			boolean update = false;
 			
 			if(saveAllocTotal.getProOrdAllocTotal() == null) {
 				// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
 				Integer finalAllocTotal = (int) (saveAllocTotal.getProTotal() * ALLOC_PER);
 				saveAllocTotal.setProOrdAllocTotal(finalAllocTotal);
+				
+				update = true;
+			}
+			
+			if(saveAllocTotal.getProOrdAllocSendFmem() == null) {
 				// 計算平台撥款金額
 				Integer proOrdAllocSendFmem = saveAllocTotal.getProTotal() - saveAllocTotal.getProOrdAllocTotal();
 				saveAllocTotal.setProOrdAllocSendFmem(proOrdAllocSendFmem);
 				
+				update = true;
+			}
+			
+			
+			// 如果有更新資料，才做更新。
+			if(update) {		
 				proOrdSvc.updateProOrder(saveAllocTotal);
 			}
 		}

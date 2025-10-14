@@ -1,9 +1,8 @@
 /* --- 全域與基礎設定 --- */
-    body {
+    .container {
         font-family: 'Helvetica Neue', Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif; /* 使用更現代化的字體，並提供備援字體 */
         background-color: #fdfaf6; /* 設定一個溫暖的米色背景，符合圖檔風格 */
         color: #333; /* 設定基礎文字顏色 */
-        padding: 40px 20px; /* 增加頁面上下邊距，讓內容更集中 */
         display: flex;
         flex-direction: column;
         align-items: center; /* 讓所有內容水平置中 */

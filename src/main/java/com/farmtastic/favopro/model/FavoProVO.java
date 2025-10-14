@@ -1,7 +1,7 @@
 package com.farmtastic.favopro.model;
 
 import com.farmtastic.member.model.Mem;
-import com.farmtastic.shoppingcart.model.Product;
+import com.farmtastic.pro.model.Pro;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -27,7 +27,7 @@ public class FavoProVO implements java.io.Serializable {
 	@MapsId("proId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pro_id", nullable = false)
-	private Product productVO;
+	private Pro productVO;
 
 	public FavoProVO() {
 		super();
@@ -49,11 +49,11 @@ public class FavoProVO implements java.io.Serializable {
 		this.memVO = memVO;
 	}
 
-	public Product getProductVO() {
+	public Pro getProductVO() {
 		return productVO;
 	}
 
-	public void setProductVO(Product productVO) {
+	public void setProductVO(Pro productVO) {
 		this.productVO = productVO;
 	}
 
