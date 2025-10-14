@@ -116,7 +116,7 @@ public class Act implements java.io.Serializable {
     )
     private Set<ActCate> actCate = new HashSet<>();
 	
-//	對到多個活動圖片
+//	對到多個活動圖片 
 	@OneToMany(mappedBy = "act", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("actimgOrder ASC")
     private List<ActImg> actImg = new ArrayList<>();

@@ -1,12 +1,12 @@
 //package com.farmtastic.act.controller;
-// 
+//
 //import java.io.ByteArrayInputStream;
 //import java.io.IOException;
 //import java.net.URLConnection;
 //import java.util.ArrayList;
 //import java.util.Comparator;
 //import java.util.List;
-//
+// 
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.data.domain.Sort;
 //import org.springframework.http.MediaType;
@@ -39,8 +39,8 @@
 //
 //@Controller
 //@Validated
-//@RequestMapping("/fmem/act")
-//@SessionAttributes({"sessionFmemAct"})
+//@RequestMapping("/admin/act")
+//@SessionAttributes({"sessionAdminAct"})
 //public class FmemActController {
 //
 //    @Autowired

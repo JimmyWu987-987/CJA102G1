@@ -1,6 +1,7 @@
 package com.farmtastic.ses.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,7 +22,7 @@ public class SesService {
 	}
 
 	// ========== 修改場次 (編輯. 上下架) ==========
-	public void updateAct(Ses ses) {
+	public void updateSes(Ses ses) {
 		sesRepository.save(ses);
 	}
 	
@@ -35,17 +36,18 @@ public class SesService {
 	}
 	
 	// ========== 依場次ID查單一場次 ==========
-	public Ses getOneSes(Integer sesId) {
-		return sesRepository.findById(sesId).orElse(null);
+	@Transactional(readOnly = true)
+	public Optional<Ses> getOneSes(Integer sesId) {
+		return sesRepository.findBySesId(sesId);
 	}
 
-	// ========== 依場次上下架狀態查詢 ==========
+	// ========== 依場次上下架狀態列出場次 >> for 上下架場次用 ==========
 	public List<Ses> findBySesLaunStat(Integer sesLaunStat, Sort sort) {
 		return sesRepository.findBySesLaunStat(sesLaunStat, sort);
 	}
 	
-	// ========== 依報名狀態查詢 ==========
-	public List<Ses> findByActStat(Integer actStat, Sort sort) {
+	// ========== 依報名狀態列出場次 >> ex: 供小農查看已成團的場次 ==========
+	public List<Ses> findByRegStat(Integer actStat, Sort sort) {
 		return sesRepository.findByRegStat(actStat, sort);
 	}
 

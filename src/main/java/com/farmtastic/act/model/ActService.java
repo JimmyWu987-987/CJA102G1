@@ -3,6 +3,7 @@ package com.farmtastic.act.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -29,7 +30,7 @@ public class ActService {
 	
 	// ========== 依活動ID查單一活動 (也撈圖) ==========
 	@Transactional(readOnly = true)
-	public Act getOneAct(Integer actId) {
+	public Optional<Act> getOneAct(Integer actId) {
 	    return actRepository.findByActIdWithImgs(actId);
 	}
 
@@ -54,10 +55,24 @@ public class ActService {
 	}
 
 	// ========== 複合查詢所有活動（動態排序） ==========
-	public List<Act> findActByCQ(Integer fmemId, Integer actStat, Integer actLaunStat,
-								 Integer actCateId, String keyword, Sort sort) {
-		return actRepository.findActByCQ(fmemId, actStat, actLaunStat, actCateId, keyword, sort);
-	}	
+	
+	//	for 小農
+	public List<Act> findActByCQForFmem(Integer fmemId, Integer actStat, Integer actLaunStat,
+										List<Integer> actCateId, String keyword, Sort sort) {
+		return actRepository.findActByCQForFmem(fmemId, actStat, actLaunStat, actCateId, keyword, sort);
+	}
+	//	for 消費者 (不篩小農)
+	public List<Act> findActByCQForCus(List<Integer> actCateId, String keyword, Sort sort) {
+		return actRepository.findActByCQForCus(actCateId, keyword, sort);
+	}
+	
+	//	for 後台
+	public List<Act> findActByCQForAdmin(Integer fmemId, Integer actStat, Integer actLaunStat,
+										 List<Integer> actCateId, String keyword, Sort sort) {
+		return actRepository.findActByForAdmin(fmemId, actStat, actLaunStat, actCateId, keyword, sort);
+	}
+	
+	
 
 	// ========== 刪除活動 ==========
 	public void deleteAct(Integer actId) {
