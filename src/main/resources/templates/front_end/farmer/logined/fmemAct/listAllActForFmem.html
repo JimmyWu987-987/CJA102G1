@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<meta charset="UTF-8">
+<title>小農活動專區 - 活動一覽</title>
+
+<link rel="icon" href="./images/logo.png">
+    
+<!--     引入main.css, iconfonts -->
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+<!--     @{/css} + "/sty/storeSty2.css" -->
+<style>
+	.container-header,
+	.container-footer{
+		background-color: #dce2ef;	
+	}
+	.nav > li > a{
+		background-color: #4F9D9D;
+	}
+
+
+	table {
+		width: 100%;
+		border-collapse: separate; /* 保持圓角 */
+		border-spacing: 0;
+		font-size: 1rem;
+		border-radius: 12px; /* 整體圓角 */
+		overflow: hidden; /* 防止表格內容超出圓角 */
+		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+		margin: 20px 0;
+	}
+	
+	table thead th {
+		border: none;
+	    padding: 12px 15px;
+	    background-color: #C7B896;
+	    color: #3E5C2A;
+	    text-align: center;
+	}
+	
+	table thead th:first-child {
+	    border-top-left-radius: 12px;
+	}
+	table thead th:last-child {
+	    border-top-right-radius: 12px;
+	}
+	
+	table tbody td {
+	    padding: 12px 15px;
+	    text-align: center;
+	    border: none;
+	}
+	
+	table tbody tr:nth-child(odd) {
+	    background-color: #F7F4E9; 
+	}
+	table tbody tr:nth-child(even) {
+	    background-color: #FFFFFF; 
+	}
+
+
+	.mainImg { max-width: 100px; max-height: 80px; }
+	.btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
+	
+	h1{ text-align: center;}
+	
+	.list {
+		padding: 20px 40px;
+		background-color: #FFFDF5;
+		border-radius: 8px;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+		margin: 30px; /* 與下方區塊距離 */
+	}
+	
+	
+</style>
+</head>
+<body>
+
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+
+<div class="container">
+<div class="list">
+	<h1>活動列表</h1>
+
+	<div th:if="${#lists.isEmpty(actList)}">
+		<p>目前尚無活動</p>
+	</div>
+
+	<div th:unless="${#lists.isEmpty(actList)}">
+		<table border="1">
+		<thead>
+			<tr>
+				<th>活動ID</th>
+				<th>活動主照片</th>
+				<th>活動名稱</th>
+				<th>開始日期</th>
+				<th>結束日期</th>
+				<th>費用</th>
+				<th>活動狀態</th>
+				<th>活動審核備註</th>
+				<th>活動上下架狀態</th>
+				<th>操作</th>
+            </tr>
+		</thead>
+		<tbody>
+			<tr th:each="act : ${actList}">
+				<td th:text="${act.actId}"></td>
+				<td>
+					<img class="mainImg" th:if="${act.actMainImg != null}" th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" alt="主照片"/>
+				</td>
+				<td th:text="${act.actName}"></td>
+				<td th:text="${act.actStart}"></td>
+				<td th:text="${act.actEnd}"></td>
+				<td th:text="${act.actFee}"></td>
+				<td th:text="${act.actStatText}"></td>
+				<td th:text="${act.actRemark}"></td>
+				<td th:text="${act.actLaunStatText}"></td>
+				
+				<td>
+					<a class="btn" th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>
+				</td>
+				
+			</tr>
+		</tbody>
+		</table>
+	</div>
+</div>
+</div>
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+</body>
+</html>

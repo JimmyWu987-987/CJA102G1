@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.farmtastic.act.model.Act;
+import com.farmtastic.act.model.ActRepository;
 import com.farmtastic.act.model.ActService;
 import com.farmtastic.ses.model.Ses;
 import com.farmtastic.ses.model.SesRepository;
 import com.farmtastic.ses.model.SesService;
 
 @Controller
-@RequestMapping("/ses")
-@SessionAttributes({"sessionSes"})
-public class SesController {
+@RequestMapping("/fmem/ses")
+@SessionAttributes({"sessionFmemSes"})
+public class FmemSesController {
 	
 	@Autowired
 	private ActService actSvc;
@@ -51,10 +52,12 @@ public class SesController {
 	
 	
 //	================= 取得單一場次 ==================
-
+	
+	
+//	        model.addAttribute("sessionFmemSes", ses);	
 	
 	
 	
 	
-//    model.addAttribute("sessionSes", ses);	
+	
 }
