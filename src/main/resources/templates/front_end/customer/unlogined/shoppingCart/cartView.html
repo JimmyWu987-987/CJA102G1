@@ -25,17 +25,19 @@
 	</div> -->
     
 <div class="container">
-    <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}"></p>
-    </div>
-    <div th:if="${errorMessage}" class="error-message">
-        <p th:text="${errorMessage}"></p>
-    </div>
+   
     <a th:href="@{/cart/products/list}">繼續購物</a>
     <hr>
 
     <div th:if="${#maps.isEmpty(groupedCartItems)}">
         <p>您的購物車目前是空的。</p>
+    </div>
+    
+     <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
     </div>
     
     <div th:unless="${#maps.isEmpty(groupedCartItems)}" th:each="entry : ${groupedCartItems}" class="fmem-group">
