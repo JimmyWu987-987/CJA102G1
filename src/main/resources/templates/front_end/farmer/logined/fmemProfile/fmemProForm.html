@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${pageTitle}">小農產品編輯</title>
+<style>
+    body { font-family: 'Noto Sans TC', sans-serif; padding: 2rem; background-color: #f4f6f9; }
+    .form-container { max-width: 600px; margin: 0 auto; background-color: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.7rem 1rem; border: 1px solid #dee2e6; border-radius: 8px; box-sizing: border-box; }
+    .form-group input:read-only { background-color: #e9ecef; cursor: not-allowed; }
+    .error { color: #e03131; font-size: 0.9rem; margin-top: 0.5rem; }
+    .submit-btn { background-color: #007bff; color: white; padding: 0.7rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="header">
+        <h1 th:text="${pageTitle}"></h1>
+        <a th:href="@{/pro/fmem/myPro}">← 返回我的商品</a>
+    </div>
+
+    <form th:action="${action}" method="post" th:object="${pro}">
+        
+        <!-- 隱藏欄位傳送小農ID -->
+        <input type="hidden" th:field="*{fmemId.fmemId}" />
+
+        <!-- 修改時才顯示商品ID -->
+        <div class="form-group" th:if="*{proId != null}">
+            <label>商品編號:</label>
+            <input type="text" th:field="*{proId}" readonly />
+        </div>
+
+        <div class="form-group">
+            <label for="proName">商品名稱:</label>
+            <input type="text" id="proName" th:field="*{proName}" />
+            <span th:if="${#fields.hasErrors('proName')}" th:errors="*{proName}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="proStock">商品庫存:</label>
+            <input type="text" id="proStock" th:field="*{proStock}" />
+            <span th:if="${#fields.hasErrors('proStock')}" th:errors="*{proStock}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="proPrice">商品價格:</label>
+            <input type="text" id="proPrice" th:field="*{proPrice}" />
+            <span th:if="${#fields.hasErrors('proPrice')}" th:errors="*{proPrice}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="proStatus">商品狀態:</label>
+            <select id="proStatus" th:field="*{proStatus}">
+                <option value="1">上架</option>
+                <option value="0">下架</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="proFrom">商品產地:</label>
+            <input type="text" id="proFrom" th:field="*{proFrom}" />
+            <span th:if="${#fields.hasErrors('proFrom')}" th:errors="*{proFrom}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="procateId">商品類別:</label>
+            <select id="procateId" th:field="*{procateId.proCateId}">
+                <option value="">請選擇類別</option>
+                <option th:each="category : ${procateListData}"
+                        th:value="${category.proCateId}"
+                        th:text="${category.proCateName}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="proDes">商品介紹:</label>
+            <textarea id="proDes" th:field="*{proDes}" rows="4"></textarea>
+        </div>
+
+        <div>
+            <button type="submit" class="submit-btn" th:text="*{proId == null} ? '送出新增' : '送出修改'"></button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
