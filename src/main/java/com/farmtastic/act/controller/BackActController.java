@@ -39,8 +39,8 @@
 //
 //@Controller
 //@Validated
-//@RequestMapping("/fmem/act")
-//@SessionAttributes({"sessionFmemAct"})
+//@RequestMapping("/admin/act")
+//@SessionAttributes({"sessionAdminAct"})
 //public class FmemActController {
 //
 //    @Autowired
