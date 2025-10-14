@@ -213,47 +213,140 @@ INSERT INTO product_image (pro_id, pro_img) VALUES
 -- 刪除/建立 商城廣告
 DROP TABLE IF EXISTS pro_ad;
 CREATE TABLE pro_ad (
-	pro_ad_revid int NOT NULL AUTO_INCREMENT,
-    pro_id int NOT NULL, -- FK
-    fmem_id int NOT NULL, -- FK
+	pro_ad_id int NOT NULL AUTO_INCREMENT,  
     pro_ad_img longblob,
+    -- 審核：0=編輯中,1=待審核,2=通過,3=未過,4=待繳費,5=已繳費
     pro_ad_revstat tinyint,
     pro_ad_revupd datetime,
     pro_ad_revremark varchar(100),
+    -- 上下架：0=下架,1=上架
 	pro_ad_launstat tinyint,
     pro_ad_launupd datetime,
     pro_ad_start date,
     pro_ad_end date,
     pro_ad_fee int,
     pro_ad_fee_end date,
-    CONSTRAINT pro_ad_pro_ad_revid_key PRIMARY KEY (pro_ad_revid)
+    fmem_id int NOT NULL, -- FK
+	pro_id int NOT NULL, -- FK
+    CONSTRAINT pro_ad_pro_ad_id_key PRIMARY KEY (pro_ad_id)
 
 ) ENGINE InnoDB;
 
-INSERT INTO pro_ad (
-	pro_id,
-	fmem_id,
-	pro_ad_img,
-	pro_ad_revstat,
-	pro_ad_revupd,
-	pro_ad_revremark,
-	pro_ad_launstat,
-	pro_ad_launupd,
-	pro_ad_start,
-	pro_ad_end,
-	pro_ad_fee,
-	pro_ad_fee_end
-) VALUES
-(1, 1, NULL, 1, '2025-08-01 10:00:00', '待審核（編輯中）', NULL, NULL, '2025-09-01', '2025-09-30', 500, '2025-08-25'), -- 待審核（編輯中）
-(5, 2, NULL, 2, '2025-08-05 15:30:00', '審核通過（已下架，待上架）', 0, '2025-08-05 15:30:00', '2025-09-10', '2025-10-10', 800, '2025-09-05'), -- 審核通過（已下架，待上架）
-(12, 3, NULL, 3, '2025-08-08 11:20:00', '審核未過（缺件）,圖片尺寸不符', NULL, NULL, '2025-09-15', '2025-10-15', 750, '2025-09-10'), -- 審核未過（缺件）
-(8, 4, NULL, 4, '2025-08-10 14:00:00', '待繳費', NULL, NULL, '2025-09-20', '2025-10-20', 1200, '2025-09-15'), -- 待繳費
-(15, 5, NULL, 5, '2025-08-12 09:00:00', '已繳費（已上架）', 1, '2025-08-15 09:00:00', '2025-08-15', '2025-09-15', 1000, '2025-08-12'), -- 已繳費（已上架）
-(20, 1, NULL, 2, '2025-08-13 16:00:00', '審核通過（已上架）', 1, '2025-08-14 10:00:00', '2025-08-14', '2025-09-14', 900, '2025-08-10'), -- 審核通過（已上架）
-(4, 2, NULL, 1, '2025-08-15 08:30:00', '待審核', NULL, NULL, '2025-10-01', '2025-11-01', 600, '2025-09-25'), -- 待審核
-(9, 3, NULL, 3, '2025-08-18 10:45:00', '審核未過（內容不符）廣告內容與商品不符', NULL, NULL, '2025-10-05', '2025-11-05', 700, '2025-09-30'), -- 審核未過（內容不符）
-(11, 4, NULL, 5, '2025-08-20 11:00:00', '已上架', 1, '2025-08-20 12:00:00', '2025-08-20', '2025-09-20', 1100, '2025-08-18'), -- 已上架
-(18, 5, NULL, 0, '2025-08-22 14:30:00', '編輯中', NULL, NULL, '2025-10-10', '2025-11-10', 950, '2025-10-05'); -- 編輯中
+INSERT INTO pro_ad
+(pro_ad_img, pro_ad_revstat, pro_ad_revupd, pro_ad_revremark,
+ pro_ad_launstat, pro_ad_launupd, pro_ad_start, pro_ad_end,
+ pro_ad_fee, pro_ad_fee_end, fmem_id, pro_id)
+VALUES
+
+-- 上架中：香水鳳梨
+(NULL, 5, '2025-10-03 12:30:00', '已繳費',
+ 1, '2025-10-03 12:30:00', '2025-10-03', '2025-11-30',
+ 3000, '2025-10-03', 5, 15),
+
+-- 上架中：高麗菜
+(NULL, 5, '2025-09-28 10:10:00', '已繳費',
+ 1, '2025-09-28 10:10:00', '2025-09-28', '2025-11-30',
+ 2000, '2025-09-28', 1, 1),
+
+-- 上架中：蘋果汁
+(NULL, 5, '2025-10-02 11:05:00', '已繳費',
+ 1, '2025-10-02 11:05:00', '2025-10-02', '2025-11-30',
+ 2000, '2025-10-02', 3, 3),
+
+-- 上架中：蜂蜜
+(NULL, 5, '2025-10-01 09:20:00', '已繳費',
+ 1, '2025-10-01 09:20:00', '2025-10-01', '2025-11-30',
+ 3000, '2025-10-01', 2, 12),
+
+
+-- 待審核：龍眼蜜
+(NULL, 1, '2025-10-04 13:20:00', '待審核',
+ 0, '2025-10-04 13:20:00', '2025-10-04', '2025-11-30',
+ 2000, NULL, 1, 11),
+
+
+-- 待審核：富里米
+(NULL, 1, '2025-10-03 09:10:00', '待審核',
+ 0,'2025-10-03 09:10:00', '2025-10-19', '2025-11-27',
+ 1000, NULL, 6, 6),
+
+-- 待繳費：高山烏龍茶
+(NULL, 4, '2025-10-03 10:05:00', '待繳費',
+ 0,'2025-10-03 10:05:00', '2025-10-25', '2025-11-29',
+ 2000, '2025-10-21', 7, 7),
+
+-- 不通過：金萱紅茶
+(NULL, 3, '2025-10-01 18:25:00', '不通過：版權問題',
+ 0,'2025-10-01 18:25:00', NULL, NULL,
+ 1000, NULL, 8, 8),
+
+-- 待繳費：日曬香菇
+(NULL, 4, '2025-10-02 13:40:00', '待繳費',
+ 0, '2025-10-02 13:40:00', '2025-10-24', '2025-11-24',
+ 2000, '2025-10-28', 9, 9),
+
+-- 待審核：台東池上米
+(NULL, 1, '2025-10-03 09:05:00', '待審核',
+ 0, '2025-10-03 09:05:00', '2025-10-20', '2025-11-27',
+ 1000, NULL, 7, 5);
+
+ -- 刪除/建立 活動廣告
+DROP TABLE IF EXISTS act_ad;
+CREATE TABLE act_ad (
+    act_ad_id INT NOT NULL AUTO_INCREMENT,
+    act_ad_img LONGBLOB,
+    -- 審核：0=編輯中,1=待審核,2=通過,3=未過,4=待繳費,5=已繳費
+    act_ad_revstat TINYINT NOT NULL DEFAULT 1,
+    act_ad_revupd DATETIME DEFAULT CURRENT_TIMESTAMP,
+    act_ad_revremark VARCHAR(100),
+    -- 上下架：0=下架,1=上架
+    act_ad_launstat TINYINT DEFAULT 0,
+    act_ad_launupd DATETIME DEFAULT CURRENT_TIMESTAMP,
+    act_ad_start DATE,
+    act_ad_end DATE,
+    act_ad_fee INT DEFAULT NULL,
+    act_ad_fee_end DATE DEFAULT NULL,
+    -- FK
+    fmem_id INT NOT NULL,
+    act_id INT NOT NULL,
+    PRIMARY KEY (act_ad_id)
+);
+
+
+-- #1：已繳費→已下架（區間已過）【下田去！一日小農體驗】
+INSERT INTO act_ad
+(act_ad_img, act_ad_revstat, act_ad_revupd, act_ad_revremark,
+ act_ad_launstat, act_ad_launupd, act_ad_start, act_ad_end,
+ act_ad_fee, act_ad_fee_end, fmem_id, act_id)
+VALUES
+(NULL, 5, '2025-08-28 09:30:00', '已審核',
+  0, '2025-10-01 00:00:00', '2025-09-01', '2025-09-30',
+  1000, '2025-08-28', 1, 1),
+
+-- #2：上架中【下田去！一日小農體驗】
+(NULL, 5, '2025-09-28 09:30:00', '已審核',
+  1, '2025-09-29 10:00:00', '2025-10-01', '2025-10-31',
+  1000, '2025-09-28', 1, 1),
+
+-- #3：上架中【小小牧場】
+(NULL, 5, '2025-09-20 11:20:00', '已審核',
+  1, '2025-09-21 08:30:00', '2025-10-01', '2025-11-30',
+  2000, '2025-09-20', 2, 3),
+
+-- #4：上架中【小村莊的故事之旅】
+(NULL, 5, '2025-09-22 14:00:00', '已審核',
+  1, '2025-09-23 09:00:00', '2025-10-01', '2025-12-31',
+  3000, '2025-09-22', 1, 5),
+
+-- #5：待審核【從產地到餐桌的秘密】
+(NULL, 1, '2025-10-01 09:00:00', '待審核',
+  0, '2025-10-01 09:00:00', '2025-10-01', '2025-10-31',
+  1000, NULL, 3, 2),
+
+-- #6：待審核【下田去！一日小農體驗】
+(NULL, 1, '2025-10-05 10:10:00', '待審核',
+  0, '2025-10-01 09:00:00', '2025-10-01', '2025-10-31',
+  1000, NULL, 1, 1);
 
 
 -- 刪除/建立 活動分類
@@ -1161,3 +1254,9 @@ FOREIGN KEY (admin_type_id) REFERENCES admin_type(admin_type_id);
 ALTER TABLE admin_type_func_list
 ADD CONSTRAINT atfl_admin_func_id_fk
 FOREIGN KEY (admin_func_id) REFERENCES admin_function(admin_func_id);
+
+-- 活動廣告 FK 活動編號
+-- 活動廣告 FK 小農會員編號
+ALTER TABLE act_ad
+ADD CONSTRAINT act_ad_act_FK FOREIGN KEY (act_id) REFERENCES act(act_id),
+ADD CONSTRAINT act_ad_fmem_ID_FK FOREIGN KEY (fmem_id) REFERENCES fmem(fmem_id);
