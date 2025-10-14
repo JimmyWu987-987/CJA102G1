@@ -131,10 +131,10 @@ public class ProOrderFmemController {
 		proOrdStatus.put(4, "申請退貨(已出貨)");
 		proOrdStatus.put(5, "退貨中");
 		proOrdStatus.put(6, "已退貨");
-		proOrdStatus.put(7, "貨物已燒毀");
-		proOrdStatus.put(8, "貨物已沉入大海");
-		proOrdStatus.put(9, "貨物被偷了");
-		proOrdStatus.put(10, "貨物已失蹤");
+//		proOrdStatus.put(7, "貨物已燒毀");
+//		proOrdStatus.put(8, "貨物已沉入大海");
+//		proOrdStatus.put(9, "貨物被偷了");
+//		proOrdStatus.put(10, "貨物已失蹤");
 		// 放入 model 傳送至前端
 		model.addAttribute("proOrdStatus", proOrdStatus);
 //		========================
