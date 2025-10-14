@@ -1002,6 +1002,19 @@ INSERT INTO news (news_title, news_cont, news_at, news_status) VALUES
 
 
 -- 常見QA清單
+CREATE TABLE qa_list (
+    qa_id INT NOT NULL AUTO_INCREMENT COMMENT 'QA編號',
+    qa_title VARCHAR(50) NULL COMMENT 'QA標題',
+    qa_cont VARCHAR(500) NULL COMMENT 'QA內容',
+    PRIMARY KEY (qa_id)
+) COMMENT='常見QA清單';
+
+INSERT INTO qa_list (qa_title, qa_cont) VALUES
+('訂購後多久可以收到商品？', '我們會在確認訂單後的1-2個工作天內為您出貨。一般來說，北部地區約需1-2天，中南部地區約需2-3天送達。為確保品質，所有新鮮蔬果均採用冷藏配送。'),
+('請問商品的產地是哪裡？', '我們網站上的所有農產品均來自與我們合作的台灣在地小農。您可以在每個商品頁面下方找到詳細的產地資訊以及農友介紹，讓您買得安心，吃得健康！'),
+('網站提供哪些付款方式？', '我們目前提供線上信用卡付款 (支援 VISA, Mastercard, JCB)、網路ATM轉帳以及貨到付款三種方式，方便您選擇最適合的付款方式。'),
+('如果收到的水果有損傷怎麼辦？', '若您收到的商品有任何損傷或品質問題，請務必在24小時內拍照並透過客服信箱或官方LINE與我們聯繫。我們將盡速為您處理退款或補寄事宜，保障您的權益。'),
+('如何報名農事體驗活動？', '您可以在「活動體驗」專區瀏覽所有行程，選擇您有興趣的活動並完成線上付款即可。若活動當日因天候不佳而取消，我們將會主動與您聯繫，您可以選擇全額退款或改期參加。');
 -- 管理員職稱表
 CREATE TABLE admin_type (
 	admin_type_id INT NOT NULL PRIMARY KEY,

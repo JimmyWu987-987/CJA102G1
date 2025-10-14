@@ -1,110 +1,330 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>全部產品訂單列表</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>會員專區 - 商品訂單明細</title>
+<link rel="icon" href="./images/logo.png">
 
-<style type="text/css">
-	
-    span {
-		display: inline-block;
-		width: 200px;
-		text-align: left;
-		font-weight: bold;
-	}
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+
+<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+<style>
+/* 根據您的 memArea.css 和 main.css 風格新增的 CSS */
+
+.member-content h2 {
+    font-size: var(--title-font-size);
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 訂單資訊區塊的通用樣式 */
+.order-detail-section {
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.order-detail-section h3 {
+    font-size: var(--subtitle-font-size);
+    color: var(--main-color);
+    border-bottom: 2px solid var(--header-color);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+/* Grid 佈局：用於並排顯示多個資訊項目 */
+.info-grid {
+    display: grid;
+    /* 盡量以兩欄來呈現，減少垂直高度 */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px 20px;
+    font-size: var(--content-font-size);
+}
+
+.info-item {
+    display: flex;
+    /* 確保標籤和數值對齊 */
+}
+
+.info-item span:first-child {
+    font-weight: bold;
+    color: #555;
+    min-width: 140px; /* 統一標籤寬度，使數值對齊 */
+    display: inline-block;
+}
+
+.info-item span:last-child {
+    color: #333;
+    flex-grow: 1;
+}
+
+/* 訂單商品明細表格樣式 */
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: var(--content-font-size);
+}
+
+.product-table thead tr {
+    background-color: var(--second-color);
+    color: #fff;
+}
+
+.product-table th,
+.product-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.product-table td:nth-child(2) {
+    text-align: left; /* 商品名稱靠左 */
+}
+
+.product-table tbody tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+.product-table tbody tr:hover {
+    background-color: #fff4e6; /* 配合 btn-hover-color 相關的溫暖色調 */
+}
+
+/* 總金額資訊區塊 */
+.total-summary {
+    max-width: 400px; /* 限制寬度，使其看起來更像一個結算區塊 */
+    margin-left: auto; /* 靠右對齊 */
+    font-size: var(--content-font-size);
+    padding: 15px 0;
+}
+
+.total-summary .info-item {
+    padding: 4px 0;
+}
+
+.total-summary .info-item span:first-child {
+    min-width: 160px; /* 調整總結區的標籤寬度 */
+    font-weight: normal;
+}
+
+.total-summary .info-item span:last-child {
+    text-align: right;
+}
+
+.total-summary .grand-total {
+    border-top: 1px solid #ccc;
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.total-summary .grand-total span:first-child {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--btn-color);
+}
+.total-summary .grand-total span:last-child {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--btn-color);
+}
+
+/* 訂單備註 */
+.order-note {
+    font-size: var(--content-font-size);
+    margin-top: 20px;
+    padding: 10px;
+    border-left: 5px solid var(--btn-color);
+    background-color: #fafff5;
+    border-radius: 4px;
+}
+
+.order-note span:first-child {
+    font-weight: bold;
+    color: var(--btn-color);
+}
+
+/* 回上一頁按鈕 */
+.back-button-area {
+    margin-top: 30px;
+    text-align: center; /* 讓按鈕置中 */
+}
+
+.back-button-area .btn-back {
+    font-size: var(--link-button-font-size);
+    padding: 10px 30px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
 </style>
+
 
 </head>
 <body>
-    <h1>這是單一查詢訂單列表</h1>
-    
-    
-    <div th:if="${#lists.isEmpty(proOrderVO)}">
-        <p>目前沒有任何訂單資料。</p>
-    </div>
-    
-    <div th:unless="${#lists.isEmpty(proOrderVO)}">	
-		<h2>訂單明細</h2>
-				
-		<span>訂單編號:</span><span th:text="${proOrderVO.proOrdId}"></span><br>
-		<span>一般會員編號:</span><span th:text="${proOrderVO.memVO.memId}"></span><br>
 
-		<div th:if="${proOrderVO.memProCpnVO}">
-			<span>商品折價卷持有者流水號:</span>
-			<span th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span><br>
+	<div th:replace="~{/front_end/index :: header}"></div>
+
+	<div class="container container-member">
+		<div class="member-sidebar">
+			<h3>會員專區</h3>
+			<ul th:replace="~{/front_end/index :: memAreaLink}"></ul>
 		</div>
-		<div th:unless="${proOrderVO.memProCpnVO}">
-			<span>商品折價卷持有者流水號:</span><span>無/未使用</span><br>
+
+
+
+		<div class="member-content">
+			<h2>訂單明細</h2>
+
+			<div th:if="${#lists.isEmpty(proOrderVO)}">
+				<p>目前沒有任何訂單資料。</p>
+			</div>
+
+			<div th:unless="${#lists.isEmpty(proOrderVO)}">
+
+                <div class="order-detail-section">
+                    <h3>訂單狀態與基本資料</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span>訂單編號:</span><span th:text="${proOrderVO.proOrdId}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span>一般會員編號:</span><span th:text="${proOrderVO.memVO.memId}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span>訂單日期:</span><span
+                                th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span>訂單狀態:</span><span th:switch="${proOrderVO.proOrdStatus}">
+                                <span th:case="0">成立訂單</span> <span th:case="1">取消訂單(未出貨)取貨</span>
+                                <span th:case="2">出貨中</span> <span th:case="3">已到貨</span> <span
+                                th:case="4">申請退貨(已出貨)</span> <span th:case="5">退貨中</span> <span
+                                th:case="6">已退貨</span> <span th:case="*">XXX</span>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span>付款狀態:</span><span
+                                th:switch="${proOrderVO.proPayStatus}"> <span th:case="0">未付款</span>
+                                <span th:case="1">已付款</span> <span th:case="*">N/A</span>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span>出貨日期:</span><span
+                                th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span>付款方式:</span><span
+                                th:switch="${proOrderVO.proOrdPayment}"> <span th:case="0">信用卡</span>
+                                <span th:case="1">LinePay</span> <span th:case="*">N/A</span>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span>物流方式:</span><span th:switch="${proOrderVO.proOrdShipment}">
+                                <span th:case="0">宅配</span> <span th:case="1">超商取貨</span> <span
+                                th:case="*"></span>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span>物流追蹤碼:</span><span
+                                th:text="${proOrderVO.proTrackingNo}"></span>
+                        </div>
+
+                        <div class="info-item" th:if="${proOrderVO.memProCpnVO}">
+                            <span>商品折價卷流水號:</span> <span
+                                th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span>
+                        </div>
+                        <div class="info-item" th:unless="${proOrderVO.memProCpnVO}">
+                            <span>商品折價卷流水號:</span><span>無/未使用</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-detail-section">
+                    <h3>收件人資料</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span>收件人姓名:</span><span th:text="${proOrderVO.proOrdName}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span>收件人電話:</span><span th:text="${proOrderVO.proOrdMobile}"></span>
+                        </div>
+                        <div class="info-item full-width">
+                            <span>收件人地址:</span><span th:text="${proOrderVO.proOrdAddr}"></span>
+                        </div>
+                        <div class="info-item full-width">
+                            <span>收件人電子信箱:</span><span th:text="${proOrderVO.proOrdEmail}"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <table class="product-table">
+					<thead>
+						<tr>
+							<th>商品編號</th>
+							<th>商品名稱</th>
+							<th>購買單價</th>
+							<th>購買數量</th>
+							<th>商品小計</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="proOrderItemsVO : ${proOrderItems}">
+							<td th:text="${proOrderItemsVO.productVO.proId}"></td>
+							<td th:text="${proOrderItemsVO.productVO.proName}"></td>
+							<td th:text="${proOrderItemsVO.proUnitPrice}"></td>
+							<td th:text="${proOrderItemsVO.proAmount}"></td>
+							<td th:text="${proOrderItemsVO.proSubTotal}"></td>
+						</tr>
+					</tbody>
+				</table>
+
+
+                <div class="total-summary">
+                    <div class="info-item">
+                        <span>商品總金額:</span><span th:text="${proOrderVO.proTotal}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span>運費:</span><span th:text="${proOrderVO.proOrdShipFee}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span>折價券折抵金額:</span><span th:text="${proOrderVO.proOrdCpndisc}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span>商品訂單折抵會員點數:</span><span th:text="${proOrderVO.proOrdPointdisc}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span>商品訂單回饋會員點數:</span><span th:text="${proOrderVO.proOrdPointGet}"></span>
+                    </div>
+                    <div class="info-item grand-total">
+                        <span>實付金額:</span><span th:text="${proOrderVO.proOrdGrandTotal}"></span>
+                    </div>
+                </div>
+
+                <div class="order-note" th:if="${proOrderVO.proOrdComm}">
+                    <span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span>
+                </div>
+
+
+                <div class="back-button-area">
+                    <form method="get" th:action="@{/mem/proorders/listAllProOrder}">
+                        <input type="submit" value="回上一頁" class="btn btn-back">
+                        <input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+                    </form>
+                </div>
+			</div>
 		</div>
-		<span>訂單日期:</span><span th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}"></span><br>
-		<span>訂單狀態:</span><span th:switch="${proOrderVO.proOrdStatus}">
-                    		<span th:case="0">成立訂單</span>
-                    		<span th:case="1">取消訂單(未出貨)取貨</span>
-                    		<span th:case="2">出貨中</span>
-                    		<span th:case="3">已到貨</span>
-                    		<span th:case="4">申請退貨(已出貨)</span>
-                    		<span th:case="5">退貨中</span>
-                    		<span th:case="6">已退貨</span>
-                    		<span th:case="*">XXX</span></span><br>
-		<span>付款狀態:</span><span th:switch="${proOrderVO.proPayStatus}">
-		                    <span th:case="0">未付款</span>
-                            <span th:case="1">已付款</span>
-                            <span th:case="*">N/A</span></span><br>
-        <span>收件人姓名:</span><span th:text="${proOrderVO.proOrdName}"></span><br>
-        <span>收件人電話:</span><span th:text="${proOrderVO.proOrdMobile}"></span><br>
-        <span>收件人地址:</span><span th:text="${proOrderVO.proOrdAddr}"></span><br>
-        <span>收件人電子信箱:</span><span th:text="${proOrderVO.proOrdEmail}"></span>
-                            
-		<br>==========================</br>
-				<table border="1">
-			<thead>
-                <tr>
-                    <th>商品編號</th>
-                    <th>商品名稱</th>
-                    <th>購買單價</th>
-                    <th>購買數量</th>
-                    <th>商品小計</th>
-                 </tr>
-            </thead>
-            <tbody>
-            		<tr th:each="proOrderItemsVO : ${proOrderItems}">
-            			<td th:text="${proOrderItemsVO.productVO.proId}"></td>
-            			<td th:text="${proOrderItemsVO.productVO.proName}"></td>
-            			<td th:text="${proOrderItemsVO.proUnitPrice}"></td>
-            			<td th:text="${proOrderItemsVO.proAmount}"></td>
-            			<td th:text="${proOrderItemsVO.proSubTotal}"></td>
-            </tbody>
-		</table>		
-		==========================</br>
-		<span>商品總金額:</span><span th:text="${proOrderVO.proTotal}"></span><br>
-		<span>運費:</span><span th:text="${proOrderVO.proOrdShipFee}"></span><br>
-		<span>折價券折抵金額:</span><span th:text="${proOrderVO.proOrdCpndisc}"></span><br>
-		<span>商品訂單折抵會員點數:</span><span th:text="${proOrderVO.proOrdPointdisc}"></span><br>
-		<span>商品訂單回饋會員點數:</span><span th:text="${proOrderVO.proOrdPointGet}"></span><br>
-		<span>實付金額:</span><span th:text="${proOrderVO.proOrdGrandTotal}"></span><br>
-		<span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span><br>
-		<span>付款方式:</span><span th:switch="${proOrderVO.proOrdPayment}">
-                   <span th:case="0">信用卡</span>
-                   <span th:case="1">LinePay</span>
-<!--                    <span th:case="2">貨到付款</span>
-                   <span th:case="3">超商付款</span> -->
-                   <span th:case="*">N/A</span></span><br>
-		<span>物流方式:</span><span th:switch="${proOrderVO.proOrdShipment}">
-                   <span th:case="0">宅配</span>
-                   <span th:case="1">超商取貨</span>
-                   <span th:case="*"></span></span><br>
-		<span>物流追蹤碼:</span><span th:text="${proOrderVO.proTrackingNo}"></span><br>
-		<span>出貨日期:</span><span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"></span><br>
+	</div>
 
-                    
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
-      
-                    	<form method="get" th:action="@{/mem/proorders/listAllProOrder}">
-                    		<input type="submit" value="回上一頁">
-                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
-                    	</form>
-
-    </div>
-    
 </body>
 </html>
