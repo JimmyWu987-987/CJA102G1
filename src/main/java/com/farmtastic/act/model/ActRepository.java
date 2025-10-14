@@ -21,7 +21,7 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
     List<Act> findByActStat(Integer actStat, Sort sort);
     List<Act> findByActLaunStat(Integer actLaunStat, Sort sort);
     List<Act> findByFmemIdAndActStat(Integer fmemId, Integer actStat, Sort sort);
-
+    
     // 複合查詢 for 小農
     @Query("SELECT DISTINCT a FROM Act a " +
            "JOIN a.actCate ac " +

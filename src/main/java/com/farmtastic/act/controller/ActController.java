@@ -72,7 +72,7 @@ public class ActController {
         model.addAttribute("actList", actList);
         return "front_end/customer/unlogined/act/actMainPageTest";		// 導回首頁
     }
-    
+     
     
     // 複合查詢
     @GetMapping("/listActByCQ")

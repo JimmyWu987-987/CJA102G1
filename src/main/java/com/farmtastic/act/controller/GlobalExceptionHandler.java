@@ -10,4 +10,4 @@ public class GlobalExceptionHandler {
 	public String handleTypeMismatch() {
 		return "notFound";		// 之後在templates建notFound.html即可
 	}
-}
+} 
