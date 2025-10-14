@@ -3,95 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小農會員註冊</title>
+    <title>小農會員補件</title>
     <link rel="icon" th:href="@{/images/logo.png}">
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
-
+    <link rel="stylesheet" th:href="@{/css/mem/forgetResetPassword.css}">
     <style>
-/* 		.container-header, */
-/* 		.container-footer{ */
-/* 			background-color: #dce2ef;	 */
-/* 		} */
-/* 		.nav > li > a{ */
-/* 			background-color: #4F9D9D; */
-/* 		} */
-
-		
-		
-		form.userInfo{
-		    border: 3px solid #c0cbeb;
-		}
-		.reg-login-btns .btn-login,
-		.reg-login-btns .btn-reg{
-		    color: #63554b;
-		    background-color: #dce2ef;
-		}
-		.reg-login-btns .active-btn{
-  		    background-color: #bdcef2; 
-		}
-		.reg-login-btns .btn-login:not(.active-btn):hover,
-		.reg-login-btns .btn-reg:not(.active-btn):hover{
-		    background-color: #d0dcf5;
-		}
-		
-	</style>
+    	
+    </style>
+   
 </head>
-<body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
-    
+<body th:data-success="${success}" th:data-fail="${fail}">
 
-    <div th:replace="~{/front_end/index :: header}"></div>
+	<div th:replace="~{/front_end/index :: header}"></div>
 
-    <div class="container container-reg-login">
-        <h2 class="reg-login-title">小農會員</h2>
-
-        <div class="reg-login-btns">    
-            <span class="btn-login active-btn" id="btn-login">登 入</span><span class="btn-reg" id="btn-reg">註 冊</span>
+    <div class="container container-submit-supplement">
+        <h2>小農會員</h2>
+        <div class="submit-supplement-title">    
+            <span>補件或修改資料</span>
         </div>
         
-        <div class="login" id="login">
-            <form method="post" th:action="@{/fmem/login}" th:object="${loginRequest}" class="userInfo">
+        <div class="submitSupplement">
+            <form method="post" 
+            	  th:action="@{/fmem/submitSupplement}" 
+            	  th:object="${updateSupplementFmem}" 
+            	  class="userInfo" 
+            	  enctype="multipart/form-data"
+            	  id="supplement">
                 <ul>
-                    <li>
+					<li>
                         <label for="">帳號</label>
-                        <input type="text" th:field="*{fmemAccLogin}" class="accLogin" placeholder="fmem測試帳號:test">                        
+                        <input type="text" th:value="${verifiedFmem.fmemAcc}" class="acc" disabled>                        
                     </li>
-                    <li>
-                        <label for="">密碼</label>
-                        <input type="password" th:field="*{fmemPwdLogin}" class="pwdLogin" placeholder="fmem測試密碼:1234">
-                    </li>
-
-					<div th:if="${loginError}">
-						<span th:text="${loginError}" class="error error-login"></span>
-					</div>
-					<a class="forget-pwd-btn" th:href="@{/fmem/forgetPasswordPage}">忘記密碼？</a>
-					<a class="supplementary-info-btn" th:href="@{/fmem/supplementIdentityCheckPage}">我要補件</a>
-
-					<input type="submit" value="登入" class="btn link">
-                </ul>
-            </form>
-        </div>
-        
-        <div class="register" id="register">
-            <form method="post" th:action="@{/fmem/register}" th:object="${fmem}" class="userInfo" enctype="multipart/form-data">
-                <ul>
-                    <li>
-                        <label for="">帳號</label>
-                        <input type="text" th:field="*{fmemAcc}" class="acc" placeholder="英文或數字或_ , 長度8~20">                        
-                        <span th:if="${#fields.hasErrors('fmemAcc')}" th:errors="*{fmemAcc}" class="error"></span>
-						<span th:if="${regError}" th:text="${regError}" class="error-reg"></span>
-                    </li>
-                    <li>
-                        <label for="">密碼</label>
-                        <input type="password" th:field="*{fmemPwd}" class="pwd" placeholder="英文或數字或@ , 長度8~20">
-                        <span th:if="${#fields.hasErrors('fmemPwd')}" th:errors="*{fmemPwd}" class="error"></span>
-                    </li>
-                    <li>
-                        <label for="">再次輸入密碼</label>
-                        <input type="password" th:field="*{fmemPwdCheck}" placeholder="英文或數字或@ , 長度8~20">
-                        <span th:if="${#fields.hasErrors('fmemPwdCheck')}" th:each="error : ${#fields.errors('fmemPwdCheck')}" th:text="${error}" class="error"></span>
-                    </li>
+                    
                     <li>
                         <label for="">姓名</label>
                         <input type="text" th:field="*{fmemName}">
@@ -109,11 +54,7 @@
                         <input type="tel" th:field="*{fmemMobile}" placeholder="格式: 09XX-XXXXXX">
                         <span th:if="${#fields.hasErrors('fmemMobile')}" th:errors="*{fmemMobile}" class="error"></span>
                     </li>
-                    <li>
-                        <label for="">市話</label>
-                        <input type="tel" th:field="*{fmemTel}" placeholder="">
-                        <span th:if="${#fields.hasErrors('fmemTel')}" th:errors="*{fmemTel}" class="error"></span>
-                    </li>
+                    
                     <li>
                         <label for="">信箱</label>
                         <input type="email" th:field="*{fmemEmail}" class="email" list="email-suggestions">
@@ -159,10 +100,10 @@
                    				 th:src="@{'data:image/jpeg;base64,' + ${tempLandPicBase64}}"
                    				 alt="農地證明文件">
 					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                   			<input type="file" th:field="*{landPicFile}" class="landPic pic" accept="image/*">
+                   			<input type="file" th:field="*{landPic}" class="landPic pic" accept="image/*">
 					    </div>
 					    <div class="picInfo"></div>
-					    <span th:if="${#fields.hasErrors('landPicFile')}" th:errors="*{landPicFile}" class="error"></span>
+					    <span th:if="${#fields.hasErrors('landPic')}" th:errors="*{landPic}" class="error"></span>
 	               </li>
 	               <li class="list-pic">
 	               		<label>農保證明文件(點選下框以新增或更換圖片)</label>
@@ -171,31 +112,28 @@
                    				 th:src="@{'data:image/jpeg;base64,' + ${tempInsurPicBase64}}"
                    				 alt="農保證明文件">
 					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                   			<input type="file" th:field="*{insurPicFile}" class="insurPic pic" accept="image/*">
+                   			<input type="file" th:field="*{insurPic}" class="insurPic pic" accept="image/*">
 					    </div>
 					    <div class="picInfo"></div>
-					    <span th:if="${#fields.hasErrors('insurPicFile')}" th:errors="*{insurPicFile}" class="error"></span>
+					    <span th:if="${#fields.hasErrors('insurPic')}" th:errors="*{insurPic}" class="error"></span>
 	               </li>
-	               
-	               
-                    
-                    <input type="submit" value="送出" class="btn link" id="btn-submitReg">
+					
+					<input type="submit" value="送出" class="btn link">
                 </ul>
             </form>
         </div>
     </div>
-
-
+   
 	<div th:replace="~{/front_end/index :: footer}"></div>
-
+	
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script th:src="@{/js/mem/regLogin.js}"></script>
-<!--     ???? -->
-    <script th:src="@{/js/mem/regBank.js}"></script> 
-<!--     ??? -->
-    <script th:src="@{/js/mem/successUpdatePasswordAlert.js}"></script>
+<!--     <script th:src="@{/js/mem/successRegAlert.js}"></script> -->
+    
+    <script th:src="@{/js/mem/emailAddr.js}"></script>
     <script th:src="@{/js/fmem/bankCode.js}"></script>
     <script th:src="@{/js/fmem/uploadPic.js}"></script>
+    
+    <script th:src="@{/js/admin/fmemSupplementForm.js}"></script>
     
 </body>
 </html>

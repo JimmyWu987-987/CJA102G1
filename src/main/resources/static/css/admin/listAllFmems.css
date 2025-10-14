@@ -2,31 +2,13 @@
 
 /* *{outline: 1px solid #f00;} */
 
-.container-main{
-	position: relative;
-}
-.back-links{
-	display: inline-block;
-	position: absolute;
-	top: 29px;
-	left: 40px;
-}
-
+/* 回首頁連結 區分小農和一般會員按鈕的顏色  */
 a.back-link{
-	display: inline-block;
-	width: 40px;
-	padding: 9px 4px;
-	color: #fff;
 	background-color: #72a0e0;
-	border-radius: 6px;
-	font-size: 18px;
-	text-decoration: none;
-	text-align: center;
 }
 a.back-link:hover{
 	background-color: #4383c9;
 }
-
 
 
 
@@ -37,10 +19,29 @@ a.back-link:hover{
 	flex-wrap: wrap;
 	border-radius: 15px;
 }
-
 .selectors .switch-list{
 	width: 130px;
 }
+
+
+/* 改變整體顏色 */
+.container{
+    background: #eaf2ec;
+}
+thead tr{
+	background-color: #c7d3e9;
+}
+tbody tr:nth-child(2n){
+	background-color: #d8e7df;
+}
+tbody tr:hover{
+	background-color: #bfd7cc;
+}
+tbody tr.activeRow{
+	outline: 2px solid #789bed;
+	background-color: #d1e6f5;
+}
+
 
 
 td.status-data form{

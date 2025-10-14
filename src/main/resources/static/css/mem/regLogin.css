@@ -127,11 +127,18 @@ form.userInfo .bankAcc{
 }
 
 
-a.forget-pwd-btn{
+a.forget-pwd-btn,
+a.supplementary-info-btn{
+	display: inline-block;
 	margin-top: 12px;
 	margin-left: 4px;
+	color: #1d42a3;
 }
-a.forget-pwd-btn:hover{
+a.forget-pwd-btn{
+	margin-right: 5px;
+}
+a.forget-pwd-btn:hover,
+a.supplementary-info-btn:hover{
 	color: #744;
 	text-decoration: underline;
 }

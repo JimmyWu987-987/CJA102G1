@@ -3,26 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一般會員註冊</title>
+    <title>小農會員補件身分驗證</title>
     <link rel="icon" th:href="@{/images/logo.png}">
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
     <link rel="stylesheet" th:href="@{/css/mem/forgetResetPassword.css}">
+    <style>
+    	
+    </style>
    
 </head>
 <body th:data-success="${success}" th:data-fail="${fail}">
 
 	<div th:replace="~{/front_end/index :: header}"></div>
 
-    <div class="container container-forget-pwd">
+    <div class="container container-identity-check">
         <h2>小農會員</h2>
-        <div class="password-title">    
-            <span>忘記密碼</span>
+        <div class="identity-check-title">    
+            <span>我要補件</span>
         </div>
         
-        <div class="forgetPassword">
-            <form method="post" th:action="@{/fmem/forgetPassword}" th:object="${forgetPwdRequest}" class="userInfo">
+        <div class="identityCheck">
+            <form method="post" 
+            	  th:action="@{/fmem/requestSupplement}" 
+            	  th:object="${forgetPwdRequest}" 
+            	  class="userInfo">
                 <ul>
                     <li>
                         <label for="">手機號碼</label>

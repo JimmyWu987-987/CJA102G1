@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index.html</title>
-    <link rel="icon" href="./images/logo.png">
+    <title>農作物與它們的產地</title>
+    <link rel="icon" th:href="@{/images/logo.png}">
     
     <th:block th:fragment="mainCss">
 	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -71,8 +71,14 @@
                 </li>
             </ul>
             <div class="member">
-                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
-                <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn">
+                	<i class="fa-solid fa-user-tie"></i>
+                	<span class="icon-label">小農</span>
+                </a>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn">
+                	<i class="fa-solid fa-user"></i>
+                	<span class="icon-label">會員</span>
+                </a>
                 <div class="helloUser" th:if="${session.loggedInMember} != null">
                 	<div th:text=" 'Hi, ' + ${session.loggedInMember.memName}"></div>
                 	<div class="point">
@@ -80,10 +86,16 @@
                 		<span th:text="${session.loggedInMember.memPoint}"></span>
                 	</div>
                 </div>
-                <a th:href="@{/cart/view}" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+                <a th:href="@{/cart/view}" class="member-logo link btn cart">
+                	<i class="fa-solid fa-cart-shopping"></i>
+                	<span class="icon-label">購物車</span>
+                </a>
 
             	<form th:action="@{/mem/logout}" th:if="${session.loggedInMember} != null" method="post" class="logout">
-            		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+            		<button type="submit" class="btn-logout">
+            			<i class="fa-solid fa-arrow-right-to-bracket"></i>
+            			<span class="icon-label">登出</span>
+            		</button>
             	</form>
 
             

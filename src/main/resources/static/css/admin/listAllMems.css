@@ -5,16 +5,38 @@
     list-style: none;
 /*     outline: 1px solid #f00; */
  }
+ 
 
- .container{
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    background: #eaf2ec;
-    min-width: 996px;
-    border-radius: 8px;
-    color: #333;
+ 
+/* ------回首頁連結 */
+.container-main{
+	position: relative;
 }
+.back-links{
+	display: inline-block;
+	position: absolute;
+	top: 29px;
+	left: 40px;
+}
+a.back-link{
+	display: inline-block;
+	width: 40px;
+	padding: 9px 4px;
+	color: #fff;
+	background-color: #f08673;
+	border-radius: 6px;
+	font-size: 18px;
+	text-decoration: none;
+	text-align: center;
+}
+a.back-link:hover{
+	transition: .3s;
+	background-color: #e0755f;
+}
+ /* 回首頁連結------- */
+ 
+
+ 
 .container-table{
 	margin: 10px auto 30px;
     border: 1px solid #a5b3d6;
@@ -25,6 +47,16 @@
     box-shadow: 2px 2px 9px rgba(160, 194, 160, 0.5);
 }
 
+
+.container{
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background: #f3f0e9;
+    min-width: 996px;
+    border-radius: 8px;
+    color: #333;
+}
 
 .table-wrapper{
 	overflow-x: auto;
@@ -37,17 +69,16 @@ table{
 	overflow: hidden;
 }
 /* *{outline: 1px solid #f00;} */
-
 thead tr{
 	width: 100%;
-	background-color: #c7d3e9;
+	background-color: #f3c4b7;
 }
 tbody tr:nth-child(2n){
-	background-color: #d8e7df;
+	background-color: #f4e6db;
 }
 tbody tr:hover{
 /* 	background-color: #e2e1cf; */
-	background-color: #bfd7cc;
+	background-color: #f1cfbc;
 }
 tbody tr.activeRow{
 	outline: 2px solid #789bed;

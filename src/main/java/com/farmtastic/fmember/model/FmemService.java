@@ -56,15 +56,27 @@ public class FmemService {
 		if (fmem == null) {
 			return null;
 		}
-		
 		if (!fmem.getFmemEmail().equals(fmemEmail)) {
 			return null;
 		}
-		
 		if ((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
-			System.out.println("fmem.getAccStatus()"+ fmem.getAccStatus());
+			return null;
 		}
-		
+		return fmem;
+	}
+	
+	// 我要補件 (跟忘記密碼一樣)
+	public Fmem checkSupplementIdentity(String fmemMobile, String fmemEmail) {
+		Fmem fmem = repository.findByFmemMobile(fmemMobile);
+		if (fmem == null) {
+			return null;
+		}
+		if (!fmem.getFmemEmail().equals(fmemEmail)) {
+			return null;
+		}
+		if (fmem.getAccStatus() != 3) {
+			return null;
+		}
 		return fmem;
 	}
 	

@@ -161,39 +161,78 @@ body{
 }
 
 
-
+/* *{outline: 1px solid #f00;} */
+/* 登入/購物車 icon */
 .container-header .header .member{
     display: flex;
+    padding-top: 4px;
 }
-.container-header .member a,
-.container-header .member .btn-logout{
-    width: 52px;
-    height: 52px;
-    margin-right: 8px;
-    line-height: 30px;
-    text-align: center;
+
+.container-header .member a i,
+.container-header .member button i{
+	display: inline-block;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-    color: var(--btn-color);
-    background-color: #fff;
-    border: 3px solid var(--btn-color);
+    line-height: 46px;
+    text-align: center;
+    font-size: 18px;
+    color: #fff;
+    background-color: #f78d66;
 }
 .container-header .member .btn-logout{
 	display: inline-block;
 	font-size: 18px;
 }
-
-.container-header .member a:hover,
-.container-header .member .btn-logout:hover{
-	cursor: pointer;
-    color: var(--btn-hover-color);
-    border: 3px solid var(--btn-hover-color);
-    background-color: #fff;
+.container-header .member .btn-logout,
+.container-header .member a{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 0px;
+	background-color: transparent;
 }
+.container-header .member a{
+	margin-right: 10px;
+}
+.container-header .member a:last-of-type{
+	margin-right: 0px;
+}
+.container-header .member a.cart{
+	margin-right: 10px;
+}
+.container-header .member a.cart i{
+	line-height: 48px;
+}
+.container-header .member .icon-label{
+	font-size: 14px;
+	color: #615338;
+	margin-top: 2px;
+	margin-left: 1px;
+	letter-spacing: 1px;
+}
+
+.container-header .member a:hover i,
+.container-header .member .btn-logout:hover i{
+	cursor: pointer;
+	transition: .3s ease;
+    background-color: #f1703f;
+}
+.container-header .member .btn-logout {
+    border: none;
+/*     background: transparent; */
+}
+
+
+
+
 .container-header .member .helloUser{
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	margin-right: 8px;
+	margin-top: 4px;
+	margin-right: 12px;
 	font-size: 15px;
 	line-height: 1.3;
 	text-align: center;

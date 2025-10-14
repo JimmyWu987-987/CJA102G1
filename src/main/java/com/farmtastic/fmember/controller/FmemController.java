@@ -33,6 +33,7 @@ import com.farmtastic.fmember.model.TempPic;
 import com.farmtastic.fmember.model.UpdatePasswordFmem;
 import com.farmtastic.fmember.model.UpdateProfileFmem;
 import com.farmtastic.fmember.model.UpdateStoreFmem;
+import com.farmtastic.fmember.model.UpdateSupplementFmem;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.style.model.Sty;
@@ -85,17 +86,8 @@ public class FmemController{
 //	登入後的小農首頁
 	@GetMapping("/home")
 	public String fmemHome(HttpSession session) {
-//		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");
-//		if(fmem != null) {
-//			return "/front_end/farmer/logined/home";			
-//		} else {
-//			return "redirect:/fmem/showFmemRegLoginForm";
-//		}
-		
-		
 		return "/front_end/farmer/logined/home";
 	}
-	
 
 	
 	@GetMapping("/fmemArea")
@@ -631,6 +623,186 @@ public class FmemController{
 	}
 	
 	
+	
+//	小農補件 (借用忘記密碼DTO)
+	@GetMapping("/supplementIdentityCheckPage")
+	public String supplementIdentityCheckPage(ModelMap model) {
+		model.addAttribute("forgetPwdRequest", new ForgetPwdRequest());
+		return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
+	}
+
+
+	@PostMapping("/requestSupplement")
+	public String requestSupplement(
+			HttpServletRequest request,
+			ForgetPwdRequest forgetPwdRequest, 
+			HttpSession session, 
+			ModelMap model,
+			RedirectAttributes redirectAttrs) {
+		String fmemMobileForgetPwd = forgetPwdRequest.getFmemMobileForgetPwd();
+		String fmemEmailForgetPwd = forgetPwdRequest.getFmemEmailForgetPwd();
+		
+		// 1.基本欄位驗證 
+		if(fmemMobileForgetPwd == null || fmemMobileForgetPwd.trim().isEmpty()) {
+			model.addAttribute("forgetPwdError", "請輸入手機");
+			model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+			return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
+		}
+		if(fmemEmailForgetPwd == null || fmemEmailForgetPwd.trim().isEmpty()) {
+			model.addAttribute("forgetPwdError", "請輸入信箱");
+			model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+			return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
+		}
+		
+		// 2.呼叫service進行驗證
+		try {
+			Fmem verifiedFmem = fmemSvc.checkSupplementIdentity(fmemMobileForgetPwd, fmemEmailForgetPwd);
+			if(verifiedFmem == null) {
+				model.addAttribute("forgetPwdError", "此帳號不符合補件資格");
+				model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+				return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
+			}
+			
+			// 3.驗證成功，把fmem傳給下一個頁面
+			
+//			redirectAttrs.addFlashAttribute("success", "成功發送驗證信");
+			session.setAttribute("verifiedFmem", verifiedFmem);
+			return "redirect:/fmem/fmemSupplementFormPage";  //重導到重設密碼頁面
+			
+		} catch (IllegalStateException e) {
+			model.addAttribute("forgetPwdError", e.getMessage());
+			model.addAttribute("forgetPwdRequest", forgetPwdRequest);
+			return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
+		}
+	}
+	
+	
+	@GetMapping("/fmemSupplementFormPage")
+	public String fmemSupplementFormPage(
+			ModelMap model,
+			HttpSession session) 
+					throws IOException {
+		
+		Fmem verifiedFmem = (Fmem) session.getAttribute("verifiedFmem");
+		if (verifiedFmem == null) {
+	        // 可能導向登入頁面或提示錯誤
+			System.out.println("verifiedFmem == null");
+	        return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
+	    }
+		
+		if (verifiedFmem.getLandPic() != null) {
+			String landPicBase64 = Base64.getEncoder().encodeToString(verifiedFmem.getLandPic());
+			model.addAttribute("tempLandPicBase64", landPicBase64);
+		}
+		if (verifiedFmem.getInsurPic() != null) {
+			String insurPicBase64 = Base64.getEncoder().encodeToString(verifiedFmem.getInsurPic());
+			model.addAttribute("tempInsurPicBase64", insurPicBase64);
+		}
+		
+		UpdateSupplementFmem updateSupplementFmem = new UpdateSupplementFmem();
+		BeanUtils.copyProperties(verifiedFmem, updateSupplementFmem);
+		model.addAttribute("updateSupplementFmem", updateSupplementFmem);
+		model.addAttribute("verifiedFmem", verifiedFmem);
+//		session.setAttribute("verifiedFmem", verifiedFmem);  //驗證正確就有傳進來 還需要??
+		return "front_end/farmer/unlogined/fmemSupplementForm";
+	}
+	
+	
+	@PostMapping("/submitSupplement")
+	public String submitSupplement(
+			ModelMap model,
+			HttpSession session,
+			@Valid @ModelAttribute("updateSupplementFmem") UpdateSupplementFmem updateSupplementFmem,
+			BindingResult result,
+			RedirectAttributes redirectAttrs) throws IOException {
+		
+		Fmem verifiedFmem = (Fmem) session.getAttribute("verifiedFmem");
+		model.addAttribute("verifiedFmem", verifiedFmem);
+		if (verifiedFmem == null) {
+	        // 可能導向登入頁面或提示錯誤
+	        return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
+	    }
+		
+//		處理圖片
+		MultipartFile landPicFile = updateSupplementFmem.getLandPic();
+		MultipartFile insurPicFile = updateSupplementFmem.getInsurPic();
+		
+		String tempLandPicBase64 = null;
+		String tempInsurPicBase64 = null;
+		TempPic tempPic = (TempPic) session.getAttribute("tempPic");
+		
+//		第一次進來才做，把loggedInFmember的圖片存進暫存tempPic (byte[])
+		if (tempPic == null) { //
+			tempPic = new TempPic();
+			tempPic.setLandPic(verifiedFmem.getLandPic());
+			tempPic.setInsurPic(verifiedFmem.getInsurPic());
+			session.setAttribute("tempPic", tempPic);
+		}
+			
+	//	fmemPicFile沒選擇圖片且tempPic裡原本有圖，用舊的temp顯示在前端預覽
+	//	fmemPicFile有選擇圖片且有錯誤的話，用舊的temp顯示在前端預覽** 且出現錯誤訊息紅字(後端驗證)
+		if (tempPic.getLandPic() != null) {
+			tempLandPicBase64 = Base64.getEncoder().encodeToString(tempPic.getLandPic());
+			model.addAttribute("tempLandPicBase64", tempLandPicBase64); 
+		}
+		if (tempPic.getInsurPic() != null) {
+			tempInsurPicBase64 = Base64.getEncoder().encodeToString(tempPic.getInsurPic());
+			model.addAttribute("tempInsurPicBase64", tempInsurPicBase64);
+		}
+	
+		
+////    	fmemPicFile有選擇圖片且沒有錯誤的話，要把新的存進tempPic DTO，並用tempXXXBase64顯示在前端預覽
+    	if (result.hasErrors()) {
+			if(!result.hasFieldErrors("landPic")) {
+				if(landPicFile != null && !landPicFile.isEmpty()) {
+					tempLandPicBase64 = Base64.getEncoder().encodeToString(landPicFile.getBytes());
+					model.addAttribute("tempLandPicBase64", tempLandPicBase64); //前端預覽用Base64
+					tempPic.setLandPic(landPicFile.getBytes()); //後端暫存用byte[]
+				}
+			}
+			if(!result.hasFieldErrors("insurPic")) {
+				if(insurPicFile != null && !insurPicFile.isEmpty()) {
+					tempInsurPicBase64 = Base64.getEncoder().encodeToString(insurPicFile.getBytes());
+					model.addAttribute("tempInsurPicBase64", tempInsurPicBase64); //前端預覽用Base64
+					tempPic.setInsurPic(insurPicFile.getBytes()); //後端暫存用byte[]
+				}
+			}
+			
+		    return "front_end/farmer/unlogined/fmemSupplementForm";
+		}
+    	
+    	
+//    	資料正確，開始存進資料庫
+    	
+		BeanUtils.copyProperties(updateSupplementFmem, verifiedFmem);
+		
+		byte[] tempLandPic = tempPic.getLandPic();
+		byte[] tempInsurPic = tempPic.getInsurPic();
+	
+//		如果新update有圖 => 優先用update的
+//		如果新update沒圖、但temp有圖 => 就用temp的
+		if (landPicFile != null && !landPicFile.isEmpty()) {
+			verifiedFmem.setLandPic(landPicFile.getBytes());
+    	} else if ((landPicFile == null || landPicFile.isEmpty()) && tempLandPic != null && tempLandPic.length > 0) {
+    		verifiedFmem.setLandPic(tempLandPic);
+    	}
+		if (insurPicFile != null && !insurPicFile.isEmpty()) {
+			verifiedFmem.setInsurPic(insurPicFile.getBytes());
+    	} else if ((insurPicFile == null || insurPicFile.isEmpty()) && tempInsurPic != null && tempInsurPic.length > 0) {
+    		verifiedFmem.setInsurPic(tempInsurPic);
+    	}
+    	
+		verifiedFmem.setAccStatus((byte) 0); //進入待審核
+    	fmemSvc.updateFmem(verifiedFmem);
+    	
+    	session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
+    	session.removeAttribute("verifiedFmem");
+
+		redirectAttrs.addFlashAttribute("success", "補件上傳成功");
+    	return "redirect:/";
+	}
+	
+
 	
 	
 	

@@ -1,5 +1,6 @@
 package com.farmtastic.member.model;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +87,15 @@ public class MemService {
 		return repository.findById(memId).orElse(null);
 	}
 	
+	// for coupon
+	public Date getBirthdayByMemId(Integer memId) {
+		Mem mem = repository.findById(memId).orElse(null);
+		if(mem != null) {
+			return mem.getMemBirthday();
+		}
+		return null;
+	}
+	/////////////////////
 	
 	public List<Mem> getAll(){
 		return repository.findAll();
