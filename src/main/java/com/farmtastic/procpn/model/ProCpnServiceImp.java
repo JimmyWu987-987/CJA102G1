@@ -43,23 +43,8 @@ public class ProCpnServiceImp implements ProCpnService {
 		// (vo) -> mapper.toAdminDTO(vo) .collect把轉換後的資料流收集回一個 List。
 		// List<ProCpnAdminDTO>
 		return repository.findAll().stream().map(mapper::toAdminDTO).collect(Collectors.toList());
-//		List<ProCpnVO> voList = repository.findAll();
-//		List<ProCpnAdminDTO> dtoList = new ArrayList<>();
-//
-//		for (ProCpnVO vo : voList) {
-//		    ProCpnAdminDTO dto = mapper.toAdminDTO(vo);
-//		    dtoList.add(dto);
-//		}
-//
-//		return dtoList;
 	}
 
-	// 單筆查詢
-	@Override
-//	public Optional<ProCpnAdminDTO> getById(Integer proCpnId) {
-//		// (vo) -> mapper.toResponseDTO(vo)
-//		return repository.findById(proCpnId).map(mapper::toAdminDTO);
-//	}
 	// 單筆查詢
 	public Optional<ProCpnVO> getById(Integer proCpnId) {
 		return repository.findById(proCpnId);

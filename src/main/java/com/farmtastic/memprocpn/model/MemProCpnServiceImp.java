@@ -8,12 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.farmtastic.common.enums.CpnUseStatus;
-import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.common.mapper.MemProCpnMapperImp;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemRepository;
 import com.farmtastic.procpn.model.ProCpnRepository;
 import com.farmtastic.procpn.model.ProCpnVO;
+
+import jakarta.transaction.Transactional;
 
 @Service("memProCpnService")
 public class MemProCpnServiceImp {
@@ -38,7 +39,7 @@ public class MemProCpnServiceImp {
 	}
 
 //修改卷狀態
-	// proCpnId 前端購物車選的折價券
+	// cpnHolderDetailId 前端購物車選的折價券
 	public void changeMemProCpnStatus(Integer memId, Integer cpnHolderDetailId) {
 		// 查出這筆券
 		MemProCpnVO vo = memProCpnRepository.findByMemVO_MemIdAndProCpnVO_ProCpnId(memId, cpnHolderDetailId)
@@ -58,13 +59,6 @@ public class MemProCpnServiceImp {
 		return memProCpnRepository.findAll();
 	}
 
-//	  /**
-//     * 查詢會員的所有折價券（含已使用/過期）
-//     */
-//    public List<MemProCpnVO> getCouponsByMember(Integer memId) {
-//        return memProCpnRepo.findByMemVO_MemIdOrderByCrtAtDesc(memId);
-//    }
-
 	// 查「某會員」所有效折價券
 	public List<MemProCpnVO> getCpnsByMember(Integer memId) {
 		return memProCpnRepository.findAllByMember(memId);
@@ -75,26 +69,34 @@ public class MemProCpnServiceImp {
 		return memProCpnRepository.findValidCpnByMember(memId);
 	}
 
-	public void giveRegisterCoupon(Integer memId) {
+// 發送券
+	@Transactional
+	public void giveCoupon(Integer memId, Integer proCpnId) {
 
-		// ✅ 查出註冊折價券（is_active=1）
-		ProCpnVO coupon = proCpnRepository.findByCpnNameAndIsActive("新客專屬9折券", IsActive.ACTIVE)
-				.orElseThrow(() -> new RuntimeException("沒有啟用中的註冊折價券"));
-		// ✅ 查出該會員（保證存在）
+		// 查出折價券規則
+		ProCpnVO proCpnVO = proCpnRepository.findById(proCpnId)
+				.orElseThrow(() -> new RuntimeException("找不到指定折價券ID：" + proCpnId));
+		// 查出該會員（保證存在）
 		Mem mem = memRepository.findById(memId).orElseThrow(() -> new RuntimeException("找不到該會員：" + memId));
+
+		// 防重發
+		if (memProCpnRepository.existsByMemVOAndProCpnVO(mem, proCpnVO)) {
+			System.out.printf("⚠️ 會員 %d 已領取過【%s】，跳過%n", memId, proCpnVO.getCpnName());
+			return;
+		}
 
 		// ✅ 建立會員折價券關聯紀錄
 		MemProCpnVO memProCpn = new MemProCpnVO();
 		memProCpn.setMemVO(mem);
-		memProCpn.setProCpnVO(coupon);
+		memProCpn.setProCpnVO(proCpnVO);
 		memProCpn.setCpnUseStatus(CpnUseStatus.UNUSED); // 0=未使用
 		memProCpn.setRcvAt(LocalDateTime.now());
 		memProCpn.setCrtAt(LocalDateTime.now());
 		memProCpn.setEffStart(LocalDate.now());
 
 		// 設定有效期限（用 valid_days）
-		if (coupon.getValidDays() != null) {
-			memProCpn.setEffEnd(LocalDate.now().plusDays(coupon.getValidDays()));
+		if (proCpnVO.getValidDays() != null) {
+			memProCpn.setEffEnd(LocalDate.now().plusDays(proCpnVO.getValidDays()));
 		} else {
 			memProCpn.setEffEnd(LocalDate.now().plusDays(30)); // 沒設定就給預設30天
 		}

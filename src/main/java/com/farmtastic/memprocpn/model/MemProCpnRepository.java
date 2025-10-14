@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.farmtastic.member.model.Mem;
+import com.farmtastic.procpn.model.ProCpnVO;
+
 public interface MemProCpnRepository extends JpaRepository<MemProCpnVO, Integer> {
 	// 查某張券的所有持有人
 	// 查某會員領過的所有券
@@ -39,4 +42,6 @@ public interface MemProCpnRepository extends JpaRepository<MemProCpnVO, Integer>
 	Optional<MemProCpnVO> findByMemVO_MemIdAndProCpnVO_ProCpnId(Integer memId, Integer proCpnId);
 
 	boolean existsByMemVO_MemIdAndProCpnVO_ProCpnId(Integer memId, Integer proCpnId);
+
+	boolean existsByMemVOAndProCpnVO(Mem memVO, ProCpnVO proCpnVO);
 }
