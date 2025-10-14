@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>我的商品管理</title>
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+<!--     @{/css} + "/sty/storeSty2.css" -->
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<style>
+body {
+	font-family: 'Noto Sans TC', sans-serif;
+	padding: 2rem;
+	background-color: #f4f6f9;
+}
+
+/* .container {
+	max-width: 1400px;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 2rem;
+	border-radius: 12px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+ */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1.5rem;
+}
+
+th, td {
+	border: 1px solid #dee2e6;
+	text-align: left;
+	padding: 12px;
+	vertical-align: middle;
+}
+
+tr:nth-child(even) {
+	background-color: #f8f9fa;
+}
+
+th {
+	background-color: #007bff;
+	color: white;
+}
+
+.action-form {
+	margin: 0;
+	display: inline-block;
+}
+
+/* .header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 2rem;
+} */
+
+h2 {
+	color: #343a40;
+}
+
+a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.add-btn {
+	width:110px;
+	padding: 10px 20px;
+	background-color: #28a745;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+	background-color: #218838;
+}
+
+.product-thumbnail {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+/* .container-header, .container-footer {
+	background-color: #dce2ef;
+} */
+
+.nav>li>a {
+	background-color: #4F9D9D;
+}
+</style>
+</head>
+<body>
+
+	<div class="container">
+	
+		<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+		
+		<div>
+			<!-- 【修正】直接從 session 取得小農的姓名和ID -->
+			<h2 th:if="${session.loggedInFmember != null}"></h2>
+
+		</div>
+	</div>	
+
+		<table id="productTable">
+			<thead>
+				<a th:href="@{/pro/fmem/add}" class="add-btn">新增商品</a>
+				<tr>
+					<th>商品編號</th>
+					<th>圖片</th>
+					<th>商品名稱</th>
+					<th>庫存</th>
+					<th>價格</th>
+					<th>狀態</th>
+					<th>產地</th>
+					<th>產品介紹</th>
+					<th>商品類別</th>
+					<th>修改</th>
+					<th>刪除</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="pro : ${proListData}">
+					<td th:text="${pro.proId}"></td>
+					<td>
+						<!-- 【修正】在圖片外層加上超連結，導向圖片管理頁面 -->
+						<a th:href="@{/pro-images/manage/{proId}(proId=${pro.proId})}">
+							<img th:if="${pro.proImage != null}"
+								 class="product-thumbnail"
+								 th:src="@{/product-image/{id}(id=${pro.proImage.proImgId})}"
+								 alt="商品圖片" />
+							<span th:if="${pro.proImage == null}">新增圖片</span>
+						</a>
+					</td>
+					<td th:text="${pro.proName}"></td>
+					<td th:text="${pro.proStock}"></td>
+					<td th:text="${pro.proPrice}"></td>
+					<td th:text="${pro.proStatus == 1 ? '上架' : '下架'}"></td>
+					<td th:text="${pro.proFrom}"></td>
+					<td th:text="${pro.proDes}"></td>
+					<td th:text="${pro.procateId?.proCateName}"></td>
+					<td><a th:href="@{/pro/fmem/update/{proid}(proid=${pro.proId})}">修改</a>
+					</td>
+					<td>
+						<!-- 【修正】修正刪除的 action 路徑及隱藏欄位的 name，以對應 Controller -->
+						<form method="post" th:action="@{/pro/fmem/delete}" class="action-form">
+							<input type="submit" value="刪除">
+							<input type="hidden" name="proId" th:value="${pro.proId}">
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<script
+		src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#productTable').DataTable({
+				"lengthMenu" : [ 5, 10, 20, 50 ],
+				"searching" : true,
+				"paging" : true,
+				"ordering" : false,
+				"info" : true,
+				"language" : {
+					"processing" : "處理中...",
+					"loadingRecords" : "載入中...",
+					"lengthMenu" : "每頁顯示 _MENU_ 筆",
+					"zeroRecords" : "您目前沒有任何商品。",
+					"info" : "顯示第 _START_ 至 _END_ 筆結果，共 _TOTAL_ 筆",
+					"infoEmpty" : "顯示第 0 至 0 筆結果，共 0 筆",
+					"infoFiltered" : "(從 _MAX_ 筆結果中過濾)",
+					"search" : "搜尋我的商品:",
+					"paginate" : {
+						"first" : "第一頁",
+						"previous" : "上一頁",
+						"next" : "下一頁",
+						"last" : "最後一頁"
+					}
+				}
+			});
+		});
+	</script>
+	
+		<div th:replace="~{/front_end/index :: footer}"></div>
+
+</body>
+</html>

@@ -77,14 +77,14 @@ public class ProService {
 		@CacheEvict(value = "pros", allEntries = true) 
 	})
 	
-	public void deletePro(Integer proId) { // 參數名稱也改為 proId
+	public void deletePro(Integer proId) { 
 		if (repository.existsById(proId))
 			repository.deleteById(proId);
 	}
 	
 
 	@Cacheable(value = "pro", key = "#proId", unless = "#result == null")
-	public Pro getOnePro(Integer proId) { // 參數名稱也改為 proId
+	public Pro getOnePro(Integer proId) { 
 		Optional<Pro> optional = repository.findById(proId);
 		return optional.orElse(null);
 	}
@@ -94,7 +94,6 @@ public class ProService {
 		return repository.findAll();
 	}
 	
-	// --- 其他方法保持不變 ---
 
 	public Page<Pro> findPaginated(int pageNo, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
@@ -147,4 +146,8 @@ public class ProService {
 		};
 		return repository.findAll(spec);
 	}
+	
+    public List<Pro> findByFmemId(Integer fmemId) {
+        return repository.findByFmemId_FmemId(fmemId);
+    }
 }

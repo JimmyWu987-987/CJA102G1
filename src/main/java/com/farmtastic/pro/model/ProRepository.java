@@ -27,6 +27,6 @@ public interface ProRepository extends JpaRepository<Pro, Integer>, JpaSpecifica
     @Query("SELECT p FROM Pro p LEFT JOIN FETCH p.fmemId LEFT JOIN FETCH p.procateId")
     List<Pro> findAllWithDetails();
     
-    
+    List<Pro> findByFmemId_FmemId(Integer fmemId);
 
 }
