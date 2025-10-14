@@ -59,16 +59,17 @@
     </div>
 
     <div class="member-content">
-		<div th:if="${successMessage}" class="success-message">
+
+    
+    <h2>商品訂單查詢</h2>
+    <br>
+    
+	<div th:if="${successMessage}" class="success-message">
         <p th:text="${successMessage}"></p>
     </div>
     <div th:if="${errorMessage}" class="error-message">
         <p th:text="${errorMessage}"></p>
     </div>
-    
-    <h2>商品訂單查詢</h2>
-    <br>
-    
 
     <div th:if="${#lists.isEmpty(proOrderList)}">
         <p>目前沒有任何訂單資料。</p>
