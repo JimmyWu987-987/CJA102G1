@@ -96,6 +96,14 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 			@RequestParam("fmemId") Integer fmemId, // 從cartView.html																	// 表單傳入
 			@RequestParam("quantity") Integer quantity, // 這是使用者唯一能修改的欄位
 			RedirectAttributes redirectAttributes) {
+		
+		Pro proOrderVO = productService.getOnePro(proId);
+		
+		// 當購買數量超過庫存，出現錯誤提示，且返回。
+		if(proOrderVO.getProStock() < quantity) {
+			redirectAttributes.addFlashAttribute("errorMessage", "購買數量超過庫存！目前庫存量為[ "+ proOrderVO.getProStock()+" ]!");
+			return "redirect:/cart/view";
+		}
 
 		boolean success = cartService.updateQuantity(proId, fmemId, quantity);
 
