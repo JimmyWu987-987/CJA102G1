@@ -60,7 +60,7 @@ public class ActController {
     
     // 查 "已上架的" 所有活動
     @GetMapping("/listAllAct")
-    public String listAllForCus(ModelMap model) {
+    public String listAllActForCus(ModelMap model) {
         
     	// 篩已上架的, 預設依上架更新時間排
         List<Act> actList = actSvc.findByActLaunStat(1, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
