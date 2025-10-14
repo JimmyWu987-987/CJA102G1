@@ -37,7 +37,7 @@ public class Fmem implements Serializable {
 	@Column(name = "f_id")
 	@NotEmpty(message = "身分證字號請勿空白", groups = RegistrationValidation.class)
 	@Pattern(regexp = "^$|^[A-Z][1-2][0-9]{8}$", 
-			 message = "身分證格式不符(開頭英文大寫)，請重新輸入", 
+			 message = "身分證格式不符，請重新輸入", 
 			 groups = RegistrationValidation.class)
 	private String fId;
 	
@@ -150,11 +150,11 @@ public class Fmem implements Serializable {
 	private byte[] insurPic;
 	
 	
-	@FileSize(max = 1 * 1024 * 1024, message = "圖片大小不能超過1MB", groups = RegistrationValidation.class)
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB", groups = RegistrationValidation.class)
 	@Transient
 	private MultipartFile landPicFile;
 	
-	@FileSize(max = 1 * 1024 * 1024, message = "圖片大小不能超過1MB", groups = RegistrationValidation.class)
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB", groups = RegistrationValidation.class)
 	@Transient
 	private MultipartFile insurPicFile;
 	
@@ -210,7 +210,12 @@ public class Fmem implements Serializable {
 		return fId;
 	}
 	public void setFId(String fId) {
-		this.fId = fId;
+//		身分證開頭轉大寫
+		if(fId != null && !fId.isEmpty()) {
+			this.fId = fId.substring(0, 1).toUpperCase() + fId.substring(1);
+		} else {
+			this.fId = fId;
+		}
 	}
 	
 	public String getFmemAcc() {

@@ -185,8 +185,8 @@ public class adminMemController {
 			case 3:
 				mailTitle = "農作物與它們的產地：小農會員-審核未過";
 				mailContent = "帳號未通過審核：\n"
-							  + baseUrl + "/fmem/showFmemRegLoginForm\n\n"
-							  + "可由此連結補件或更新資料。";
+							  + baseUrl + "/fmem/supplementIdentityCheckPage\n\n"
+							  + "可由此連結補件或更新資料，或由小農登入頁面下方點擊「我要補件」。";
 				break;
 		}
 		

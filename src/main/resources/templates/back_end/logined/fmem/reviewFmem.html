@@ -57,7 +57,7 @@
 				    <th class="myMobile">連絡電話</th>
 					<td class="myMobile">
 						<span th:text="${fmem.fmemMobile}"></span>
-						<span th:text="'/ ' + ${fmem.fmemTel}"></span>
+						<span th:if="${fmem.fmemTel}" th:text="'/ ' + ${fmem.fmemTel}"></span>
 					</td>
 					<td class="gap"></td>
 				    <th class="myEmail">信箱</th>

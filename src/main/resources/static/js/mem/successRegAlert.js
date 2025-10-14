@@ -43,5 +43,18 @@ window.addEventListener("load", function(){
 			     htmlContainer: 'custom-swal-content'
 			  }
          });
+	} else if(successMsg === "補件上傳成功"){
+		Swal.fire({
+             icon: 'success',
+             title: successMsg,
+			 text: '請等候後台審核，約需1~2天，審核完成後將以Email發送通知，請留意收信',
+             showConfirmButton: false,
+			 customClass: {
+				 icon: 'custom-icon',
+			     popup: 'custom-swal',
+			     title: 'custom-swal-title',
+			     htmlContainer: 'custom-swal-content'
+			  }
+         });
 	}
  })

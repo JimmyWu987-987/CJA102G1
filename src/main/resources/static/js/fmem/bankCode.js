@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', function () {
 			loadBankCode();
 			if(savedBankCode){
 				bankCodeSelect.value = savedBankCode;
-//				console.log('設定後的 value:', bankCodeSelect.value);
+				console.log('設定後的 value:', bankCodeSelect.value);
 			}
 			
 			
