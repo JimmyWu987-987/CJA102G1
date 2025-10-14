@@ -76,7 +76,7 @@ public class ActController {
     
     // 複合查詢
     @GetMapping("/listActByCQ")
-    public String listActByCQForCus(@RequestParam(required = false) Integer actCateId,
+    public String listActByCQForCus(@RequestParam(required = false) List<Integer> actCateId,
     								@RequestParam(required = false) String keyword,
     								ModelMap model) {
     	

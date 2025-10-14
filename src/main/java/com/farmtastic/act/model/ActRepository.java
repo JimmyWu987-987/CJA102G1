@@ -28,13 +28,13 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
            "WHERE (:fmemId IS NULL OR a.fmemId = :fmemId) " +
            "AND (:actStat IS NULL OR a.actStat = :actStat) " +
            "AND (:actLaunStat IS NULL OR a.actLaunStat = :actLaunStat) " +
-           "AND (:actCateId IS NULL OR ac.actCateId = :actCateId) " +
+           "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) " +
            "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') " +
            "OR a.actDes LIKE CONCAT('%', :keyword, '%')))")
     List<Act> findActByCQForFmem(@Param("fmemId") Integer fmemId,
     							 @Param("actStat") Integer actStat,
     							 @Param("actLaunStat") Integer actLaunStat,
-    							 @Param("actCateId") Integer actCateId,
+    							 @Param("actCateId") List<Integer> actCateId,
     							 @Param("keyword") String keyword,
     							 Sort sort);
     
@@ -43,11 +43,11 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
            "JOIN a.actCate ac " +
            "JOIN a.fmem f " +
            "WHERE a.actLaunStat = 1 " + 
-           "AND (:actCateId IS NULL OR ac.actCateId = :actCateId) " +
+           "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) " +
            "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') " +
            "OR a.actDes LIKE CONCAT('%', :keyword, '%') " +
            "OR f.storeName LIKE CONCAT('%', :keyword, '%')))")
-     List<Act> findActByCQForCus(@Param("actCateId") Integer actCateId,
+     List<Act> findActByCQForCus(@Param("actCateId") List<Integer> actCateId,
     		 					 @Param("keyword") String keyword,
     		 					 Sort sort);
     
@@ -58,14 +58,14 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
            "WHERE (:fmemId IS NULL OR a.fmemId = :fmemId) " +
            "AND (:actStat IS NULL OR a.actStat = :actStat) " +
            "AND (:actLaunStat IS NULL OR a.actLaunStat = :actLaunStat) " +
-           "AND (:actCateId IS NULL OR ac.actCateId = :actCateId) " +
+           "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) " +
            "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') " +
            "OR a.actDes LIKE CONCAT('%', :keyword, '%') " +
            "OR f.storeName LIKE CONCAT('%', :keyword, '%')))")
     List<Act> findActByForAdmin(@Param("fmemId") Integer fmemId,
     							@Param("actStat") Integer actStat,
     							@Param("actLaunStat") Integer actLaunStat,
-    							@Param("actCateId") Integer actCateId,
+    							@Param("actCateId") List<Integer> actCateId,
     							@Param("keyword") String keyword,
     							Sort sort);
     

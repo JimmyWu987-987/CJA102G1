@@ -58,17 +58,17 @@ public class ActService {
 	
 	//	for 小農
 	public List<Act> findActByCQForFmem(Integer fmemId, Integer actStat, Integer actLaunStat,
-								 Integer actCateId, String keyword, Sort sort) {
+										List<Integer> actCateId, String keyword, Sort sort) {
 		return actRepository.findActByCQForFmem(fmemId, actStat, actLaunStat, actCateId, keyword, sort);
 	}
 	//	for 消費者 (不篩小農)
-	public List<Act> findActByCQForCus(Integer actCateId, String keyword, Sort sort) {
+	public List<Act> findActByCQForCus(List<Integer> actCateId, String keyword, Sort sort) {
 		return actRepository.findActByCQForCus(actCateId, keyword, sort);
 	}
 	
 	//	for 後台
 	public List<Act> findActByCQForAdmin(Integer fmemId, Integer actStat, Integer actLaunStat,
-								 Integer actCateId, String keyword, Sort sort) {
+										 List<Integer> actCateId, String keyword, Sort sort) {
 		return actRepository.findActByForAdmin(fmemId, actStat, actLaunStat, actCateId, keyword, sort);
 	}
 	
