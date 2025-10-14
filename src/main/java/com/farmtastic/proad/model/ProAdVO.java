@@ -2,13 +2,14 @@ package com.farmtastic.proad.model;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.pro.model.Pro;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,23 +17,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @Table(name = "pro_ad")
 public class ProAdVO {
 
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "pro_ad_id", updatable =false)
 	private Integer proAdId;
 	
 	// 因為 byte[] 會被 hibernate 視為 tinyblob 型別，所以跟DB裡的 longblob 不符，所以用 columnDefinition 定義
-		@Column(name = "pro_ad_img", columnDefinition = "longblob")
+		@Lob
+		@Basic(fetch = FetchType.LAZY)
+		@Column(name = "pro_ad_img", columnDefinition = "LONGBLOB")
 	    private byte[] proAdImg;        // 廣告圖片 (一個廣告僅一張圖)
 	    
 		//審核
@@ -54,10 +55,10 @@ public class ProAdVO {
 		private Timestamp proAdLaunUpd; // 上下架更新時間
 		
 		@Column(name = "pro_ad_start")
-	    private LocalDate proAdStart;        // 廣告開始日期
+	    private Date proAdStart;        // 廣告開始日期
 		
 		@Column(name = "pro_ad_end")
-	    private LocalDate proAdEnd;          // 廣告結束日期
+	    private Date proAdEnd;          // 廣告結束日期
 		
 		@Column(name = "pro_ad_fee")
 	    private Integer proAdFee;       // 活動廣告費用
@@ -65,12 +66,30 @@ public class ProAdVO {
 		@Column(name = "pro_ad_fee_end")
 	    private Date proAdFeeEnd;       // 活動廣告繳費截止日
 		
-		@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	    @JoinColumn(name = "fmem_id", nullable = false)
-	    private Fmem fmem;  
+		// -------------------- 外來鍵 --------------------
+		@ManyToOne(fetch = FetchType.LAZY)
+		@JoinColumn(name = "fmem_id", nullable = false)
+	    private Fmem fmem;  		//小農ID(FK)
 		
-		@Column(name = "pro_id")
-	    private Integer proId;          // 商品ID (FK)
+		@Column(name = "fmem_id", insertable = false, updatable = false)
+	    private Integer fmemId; 	
+		
+		@ManyToOne(fetch = FetchType.LAZY)
+		@JoinColumn(name = "pro_id", nullable = false)
+		private Pro pro;   // 商品ID (FK)
+		
+		@Column(name = "pro_id", insertable = false, updatable = false)
+	    private Integer proId;    
+		
+		
+		// -------------------- Getter / Setter --------------------
+		public Integer getFmemId() {
+			return fmemId;
+		}
+
+		public void setFmemId(Integer fmemId) {
+			this.fmemId = fmemId;
+		}
 
 		public Integer getProAdId() {
 			return proAdId;
@@ -128,19 +147,19 @@ public class ProAdVO {
 			this.proAdLaunUpd = proAdLaunUpd;
 		}
 
-		public LocalDate getProAdStart() {
+		public Date getProAdStart() {
 			return proAdStart;
 		}
 
-		public void setProAdStart(LocalDate proAdStart) {
+		public void setProAdStart(Date proAdStart) {
 			this.proAdStart = proAdStart;
 		}
 
-		public LocalDate getProAdEnd() {
+		public Date getProAdEnd() {
 			return proAdEnd;
 		}
 
-		public void setProAdEnd(LocalDate proAdEnd) {
+		public void setProAdEnd(Date proAdEnd) {
 			this.proAdEnd = proAdEnd;
 		}
 
@@ -176,6 +195,23 @@ public class ProAdVO {
 		public void setProId(Integer proId) {
 			this.proId = proId;
 		}
+
+		public Pro getProduct() {
+			return pro;
+		}
+
+		public void setProduct(Pro pro) {
+			this.pro = pro;
+		}
+
+		@Override
+		public String toString() {
+			return "ProAdVO [proAdId=" + proAdId + ", proAdRevStat="
+					+ proAdRevStat + ", proAdRevUpd=" + proAdRevUpd + ", proAdRevRemark=" + proAdRevRemark
+					+ ", proAdLaunStat=" + proAdLaunStat + ", proAdLaunUpd=" + proAdLaunUpd + ", proAdStart="
+					+ proAdStart + ", proAdEnd=" + proAdEnd + ", proAdFee=" + proAdFee + ", proAdFeeEnd=" + proAdFeeEnd
+					+ ", fmemId=" + fmemId + ", proId=" + proId + "]";
+		}
 	
-	
+		
 }

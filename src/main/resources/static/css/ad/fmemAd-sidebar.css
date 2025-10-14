@@ -1,0 +1,41 @@
+
+.left-area {
+	background: rgba(255, 255, 255, 0.6);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+	border: 1px solid #e2e8f0;
+	top: 110px;
+	padding: 10px 20px 20px;
+	min-height: 250px;
+	min-width: 220px;
+	border-radius: 8px;
+	text-align:center;
+	position: sticky;
+}
+
+.left-title {
+	margin-top:10px;
+    font-size: 22px;
+    color: #333;
+}
+
+.left-list {
+	margin-top: 5px;
+	font-size: 20px;
+}
+
+.left-list ul{
+	margin-top: 10px;
+}
+
+.left-list li a{
+	display: block;
+    padding: 8px;
+    border-top: 1px solid #6b635b8c;
+    color: #333;
+    font-size: 18px;
+}
+
+.left-list li a:hover{
+    background-color: #c8d1e2;
+    color: #e96c4a;
+}

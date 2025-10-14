@@ -1,0 +1,169 @@
+body {
+	background: #faf7f2;
+	color: #2c3e50;
+}
+
+.title {
+	display: flex;
+	justify-content: center;
+	color: #2c3e50;
+	margin-bottom: 20px;
+}
+
+table {
+	margin-top: 10px;
+	border-collapse: collapse;
+	width: 100%;
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	overflow: hidden;
+	z-index:20;
+}
+
+th, td {
+	padding: 7px 8px;
+	text-align: center;
+}
+
+th {
+	background-color: #3498db;
+	color: #fff;
+	font-weight: bold;
+	letter-spacing: 0.5px;
+	padding: 8px 10px;
+}
+
+tr:nth-child(even) {
+	background-color: #E0F2E9;
+}
+
+tr:hover {
+	background-color: #d6eaf8;
+}
+
+.adImg {
+	border-radius: 10px;
+}
+
+.adImg:hover {
+	cursor: pointer;
+	transform: scale(1.2);
+}
+
+#outSide {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, .5);
+	z-index: 10;
+	width: 1020px;
+	height: 550px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 10px
+}
+
+.closeButton {
+	font-size: 28px;
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid white;
+	border-radius: 50%;
+	position: absolute;
+	top: 6%;
+	left: 96.9%;
+	transform: translate(-50%, -50%);
+	cursor: pointer;
+	z-index: 2;
+	color: azure;
+}
+
+.inSide {
+	width: 925px;
+	height: 450px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	object-fit: contain;
+	border-radius: 10px;
+}
+
+.zoomImg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	z-index: 1;
+	border-radius: 10px;
+}
+
+.btn {
+	padding: 6px 12px;
+	margin-left: 8px;
+	background: #3498db;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	text-decoration: none;
+	font-size: 15px;
+}
+
+.btn:hover {
+	cursor: pointer;
+	transform: scale(1.2);
+	background: #3498db;
+}
+
+.functions {
+	margin: 6px 0;
+	font-size: 20px;
+}
+.reviewPerson{
+  position:absolute;
+  top: 90px;     
+  right: 8px;
+  transform: none;
+  width: 180px;
+  height: auto;
+  z-index: 10;
+}
+
+.reviewPerson:hover {
+	cursor:pointer
+}
+
+
+.mwt_border{
+  position: absolute;
+  top: 45px;
+  right: 25px;
+  width: 260px; min-height: 40px;
+  background: #fff; border: 1px solid #333;
+  border-radius:20px;
+  box-sizing: border-box; 
+  display:flex; align-items:center;
+}
+
+.mwt_border .arrow_b_int{
+  position:absolute;
+  width:0;height:0;
+  border-width:15px; border-style:solid;
+  border-color:#333 transparent transparent transparent;
+  bottom:-30px; left:80%; transform:translateX(-50%);
+  z-index:2;
+}
+
+.bubble-text{
+  font-size:20px; 
+  padding:0 20px; 
+  margin:0;
+}
