@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.farmtastic.member.model.MemRepository;
-import com.farmtastic.shoppingcart.model.ProductRepository;
+import com.farmtastic.pro.model.ProRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -19,7 +19,7 @@ public class FavoProServiceImp {
 	@Autowired
 	private MemRepository memRepository;
 	@Autowired // 🌟 注入真正的 Repository 🌟
-	private ProductRepository productRepository;
+	private ProRepository productRepository;
 
 //private SessionFactory sessionFactory;
 	// 新增收藏
