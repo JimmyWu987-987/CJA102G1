@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>審核活動廣告</title>
+
+</head>
+
+<body>
+
+<div th:fragment="reviewActAd-div">
+  <form method="post" th:action="@{/admin/actAd/reviewActAd}">
+  <input type="hidden" name="actAdId" th:value="${actAdVO.actAdId}" />
+  <div class = "field" >
+  <b><span id = "closeRev" class="closeRev">X</span></b>
+
+    <div class ="revadImg">
+        <img class="revadImgs" th:src="@{/actAd/img/{id}(id=${actAdVO.actAdId})}" alt="actAdImg" width="100"/>
+    </div>
+
+    <div class="adInfo">
+    <p>活動編號：<span th:text="${actAdVO.actAdId}"></span></p>
+    <p>活動名稱：<span th:text="${actAdVO.act.actName}"></span></p>
+    <p>申請時間：<span th:text="${#dates.format(actAdVO.actAdRevUpd,'yyyy-MM-dd HH:mm:ss')}"></span></p>
+    <p>播放時間：<span th:text="${actAdVO.actAdStart}"></span>~<span th:text="${actAdVO.actAdEnd}"></span></p>
+    <p>廣告費用：<span th:text="'$' + ${#numbers.formatInteger(actAdVO.actAdFee, 0, 'COMMA')}"></span></p>
+    
+    
+    <p>
+      <label>審核備註：<br>
+        <textarea class="remark" name="remark" id="remark" th:text="${actAdVO.actAdRevRemark}"></textarea>
+      </label>
+    </p>
+  </div>
+	
+
+  <div class="revButtons">
+    <button class="pass"  type="submit" name="action" value="pass" onclick="return confirm('確定【通過】嗎？')">通過 🙆‍♂️</button>
+    <button class="failed" type="submit" name="action" value="failed" onclick="return confirm('確定【不通過】嗎？')">不通過 🙅‍♂️</button>
+  </div>
+
+      
+    </div>
+
+  </form>
+  </div>
+
+
+</body>
+</html>
