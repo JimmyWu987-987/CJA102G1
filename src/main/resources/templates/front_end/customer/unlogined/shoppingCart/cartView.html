@@ -10,19 +10,6 @@
 </head>
 <body>
 	<div th:replace="~{/front_end/index :: header}"></div>
-<!-- 	<span>測試有網頁該無參數</span><br>
-	<span th:text="${session.loggedInMember}"></span><br>
-	<span th:text="${session.memId}"></span><br>
-	<span th:text="${session.memName}"></span><br>
-	<span th:text="${groupedCartItems}"></span><br>
-	<span>測試有網頁該無參數</span> -->
-<!-- 	<div th:if="${session.memName}">
-    	<h1><span th:text="${session.memName}"></span>的購物車</h1>
-	</div> -->
-	
-<!-- 	<div th:unless="${session.memName}">
-	<h1>訪客的購物車</h1>
-	</div> -->
     
 <div class="container">
    
@@ -68,7 +55,8 @@
                         <td>
                             <form th:action="@{/cart/update}" method="post" style="display: inline-block;">
                                 <input type="hidden" name="proId" th:value="${item.proId}" />
-                                <input type="hidden" name="fmemId" th:value="${fmemId}" /> <input type="number" name="quantity" 
+                                <input type="hidden" name="fmemId" th:value="${fmemId}" />
+                                <input type="number" name="quantity" 
                                        th:value="${item.cartAmount}" min="0" style="width: 50px;">
                                 
                                 <button type="submit">更新</button>

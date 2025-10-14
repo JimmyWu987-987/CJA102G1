@@ -1,116 +1,265 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小農會員中心</title>
+<link rel="icon" th:href="@{/images/logo.png}">
+
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+
+<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<!-- jquery datatables 設定 -->
+<script
+	src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script th:src="@{/js/dataTable/dataTable.js}"></script>
-<title>小農會員專區 - 客戶訂單列表</title>
+
+<style>
+		.container-header,
+		.container-footer{
+			background-color: #dce2ef;	
+		}
+		.nav > li > a{
+			background-color: #4F9D9D;
+		}
+		
+		.member-content {
+			padding: 40px 50px 40px;
+		}
+		
+        /* 根據上次的討論，新增會員中心整體居中的 CSS */
+        .container-member {
+            max-width: 1200px; /* 設置內容最大寬度，您可以依需求調整 */
+            margin-left: auto !important; /* 強制居中 */
+            margin-right: auto !important; /* 強制居中 */
+        }
+        
+        /* 訂單列表 h1 標題樣式 */
+        .member-content h1 {
+			font-size: var(--title-font-size);
+			font-weight: bold;
+			color: #555;
+			margin-bottom: 20px;
+			text-align: left; /* 保持靠左，與側邊欄對齊 */
+		}
+		
+		/* 調整 DataTables 搜尋和顯示筆數區塊與 h1 之間的間距 */
+		div.dataTables_wrapper {
+			margin-top: 10px;
+		}
+		
+		/* ----------------------------------- */
+		/* DataTables 外觀優化 (新增) */
+		/* ----------------------------------- */
+
+		/* 確保 DataTables 寬度滿版，並移除預設外框 */
+		#example {
+			width: 100% !important;
+			border-collapse: collapse;
+			border: none;
+		}
+
+		/* 表頭樣式 */
+		#example thead th {
+			background-color: var(--second-color); /* 深綠色 */
+			color: #fff;
+			padding: 12px 15px;
+			border: 1px solid #ddd;
+			text-align: center;
+			font-size: var(--content-font-size);
+			font-weight: bold;
+		}
+
+		/* 表格內文樣式 */
+		#example tbody td {
+			border: 1px solid #eee;
+			font-size: var(--content-font-size);
+			vertical-align: middle; /* 內容垂直置中 */
+			text-align: center;
+			color: #333;
+		}
+
+		/* 斑馬紋效果 */
+		#example tbody tr:nth-child(even) {
+			background-color: #f9f9f9; /* 輕微的灰色，增加可讀性 */
+		}
+		
+		/* 滑鼠懸停效果 */
+		#example tbody tr:hover {
+			background-color: #e6fff0; /* 淺綠色/主題色提示 */
+			cursor: pointer;
+		}
+		
+		/* 調整操作按鈕樣式 (訂單明細按鈕) */
+		#example tbody td form input[type="submit"] {
+			padding: 6px 14px;
+			font-size: 16px;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			background-color: var(--btn-color); /* 主題按鈕色 */
+			cursor: pointer;
+			transition: 0.3s;
+		}
+		
+		#example tbody td form input[type="submit"]:hover {
+			background-color: var(--btn-hover-color); /* 主題按鈕懸停色 */
+		}
+
+		/* DataTables 控制區樣式 (搜尋、分頁) */
+
+		/* 調整整體文字顏色 */
+		div.dataTables_wrapper label,
+		div.dataTables_wrapper div.dataTables_info,
+		div.dataTables_wrapper div.dataTables_length,
+		div.dataTables_wrapper div.dataTables_filter {
+			color: #555;
+			font-size: var(--content-font-size);
+		}
+		
+		/* 搜尋框和下拉選單樣式 */
+		div.dataTables_wrapper input[type="search"],
+		div.dataTables_wrapper select {
+			padding: 6px 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			margin-left: 8px;
+			font-size: 16px;
+			color: #333;
+		}
+
+		/* 分頁按鈕樣式 */
+		div.dataTables_wrapper .dataTables_paginate .paginate_button {
+			padding: 6px 12px;
+			margin-left: 4px;
+			border: 1px solid #ddd;
+			background-color: #fff;
+			border-radius: 4px;
+			color: var(--btn-color) !important; /* 一般按鈕顏色 */
+			transition: 0.3s;
+		}
+
+		/* 當前頁面或活動按鈕樣式 */
+		div.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+		div.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+			background-color: var(--btn-color) !important;
+			color: #fff !important;
+			border-color: var(--btn-color);
+		}
+		
+		/* 分頁按鈕懸停效果 */
+		div.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+			background-color: #f0f0f0;
+			border-color: #ccc;
+			color: var(--btn-hover-color) !important; /* 懸停色 */
+		}
+		
+		/* 禁用按鈕樣式 */
+		div.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+			color: #ccc !important;
+			background-color: #fff;
+			border-color: #ddd;
+		}
+
+		/* 調整資料表格的容器，讓資訊/分頁與表格有適當間距 */
+		div.dataTables_wrapper div.dataTables_info,
+		div.dataTables_wrapper div.dataTables_paginate {
+			margin-top: 15px;
+		}
+</style>
+
 </head>
 <body>
-	
-	<h1>這是小農會員查詢自己訂單的頁面</h1>
-	
-	<h3>會員編號：<span th:text="${session.loggedInFmember.fmemId}"></span></h3>
-	<h3>會員姓名：<span th:text="${session.loggedInFmember.fmemName}"></span> 你好！</h3>
 
-    <h1>客戶訂單列表</h1>
-    <div th:if="${#lists.isEmpty(proOrderList)}">
-        <p>目前沒有任何訂單資料。</p>
-    </div>
-    
-    <div th:unless="${#lists.isEmpty(proOrderList)}">
-        <table id="example" class="display">
-            <thead>
-                <tr>
-                    <th>訂單日期</th>
-                    <th>訂單編號</th>
-                    <th>訂購客戶ID</th>
-                    <th>訂購客戶姓名</th>
-                    <th>商品總金額</th>
-                    <th>訂單總金額</th>
-                    <th>訂單狀態</th>
-                    <th>付款狀態</th>
-                    <th>付款方式</th>
-                    <th>物流方式</th>
-                    <th>訂單備註</th>
-                    <th>平台撥款狀態</th>
-                    <th>平台抽成金額</th>
-                    <th>平台撥款金額</th>
-                    <th>操作</th>
-               </tr>
-            </thead>
-            <tbody>
-                <tr th:each="proOrderVO : ${proOrderList}">
-                    <td th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
-                    <td th:text="${proOrderVO.proOrdId}">1</td>
-                    <td th:text="${proOrderVO.memId}">M001</td> 
-                    <td th:text="${proOrderVO.memName}">M001</td> 
-                    <td th:text="${proOrderVO.proTotal}"></td> 
-                    <td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>
-                    
-                    <td>
-                    	<div th:switch="${proOrderVO.proOrdStatus}">
-                    		<span th:case="0">成立訂單</span>
-                    		<span th:case="1">取消訂單(未出貨)</span>
-                    		<span th:case="2">出貨中</span>
-                    		<span th:case="3">已到貨</span>
-                    		<span th:case="4">申請退貨(已出貨)</span>
-                    		<span th:case="5">退貨中</span>
-                    		<span th:case="6">已退貨</span>
-                    		<span th:case="*">N/A</span>
-                    	</div>
-                    </td>
-                    <td>
-                    	<div th:switch="${proOrderVO.proPayStatus}">
-                        	<span th:case="0">未付款</span>
-                            <span th:case="1">已付款</span>
-                            <span th:case="*">N/A</span>
-                    	</div>
-                    </td>
-                    
-                    <td>
-                    	<div th:switch="${proOrderVO.proOrdPayment}">
-                    		<span th:case="0">信用卡</span>
-                    		<span th:case="1">LinePay</span>
-                    		<span th:case="*">N/A</span>
-                    	</div>
-                    </td>
-                    <td>
-                    	<div th:switch="${proOrderVO.proOrdShipment}">
-                    		<span th:case="0">宅配</span>
-                    		<span th:case="1">超商取貨</span>
-                    		<span th:case="*"></span>
-                    	</div>
-                    </td>
-                    
-                    <td th:text="${proOrderVO.proOrdComm}">訂單備註</td>
-                    
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
-                    <td>
-                    	<div th:switch="${proOrderVO.proOrdAllocStatus}">
-                    		<span th:case="0">未撥款</span>
-                    		<span th:case="1">已撥款</span>
-                    		<span th:case="*">N/A</span>
-                    	</div>
-                    </td>
-                    <td>
-                    	<div th:text="${proOrderVO.proOrdAllocTotal} != null ? ${proOrderVO.proOrdAllocTotal} : '未決定抽成金額'"></div>
-                    </td>
-                    <td>
-                    	<div th:text="${proOrderVO.proOrdAllocSendFmem} != null ? ${proOrderVO.proOrdAllocSendFmem} : '未決定撥款金額'"></div>
-                    </td>
-                    <td>
-                    	<form method="post" th:action="@{/fmem/proorders/listOneProOrder}">
-                    		<input type="submit" value="訂單明細">
-                    		<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
-                    	</form>
-                    </td>             
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <div class="container container-member">
+
+		<div class="member-content">
+
+			<h1>客戶訂單列表</h1>
+			<div th:if="${#lists.isEmpty(proOrderList)}">
+				<p>目前沒有任何訂單資料。</p>
+			</div>
+
+			<div th:unless="${#lists.isEmpty(proOrderList)}">
+				<table id="example" class="display">
+					<thead>
+						<tr>
+							<th>訂單日期</th>
+							<th>訂購客戶姓名</th>
+							<th>商品總金額</th>
+							<th>訂單總金額</th>
+							<th>訂單狀態</th>
+							<th>付款狀態</th>
+							<th>付款方式</th>
+							<th>物流方式</th>
+							<th>平台撥款狀態</th>
+							<th>修改狀態</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="proOrderVO : ${proOrderList}">
+							<td
+								th:text="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
+							<td th:text="${proOrderVO.memName}">M001</td>
+							<td th:text="${proOrderVO.proTotal}"></td>
+							<td th:text="${proOrderVO.proOrdGrandTotal}">1500</td>
+
+							<td>
+								<div th:switch="${proOrderVO.proOrdStatus}">
+									<span th:case="0">成立訂單</span> <span th:case="1">取消訂單(未出貨)</span>
+									<span th:case="2">出貨中</span> <span th:case="3">已到貨</span> <span
+										th:case="4">申請退貨(已出貨)</span> <span th:case="5">退貨中</span> <span
+										th:case="6">已退貨</span> <span th:case="*">N/A</span>
+								</div>
+							</td>
+							<td>
+								<div th:switch="${proOrderVO.proPayStatus}">
+									<span th:case="0">未付款</span> <span th:case="1">已付款</span> <span
+										th:case="*">N/A</span>
+								</div>
+							</td>
+
+							<td>
+								<div th:switch="${proOrderVO.proOrdPayment}">
+									<span th:case="0">信用卡</span> <span th:case="1">LinePay</span> <span
+										th:case="*">N/A</span>
+								</div>
+							</td>
+							<td>
+								<div th:switch="${proOrderVO.proOrdShipment}">
+									<span th:case="0">宅配</span> <span th:case="1">超商取貨</span> <span
+										th:case="*"></span>
+								</div>
+							</td>
+
+
+							<td>
+								<div th:switch="${proOrderVO.proOrdAllocStatus}">
+									<span th:case="0">未撥款</span> <span th:case="1">已撥款</span> <span
+										th:case="*">N/A</span>
+								</div>
+							</td>
+
+							<td>
+								<form method="post"
+									th:action="@{/fmem/proorders/listOneProOrder}">
+									<input type="submit" value="訂單明細"> <input type="hidden"
+										name="proOrdId" th:value="${proOrderVO.proOrdId}">
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+		</div>
+	</div>
+		
+	<div th:replace="~{/front_end/index :: footer}"></div>
 </body>
 </html>
