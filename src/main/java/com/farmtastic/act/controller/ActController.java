@@ -65,11 +65,12 @@ public class ActController {
     	// 篩已上架的, 預設依上架更新時間排
         List<Act> actList = actSvc.findByActLaunStat(1, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
         
+        model.addAttribute("actList", actList);
+
         if (actList.isEmpty()) {
             model.addAttribute("message", "目前尚無活動");
         }
         
-        model.addAttribute("actList", actList);
         return "front_end/customer/unlogined/act/actMainPageTest";		// 導回首頁
     }
      
@@ -84,11 +85,12 @@ public class ActController {
         
         List<Act> actList = actSvc.findActByCQForCus(actCateId, keyword, sort);
         
+        model.addAttribute("actList", actList);
+
         if (actList.isEmpty()) {
         	model.addAttribute("message", "查無符合條件的活動");
         }
         
-        model.addAttribute("actList", actList);
         return "front_end/customer/unlogined/act/actMainPageTest";		// 導回首頁
     }
 
@@ -172,7 +174,7 @@ public class ActController {
     	
     	// 防呆用
     	if (optAct.isEmpty()) {
-            // 查無活動 → 導回首頁或活動一覽頁，顯示訊息
+            // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
             model.addAttribute("message", "查無此活動");
             return "front_end/customer/unlogined/act/actMainPageTest"; 		// 做一個 "查無此活動" 頁面 or 導回首頁
         }
@@ -181,7 +183,7 @@ public class ActController {
     	
     	// 如果沒上架or是空值(因為活動根本沒過審), 就跳查無此活動or導回首頁
     	if (act.getActLaunStat() == null || !act.getActLaunStat().equals(1)) {
-            // 查無活動 → 導回首頁或活動一覽頁，顯示訊息
+            // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
             model.addAttribute("message", "查無此活動");
             return "front_end/customer/unlogined/act/actMainPageTest"; 		// 做一個 "查無此活動" 頁面 or 導回首頁
         }
