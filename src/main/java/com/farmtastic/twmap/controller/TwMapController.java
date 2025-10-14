@@ -31,14 +31,14 @@ public class TwMapController {
 
 	        model.addAttribute("city", city);
 	        model.addAttribute("farmers", twMapService.findByCity(city));
-	        return "front_end/twMap"; 
+	        return "front_end/customer/unlogined/twMap"; 
 	    }
 	 
 	 // 頁面上的 th:fragment="farmersList"
 	    @GetMapping("/farmersFragment")
 	    public String farmersFragment(@RequestParam String city, Model model) {
 	        model.addAttribute("farmers", twMapService.findByCity(city));
-	        return "front_end/twMap :: farmersList"; 
+	        return "front_end/customer/unlogined/twMap :: farmersList"; 
 	    }
 	 
 	    
