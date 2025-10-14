@@ -107,11 +107,11 @@ public class ProOrderMemController {
 
 	}
 
-	// URL: POST /mem/proorders/return
+	// URL: POST /mem/proorders/updatestatus
 	/**
-	 * 修改：將訂單狀態修改為退貨中
+	 * 修改訂單的狀態
 	 */
-	@PostMapping("return")
+	@PostMapping("updatestatus")
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
 			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes) {
 		
@@ -128,16 +128,28 @@ public class ProOrderMemController {
 			updateStatus = true;
 			redirectAttributes.addFlashAttribute("successMessage", "訂單已經取消！");
 			break;
-		// 訂單已出貨，需要輸入文字，才能申請退貨。
+		// 出貨中，通知賣家到貨
 		case 2:
+			System.out.println("已通知賣家到貨！");
+			proOrderVO.setProOrdStatus((byte) 3);
+			updateStatus = true;
+			redirectAttributes.addFlashAttribute("successMessage", "已通知賣家到貨！");
+			break;
+		// 已出貨，需要輸入文字，才能申請退貨。
 		case 3:
 			System.out.println("買家提出退貨申請！");
 			proOrderVO.setProOrdStatus((byte) 4);
 			updateStatus = true;
-			redirectAttributes.addFlashAttribute("successMessage", "買家提出退貨申請！");
+			redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
 			break;
 		// 訂單已經是退貨流程，直接返回。
 		case 4:
+			System.out.println("已通知賣家退貨！");
+			proOrderVO.setProOrdStatus((byte) 5);
+			updateStatus = true;
+			redirectAttributes.addFlashAttribute("successMessage", "已通知賣家退貨！");
+			break;
+			
 		case 5:
 		case 6:
 			System.out.println("已經是退貨狀態！");
