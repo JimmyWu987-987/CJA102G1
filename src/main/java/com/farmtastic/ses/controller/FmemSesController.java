@@ -32,32 +32,15 @@
 //	@Autowired
 //    private SesRepository sesRepo;
 //
-////	================= 列出該活動所有場次 ================
-//	@GetMapping("/listByAct/{actId}")
-//	public String listByAct(@PathVariable("actId") Integer actId, ModelMap model) {
-//		Sort sort = Sort.by(Sort.Direction.ASC, "sesDate");
-//
-//		Act act = actSvc.getOneAct(actId);
-//		
-//		// 依活動ID查所有場次
-//		List<Ses> sesList = sesSvc.findByActId(actId, sort);
-//
-//		model.addAttribute("act", act);
-//		model.addAttribute("sesList", sesList);
-//		model.addAttribute("actId", actId);
-//
-//		return "front_end/customer/unlogined/actDetails/actDetails"; 
-//
-//	}
+//	================= 列出該活動所有場次 >> Act 有了, 改一下即可 ================
+
 //	
 //	
-////	================= 取得單一場次 ==================
-//	
-//	
-////	        model.addAttribute("sessionFmemSes", ses);	
-//	
-//	
-//	
-//	
-//	
+//	================= 取得單一場次 >> Act 有了, 改一下即可 ==================
+
+
+
+//	================= 新增場次 ==================
+//	================= 編輯場次 ==================
+//	================= 刪除場次 ==================
 //}

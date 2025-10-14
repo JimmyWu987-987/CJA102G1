@@ -11,12 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SesRepository extends JpaRepository<Ses, Integer> {
 
 	List<Ses> findByActId(Integer actId, Sort sort);
-	List<Ses> findBySesId(Integer sesId);
+	Optional<Ses> findBySesId(Integer sesId);
 	List<Ses> findBySesLaunStat(Integer sesLaunStat, Sort sort);
 	List<Ses> findByRegStat(Integer regStat, Sort sort);
 
