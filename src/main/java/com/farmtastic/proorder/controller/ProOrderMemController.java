@@ -258,7 +258,7 @@ public class ProOrderMemController {
 			// 清除 該訂單的購物車內容
 			// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
 			// 所以直接找集合內的第一個物件，取出fmemId
-			Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemVO().getFmemId();
+			Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemId().getFmemId();
 			shoppingCartSvc.clearCartByFmemId(fmemId);
 
 			// 重導向到訂單列表頁面

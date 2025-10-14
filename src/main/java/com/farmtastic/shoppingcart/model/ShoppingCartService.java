@@ -14,6 +14,8 @@ import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
+import com.farmtastic.pro.model.Pro;
+import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
@@ -29,7 +31,7 @@ public class ShoppingCartService implements Serializable {
 	@Autowired
 	MemService memSvc;
 	@Autowired
-	ProductService productSvc;
+	ProService productSvc;
 
 	// 🌟 核心修改：使用 Map<FmemId, List<ShoppingCartVO>> 儲存購物車 🌟
 	// Key: 小農 ID (fmemId)，Value: 該小農底下的商品清單
@@ -64,12 +66,12 @@ public class ShoppingCartService implements Serializable {
 	 * @param product  要加入的商品資訊 (已包含 fmemId)
 	 * @param quantity 欲購買的數量
 	 */
-	public void addProduct(Product product, Integer quantity) {
+	public void addProduct(Pro product, Integer quantity) {
 		if (quantity == null || quantity <= 0)
 			return;
 
 		// 取得小農ID
-		Integer fmemId = product.getFmemVO().getFmemId();
+		Integer fmemId = product.getFmemId().getFmemId();
 		// 假設該商品沒有小農編號
 		if (fmemId == null) {
 			System.err.println("商品編號:[ " + product.getProId() + " ]，沒有所屬小農編號，請確認該商品所屬小農編號。");
@@ -270,7 +272,7 @@ public class ShoppingCartService implements Serializable {
 		for (ShoppingCartVO shoppingCartVO : cartItemsForFmem) {
 			// 步驟 3: 在迴圈內，建立一個新的 ProOrderItemVO 物件
 			ProOrderItemVO proOrderItemVO = new ProOrderItemVO();
-			Product productVO = new Product();
+			Pro productVO = new Pro();
 			// 步驟 4: 取出 ShoppingCartVO 的欄位資料，存入 ProOrderItemVO
 			productVO.setProId(shoppingCartVO.getProId());
 			productVO.setProName(shoppingCartVO.getCartName());

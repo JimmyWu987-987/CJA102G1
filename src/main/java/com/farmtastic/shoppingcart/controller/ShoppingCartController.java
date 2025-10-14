@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.pro.model.Pro;
+import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proorder.model.ProOrderVO;
-import com.farmtastic.shoppingcart.model.Product;
-import com.farmtastic.shoppingcart.model.ProductService;
 import com.farmtastic.shoppingcart.model.ShoppingCartService;
 import com.farmtastic.shoppingcart.model.ShoppingCartVO;
 
@@ -32,10 +32,10 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 	// 注入 @SessionScope 的購物車服務
 	// 使用 final 確保 Service 不變，並透過建構子注入，是 Spring 推薦的做法
 	private final ShoppingCartService cartService;
-	private final ProductService productService; // <--- 新增 ProductService 欄位
+	private final ProService productService; // <--- 新增 ProductService 欄位
 
 	@Autowired
-	public ShoppingCartController(ShoppingCartService cartService, ProductService productService) { // <--- 修正建構子
+	public ShoppingCartController(ShoppingCartService cartService, ProService productService) { // <--- 修正建構子
 		this.cartService = cartService;
 		this.productService = productService; // <--- 初始化 ProductService
 	}
@@ -73,7 +73,7 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 			RedirectAttributes redirectAttributes) {
 
 		// 取得 Product，Product 中包含 FmemVO，進而取得 fmemId
-		Product product = productService.getOneProduct(proId);
+		Pro product = productService.getOnePro(proId);
 
 		if (product != null && quantity > 0) {
 			cartService.addProduct(product, quantity);
@@ -202,4 +202,19 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		}
 
 	}
+	
+    // **************************** 測試商品加入購物車的頁面清單 ****************************
+	
+    // URL: GET /cart/products/list
+    @GetMapping("/products/list")
+    public String listProducts(Model model) {
+        // 透過 ProductService 取得商品清單
+        List<Pro> products = productService.getAll();
+        
+        model.addAttribute("products", products);
+        
+        // 返回 Thymeleaf 模板名稱
+        return "front_end/customer/unlogined/shoppingCart/productList"; 
+    }
+	
 }

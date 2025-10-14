@@ -2,8 +2,8 @@ package com.farmtastic.proorderitem.model;
 
 import java.io.Serializable;
 
+import com.farmtastic.pro.model.Pro;
 import com.farmtastic.proorder.model.ProOrderVO;
-import com.farmtastic.shoppingcart.model.Product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -27,7 +27,7 @@ public class ProOrderItemVO implements Serializable{
 	@MapsId("proId")
 	@ManyToOne
 	@JoinColumn(name="pro_id")
-	private Product productVO;
+	private Pro productVO;
 	
 	@MapsId("proOrdId")
 	@ManyToOne
@@ -59,11 +59,11 @@ public class ProOrderItemVO implements Serializable{
 		this.id = id;
 	}
 
-	public Product getProductVO() {
+	public Pro getProductVO() {
 		return productVO;
 	}
 
-	public void setProductVO(Product productVO) {
+	public void setProductVO(Pro productVO) {
 		this.productVO = productVO;
 	}
 

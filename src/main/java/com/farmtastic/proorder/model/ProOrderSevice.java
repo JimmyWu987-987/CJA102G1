@@ -2,7 +2,6 @@
 
 package com.farmtastic.proorder.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,11 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.farmtastic.member.model.Mem;
-import com.farmtastic.proorderitem.model.ProOrderItemId;
+import com.farmtastic.pro.model.Pro;
+import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proorderitem.model.ProOrderItemRepository;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
-import com.farmtastic.shoppingcart.model.Product;
-import com.farmtastic.shoppingcart.model.ProductService;
 
 @Service
 public class ProOrderSevice {
@@ -25,7 +23,7 @@ public class ProOrderSevice {
 	@Autowired
 	ProOrderItemRepository proOrderItemRepository;
 	@Autowired
-	ProductService productSvc;
+	ProService productSvc;
 
 	// 新增
 	@Transactional
@@ -38,7 +36,7 @@ public class ProOrderSevice {
 	            
 	            // 2. 從資料庫中重新載入 Product 實體 (受管)
 	            // 假設 productSvc.getOneProduct(proId) 會回傳 Product 實體
-	            Product managedProduct = productSvc.getOneProduct(proId);
+	            Pro managedProduct = productSvc.getOnePro(proId);
 	            
 	            if (managedProduct == null) {
 	                // 如果找不到商品，則拋出錯誤
