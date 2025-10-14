@@ -29,9 +29,14 @@ public class SesService {
 	
 	
 // 查詢
+
+	// ========== 查小農自己的全部場次 ==========
+	public List<Ses> findSesByFmemId(Integer fmemId, Sort sort) {
+		return sesRepository.findByFmemId(fmemId, sort);
+	}
 	
 	// ========== 依活動ID查詢 ==========
-	public List<Ses> findByActId(Integer actId, Sort sort) {
+	public List<Ses> findSesByActId(Integer actId, Sort sort) {
 		return sesRepository.findByActId(actId, sort);
 	}
 	
@@ -50,15 +55,13 @@ public class SesService {
 	public List<Ses> findByRegStat(Integer actStat, Sort sort) {
 		return sesRepository.findByRegStat(actStat, sort);
 	}
-
-	// ========== 查全部場次 ==========
-	public List<Ses> getAllSes(Sort sort) {
-		return sesRepository.findAll(sort);
+	
+	
+	
+	// ========== 查全部場次 (好像不會用到...) ==========
+		public List<Ses> getAllSes(Sort sort) {
+			return sesRepository.findAll(sort);
 	}
-
-	
-	
-	
 	
 	
 	// ========== 刪除場次 ==========

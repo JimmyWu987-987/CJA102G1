@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>小農活動專區 -  已過審活動一覽</title>
+<title>小農活動專區 - 已過審活動一覽</title>
 
 <style>
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -17,7 +17,7 @@
     <h1>活動列表</h1>
 
 	<div th:if="${#lists.isEmpty(actList)}">
-    	<p>目前無已過審之活動</p>
+    	<p>目前無已過審之活動可進行上下架</p>
 	</div>
 
 	<div th:unless="${#lists.isEmpty(actList)}">
