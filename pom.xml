@@ -31,12 +31,6 @@
 			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 
-		<!-- webflux 給Line pay 用 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
-
 
 		<dependency><!-- ＠用途說明2: Add typical dependencies for a web application -->
 			<groupId>org.springframework.boot</groupId>
