@@ -40,7 +40,7 @@
 			<tr th:each="act : ${actList}">
 				<td th:text="${act.actId}"></td>
 				<td>
-					<img th:if="${act.actMainImg != null}" th:src="@{'/act/mainImg/' + ${act.actId}}" alt="主照片"/>
+					<img th:if="${act.actMainImg != null}" th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" alt="主照片"/>
 				</td>
 				<td th:text="${act.actName}"></td>
 				<td th:text="${act.actStart}"></td>
