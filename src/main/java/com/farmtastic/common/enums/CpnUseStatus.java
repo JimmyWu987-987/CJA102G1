@@ -2,17 +2,23 @@ package com.farmtastic.common.enums;
 
 //折價券使用狀態 enum
 public enum CpnUseStatus implements PersistableEnum<Byte> {
-	UNUSED((byte) 0), USED((byte) 1), EXPIRED((byte) 2);
+	UNUSED((byte) 0, "未使用"), USED((byte) 1, "已使用"), EXPIRED((byte) 2, "已過期");
 
 	private final byte code;// 不可被修改
+	private final String text;
 
-	CpnUseStatus(byte code) {
+	CpnUseStatus(byte code, String text) {
 		this.code = code;
+		this.text = text;
 	}
 
 	@Override
 	public Byte getCode() {
 		return code;
+	}
+
+	public String getText() {
+		return text;
 	}
 
 	public static CpnUseStatus fromCode(Byte code) {

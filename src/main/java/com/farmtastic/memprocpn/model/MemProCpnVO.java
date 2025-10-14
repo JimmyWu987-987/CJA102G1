@@ -3,11 +3,14 @@ package com.farmtastic.memprocpn.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.farmtastic.common.converter.EnumConverters;
+import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.procpn.model.ProCpnVO;
 import com.farmtastic.proorder.model.ProOrderVO;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -39,8 +42,9 @@ public class MemProCpnVO {
 	@JoinColumn(name = "pro_ord_id", unique = true)
 	private ProOrderVO proOrdVO;// FK proOrdId
 
+	@Convert(converter = EnumConverters.CpnUseStatusConverter.class)
 	@Column(name = "cpn_use_status", nullable = false)
-	private Byte cpnUseStatus = 0; // 0=未使用
+	private CpnUseStatus cpnUseStatus; // 0=未使用
 
 	@Column(name = "crt_at", nullable = false)
 	private LocalDateTime crtAt;
@@ -89,11 +93,11 @@ public class MemProCpnVO {
 		this.proOrdVO = proOrdVO;
 	}
 
-	public Byte getCpnUseStatus() {
+	public CpnUseStatus getCpnUseStatus() {
 		return cpnUseStatus;
 	}
 
-	public void setCpnUseStatus(Byte cpnUseStatus) {
+	public void setCpnUseStatus(CpnUseStatus cpnUseStatus) {
 		this.cpnUseStatus = cpnUseStatus;
 	}
 
@@ -142,8 +146,9 @@ public class MemProCpnVO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public MemProCpnVO(Integer cpnHolderDetailId, ProCpnVO proCpnVO, Mem memVO, ProOrderVO proOrdVO, Byte cpnUseStatus,
-			LocalDateTime crtAt, LocalDateTime rcvAt, LocalDate effStart, LocalDate effEnd, LocalDateTime usedAt) {
+	public MemProCpnVO(Integer cpnHolderDetailId, ProCpnVO proCpnVO, Mem memVO, ProOrderVO proOrdVO,
+			CpnUseStatus cpnUseStatus, LocalDateTime crtAt, LocalDateTime rcvAt, LocalDate effStart, LocalDate effEnd,
+			LocalDateTime usedAt) {
 		super();
 		this.cpnHolderDetailId = cpnHolderDetailId;
 		this.proCpnVO = proCpnVO;

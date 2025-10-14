@@ -2,13 +2,15 @@ package com.farmtastic.common.enums;
 
 // 狀態 enum
 public enum IsActive implements PersistableEnum<Byte> {
-	INACTIVE((byte) 0), // 未啟用
-	ACTIVE((byte) 1); // 啟用
+	INACTIVE((byte) 0, "未啟用"), // 未啟用
+	ACTIVE((byte) 1, "啟用"); // 啟用
 
 	private final byte code;
+	private final String text;
 
-	IsActive(byte code) {
+	IsActive(byte code, String text) {
 		this.code = code;
+		this.text = text;
 	}
 
 	@Override
@@ -16,11 +18,12 @@ public enum IsActive implements PersistableEnum<Byte> {
 		return code;
 	}
 
-	public static IsActive fromCode(Byte code) {
-		for (IsActive s : values()) {
-			if (s.code == code)
-				return s;
-		}
-		throw new IllegalArgumentException("未知啟用狀態: " + code);
+	public String getText() {
+		return text;
 	}
+
+	public static IsActive fromCode(Byte code) {
+		return PersistableEnum.fromCode(IsActive.class, code);
+	}
+
 }

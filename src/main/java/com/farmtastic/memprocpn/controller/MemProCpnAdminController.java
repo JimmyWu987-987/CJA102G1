@@ -47,10 +47,11 @@ public class MemProCpnAdminController {
 		return "redirect:/admin/procpn/listAllProCpn"; // 新增後回列表
 	}
 
-	@GetMapping("listAllMemProCpn")
+	// 列出全部會員折價券
+	@GetMapping("/list")
 	public String listAll(Model model) {
-		List<MemProCpnVO> list = memProCpnSvc.getAll();
-		model.addAttribute("list", list);
+		List<MemProCpnVO> memCoupons = memProCpnSvc.getAll();
+		model.addAttribute("memCoupons", memCoupons);
 		return "/back_end/logined/memprocpn/listAllMemProCpn";
 	}
 

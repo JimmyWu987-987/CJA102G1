@@ -68,7 +68,7 @@ public class ProCpnAdminController {
 		}
 
 		// 2. 查資料
-		Optional<ProCpnAdminDTO> optional = proCpnSvc.getById(id);
+		Optional<ProCpnVO> optional = proCpnSvc.getById(id);
 
 		// 3.處理結果
 		if (optional.isPresent()) {

@@ -49,7 +49,7 @@ public class ProCpnMapperImp implements ProCpnMapper {
 
 		dto.setProCpnId(vo.getProCpnId());
 		dto.setCpnName(vo.getCpnName());
-		dto.setDiscType(vo.getDiscType() != null ? vo.getDiscType().getLabel() : "未知類型");
+		dto.setDiscType(vo.getDiscType() != null ? vo.getDiscType().getText() : "未知類型");
 		dto.setDiscValue(vo.getDiscValue());
 		dto.setMinSpend(vo.getMinSpend());
 
