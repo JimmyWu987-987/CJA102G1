@@ -262,7 +262,9 @@
 
     userEmojis[myId] = getRandomEmoji(); // 自己的 Emoji
 
-    ws = new WebSocket("ws://localhost:8080/ws/chat/" + myId);
+    const protocol = location.protocol === "https:" ? "wss://" : "ws://";
+    const host = location.host; // 自動使用目前網域與 port
+    ws = new WebSocket(`${protocol}${host}/ws/chat/${myId}`);
 
     ws.onopen = () => {
       document.getElementById("loginPage").style.display = "none";
