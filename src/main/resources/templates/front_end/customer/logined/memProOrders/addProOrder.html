@@ -223,13 +223,16 @@
 				<option th:each="mpcVO : ${mpcList}" 
 						th:value="${mpcVO.cpnHolderDetailId}" 
 						th:text="${mpcVO.proCpnVO.cpnName}"
-						th:selected="${cartToProOrder.memProCpnVO.cpnHolderDetailId == mpcVO.cpnHolderDetailId}"
 						/>
 			</select>
+			  <span th:if="${cpnError != null}" 
+              th:text="${cpnError}" 
+              class="error"
+              style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
 		</div>
 		
 		<div>
-		<label>折價券折抵金額</label>
+		<label>折價券折抵額（商品金額計算）</label>
 		<input type="text" th:field="*{cartToProOrder.proOrdCpndisc}" readonly/><br>
 		</div>
 	
