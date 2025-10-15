@@ -70,14 +70,35 @@
                     <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
                     <td th:text="${#dates.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
                     <td>
-                        <a th:href="@{'#'}" class="btn btn-primary">我要報名</a>  <!-- # 塞報名表單的路徑 -->
-                    </td>
+					   <form th:action="@{/mem/reg/actReg}" method="get" target="memRegistration">
+						  <input type="hidden" name="actId" th:value="${act.actId}">
+						  <input type="hidden" name="sesId" th:value="${ses.sesId}">
+						  <button type="submit" class="btn btn-primary">我要報名</button>
+						</form>
+					</td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-
+			<!--報名區域 -->
+			<iframe id="memRegistration" 
+			name="memRegistration" 
+			src="about:blank" 
+			style="display:none;width:100%;height:600px;border:0"
+        	onload="this.contentWindow.location.href!=='about:blank'&&(this.style.display='block')">
+			</iframe>
+			
+			<!--留言評論區域 -->
+			<iframe
+			  id="regReview"
+			  class="regReview"
+			  src="#"
+			  th:src="@{/act/review(actId=${actId})}"
+			  style="width:98%; margin-left:10px;min-height:500px; border:0; margin-top:12px; text-align:center;">
+			</iframe>
+	
+	
     <!-- 分離 JS -->
     <script th:src="@{/js/act/actCarousel.js}"></script>
 </body>

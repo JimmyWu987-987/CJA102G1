@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>小農｜活動報名訂單列表</title>
+<style>
+body {
+	font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+	color: #111;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 8px 10px;
+	border-bottom: 1px solid #eee;
+	text-align: center;
+}
+
+thead th {
+	background: #f5f7fa;
+	font-weight: 600;
+}
+
+.badge-ok {
+	background: #e6f4ea;
+	color: #1e7e34
+}
+
+.badge-cancel {
+	background: #fdecea;
+	color: #b02a37
+}
+
+.badge-wait {
+	background: #fff4e5;
+	color: #b26a00
+}
+
+.badge-done {
+	background: #e7f1ff;
+	color: #0b5ed7
+}
+
+.badge-closed {
+	background: #f0f0f0;
+	color: #555
+}
+
+.money {
+	font-variant-numeric: tabular-nums;
+}
+
+.strong {
+	font-weight: 700;
+}
+
+/* 評語彈窗 */
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, .35);
+	display: none;
+	z-index: 999;
+}
+
+.modal {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background: #fff;
+	width: min(720px, 90vw);
+	max-height: 80vh;
+	overflow: auto;
+	border-radius: 12px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+	padding: 16px 18px 18px;
+}
+
+.modal h3 {
+	margin: 6px 0 10px;
+	font-size: 18px;
+}
+
+.modal .row {
+	margin: 6px 0;
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+}
+
+.modal .label {
+	color: #667085;
+	width: 80px;
+	text-align: right;
+	flex: 0 0 80px;
+}
+
+.prewrap {
+	white-space: pre-wrap;
+	word-break: break-word;
+	background: #fafafa;
+	border: 1px solid #eee;
+	border-radius: 8px;
+	padding: 8px;
+	flex: 1;
+}
+
+.modal .close {
+	position: absolute;
+	right: 10px;
+	top: 8px;
+	border: 0;
+	background: transparent;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.btnComment {
+	padding: 4px 8px;
+	border: 1px solid #d0d5dd;
+	background: #fff;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.btnComment:hover {
+	background: #f6f8fa;
+}
+</style>
+</head>
+<body>
+<h1 style="text-align:center; margin:12px 0;">管理員查看活動訂單</h1>
+<table id="regTable" class="display" style="width:100%">
+  <thead>
+    <tr>
+      <th>訂單ID</th>
+      <th>下單時間</th>
+      <th>狀態</th>
+      <th>會員ID</th>
+      <th>場次ID</th>
+      <th>聯絡人</th>
+      <th>手機</th>
+      <th>人數</th>
+      <th>應付</th>
+      <th>折抵</th>
+      <th>實付</th>
+      <th>點數折抵(點)</th>
+      <th>回饋點數(點)</th>
+      <th>折價券持有明細ID</th>
+      <th>評分/評語</th>
+      <th>撥款給小農</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="r : ${listReg}">
+      <td th:text="${r.regId}"></td>
+      <td>
+      	<span th:text="${#dates.format(r.regAt, 'yyyy-MM-dd')}"></span><br>
+      	<span th:text="${#dates.format(r.regAt, 'HH:mm')}"></span>
+      </td>
+
+      <!-- 狀態 badge -->
+      <td>
+        <span th:switch="${r.regStat}">
+          <span th:case="0" class="badge badge-ok">報名成立</span>
+          <span th:case="1" class="badge badge-cancel">取消報名</span>
+          <span th:case="2" class="badge badge-wait">待付款</span>
+          <span th:case="3" class="badge badge-done">活動完成</span>
+          <span th:case="4" class="badge badge-closed">已結案</span>
+          <span th:case="*">未知</span>
+        </span>
+      </td>
+
+      <td>
+        <a th:href="@{/admin/mem/detail(memId=${r.memId})}" th:text="${r.memId}"></a>
+      </td>
+      <td>
+        <a th:href="@{/admin/ses/detail(sesId=${r.sesId})}" th:text="${r.sesId}"></a>
+      </td>
+
+      <td th:text="${r.regName}"></td>
+      <td th:text="${r.regMob}"></td>
+      <td th:text="${r.regCount}"></td>
+
+      <td class="money" th:text="|$ ${#numbers.formatInteger(r.regTotal,0,'COMMA')}|"></td>
+
+      <!-- 折抵總額 = 點數 + 券（title 顯示拆解） -->
+      <td class="money"
+          th:text="|-$ ${#numbers.formatInteger((r.regPointDisc?:0) + (r.regCpnDisc?:0),0,'COMMA')}|"
+          th:title="|點數折抵: ${r.regPointDisc?:0} 點；折價券: $${r.regCpnDisc?:0}|">
+      </td>
+
+      <td class="money strong" th:text="|$ ${#numbers.formatInteger(r.regGrandTotal,0,'COMMA')}|"></td>
+
+      <td th:text="${#numbers.formatInteger(r.regPointDisc?:0,0,'COMMA')} + ' 點'"></td>
+      <td th:text="${#numbers.formatInteger(r.regPointGet?:0,0,'COMMA')} + ' 點'"></td>
+
+      <!-- 折價券持有明細ID：可為 null -->
+      <td th:text="${r.cpnHolderDetailId} ?: '-'"></td>
+
+      <!-- 評分/評語（按鈕開彈窗） -->
+      <td>
+        <span th:text="${r.actRate != null ? '⭐ '+ r.actRate : '-'}"></span>
+        <button type="button" class="btnComment"
+                th:if="${(r.actComm != null and !#strings.isEmpty(r.actComm)) 
+                         or (r.actCommReply != null and !#strings.isEmpty(r.actCommReply))}"
+                th:attr="data-rate=${r.actRate},
+                         data-time=${r.actCommat != null ? #dates.format(r.actCommat,'yyyy-MM-dd HH:mm') : ''},
+                         data-comm=${r.actComm},
+                         data-reply=${r.actCommReply}">
+          查看
+        </button>
+        <span th:unless="${(r.actComm != null and !#strings.isEmpty(r.actComm)) 
+                          or (r.actCommReply != null and !#strings.isEmpty(r.actCommReply))}">/無</span>
+      </td>
+   
+		<td>
+		  <button type="button" class="btnComment" th:if="${r.regStat == 3}">撥款</button>
+		  <span th:unless="${r.regStat == 3}">-</span>
+		</td>
+    </tr>
+  </tbody>
+  
+  
+</table>
+
+
+<div id="commentOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="commentTitle">
+  <div class="modal">
+    <button class="close" aria-label="關閉">×</button>
+    <h3 id="commentTitle">評語內容</h3>
+    <div class="row"><span class="label">評分</span><span id="cRate">-</span></div>
+    <div class="row"><span class="label">時間</span><span id="cTime">-</span></div>
+    <div class="row"><span class="label">評語</span><div id="cComm" class="prewrap">—</div></div>
+    <div class="row"><span class="label">回覆</span><div id="cReply" class="prewrap">—</div></div>
+  </div>
+</div>
+
+
+
+<script>
+  (function(){
+    const overlay = document.getElementById('commentOverlay');
+    const cRate = document.getElementById('cRate');
+    const cTime = document.getElementById('cTime');
+    const cComm = document.getElementById('cComm');
+    const cReply = document.getElementById('cReply');
+
+    // 查看評論
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('.btnComment');
+      if(!btn) return;
+
+      const rate  = btn.dataset.rate || '-';
+      const time  = btn.dataset.time || '-';
+      const comm  = btn.dataset.comm || '';
+      const reply = btn.dataset.reply || '';
+
+      cRate.textContent = rate || '-';
+      cTime.textContent = time || '-';
+      cComm.textContent = comm && comm.trim() ? comm : '—';
+      cReply.textContent = reply && reply.trim() ? reply : '—';
+
+      overlay.style.display = 'block';
+    });
+
+    // 關閉：按 X 或點遮罩空白處
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay || e.target.classList.contains('close')){
+        overlay.style.display = 'none';
+      }
+    });
+
+    // ESC 關閉
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') overlay.style.display = 'none';
+    });
+  })();
+</script>
+
+</body>
+</html>
