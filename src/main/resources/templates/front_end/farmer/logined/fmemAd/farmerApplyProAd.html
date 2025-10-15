@@ -3,80 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>小農申請商品廣告</title>
+	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+    <link rel="stylesheet" th:href="@{/css/ad/fmemAd-sidebar.css}">
 
-<style>
-  html body{
-      height: 100%; left:100%; margin: 0;
-    }
-.background{
-    position: fixed; 
-    width: 100%;height: 100%;
-    object-fit: cover; display: block; 
-    z-index: 0;
-}
-.field{
-  width: 900px;
-  height: 475px;
-  background-color: black;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 2%;
-  opacity: 0.7;
-  z-index: 3;
+  <style>
+.container-header, .container-footer {
+	background-color: #dce2ef;
 }
 
-.field-right{
-  width: 355px;
-  height: 475px;
-  background-color: white;
-  position: fixed;
-  top: 50%;
-  left: 74%;
-  transform: translate(-50%, -50%);
-  border-radius: 2%;
-  z-index: 4;
+.nav>li>a {
+	background-color: #4F9D9D;
 }
 
-h1{
-  margin-top: 35px;
-  font-size: 30px;
-	text-align: center;
+body {
+	max-width: 100%;
+	height: auto;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
-.textContent {
-  vertical-align: middle;
-  font-size: 18px;
-  width: 95%;
-  margin-left: 20px;
+.field {
+	margin-top: 40px;
+	width: 90%;
+	height: auto;
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
 }
 
-.textContent td {
-  padding: 4px 2px;   
-  vertical-align: middle;  
-}
-input.textNo,
-select.textNo {
-  width: 100%;            
-  max-width: 150px;      
-  height: 28px;
-  font-size: 16px;
-  box-sizing: border-box; 
-  border: 1px solid #d0d5dd;
-  border-radius: 8px;
+.main-area {
+	flex: 1;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+	border-radius: 8px;
+	max-width: 100%;
+	height: auto;
+	padding: 30px;
+	position: relative;
+	background-image: url('/images/ad/applyAd-Background.gif');
+	background-size: cover;
+	background-position: center;
 }
 
+/* 	黑透明遮罩 */
+.main-field {
+	width: 100%;
+	height: 500px;
+	background-color: black;
+	display: flex;
+	border-radius: 2%;
+	background: rgba(0, 0, 0, 0.7);
+	z-index: 2;
+}
 
+/* 圖片區 */
 .box {
-  border: 8px dashed #ccc;
-	width: 450px;
-	height: 300px;
-	position: fixed;
-	top: 24%;
-	left: 24%;
-	z-index: 11;
+	border: 8px dashed #ccc;
+	margin: 65px 20px 0 20px;
+	max-width: 660px;
+	height: 350px;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	z-index: 4;
 }
 
 .box input {
@@ -87,109 +82,182 @@ select.textNo {
 	top: 0;
 	left: 0;
 	opacity: 0;
+	z-index: 8;
 }
 
 .box img {
 	width: 100%;
 	height: 100%;
-	object-fit: contain;
+	object-fit: fill;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 6; 
 }
 
 .add {
 	font: bold 100px Tahoma;
 	color: #ccc;
+}
+
+/* 文字區 */
+.input-right {
+	background-color: white;
+	min-width: 280px;
+	max-width: 280px;
+	border-radius: 0 2% 2% 0;
+	margin-left: auto;
+	z-index: 4;
+}
+
+.main-title {
+	margin-top: 15px;
+	margin-bottom: 10px;
+	font-size: 30px;
+	text-align: center;
+}
+
+.textContent {
+	display: block;
+	font-size: 16px;
+	width: 89%;
+	margin: 0 30px;
+}
+
+.textContent td {
+	padding: 4px 2px;
+}
+
+input.textNo, select.textNo {
+	width: 100%;
+	max-width: 140px;
+	height: 28px;
+	font-size: 14px;
+	box-sizing: border-box;
+	border: 1px solid #d0d5dd;
+	border-radius: 8px;
+	padding: 4px 5px;
+}
+
+.submit-btn {
+	padding: 8px 12px;
+	border: 0;
+	border-radius: 8px;
+	background: #ccc;
+	color: #fff;
+	margin: 10px auto;
+	cursor: pointer;
+	text-align: center;
+	display: block;
+}
+
+.littlefarmer:hover {
+	cursor: pointer;
+}
+
+.littlefarmer {
+	width: 180px;
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	right: -30px;
+	bottom: -10px;
+	z-index: 30;
+	cursor: pointer;
 }
 
-.submit-btn { 
-  padding: 8px 12px; 
-  border: 0; 
-  border-radius: 8px;
-  background:#ccc; 
-  color:#fff; 
-  margin: 10px auto;   
-  cursor: pointer; 
-  text-align: center;
-  display: block;        
+#ruleContent ol, #ruleContent ul, #ruleContent li {
+	list-style-type: decimal;
+	padding-left: 10px;
 }
 
-.littlefarmer:hover{
-  cursor: pointer;
+.rulebody {
+	display: none;
+	position: fixed;
+	top: 60%;
+	left: 60%;
+	transform: translate(-50%, -60%);
+	width: 580px;
+	height: 400px;
+	background: #fff;
+	padding: 18px 30px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 6px 24px;
+	overflow: auto;
+	z-index: 9999;
 }
-
-.littlefarmer{
-  position: fixed;
-  top: 53%;
-  left: 77%;
-  z-index: 10;
-}
-
-#rulebody{ z-index: 9999; }  /* 讓它蓋過 .field-right / .box */
 </style>
 </head>
 <body>
-  <img class="background" th:src="@{/images/ad/applyAd-Background.gif}" alt="Background">
-  
-  <img class="littlefarmer" th:src="@{/images/ad/applyAd-littleFarmer.gif}"  alt="littlefarmer">
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
-  
-  
-   <!--遮罩區 -->
   <div class="field">
-    
-  </div>
-  <form th:action="@{applyProAd}" method="post"
-      th:object="${proAdVO}" enctype="multipart/form-data">
-  <!--圖片區 -->
-	  <div class="box">
-		 <div class="add">+</div>
-		 <input type="file" name="adImg" id="theFile" accept="image/*">
-	  </div>
-  <!--輸入區 -->
-  <div class="field-right">
-      <div class="input-content">
-        <h1>小農申請廣告</h1>
+  
+	<div class="left-area">
+	  <h3 class="left-title">廣告功能</h3>
+	  <ul class="left-list">
+	    <li><a th:href="@{/fmem/proAd/list}">查看廣告列表</a></li>
+	    <li><a th:href="@{/fmem/proAd/applyAdView}">申請廣告</a></li>
+	  </ul>
+	</div>
+
+ 
+
+
+ <div class="main-area">
+  <img class="littlefarmer" th:src="@{/images/ad/applyAd-littleFarmer.gif}"  alt="littlefarmer">
+  <form th:action="@{applyProAd}" method="post" th:object="${proAdVO}" enctype="multipart/form-data">
+	<input type="hidden" th:field="*{fmem.fmemId}" th:value="${session.fmemId}"/>
+    <div class="main-field">
+      
+      <!-- 圖片區 -->
+      <div class="box">
+        <div class="add">+</div>
+        <input type="file" name="adImg" id="theFile" accept="image/*">
+      </div>
+
+      <!-- 輸入區 -->
+      <div class="input-right">
+        <div class="input-content">
+          <h1 class="main-title">小農申請廣告</h1>
+          
+
+          <table class="textContent">
         
-        <input type="hidden" th:field="*{fmem.fmemId}" th:value="${session.fmemId}"/>
-        
-        <table class="textContent">
         <tr class="textNo" >
-          <td>請選擇廣告類型：</td>
+          <td>廣告類型：</td>
           <td>
             <select class="textNo" id="adType">
-              <option th:value="@{/proAd/farmer/applyAd}" th:selected="${selectedType} == 'proAd'" >商品廣告</option>
-		      <option th:value="@{/actAd/farmer/applyAd}" th:selected="${selectedType} == 'actAd'">活動廣告</option>
+              <option th:value="@{/fmem/proAd/applyAdView}" th:selected="${selectedType} == 'proAd'" >商品廣告</option>
+		      <option th:value="@{/fmem/actAd/applyAdView}" th:selected="${selectedType} == 'actAd'">活動廣告</option>
             </select>
           </td>
         </tr>
 
-       <!--暫時還沒join -->
-        <tr class="textNo">
-          <td>請選擇商品編號：</td>
-          <td>
-            <select class="textNo" th:field="*{proId} ">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </td>
-        </tr>
+		<tr class="textNo">
+		  <td>商品編號：</td>
+		  <td>
+		    <select class="textNo" th:field="*{proId}">
+		      <option value="" disabled selected>請選擇商品</option>
+		      <option th:each="p : ${products}"
+		              th:value="${p.proId}"
+		              th:text="|${p.proId} - ${p.proName}|">
+		      </option>
+		    </select>
+		  </td>
+		</tr>
 
 
         <tr>
-			<td>廣告開始日期：</td>
+			<td>開始日期：</td>
 			<td>
 			<input class="textNo" type="date" th:field="*{proAdStart}"
-       		th:attr="min=${#temporals.format(#temporals.createNow().plusDays(7), 'yyyy-MM-dd')}" />
+       		th:attr="min=${#temporals.format(#temporals.createNow().plusDays(7), 'yyyy-MM-dd')}" required/>
 			</td>
 			</tr>
 
 
 				<tr>
-					<td>廣告播放時間：</td>
+					<td>播放時間：</td>
 					<td>
 					<select class="textNo" id="duration"   >
 							<option value="0">一個月</option>
@@ -210,44 +278,43 @@ select.textNo {
 
 
 				<tr>
-					<td>廣告結束日期：</td>
+					<td>結束日期：</td>
 					 <td>
 						<input class="textNo" type="date" th:field="*{proAdEnd}" readonly>
     				 </td>
 				</tr>
-				</table>
-				<!-- 規則閱讀與勾選 -->
-			    <div style="margin-left: 5%;">
-			      <label style="display:flex; align-items:center; gap:8px;">
+          </table>
+
+          <!-- 規則閱讀與勾選 -->
+			    <div style="margin-left: 5%; margin-top:10px">
+			      <label style="display:flex; align-items:center; gap:8px; ">
 			        <input type="checkbox" id="checkbox" disabled>
 			        <span>我已閱讀並同意
-					<span id="openRule" style="color:blue;text-decoration:underline;cursor:pointer;">
-					《平台廣告刊登規則》
+					<span id="openRule" style="color:blue;text-decoration:underline;cursor:pointer; ">
+					《廣告刊登規則》
 					</span></span>
 			      </label>
 			      
 			    <div th:if="${#fields.hasAnyErrors()}">
-			    	 <ul style= "margin-top:0; margin-left:0; color:red;">
+			    	 <ul style= "margin-top:0; margin-left:0; color:red; text-align:center;">
 				       <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
 				     </ul>
 			    </div>
 			    </div>
-				<input id = "submit-btn" type="submit" value="提交申請" class="submit-btn" disabled>
-				</div>
-				</div>
-				</form>
-				
 
-     
-    
+          <input id="submit-btn" type="submit" value="提交申請" class="submit-btn" disabled>
+        </div>
+      </div>
 
-    <!-- 規則框：預設隱藏 -->
-    <div id="rulebody"
-        style="display:none;
-                position:fixed; top:50%; left:50%; transform:translate(-50%, -60%);
-                width: 500px; height:400px; background:#fff; padding:12px;
-                border:1px solid #ccc; border-radius:8px; box-shadow:0 6px 24px ;
-				overflow:auto;z-index: 9999;">
+    </div> <!-- /main-field -->
+  </form>
+</div> <!-- /main-area -->
+
+ </div>
+
+
+  <!-- 規則框：預設隱藏 -->
+    <div id="rulebody" class= "rulebody">
 			<div id="ruleContent">載入中…</div>
       <div style="text-align:center;">
         <a href="#" id="closeRule">閱讀完畢，關閉此視窗</a>
@@ -256,7 +323,10 @@ select.textNo {
 
 
 
-<script>
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+
+  <script>
  // 下拉切換
     document.getElementById('adType').addEventListener('change', e=>{
       location.href = e.target.value;

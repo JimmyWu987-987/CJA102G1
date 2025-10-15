@@ -5,10 +5,35 @@
 <title>廣告申請列表</title>
 <link rel="stylesheet" th:href="@{/css/ad/reviewAd.css}">
 <link rel="stylesheet" th:href="@{/css/ad/adminListAll.css}">
+<style>
+
+th {
+	background-color: #d97706;
+}
+
+tr:nth-child(even) {
+	background-color:#fff7ed; 
+}
+
+tr:hover {
+	background-color:#ffedd5;
+}
+
+
+.btn {
+	background: #FF8C42;
+}
+
+.btn:hover {
+	background: #FF9F68;
+}
+
+
+</style>
 </head>
 <body>
 
-<h1 class="title">管理員查詢商品廣告審核列表</h1>
+<h1 class="title">管理員查詢活動廣告審核列表</h1>
 <img class="reviewPerson" id="personImg" th:src="@{/images/ad/review.gif}" alt="reviewPerson" />
 
 <div class="mwt_border">
@@ -25,45 +50,45 @@
   </select>
 </div>
 
-<form id="proAdSearch" th:action="@{/admin/proAd/list}" method="get" class= "functions" style="display:flex">
-  <input type="number" name="proAdId" placeholder="輸入商品廣告編號" class= "functions" >
+<form id="actAdSearch" th:action="@{/admin/actAd/list}" method="get" class= "functions" style="display:flex">
+  <input type="number" name="actAdId" placeholder="輸入活動廣告編號" class= "functions" >
   <button type="submit" class="btn">查詢</button>
 	<div th:if="${queryError}" style="color:red; margin-top:6px; margin-left:20px;" >
     <span th:text="${queryError}"></span>
-    <a th:href="@{/admin/proAd/list}" class="btn" style="padding:11px;">
+    <a th:href="@{/admin/actAd/list}" class="btn" style="padding:11px;">
       回到全部
     </a>
   </div>
 </form>
 
 <div style="display: flex;gap: 10px;align-items: center;">
-<form id="proNotReview" th:action="@{/admin/proAd/list}" method="get" class= "functions" >
-  <input type="hidden" name="proAdRevStat" value="1"> 
+<form id="actNotReview" th:action="@{/admin/actAd/list}" method="get" class= "functions" >
+  <input type="hidden" name="actAdRevStat" value="1"> 
   <button type="submit" class="btn">查詢尚未審核</button>
 </form>
-<form th:if="${proAdRevStat == 1}"id="proNotReview" th:action="@{/admin/proAd/list}" class= "functions" method="get" >
+<form th:if="${actAdRevStat == 1}"id="actNotReview" th:action="@{/admin/actAd/list}" class= "functions" method="get" >
   <button type="submit" class="btn">查全部</button>
 </form>
 </div>
 
-<table id="proAdTable">
+<table id="actAdTable">
   <tr>
-    <th>商品<br>廣告編號</th><th>小農<br>編號</th><th>商品名稱</th><th>商品廣告圖片</th>
+    <th>活動<br>廣告編號</th><th>小農<br>編號</th><th>活動名稱</th><th>活動廣告圖片</th>
     <th>審核狀態</th><th>審核<br>更新時間</th><th>審核備註</th>
     <th>上下架<br>狀態</th><th>上下架<br>更新時間</th>
     <th>開始日期</th><th>結束日期</th>
     <th>費用</th><th>繳費截止日</th><th>進行審核</th><th>修改</th>
   </tr>
 
-  <tr th:each="proAdVO : ${listAllProAd}"
-      th:if="${proAdId == null or proAdVO.proAdId == proAdId}">
+  <tr th:each="actAdVO : ${listAllActAd}"
+      th:if="${actAdId == null or actAdVO.actAdId == actAdId}">
       
-    <td th:text="${proAdVO.proAdId}"></td>
-    <td th:text="${proAdVO.fmemId}"></td>
-    <td th:text="${proAdVO.product.proName}"></td>
-    <td><img class="adImg" th:src="@{/proAd/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg" width="100"/></td>
+    <td th:text="${actAdVO.actAdId}"></td>
+    <td th:text="${actAdVO.fmemId}"></td>
+    <td th:text="${actAdVO.act.actName}"  width="100"></td>
+    <td><img class="adImg" th:src="@{/actAd/img/{id}(id=${actAdVO.actAdId})}" alt="actAdImg" width="100"/></td>
 
-    <td th:switch="${proAdVO.proAdRevStat}">
+    <td th:switch="${actAdVO.actAdRevStat}">
       <span th:case="0">編輯中</span>
       <span th:case="1">待審核</span>
       <span th:case="2">通過</span>
@@ -73,67 +98,67 @@
     </td>
 
     <td>
-      <span th:text="${#dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd')}"></span><br>
-      <span th:text="${#dates.format(proAdVO.proAdRevUpd,'HH:mm:ss')}"></span>
+      <span th:text="${#dates.format(actAdVO.actAdRevUpd,'yyyy-MM-dd')}"></span><br>
+      <span th:text="${#dates.format(actAdVO.actAdRevUpd,'HH:mm:ss')}"></span>
     </td>
 
-    <td th:text="${proAdVO.proAdRevRemark}">-</td>
+    <td th:text="${actAdVO.actAdRevRemark}">-</td>
 
     <td>
-      <span th:if="${proAdVO.proAdLaunStat == 0}">下架中</span>
-      <span th:if="${proAdVO.proAdLaunStat != 0}">上架中</span>
+      <span th:if="${actAdVO.actAdLaunStat == 0}">下架中</span>
+      <span th:if="${actAdVO.actAdLaunStat != 0}">上架中</span>
     </td>
 
     <td>
-      <span th:text="${#dates.format(proAdVO.proAdLaunUpd,'yyyy-MM-dd')}"></span><br>
-      <span th:text="${#dates.format(proAdVO.proAdLaunUpd,'HH:mm:ss')}"></span>
+      <span th:text="${#dates.format(actAdVO.actAdLaunUpd,'yyyy-MM-dd')}"></span><br>
+      <span th:text="${#dates.format(actAdVO.actAdLaunUpd,'HH:mm:ss')}"></span>
     </td>
     
     <td>
-      <span th:if="${proAdVO.proAdStart != null}" th:text="${proAdVO.proAdStart}"></span>
-      <span th:unless="${proAdVO.proAdStart != null}">-</span>
+      <span th:if="${actAdVO.actAdStart != null}" th:text="${actAdVO.actAdStart}"></span>
+      <span th:unless="${actAdVO.actAdStart != null}">-</span>
     </td>
 
     <td>
-      <span th:if="${proAdVO.proAdEnd != null}" th:text="${proAdVO.proAdEnd}"></span>
-      <span th:unless="${proAdVO.proAdEnd != null}">-</span>
+      <span th:if="${actAdVO.actAdEnd != null}" th:text="${actAdVO.actAdEnd}"></span>
+      <span th:unless="${actAdVO.actAdEnd != null}">-</span>
     </td>
 
     <td>
-      <span th:if="${proAdVO.proAdFee != null}"
-            th:text="|$ ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}|"></span>
-      <span th:unless="${proAdVO.proAdFee != null}">-</span>
+      <span th:if="${actAdVO.actAdFee != null}"
+            th:text="|$ ${#numbers.formatInteger(actAdVO.actAdFee, 0, 'COMMA')}|"></span>
+      <span th:unless="${actAdVO.actAdFee != null}">-</span>
     </td>
 
     <td>
-      <span th:if="${proAdVO.proAdFeeEnd != null}" th:text="${proAdVO.proAdFeeEnd}"></span>
-      <span th:unless="${proAdVO.proAdFeeEnd != null}">-</span>
+      <span th:if="${actAdVO.actAdFeeEnd != null}" th:text="${actAdVO.actAdFeeEnd}"></span>
+      <span th:unless="${actAdVO.actAdFeeEnd != null}">-</span>
     </td>
 
     <td>
-      <div th:if="${proAdVO.proAdRevStat == 1}">
-		 <form th:action="@{/admin/proAd/showReviewProAd}" method="get">
-		  <input type="hidden" name="proAdId" th:value="${proAdVO.proAdId}">
+      <div th:if="${actAdVO.actAdRevStat == 1}">
+		 <form th:action="@{/admin/actAd/showReviewActAd}" method="get">
+		  <input type="hidden" name="actAdId" th:value="${actAdVO.actAdId}">
 		  <input type="submit" value="開始審核" class="btn">
 		</form>
 	  </div>
-      <span th:if="${proAdVO.proAdRevStat == 3}">🚫</span>
-      <span th:if="${proAdVO.proAdRevStat == 4}">💰⏳</span>
-      <span th:if="${proAdVO.proAdRevStat == 5}">🎉</span>
+      <span th:if="${actAdVO.actAdRevStat == 3}">🚫</span>
+      <span th:if="${actAdVO.actAdRevStat == 4}">💰⏳</span>
+      <span th:if="${actAdVO.actAdRevStat == 5}">🎉</span>
     </td>
     
     <td>
-    <form th:action="@{/admin/proAd/showUpdateProAd}" method="get">
-    	  <input type="hidden" name="proAdId" th:value="${proAdVO.proAdId}">
+    <form th:action="@{/admin/actAd/showUpdateActAd}" method="get">
+    	  <input type="hidden" name="actAdId" th:value="${actAdVO.actAdId}">
 		  <input type="submit" value="修改" class="btn">
 	</form>
     </td>
   </tr>
 </table>
 
-<!-- 將審核商品畫面拉進來 -->
-<div th:if="${showReview}" id="proAdRevView" class="proAdRevView" style="display:block;">
-  <div th:replace="~{back_end/logined/ad/adminReviewProAd :: reviewProAd-div(proAdVO=${proAdVO})}"></div>
+<!-- 將審核活動畫面拉進來 -->
+<div th:if="${showReview}" id="actAdRevView" class="actAdRevView" style="display:block;">
+  <div th:replace="~{back_end/logined/ad/adminReviewActAd :: reviewActAd-div(actAdVO=${actAdVO})}"></div>
 </div>
 
 <!-- 圖片放大 -->
@@ -164,19 +189,19 @@ document.getElementById('closeButton').addEventListener('click', ()=>{
   zoomImg.src = '';
 });
 
-//商品審核畫面顯示
+//活動審核畫面顯示
 document.addEventListener('click', function (e) {
-	const btn = e.target.closest('.showProAdReview');
+	const btn = e.target.closest('.showActAdReview');
 	if (!btn) return;
   e.preventDefault();
-  document.getElementById('proAdRevView').style.display = 'block';
+  document.getElementById('actAdRevView').style.display = 'block';
 });
 
-//關閉商品審核畫面顯示
+//關閉活動審核畫面顯示
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.closeRev');
   if (!btn) return;
-  location.href = '/admin/proAd/list';
+  location.href = '/admin/actAd/list';
 });
 
 //人物文字顯示

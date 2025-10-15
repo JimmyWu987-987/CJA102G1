@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-* {
-	box-sizing: border-box;
-}
 
 body {
 	margin: 0;
@@ -47,7 +44,7 @@ th, td {
 }
 
 th {
-	width: 150px;
+	width: 160px;
 	color: #475569;
 	font-weight: 600;
 }
@@ -58,18 +55,18 @@ td{
 
 /* 第一列（原本/修改 標題列） */
 table tr:first-child th, table tr:first-child td {
-	background-color: #3498db;
-	color: #0f172a;
+	background-color: #d97706;
+	color: #fff;
 	font-weight: 700;
 	border-bottom-color: #e5e7eb;
 }
 
 tr:nth-child(even) {
-	background-color: #E0F2E9;
+	background-color:#fff7ed; 
 }
 
 tr:hover {
-	background-color: #d6eaf8;
+	background-color:#ffedd5;
 }
 
 .adImg, #newImgPreview {
@@ -85,7 +82,7 @@ tr:hover {
 button {
 	margin-left:45%;
 	margin-top: 12px;
-	background: #2F855A;
+	background: #d97706;
 	color: #fff;
 	border: none;
 	border-radius: 10px;
@@ -96,7 +93,7 @@ button {
 }
 
 button:hover {
-	background: #256F4A;
+	transform:scale(1.2);
 	box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
 }
 
@@ -104,9 +101,9 @@ button:hover {
 </head>
 <body>
 	
-	<form th:action="@{/admin/proAd/updateProAd}" method="post"
-		enctype="multipart/form-data" th:object="${proAdVO}">
-		<input type="hidden" name="proAdId" th:value="*{proAdId}" />
+	<form th:action="@{/admin/actAd/updateActAd}" method="post"
+		enctype="multipart/form-data" th:object="${actAdVO}">
+		<input type="hidden" name="actAdId" th:value="*{actAdId}" />
 		<div>
 			<table>
 				<h1>管理員修改廣告資料</h1>
@@ -118,26 +115,26 @@ button:hover {
 
 				<tr>
 					<th>商品廣告編號</th>
-					<td th:text="${proAdVO.proAdId}"></td>
-					<td th:text="*{proAdId}"></td>
+					<td th:text="${actAdVO.actAdId}"></td>
+					<td th:text="*{actAdId}"></td>
 				</tr>
 
 				<tr>
 					<th>小農編號</th>
-					<td th:text="${proAdVO.fmem.fmemId}"></td>
-					<td th:text="${proAdVO.fmem.fmemId}"></td>
+					<td th:text="${actAdVO.fmem.fmemId}"></td>
+					<td th:text="${actAdVO.fmem.fmemId}"></td>
 				</tr>
 
 				<tr>
 					<th>商品名稱</th>
-					<td><span th:text="${proAdVO.product.proName}"></span></td>
-					<td><span th:text="${proAdVO.product.proName}"></span></td>
+					<td><span th:text="${actAdVO.act.actName}"></span></td>
+					<td><span th:text="${actAdVO.act.actName}"></span></td>
 				</tr>
 
 				<tr>
 					<th>商品廣告圖片</th>
 					<td><img class="adImg"
-						th:src="@{/proAd/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg"
+						th:src="@{/actAd/img/{id}(id=${actAdVO.actAdId})}" alt="actAdImg"
 						width="100" /></td>
 					<td><input type="file" name="adImg" id="newImgInput" /><br>
 						新圖片預覽：<br> <img id="newImgPreview" src=""
@@ -148,12 +145,12 @@ button:hover {
 
 				<tr>
 					<th>審核狀態</th>
-					<td th:switch="${proAdVO.proAdRevStat}"><span th:case="0">編輯中</span>
+					<td th:switch="${actAdVO.actAdRevStat}"><span th:case="0">編輯中</span>
 						<span th:case="1">待審核</span> <span th:case="2">通過</span> <span
 						th:case="3">未通過</span> <span th:case="4">待繳費</span> <span
 						th:case="5">已繳費</span></td>
 
-					<td><select th:field="*{proAdRevStat}">
+					<td><select th:field="*{actAdRevStat}">
 							<option value="0">編輯中</option>
 							<option value="1">待審核</option>
 							<option value="2">審核通過</option>
@@ -167,8 +164,8 @@ button:hover {
 				<tr>
 					<th>審核更新時間</th>
 					<td><span
-						th:text="${#dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd')}"></span><br>
-						<span th:text="${#dates.format(proAdVO.proAdRevUpd,'HH:mm:ss')}"></span>
+						th:text="${#dates.format(actAdVO.actAdRevUpd,'yyyy-MM-dd')}"></span><br>
+						<span th:text="${#dates.format(actAdVO.actAdRevUpd,'HH:mm:ss')}"></span>
 					</td>
 
 					<!-- 現在時間 -->
@@ -178,15 +175,15 @@ button:hover {
 
 				<tr>
 					<th>審核備註</th>
-					<td th:text="${proAdVO.proAdRevRemark}"></td>
-					<td><input type="text" th:field="*{proAdRevRemark}" /></td>
+					<td th:text="${actAdVO.actAdRevRemark}"></td>
+					<td><input type="text" th:field="*{actAdRevRemark}" /></td>
 				</tr>
 
 				<tr>
 					<th>上下架狀態</th>
-					<td><span th:if="${proAdVO.proAdLaunStat == 0}">下架中</span> <span
-						th:if="${proAdVO.proAdLaunStat != 0}">上架中</span></td>
-					<td><select th:field="*{proAdLaunStat}">
+					<td><span th:if="${actAdVO.actAdLaunStat == 0}">下架中</span> <span
+						th:if="${actAdVO.actAdLaunStat != 0}">上架中</span></td>
+					<td><select th:field="*{actAdLaunStat}">
 							<option value="0">下架中</option>
 							<option value="1">上架中</option>
 					</select></td>
@@ -195,8 +192,8 @@ button:hover {
 				<tr>
 					<th>上下架更新時間</th>
 					<td><span
-						th:text="${#dates.format(proAdVO.proAdLaunUpd,'yyyy-MM-dd')}"></span><br>
-						<span th:text="${#dates.format(proAdVO.proAdLaunUpd,'HH:mm:ss')}"></span>
+						th:text="${#dates.format(actAdVO.actAdLaunUpd,'yyyy-MM-dd')}"></span><br>
+						<span th:text="${#dates.format(actAdVO.actAdLaunUpd,'HH:mm:ss')}"></span>
 					</td>
 
 					<!-- 現在時間 -->
@@ -205,29 +202,29 @@ button:hover {
 
 				<tr>
 					<th>開始日期</th>
-					<td><span th:if="${proAdVO.proAdStart != null}"
-						th:text="${proAdVO.proAdStart}"></span> <span
-						th:unless="${proAdVO.proAdStart != null}">-</span></td>
-					<td><input type="date" th:field="*{proAdStart}" /></td>
+					<td><span th:if="${actAdVO.actAdStart != null}"
+						th:text="${actAdVO.actAdStart}"></span> <span
+						th:unless="${actAdVO.actAdStart != null}">-</span></td>
+					<td><input type="date" th:field="*{actAdStart}" /></td>
 				</tr>
 
 
 				<tr>
 					<th>結束日期</th>
-					<td><span th:if="${proAdVO.proAdEnd != null}"
-						th:text="${proAdVO.proAdEnd}"></span> <span
-						th:unless="${proAdVO.proAdEnd != null}">-</span></td>
-					<td><input type="date" th:field="*{proAdEnd}" /></td>
+					<td><span th:if="${actAdVO.actAdEnd != null}"
+						th:text="${actAdVO.actAdEnd}"></span> <span
+						th:unless="${actAdVO.actAdEnd != null}">-</span></td>
+					<td><input type="date" th:field="*{actAdEnd}" /></td>
 				</tr>
 
 
 				<tr>
 					<th>費用</th>
-					<td><span th:if="${proAdVO.proAdFee != null}"
-						th:text="|$ ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}|"></span>
-						<span th:unless="${proAdVO.proAdFee != null}">-</span></td>
+					<td><span th:if="${actAdVO.actAdFee != null}"
+						th:text="|$ ${#numbers.formatInteger(actAdVO.actAdFee, 0, 'COMMA')}|"></span>
+						<span th:unless="${actAdVO.actAdFee != null}">-</span></td>
 
-					<td><select th:field="*{proAdFee}">
+					<td><select th:field="*{actAdFee}">
 							<option value="1000">$1,000</option>
 							<option value="2000">$2,000</option>
 							<option value="3000">$3,000</option>
@@ -237,10 +234,10 @@ button:hover {
 
 				<tr>
 					<th>繳費截止日</th>
-					<td><span th:if="${proAdVO.proAdFeeEnd != null}"
-						th:text="${proAdVO.proAdFeeEnd}"></span> <span
-						th:unless="${proAdVO.proAdFeeEnd != null}"></span></td>
-					<td><input type="date" th:field="*{proAdFeeEnd}" /></td>
+					<td><span th:if="${actAdVO.actAdFeeEnd != null}"
+						th:text="${actAdVO.actAdFeeEnd}"></span> <span
+						th:unless="${actAdVO.actAdFeeEnd != null}"></span></td>
+					<td><input type="date" th:field="*{actAdFeeEnd}" /></td>
 				</tr>
 
 

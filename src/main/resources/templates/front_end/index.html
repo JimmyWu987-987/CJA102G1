@@ -12,6 +12,7 @@
     </th:block>
     
     <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/twmap/twmap.css}">
     <style>
     	a.test-farmerStore{
     		background-color: #FF8A65;
@@ -46,7 +47,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="link btn">活動專區</a>
+                    <a th:href="@{/act}" class="link btn">活動專區</a>
                     <ul>
                         <li><a href="#">自行修改喔</a></li>
                         <li><a href="#">自行修改喔</a></li>
@@ -234,7 +235,12 @@
             <div class="map-pic">
                 <!-- <img src="./images/farmer-poly02.png" alt="" style="max-width: 300px;"> -->
             </div>
-                        
+            <!-- 小農地圖（首頁內嵌） -->
+			<iframe
+			  id="tw-map-iframe"
+			  src="/twMap"
+			  class="twmap-css">
+			</iframe>                  
         </div> 
     </div>
 

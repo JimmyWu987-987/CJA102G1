@@ -1,0 +1,10 @@
+.twmap-css {
+	width: 100%;
+	margin-top: 10px;
+	border: 0;
+	display: block;
+	min-height: 550px;
+	max-height: 550px;
+	border-radius: 12px;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+}

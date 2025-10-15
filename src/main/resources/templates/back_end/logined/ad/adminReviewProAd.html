@@ -15,12 +15,12 @@
   <b><span id = "closeRev" class="closeRev">X</span></b>
 
     <div class ="revadImg">
-        <img class="revadImgs" th:src="@{/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg" width="100"/>
+        <img class="revadImgs" th:src="@{/proAd/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg" width="100"/>
     </div>
 
     <div class="adInfo">
     <p>商品編號：<span th:text="${proAdVO.proAdId}"></span></p>
-    <p>商品名稱：尚未join</p>
+    <p>商品名稱：<span th:text="${proAdVO.product.proName}"></span></p>
     <p>申請時間：<span th:text="${#dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd HH:mm:ss')}"></span></p>
     <p>播放時間：<span th:text="${proAdVO.proAdStart}"></span>~<span th:text="${proAdVO.proAdEnd}"></span></p>
     <p>廣告費用：<span th:text="'$' + ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}"></span></p>

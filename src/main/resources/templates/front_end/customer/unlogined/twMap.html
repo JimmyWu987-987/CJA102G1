@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>台灣合作小農</title>
+	<script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+  <style>
+html, body {
+  height: 100%;
+  margin: 0;           
+}
+
+body{
+  background-color: #EFF2D8;
+  display: flex;
+  justify-content: center;  
+  align-items: center;     
+}
+
+.map-area{
+  min-width: 80%;
+  display: flex;
+  gap: 5px;               
+  margin: 0 auto;           
+}
+
+.tw-Map{
+  flex: 1;
+  display: flex;            
+  justify-content: center;
+  align-items: center;
+  min-width: 360px;
+  max-width: 360px;
+  margin: 15px;
+}
+
+.tw-Map object{
+  display: block;                 
+  width: 100%;
+  height: auto;
+}
+
+.fmem-info{
+  width: 100%;
+  max-width: 450px;  
+  margin: 0 auto;       
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+  margin-left:60px;
+  margin-top:50px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.area-title{
+  font-size: 20px;
+  font-weight: 700;
+  color: #115844;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.fmem-list{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+.fmem-box{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #eaf8ef;
+  border: 1px solid #e2f5ea;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.fmem-photo{
+  width: 110px;
+  height: 110px;
+  border-radius: 8px;
+  object-fit: fill;
+  background: #eef2f7;
+  border: 1px solid #dce6dd;
+}
+
+.fmem-text{
+  display: flex;            
+  flex-direction: column;
+  gap: 3px;
+  max-width: 200px;
+}
+
+.fmem-name{
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;          
+  color: #065f46;
+}
+
+.fmem-desc{
+  color: #475569;
+  font-size: 14px;
+
+}
+
+.fmem-link{
+  margin-left: auto;      
+  text-decoration: none;
+  background: #10b981;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+
+.littlefarmer{
+	max-width:80px;
+	cursor:pointer;
+	position: fixed;   
+	left: 12px;
+	bottom: 10px;
+	width: 120px;
+	z-index: 20;
+}
+
+
+.mwt_border{
+  position: absolute;
+  bottom: 100px;
+  left: 10px;
+  width: 220px; min-height: 40px;
+  background: #fff; border: 1px solid #333;
+  border-radius:20px;
+  box-sizing: border-box; 
+  display:flex; align-items:center;
+}
+
+.mwt_border .arrow_b_int{
+  position:absolute;
+  width:0;height:0;
+  border-width:15px; border-style:solid;
+  border-color:#333 transparent transparent transparent;
+  bottom:-30px; left:42px; transform:translateX(-50%);
+  z-index:2;
+}
+
+.bubble-text{
+  font-size:16px; 
+  padding:0 15px; 
+  margin:0;
+}
+
+
+
+  </style>
+</head>
+<body>
+
+<div class="mwt_border">
+      <span class="arrow_b_int"></span>
+      <span class="arrow_b_out"></span>
+      <p class="bubble-text" id="bubbleText">歡迎加入成為我們的夥伴!</p>
+</div>
+
+<div class="littlefarmer-box">
+	<a th:href="@{/fmem/showFmemRegLoginForm}" target="_top" class="link">
+	<img class="littlefarmer" th:src="@{/images/map/farmer-map.png}" alt="farmer-map">
+	</a>
+</div>
+<div class="map-area">
+<div class="tw-Map">
+  <object id="tw" type="image/svg+xml" data="/svg/taiwan-with-ids2.svg" ></object>
+</div>
+
+<div class="fmem-info">
+  <div class="area-title">縣市：</div>
+
+  <div id="fmemList" class="fmem-list" th:fragment="farmersList">
+  <div th:if="${#lists.isEmpty(farmers)}" style="padding:12px;color:#64748b;">尚無合作小農資料</div>
+  <div class="fmem-box" th:each="f : ${farmers}">
+    <img class="fmem-photo"
+     th:src="@{/twMap/img/{id}(id=${f.fmemId})}"
+     alt="storePic">
+    <div class="fmem-text">
+      <div class="fmem-name" th:text="${f.storeName}"></div>
+      <div class="fmem-desc" th:text="${f.storeIntro}"></div>
+    </div>
+    <a class="fmem-link" href="#">前往賣場</a>
+  </div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+// 把 SVG 載入完成
+document.getElementById('tw').addEventListener('load', function () {
+  const svgDoc  = this.contentDocument;                              // 取得 SVG 文件
+  const shapes  = svgDoc.querySelectorAll('path, polygon, polyline'); // 可點的圖形
+  const titleEl = document.querySelector('.area-title');              // 右側標題
+  const listEl  = document.getElementById('fmemList');               // 小農清單容器
+  let active = null;                                                  // 記錄目前高亮
+
+  // 初始化每個區塊
+  shapes.forEach(p => {
+    p.style.fill = '#cfcdc9';
+    p.style.stroke = 'white';
+    p.style.strokeWidth = '2';
+    p.style.cursor = 'pointer';
+    p.style.transformBox = 'fill-box';
+    p.style.transformOrigin = 'center';
+    p.style.transition = 'fill .15s, transform .15s';
+
+    // 滑過變亮 + 微放大
+    p.addEventListener('mouseenter', () => {
+      if (p !== active) { p.style.fill = '#fcb156'; p.style.transform = 'scale(1.007)'; }
+    });
+
+    // 滑出恢復
+    p.addEventListener('mouseleave', () => {
+      if (p !== active) { p.style.fill = '#05ad7e'; p.style.transform = 'scale(1)'; }
+    });
+
+    // 點擊：高亮 + 更新標題 + 向後端要「HTML片段」塞進去
+    p.addEventListener('click', async () => {
+      if (active && active !== p) { active.style.fill = '#05ad7e'; active.style.transform = 'scale(1)'; }
+      active = p; p.style.fill = '#fcb156'; p.style.transform = 'scale(1.007)';
+
+      const city =
+        p.getAttribute('data-name') ||
+        p.getAttribute('data_name') ||
+        p.id || '';
+
+      if (titleEl) titleEl.textContent = '縣市：' + city;
+
+      // 直接拿 Thymeleaf 片段（HTML），塞進 #fmemList
+      try {
+        const resp = await fetch(`/twMap/farmersFragment?city=${encodeURIComponent(city)}`, { credentials: 'same-origin' });
+        const html = await resp.text();
+        if (listEl) listEl.innerHTML = html;
+      } catch (e) {
+        if (listEl) listEl.innerHTML = '<div style="padding:12px;color:#64748b;">載入失敗</div>';
+      }
+    });
+  });
+});
+</script>
+
+
+
+</body>
+</html>

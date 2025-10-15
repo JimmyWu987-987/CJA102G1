@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>付款成功</title>
+
+  <style>
+    html,body{
+    height:100%;margin:0;
+    background:bisque;
+  }
+  
+  body{
+    width: 100%;
+    background-image: url('/images/ad/sucessPay.png');
+    background-size: contain;   
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .field{
+    position: fixed;
+    left: 250px;
+    top: 80px;
+    width: 325px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;   
+    justify-content: center; 
+    text-align: center;    
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+  }
+
+
+  @keyframes circle {
+  from {
+    stroke-dashoffset: 1194;
+  }
+  
+  to {
+    stroke-dashoffset: 2388;
+  }
+}
+
+@keyframes tick {
+  from {
+    stroke-dashoffset: 350;
+  }
+  
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+  
+  to {
+    opacity: 1;
+  }
+}
+
+
+.circle{
+  stroke-dasharray: 1194;         /* 2πr ≈ 1194 (r=190) */
+  stroke-dashoffset: 1194;        /* 從全藏開始 */
+  animation: circle 1.4s ease-out forwards;
+}
+
+.tick{
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;         
+  animation: tick .55s ease-out forwards;
+  animation-delay: 1.0s;          
+}
+
+.check h2{
+  animation: title .60s ease-out forwards;
+  animation-delay: 1.25s;
+}
+
+.sucessText {
+  opacity: 0;
+  animation: title .60s ease-out forwards;
+  animation-delay: 1.25s;
+}
+
+.Info{
+  opacity: 0;
+  animation: title .60s ease-out forwards;
+  animation-delay: 1.25s;
+  }
+
+.back{
+  opacity: 0;
+  animation: title .60s ease-out forwards;
+  animation-delay: 1.25s;
+  background-color: #2d6cdf;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 16px;
+  text-decoration: none;   
+  cursor: pointer;
+  margin-top: 10px;
+}
+  </style>
+</head>
+<body>
+  <div class="field" >
+    <div class="check">
+      <svg width="120" height="120" viewBox="0 0 400 400">
+        <circle fill="none" stroke="#68E534" stroke-width="20"
+                cx="200" cy="200" r="190" stroke-linecap="round"
+                transform="rotate(-90 200 200)" class="circle" />
+        <polyline fill="none" stroke="#68E534" stroke-width="24"
+                  points="88,214 173,284 304,138"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  class="tick" />
+      </svg>
+      <h2 style="margin: 0; opacity: 0;">付款成功！</h2>
+      <div class="sucessText"> 您的付款已成功用Linepay支付</div>
+    </div>
+    
+    <br>
+
+	<div class="Info">
+	  <!-- 編號：依物件顯示 -->
+	  <span th:if="${actAdVO != null}">
+	    活動廣告編號：<span th:text="${actAdVO.actAdId}"></span>
+	  </span>
+	  <span th:if="${proAdVO != null}">
+	    商品廣告編號：<span th:text="${proAdVO.proAdId}"></span>
+	  </span>
+	
+	  <span th:text="${actAdVO != null ? '活動廣告費：' : '商品廣告費：'}">廣告費：</span>
+	  $
+	  <span th:text="${
+	      actAdVO != null 
+	        ? #numbers.formatInteger(actAdVO.actAdFee, 0, 'COMMA') 
+	        : #numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')
+	    }">0</span>
+	</div>
+
+
+    <a href="/fmem/proAd/list" class="back">返回廣告列表</a>
+
+
+  </div>
+
+
+
+  
+</body>
+</html>

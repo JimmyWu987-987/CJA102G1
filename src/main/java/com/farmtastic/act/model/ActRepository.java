@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface ActRepository extends JpaRepository<Act, Integer> {
 
     List<Act> findByFmemId(Integer fmemId, Sort sort);
+    List<Act> findByFmemId(Integer fmemId);
     List<Act> findByActId(Integer actId);
     List<Act> findByActStat(Integer actStat, Sort sort);
     List<Act> findByActLaunStat(Integer actLaunStat, Sort sort);
