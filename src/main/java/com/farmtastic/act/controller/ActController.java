@@ -166,6 +166,13 @@ public class ActController {
 		}
 	}
     
+	// ============ 輪播器圖片 ============
+	@GetMapping("/carousel/{actId}")
+	@ResponseBody
+	public byte[][] getCarouselImages(@PathVariable Integer actId) {
+		List<byte[]> imgs = actSvc.getAllActImagesForCarousel(actId);
+		return imgs.toArray(new byte[0][]);
+	}
     
     // ============ 單一查詢 (for 活動詳細頁面用) ============
     @GetMapping("/detail/{actId}")
@@ -211,12 +218,5 @@ public class ActController {
         
     }
     
-    // ============ 輪播器圖片 ============
-    @GetMapping("/carousel/{actId}")
-    @ResponseBody
-    public byte[][] getCarouselImages(@PathVariable Integer actId) {
-        List<byte[]> imgs = actSvc.getAllActImagesForCarousel(actId);
-        return imgs.toArray(new byte[0][]);
-    }
         
 }
