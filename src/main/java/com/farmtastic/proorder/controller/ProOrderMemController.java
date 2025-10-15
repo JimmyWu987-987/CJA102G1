@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
@@ -191,6 +192,7 @@ public class ProOrderMemController {
 	@PostMapping("insert")
 	public String insert(
 			@Validated(RegistrationValidation.class) @ModelAttribute("cartToProOrder") ProOrderVO proOrderVO,
+			
 			BindingResult result, HttpSession session, RedirectAttributes redirectAttributes, ModelMap model) {
 
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
@@ -343,8 +345,14 @@ public class ProOrderMemController {
 
 		// 更新網頁會員的session的資料
 		session.setAttribute("loggedInMember", loggedInMember);
-		// ================== 會員點數新增修改的邏輯 ======================
-
+		// ================== 折價卷修改狀態 ======================
+		MemProCpnVO updateMpc =  mpcSvc.getOne(proOrderVO.getMemProCpnVO().getCpnHolderDetailId());
+		// 設定已經使用該這價卷
+		updateMpc.setCpnUseStatus(CpnUseStatus.USED);
+		// 將最終點數結果，存回DB
+		mpcSvc.updateMemProCpn(updateMpc);
+		
+		
 		// ================== 扣商品庫存的邏輯 ======================
 		// 等同學寫好ORM
 		// 未完成
