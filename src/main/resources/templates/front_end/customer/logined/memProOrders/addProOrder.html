@@ -219,6 +219,7 @@
 		<div>
 			<label>一般商品折價卷持有者流水號編號</label>
 			<select th:field="*{cartToProOrder.memProCpnVO.cpnHolderDetailId}">
+				<option value="0">請選擇</option>
 				<option th:each="mpcVO : ${mpcList}" th:value="${mpcVO.cpnHolderDetailId}" th:text="${mpcVO.proCpnVO.cpnName}" />
 			</select>
 		</div>
