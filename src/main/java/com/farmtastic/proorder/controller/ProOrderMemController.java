@@ -346,7 +346,7 @@ public class ProOrderMemController {
 	// 修改訂單 (處理點數折抵及折價卷折抵)
 	@PostMapping("OrdDiscUpdate")
 	public String update(@RequestParam(name = "proOrdPointdisc", required = false) String proOrdPointdiscStr,
-			@RequestParam(name = "memProCpnVO", required = false) String cpnHolderDetailId,
+			@RequestParam(name = "memProCpnVO.cpnHolderDetailId", required = false) String cpnHolderDetailId,
 			HttpSession session, ModelMap model, RedirectAttributes redirectAttributes) {
 
 		// 取得 session 中的必要資訊
