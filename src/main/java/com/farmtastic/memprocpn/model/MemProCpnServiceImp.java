@@ -2,7 +2,9 @@ package com.farmtastic.memprocpn.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +63,8 @@ public class MemProCpnServiceImp {
 
 	// 查「某會員」所有效折價券
 	public List<MemProCpnVO> getCpnsByMember(Integer memId) {
-		return memProCpnRepository.findAllByMember(memId);
+		List<MemProCpnVO> list = memProCpnRepository.findAllByMember(memId);
+		return list == null ? Collections.emptyList() : list.stream().filter(Objects::nonNull).toList();
 	}
 
 	// 查「某會員」未使用且有效折價券

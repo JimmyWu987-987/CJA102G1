@@ -33,6 +33,7 @@ public interface MemProCpnRepository extends JpaRepository<MemProCpnVO, Integer>
 	@Query("""
 			    SELECT m
 			    FROM MemProCpnVO m
+			    JOIN FETCH m.proCpnVO
 			    WHERE m.memVO.memId = :memId
 			    ORDER BY m.effEnd DESC
 			""")
