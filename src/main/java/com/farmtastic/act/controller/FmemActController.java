@@ -3,6 +3,7 @@ package com.farmtastic.act.controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -268,103 +269,107 @@ public class FmemActController {
 //        model.addAttribute("success", "活動刪除成功！");
 //        return "redirect:/act/listAll";
 //    }
-    
-    
-}
 
 
 
 
 
-////  =========== 新增活動 ============
-//	@GetMapping("addAct")
-//	public String addAct(@ModelAttribute("act") Act act,
-//						 HttpSession session,
-//						 BindingResult result,
-//						 ModelMap model) {
-//		
-//		
-//		
-//		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
-//        Integer fmemId = fmem.getFmemId();
-//        
-//        act.setFmemId(fmemId);
-//        act.setActStat(1);	// 待審核
-//        
-//        java.sql.Date actStart = null;
-//        java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
-//        
-//        try {
-//        	actStart = act.getActStart();
-//
-//			if (actStart.before(after45)) {
-//				errorMsgs.add("由於審核需要作業時間, 請輸入 45 天之後的日期。");
-//			}
-//		} catch (IllegalArgumentException e) {
-//			actStart = new java.sql.Date(System.currentTimeMillis());
-//			errorMsgs.add("請輸入活動開始日期!");
-//		}
-//
-//		java.sql.Date actEnd = null;
-//		try {
-//			actEnd = java.sql.Date.valueOf(req.getParameter("act_end").trim());
-//			if (actEnd.before(actStart)) {
-//				errorMsgs.add("結束日期不得早於開始日期。");
-//			}
-//		} catch (IllegalArgumentException e) {
-//			actEnd = new java.sql.Date(System.currentTimeMillis());
-//			errorMsgs.add("請輸入活動結束日期!");
-//		}
-//        }
-//        act.setActUpd();	// 待審核
-//        
-//        
-//        
-//		model.addAttribute("act", act);
-//		return "front_end/farmer/logined/fmemAct/addAct";
-//	}
-//
-//	@PostMapping("addAllActImg")
-//	public String addActImg(@Valid Act act, BindingResult result, ModelMap model,
-//	@RequestParam("upActMainImg") MultipartFile actMainImg,
-//	@RequestParam("upActImg") MultipartFile[] actImgs)
-//	throws IOException {
-//		
-//		Integer order = 1;
-//		
-//		// 主圖
-//		if (actMainImg == null || actMainImg.isEmpty()) {
-//			model.addAttribute("errorMessage", "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
-//			return "front_end/farmer/logined/fmemAct/addAct";
-//		}
-//		
-//		act.setActMainImg(actMainImg.getBytes());
-//		
-//		// 活動圖片 (可有可無) 
-//		if (actImgs != null) {
-//			for (MultipartFile file : actImgs) {
-//				if (! file.isEmpty()) {
-//					ActImg actImg = new ActImg();
-//					actImg.setActImg(file.getBytes());
-//					actImg.setActimgOrder(order);
-//					order++;
-//				}
-//			}
-//		}
-//		
-//		if (result.hasErrors()) {
-//			 return "front_end/farmer/logined/fmemAct/addAct";
-//		}
-//		
-//		/*************************** 2.開始新增資料 *****************************************/
-//		actSvc.addAct(act);
-//		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
-//		List<Act> list = actSvc.findByFmemId();
-//			model.addAttribute("actListData", list);
-//			model.addAttribute("success", "- (新增成功)");
-//			return "redirect:front_end/farmer/logined/fmemAct/listAllAct";
-//	}
-//	
+//  =========== 新增活動 ============
+	@GetMapping("addAct")
+	public String addAct(@ModelAttribute("act") Act act,
+						 HttpSession session,
+						 BindingResult result,
+						 ModelMap model) {
+		
+		
+		
+		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
+        Integer fmemId = fmem.getFmemId();
+        
+        act.setFmemId(fmemId);
+        act.setActStat(1);	// 待審核
+        
+        java.sql.Date actStart = null;
+        java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
+        
+        try {
+        	actStart = act.getActStart();
+
+			if (actStart.before(after45)) {
+				model.addAttribute("message", "由於審核需要作業時間, 請選擇 45 天之後的日期。");
+			}
+		} catch (IllegalArgumentException e) {
+			actStart = new java.sql.Date(System.currentTimeMillis());
+			model.addAttribute("message", "請選擇活動開始日期");
+		}
+        
+
+		java.sql.Date actEnd = null;
+		
+		try {
+			actEnd = act.getActEnd();
+			if (actEnd.before(actStart)) {
+				model.addAttribute("message", "結束日期不得早於開始日期。");
+			}
+		} catch (IllegalArgumentException e) {
+			actEnd = new java.sql.Date(System.currentTimeMillis());
+			model.addAttribute("message", "請選擇活動結束日期");
+		}
+        
+		model.addAttribute("act", act);
+		return "front_end/farmer/logined/fmemAct/addAct";
+	}
+
+	
+//	@Valid Act act???
+	@PostMapping("addAllActImg")
+	public String addActImg(@ModelAttribute("act") Act act, HttpSession session,
+							BindingResult result, ModelMap model,
+							@RequestParam("upActMainImg") MultipartFile actMainImg,
+							@RequestParam("upActImg") MultipartFile[] actImgs) throws IOException {
+		
+		Integer actId = act.getActId(); // 取得活動編號
+		
+		
+		Integer order = 1;
+		
+		// 主圖
+		if (actMainImg == null || actMainImg.isEmpty()) {
+			model.addAttribute("errorMessage", "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+			return "front_end/farmer/logined/fmemAct/addAct";
+		}
+		
+		act.setActMainImg(actMainImg.getBytes());
+		
+		// 活動圖片 (可有可無) 
+		if (actImgs != null) {
+			for (MultipartFile file : actImgs) {
+				if (! file.isEmpty()) {
+					ActImg actImg = new ActImg();
+					actImg.setActImg(file.getBytes());
+					actImg.setActimgOrder(order);
+					order++;
+				}
+			}
+		}
+		
+		if (result.hasErrors()) {
+			 return "front_end/farmer/logined/fmemAct/addAct";
+		}
+		
+		/*************************** 2.開始新增資料 *****************************************/
+		actSvc.addAct(act);
+		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
+		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
+        Integer fmemId = fmem.getFmemId();
+		
+		List<Act> list = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
+			model.addAttribute("actListData", list);
+			model.addAttribute("success", "- (新增成功)");
+			return "redirect:front_end/farmer/logined/fmemAct/listAllAct";
+		}
+	}
+	
 ////  =========== 修改活動 ============
 //	@GetMapping("updateAct")
 //	public String updateAct(ModelMap model) {

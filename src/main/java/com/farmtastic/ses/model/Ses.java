@@ -1,8 +1,8 @@
 package com.farmtastic.ses.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 import com.farmtastic.act.enums.LaunStat;
 import com.farmtastic.act.enums.RegStat;
@@ -28,19 +28,19 @@ public class Ses {
 	private Integer sesId;
 
 	@Column(name = "ses_date", nullable = false)
-	private LocalDate sesDate;
+	private Date sesDate;
 
 	@Column(name = "ses_start", nullable = false)
-	private LocalTime sesStart;
+	private Time sesStart;
 
 	@Column(name = "ses_end", nullable = false)
-	private LocalTime sesEnd;
+	private Time sesEnd;
 
 	@Column(name = "reg_start", nullable = false)
-    private LocalDate regStart;
+    private Date regStart;
 
 	@Column(name = "reg_end", nullable = false)
-	private LocalDate regEnd;
+	private Date regEnd;
 
 	@Column(name = "minppl", nullable = false)
 	private Integer minPpl = 1;		// 預設1
@@ -61,7 +61,7 @@ public class Ses {
 	private Integer regStat = 0; // 預設正常
 
 	@Column(name = "ses_launupd")
-	private LocalDateTime sesLaunUpd;
+	private Timestamp sesLaunUpd;
 
 	@Column(name = "headcount")
 	private Integer headCount = 0;	// 預設0
@@ -83,43 +83,43 @@ public class Ses {
 		this.sesId = sesId;
 	}
 
-	public LocalDate getSesDate() {
+	public Date getSesDate() {
 		return sesDate;
 	}
 
-	public void setSesDate(LocalDate sesDate) {
+	public void setSesDate(Date sesDate) {
 		this.sesDate = sesDate;
 	}
 
-	public LocalTime getSesStart() {
+	public Time getSesStart() {
 		return sesStart;
 	}
 
-	public void setSesStart(LocalTime sesStart) {
+	public void setSesStart(Time sesStart) {
 		this.sesStart = sesStart;
 	}
 
-	public LocalTime getSesEnd() {
+	public Time getSesEnd() {
 		return sesEnd;
 	}
 
-	public void setSesEnd(LocalTime sesEnd) {
+	public void setSesEnd(Time sesEnd) {
 		this.sesEnd = sesEnd;
 	}
 
-	public LocalDate getRegStart() {
+	public Date getRegStart() {
 		return regStart;
 	}
 
-	public void setRegStart(LocalDate regStart) {
+	public void setRegStart(Date regStart) {
 		this.regStart = regStart;
 	}
 
-	public LocalDate getRegEnd() {
+	public Date getRegEnd() {
 		return regEnd;
 	}
 
-	public void setRegEnd(LocalDate regEnd) {
+	public void setRegEnd(Date regEnd) {
 		this.regEnd = regEnd;
 	}
 
@@ -178,11 +178,11 @@ public class Ses {
     
     
 
-	public LocalDateTime getSesLaunUpd() {
+	public Timestamp getSesLaunUpd() {
 		return sesLaunUpd;
 	}
 
-	public void setSesLaunUpd(LocalDateTime sesLaunUpd) {
+	public void setSesLaunUpd(Timestamp sesLaunUpd) {
 		this.sesLaunUpd = sesLaunUpd;
 	}
 
