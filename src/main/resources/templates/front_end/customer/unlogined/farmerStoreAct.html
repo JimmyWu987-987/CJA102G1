@@ -49,14 +49,15 @@
 	                            <span class="prefix">$</span>
 	                            <span th:text="${act.actFee}" class="number"></span>
 	                        </div>
-	                        <div class="score">
-	                            <span class="prefix">⭐</span>
-	                            <span th:text="${act.actScore}" class="number"></span>
-	                        </div>
+<!-- 	                        <div class="score"> -->
+<!-- 	                            <span class="prefix">⭐</span> -->
+<!-- 	                            <span th:text="${act.actScore}" class="number"></span> -->
+<!-- 	                        </div> -->
 	                	</a>
                         <div class="date">
-                        	<span>活動期間：</span>
-                        	<span th:text="${act.actStart}"></span>至
+<!--                         	<span>活動期間：</span> -->
+                        	<span th:text="${act.actStart}"></span>
+                        	<span>~</span>
                         	<span th:text="${act.actEnd}"></span>
 <!--                         	<span>10/10、10/25、12/25</span> -->
                         </div>

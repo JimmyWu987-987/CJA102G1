@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.act.model.Act;
+import com.farmtastic.act.model.ActService;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.fmember.model.ForgetPwdRequest;
@@ -34,6 +38,8 @@ import com.farmtastic.fmember.model.UpdatePasswordFmem;
 import com.farmtastic.fmember.model.UpdateProfileFmem;
 import com.farmtastic.fmember.model.UpdateStoreFmem;
 import com.farmtastic.fmember.model.UpdateSupplementFmem;
+import com.farmtastic.pro.model.Pro;
+import com.farmtastic.pro.model.ProService;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.style.model.Sty;
@@ -55,6 +61,12 @@ public class FmemController{
 	
 	@Autowired
 	StyService stySvc;
+	
+	@Autowired
+	ProService proSvc;
+	
+	@Autowired
+	ActService actSvc;
 	
 	@Autowired
 	RedisService redisSvc;
@@ -85,22 +97,52 @@ public class FmemController{
 	
 //	登入後的小農首頁
 	@GetMapping("/home")
-	public String fmemHome(HttpSession session, ModelMap model) {
+	public String fmemHomeProd(HttpSession session, ModelMap model) {
 		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");
 		if(fmem != null) {
 			String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 			String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
 
+			
 			model.addAttribute("fmem", fmem);
+//			model.addAttribute("fmemId", fmemId);
 			model.addAttribute("StorePicBase64", StorePicBase64);
 			model.addAttribute("fmemPicBase64", fmemPicBase64);
+			
+			List<Pro> proList = proSvc.findByFmemId(fmem.getFmemId());
+			model.addAttribute("proList", proList);
+			
 		} else {
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
 		
 		return "/front_end/farmer/logined/home";
 	}
+	
+	@GetMapping("/homeAct")
+	public String fmemHomeAct(HttpSession session, ModelMap model) {
+		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");
+		if(fmem != null) {
+			String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
+			String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
+			
+			model.addAttribute("fmem", fmem);
+//			model.addAttribute("fmemId", fmemId);
+			model.addAttribute("StorePicBase64", StorePicBase64);
+			model.addAttribute("fmemPicBase64", fmemPicBase64);
+			
+			List<Act> actList = actSvc.findByFmemId(fmem.getFmemId(), Sort.by(Sort.Direction.DESC, "actLaunUpd"));
+			model.addAttribute("actList", actList);
+			
+		} else {
+			return "front_end/farmer/unlogined/fmemRegLogin";
+		}
+		
+		return "/front_end/farmer/logined/homeAct";
+	}
 
+	
+	
 	
 	@GetMapping("/fmemArea")
 	public String fmemArea(HttpSession session, ModelMap model) {
@@ -918,7 +960,7 @@ public class FmemController{
 //				session.removeAttribute("redirectAfterLogin");
 //				return "redirect:" + redirectUrl ;
 //			}
-			return "redirect:/fmem/fmemArea";
+			return "redirect:/fmem/home";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);

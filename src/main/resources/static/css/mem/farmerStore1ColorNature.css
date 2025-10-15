@@ -194,6 +194,7 @@
 .product .price .number{}
 
 .product .addToCart{
+	width: 100%;
 	padding: 8px 14px;
 	margin-top: 12px;
 	border: none;
@@ -296,16 +297,16 @@
 .activity .price .prefix{}
 .activity .price .number{}
 
-
+/* *{outline: 1px solid #f00;} */
 .activity .text .date{
+	padding-left: 2px;
 	margin-top: auto;
-	margin-left: 4px;
 	font-size: 15px;
-	color: #666;
-	text-align: left;
+	color: #6d6d6d;
+	text-align: center;
 }
 .activity .text .date span{
-	display: block;
+	display: inlinie-block;
 }
 .activity .addToCart{
 	padding: 8px 14px;
@@ -322,8 +323,13 @@
 	background-color: #F4511E;
 }
 
-
-
+/* prod、act通用 */
+.no-item-msg{
+	font-size: 28px;
+	text-align: center;
+	color: #615652;
+	margin: 35px auto 0;
+}
 
 
 
