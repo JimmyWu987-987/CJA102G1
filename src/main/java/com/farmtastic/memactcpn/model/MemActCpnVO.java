@@ -30,7 +30,7 @@ public class MemActCpnVO {
 	private Integer cpnHolderDetailId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "pro_cpn_id", nullable = false)
+	@JoinColumn(name = "act_cpn_id", nullable = false)
 	private ActCpnVO actCpnVO;// FK actCpnId
 
 	@ManyToOne(fetch = FetchType.LAZY)

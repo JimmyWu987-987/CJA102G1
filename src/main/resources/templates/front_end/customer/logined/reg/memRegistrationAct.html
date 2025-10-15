@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+html,body{
+  height:100%;margin:0;
+  background:#FAFAF0;
+  display:flex;justify-content:center;align-items:center;
+}
+
+.field{
+  width:810px;height:540px;
+  background-color: #FFFDF5;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius:8px;
+  padding:20px 50px;
+  display:flex;
+  flex-direction:column; 
+}
+
+.title{
+  text-align:center;
+  font-weight: 600;
+  font-size:28px;
+  margin-bottom:0;
+  color:#3E5C2A;
+}
+
+.content{
+  display:flex;  
+  flex:1;
+  gap:20px;
+}
+
+.leftArea{
+  flex:3;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+
+
+.actInfo{
+  display: flex;
+  align-items: center;       
+  height: 150px;
+  background-color: #fff8dc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.actInfo img{
+  width: 170px;
+  height: 120px;
+  object-fit: fill;
+  border-radius: 6px;
+  margin-right: 15px;
+}
+
+.actText{
+  line-height: 0.5; 
+  font-size: 14px;  
+}
+
+.a{
+margin-top:25px;
+}
+
+.inputArea{
+  height: 280px;
+  background:white;
+  border-radius:8px;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.inputArea label{
+  display:inline-block;
+  width:105px;
+  margin-left:160px; 
+  margin-top: 6px;
+}
+.inputArea input{
+  width:130px;
+  padding:4px;
+}
+.inputArea select{
+  width: 141px;
+  padding:5px;
+}
+
+
+.mountArea{
+  flex:1;
+  height: 350px;
+  margin-top: 20px;
+  margin-left: 10px;
+  background:white;
+  border-radius:8px;
+  padding:10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.summary-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.summary-item {
+  
+  font-size: 16px;
+  margin: 6px 10px;
+}
+
+.pay-label{
+  display:flex;
+  align-items:center;  
+  gap:10px;          
+  cursor:pointer;
+}
+
+
+.circle-check{
+  appearance:none;         
+  width:20px;
+  height:20px;
+  border:2px solid black;
+  border-radius:50%;         
+  display:inline-block;
+  position:relative;
+}
+
+/* 打勾狀態：中間一個實心圓點 */
+.circle-check:checked{
+  border-color:black;
+  background:
+    radial-gradient(circle at 50% 50%, black 0 45%, transparent 46% 100%);
+}
+
+/* 圖片大小可依需求調整 */
+.pay-img{
+  height:50px;     /* 或用 width 設定寬度 */
+  object-fit:contain;
+  display:block;
+}
+
+
+
+.pay-btn {
+  background-color: #2f855a;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pay-btn:hover {
+  background-color: #276749;
+}
+
+.error{
+margin-left:6px;
+color:#c00;
+}
+
+  </style>
+</head>
+
+<body>
+ <form th:action="@{actReg}" method="post" th:object="${regVO}">
+  <div class="field">
+    <div class="title">活動付款頁面</div>
+    <div class="content">
+      <div class="leftArea">
+        <div class="actInfo">
+          <div class="act-img">
+             <img th:src="@{/act/img/{id}(id=${sesInfo.actId})}"th:alt="${sesInfo.actName}">
+          </div>
+         <div class="actText">
+            <h3 class="a">活動名稱：<span th:text="${sesInfo.actName}">活動</span></h3>
+            
+			<h3 class="a">日期：
+			  <span th:text="|${#dates.format(sesInfo.sesDate,'yyyy/MM/dd')}(${#dates.format(sesInfo.sesDate,'E')})|">
+			    2025/12/05(五)
+			  </span>
+			</h3>
+			
+			<h3 class="a">場次：
+			  <span th:text="|${#dates.format(sesInfo.sesStart,'HH:mm')}~${#dates.format(sesInfo.sesEnd,'HH:mm')}|">
+			    13:00~17:00
+			  </span>
+			</h3>
+			
+			<h3 class="a" >金額：
+			  <span th:text="|$${#numbers.formatInteger(sesInfo.sesFee,0,'COMMA')}|">$500</span>
+			</h3>
+         </div>
+        
+        </div>
+        
+       
+        <div class="inputArea">
+          <input type="hidden" th:field="*{sesId}">
+  		  <input type="hidden" th:field="*{memId}">
+          <div style="text-align: center; font-size: 25px; font-weight: 600; margin: 15px;">填寫報名資料</div>
+
+          <label for="contactName">聯絡人：</label>
+          <input type="text" placeholder="請輸入姓名"  th:field="*{regName}">
+          <span th:if="${#fields.hasErrors('regName')}"
+	      th:errors="*{regName}"
+	      class="error"></span>
+
+          <label for="mob">手機號碼：</label>
+          <input type="text" placeholder="09xxxxxxxx" th:field="*{regMob}" >
+          <span th:if="${#fields.hasErrors('regMob')}"
+	      th:errors="*{regMob}"
+	      class="error"></span>
+
+          <label for="email">聯絡人Email：</label>
+          <input type="text" placeholder="test@gmail.com" th:field="*{regMail}" >
+          <span th:if="${#fields.hasErrors('regMail')}"
+	      th:errors="*{regMail}"
+	      class="error"></span>
+
+          <label for="people">參加人數：</label>
+          <select id="people" th:field="*{regCount}" required>
+            <option value="1">1人</option>
+            <option value="2">2人</option>
+            <option value="3">3人</option>
+            <option value="4">4人</option>
+            <option value="5">5人</option>
+            <option value="6">6人</option>
+          </select><br>
+
+          <label for="coupon">折價券：</label>
+			<select id="coupon" name="cpnHolderDetailId"> 
+			    <option value="">未使用折價券</option>
+			    
+			    <option th:each="memCpn : ${availableCoupons}" 
+			            th:value="${memCpn.cpnHolderDetailId}"
+			            th:attr="data-type=${memCpn.actCpnVO.discType}, data-value=${memCpn.actCpnVO.discValue}" 
+			            th:text="${memCpn.actCpnVO.cpnName }">
+			        </option>
+			</select>
+			<input type="hidden" id="hiddenCpnDiscount" th:field="*{regCpnDisc}" value="0"> 
+			<br>
+
+          <label for="discountPoint">點數折扣：</label>
+		  <input type="number" id="discountPoint" th:field="*{regPointDisc}" min="0"> 點
+		  <span style="color:blue;" th:text="' (餘額：' + ${currentPoints} + ' 點)'">點</span>
+
+        </div>
+      </div>
+
+      <div class="mountArea">
+        <div class="summary-title">報名訂單摘要</div>
+        <div class="summary-item">
+		  金額：$
+		<span id="unitPrice"
+		        th:attr="data-price=${sesInfo.sesFee}"
+		        th:text="${#numbers.formatInteger(sesInfo.sesFee,0,'COMMA')}">500</span>
+		/人
+		</div>
+        <input type="hidden" id="hiddenTotalPricet" th:field="*{regTotal}">
+        <div id="summary">
+          <div class="summary-item">總人數：<span id="totalPeople">1</span> 人</div>
+          <div class="summary-item">折價券使用：<span id="couponDiscount">0</span></div>
+          <div class="summary-item">折扣點數：<span id="pointDiscount">0</span></div>
+          <hr>
+          <div class="summary-item">實付金額：$<span id="finalAmount" th:field="*{regGrandTotal}">1000</span></div>
+          <input type="hidden" id="hiddenRegGrandTotal" th:field="*{regGrandTotal}">
+          <div class="summary-item">將獲得點數回饋：<span id="pointGet">0 </span>點</div>
+          <input type="hidden" id="hiddenPointGet" th:field="*{regPointGet}">
+        </div>
+        <div class="pay-option">
+          <label class="pay-label">
+            <input type="checkbox" class="circle-check"  checked disabled>
+            <img src="/images/reg/LinePay.png" alt="LinePay" class="pay-img">
+          </label>
+        </div>
+        <input type="submit" value="前往付款" class="pay-btn" style="display:block; margin: 12px auto 0;">
+
+      </div>
+     </div>
+    </div>
+ </form>
+
+
+
+<script>
+
+  // 活動金額計算區
+  // 原價（每人費用）
+  const unitPriceEl = document.getElementById('unitPrice');
+  const unitPrice   = parseInt(unitPriceEl.dataset.price, 10) || 0;
+
+  // 取得表單內容
+  const peopleSelect = document.getElementById('people')
+  const couponSelect = document.getElementById('coupon')
+  const pointInput = document.getElementById('discountPoint')
+
+  // 取得顯示金額區域內容
+  const totalPeople = document.getElementById('totalPeople');
+  const couponDis = document.getElementById('couponDiscount');
+  const pointDis = document.getElementById('pointDiscount');
+  const finalA = document.getElementById('finalAmount');
+  const pointGet = document.getElementById('pointGet');
+
+  
+  
+  const hiddenGrandTotal = document.getElementById('hiddenRegGrandTotal');
+  const hiddenPointGet = document.getElementById('hiddenPointGet');
+  const hiddenTotalPricet = document.getElementById('hiddenTotalPricet');
+  const hiddenCpnDiscount = document.getElementById('hiddenCpnDiscount'); 
+  
+  function calcSummary() {
+      const people = parseInt(peopleSelect.value);
+      const points = parseInt(pointInput.value) || 0;
+      
+      const total = people * unitPrice; // 總人數未折扣前的總價
+      
+      let finalAmount = total; 
+      let couponDiscount = 0;  
+
+      // 1. 取得選中的優惠券選項，並讀取 data 屬性
+      const selectedOption = couponSelect.options[couponSelect.selectedIndex];
+      const discType = selectedOption.getAttribute('data-type');
+      const discValue = parseFloat(selectedOption.getAttribute('data-value')); 
+
+      // 2. 根據折扣類型計算 *優惠券的實際折抵金額*
+      if (discType === '0') {
+          // 類型 0: 固定金額折抵 (discValue 就是折抵金額)
+          couponDiscount = discValue;
+          
+      } else if (discType === '1') {
+          // 類型 1: 百分比 (discValue 是折扣比例，例如 0.85)
+          // 實際折價額 = 總價 - (總價 * 折扣比例)
+          let discountedPrice = total * discValue;
+          couponDiscount = total - discountedPrice;
+          couponDiscount = Math.round(couponDiscount); // 百分比折價額取整
+      }
+
+      // 3. 計算實付金額 (扣除優惠券和點數)
+      finalAmount = total - couponDiscount - points;
+      finalAmount = Math.max(0, finalAmount); // 確保金額不為負數
+      finalAmount = Math.round(finalAmount); // 最終金額取整
+
+      // 4. 計算點數回饋（無條件捨去）
+      const finalPointGet = Math.floor(finalAmount / 100);
+
+      // 5. 更新顯示和隱藏欄位
+      totalPeople.textContent = people;
+      couponDis.textContent = `-$${couponDiscount}`; // 顯示實際折扣額
+      pointDis.textContent = `-$${points}`;
+      finalA.textContent = finalAmount;
+      pointGet.textContent = finalPointGet;
+      
+      //將隱藏欄位綁定
+      hiddenGrandTotal.value = finalAmount;
+      hiddenPointGet.value = finalPointGet;
+      hiddenTotalPricet.value = total; 
+      hiddenCpnDiscount.value = couponDiscount;
+  }
+
+  // 綁定事件
+  peopleSelect.addEventListener('change', calcSummary);
+  couponSelect.addEventListener('change', calcSummary);
+  pointInput.addEventListener('input', calcSummary);
+
+  // 初始化一次
+  calcSummary();
+</script>
+
+</body>
+
+</html>

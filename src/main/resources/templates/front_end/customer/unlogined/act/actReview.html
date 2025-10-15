@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+  .field {
+  background-color: #FFFDF5;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius:8px;
+  padding:20px 50px;
+  display:flex;
+  flex-direction:column; 
+  }
+  .title{
+  text-align: center;
+  color: #3E5C2A;
+  }
+  
+  .review-item{
+  border-bottom:1px solid #eee;
+  padding:14px;
+  background:#fff;
+  margin-bottom:12px;     /* 每筆之間的間距 */
+  }
+  
+  .review-item:last-child{
+  margin-bottom:0;        /* 最後一筆不留空 */
+  border-bottom:none;     /* 也可順便把底線拿掉 */
+  }
+  
+  .review-head {
+  display:flex; 
+  align-items:center; 
+  gap:8px; 
+  }
+  
+  .stars {
+  font-size:20px; color:#f59e0b;
+
+  }    
+   
+  .date  {
+  font-size:12px; color:#888;
+  }
+  
+  .memId{
+  font-size:13px; color:#555;
+  }
+  
+  .review-body {
+  white-space:pre-wrap; 
+  line-height:1.6; 
+  font-size:14px; 
+  color:#222; 
+  margin:6px 0;
+  }
+  
+  .reply {
+  background:#fafafa; 
+  border:1px solid #eee; 
+  border-radius:6px; 
+  padding:10px; 
+  margin-top:8px; 
+  font-size:13px; 
+  color:#444;
+  }
+  
+  .empty {
+  color:#888; 
+  font-size:14px; 
+  padding:12px 0;
+  }
+  
+  .title {
+  font-weight:600; 
+  margin:0 0 8px 0;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="field">
+  <h2 class="title">活動評論</h2>
+
+  <!-- 無評論時 -->
+  <div class="empty" th:if="${#lists.isEmpty(reviews)}">尚無評論</div>
+
+  <!-- 有評論時 -->
+  <div th:each="r : ${reviews}" class="review-item" th:if="${!#lists.isEmpty(reviews)}">
+    <div class="review-head">
+      <!-- 顯示匿名（若你沒有會員名稱可固定顯示） -->
+      <span class="memId">匿名用戶</span>
+      <!-- 星等（1~5） -->
+      <span class="stars">
+      <span th:each="i : ${#numbers.sequence(1,5)}"
+            th:text="${i <= (r.actRate != null ? r.actRate : 0)} ? '★' : '☆'">★</span>
+      </span>
+      <!-- 留言時間 -->
+      <span class="date"
+            th:text="${r.actCommat != null ? #dates.format(r.actCommat, 'yyyy-MM-dd HH:mm') : '-'}">2024-10-23 14:53</span>
+      
+    </div>
+
+    <!-- 評論內容 -->
+    <div class="review-body"
+         th:text="${#strings.isEmpty(r.actComm) ? '（無評論）' : r.actComm}">
+      （無文字評論）
+    </div>
+
+    <!-- 小農回覆（可選） -->
+    <div class="reply" th:if="${!#strings.isEmpty(r.actCommReply)}">
+      <b>小農回覆：</b>
+      <span th:text="${r.actCommReply}"></span>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>
