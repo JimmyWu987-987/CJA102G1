@@ -58,6 +58,7 @@ public class ProOrderSevice {
 
 
 	// 修改
+	@Transactional
 	public void updateProOrder(ProOrderVO proOrderVO) {
 		repository.save(proOrderVO);
 	}
@@ -75,22 +76,26 @@ public class ProOrderSevice {
 	}
 
 	// 訂單編號的單一查詢
+	@Transactional
 	public ProOrderVO getOneProOrder(Integer proOrdId) {
 		Optional<ProOrderVO> optional = repository.findById(proOrdId);
 		return optional.orElse(null);
 	}
 
 	// 一般會員查自己的全部訂單
+	@Transactional
 	public List<ProOrderVO> getAllByMemId(Mem MemVo) {
 		return repository.findByMemVO(MemVo);
 	}
 
 	// 小農fmem查詢自己的全部表單
+	@Transactional
 	public List<FmemOrderSummary> getAllByFmemId(Integer fmemId) {
 		return repository.findFmemProOrders(fmemId);
 	}
 	
 	// 查詢該小農“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
+	@Transactional
 	public List<FmemOrderSummary> getAllByFmemIdCanAlloc(Integer fmemId) {
 		return repository.findFmemProOrdersCanAlloc(fmemId);
 	}
