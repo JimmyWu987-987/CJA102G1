@@ -1,5 +1,6 @@
 package com.farmtastic.procpn.service;
 
+//全部註解
 public class ProCpnServiceTest {
 //	@Test
 //	void testGetCoupon() {
