@@ -24,6 +24,7 @@
 	<span th:text="${cartToProOrder}"></span><br>
 	<span th:text="${cartToProOrder.memVO}"></span><br>
 	<span th:text="${cartToProOrder.memVO.memPoint}"></span><br> -->
+	<!-- <span th:text="${cartToProOrder.memProCpnVO.cpnHolderDetailId}"></span> -->
 
 	 <div th:if="${successMessage}" class="success-message">
         <p th:text="${successMessage}"></p>
@@ -97,16 +98,6 @@
 		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
 		</div>
 		
-		<!-- 		<div>
-		<label>一般商品折價卷持有者流水號編號</label>
-		<input type="text" th:field="*{memProCpnVO.cpnHolderDetailId}"/><br>
-		讀取商品折價卷持有者明細，要做下拉式選單
-		</div> -->
-		
-<!-- 		<div>
-		<label>折價券折抵金額</label>
-		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
-		</div> -->
 		
 		<div>
 		<label>會員持有點數</label>
@@ -223,7 +214,21 @@
 		
 	</form>
 	
-<form th:action="@{OrdPointDiscUpdate}" method="post">
+<form th:action="@{OrdDiscUpdate}" method="post">
+		
+		<div>
+			<label>一般商品折價卷持有者流水號編號</label>
+			<select th:field="*{cartToProOrder.memProCpnVO.cpnHolderDetailId}">
+				<option th:each="mpcVO : ${mpcList}" th:value="${mpcVO.cpnHolderDetailId}" th:text="${mpcVO.proCpnVO.cpnName}" />
+			</select>
+		</div>
+		
+		<div>
+		<label>折價券折抵金額</label>
+		<input type="text" th:field="*{cartToProOrder.proOrdCpndisc}" readonly/><br>
+		</div>
+	
+	
     <div>
         <label>折抵會員點數</label>
         <input type="number" 

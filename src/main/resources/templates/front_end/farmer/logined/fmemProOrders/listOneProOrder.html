@@ -16,12 +16,12 @@
 
 /* **新增修正點：讓整個會員內容區塊居中並限制最大寬度** */
 .container-member {
-	/* 設置內容最大寬度，您可以依需求調整 */ 
-	max-width:1200px;
+	/* 設置內容最大寬度，您可以依需求調整 */
+	max-width: 1200px;
 	/* 強制覆蓋 memArea.css 或其他可能設定的 margin-left */
-	margin-left:auto!important;
+	margin-left: auto !important;
 	/* 強制覆蓋 memArea.css 或其他可能設定的 margin-right */
-	margin-right:auto!important;
+	margin-right: auto !important;
 }
 
 /* 確保標題置中且符合通用標題樣式 */
@@ -352,24 +352,52 @@
 					<div class="status-update-form">
 						<h3>修改訂單狀態與物流資訊</h3>
 						<form method="post" th:action="@{/fmem/proorders/updateStatus}">
-
 							<div class="form-field">
 								<span>訂單狀態:</span> <select name="proOrdStatus">
 									<option th:each="entry : ${proOrdStatus}"
 										th:value="${entry.key}" th:text="${entry.value}"
-										th:selected="${entry.key == proOrderVO.proOrdStatus}"></option>
+										th:selected="${entry.key == proOrderVO.proOrdStatus}"
+										th:disabled="${
+										(entry.key < proOrderVO.proOrdStatus) 
+										or (proOrderVO.proOrdStatus == 0 and entry.key == 1)
+										or (proOrderVO.proOrdStatus == 0 and entry.key == 3)
+										or (proOrderVO.proOrdStatus == 0 and entry.key == 4)
+										or (proOrderVO.proOrdStatus == 0 and entry.key == 5)
+										or (proOrderVO.proOrdStatus == 0 and entry.key == 6)
+										or (proOrderVO.proOrdStatus == 1 and entry.key != 1)
+										or (proOrderVO.proOrdStatus == 2 and entry.key != 2)
+										or (proOrderVO.proOrdStatus == 3 and entry.key != 3)
+										or (proOrderVO.proOrdStatus == 4 and entry.key == 4)
+										or (proOrderVO.proOrdStatus == 4 and entry.key == 6)
+										or (proOrderVO.proOrdStatus == 5 and entry.key == 6)
+										or (proOrderVO.proOrdStatus == 6 and entry.key != 6)
+										}"></option>
 								</select>
 							</div>
 
 							<div class="form-field">
-								<span>物流追蹤碼:</span> <input type="text" name="proTrackingNo"
-									th:value="${proOrderVO.proTrackingNo}">
+								<span>物流追蹤碼:</span>
+								<div th:if="${proOrderVO.proOrdStatus < 3}">
+								<input type="text" name="proTrackingNo" th:value="${proOrderVO.proTrackingNo}">
+								</div>							
+								<div th:if="${proOrderVO.proOrdStatus >= 3}">
+								<input type="text" name="proTrackingNo" th:value="${proOrderVO.proTrackingNo}" readonly>
+								</div>							
 							</div>
 
 							<div class="form-field">
-								<span>出貨日期:</span> <input type="date" name="proOrdShipdate"
-									th:value="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"
-									th:min="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd')}">
+								<span>出貨日期:</span>
+								<div th:if="${proOrderVO.proOrdStatus < 4}">
+									<input type="date" name="proOrdShipdate"
+										th:value="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"
+										th:min="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd')}">
+								</div>
+								
+								<div th:if="${proOrderVO.proOrdStatus >= 4}">
+									<input type="date" name="proOrdShipdate"
+										th:value="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"
+										th:min="${#dates.format(proOrderVO.proOrdDate, 'yyyy-MM-dd')}" readonly>
+								</div>
 							</div>
 
 							<div class="form-actions">
@@ -448,6 +476,10 @@
 							</span>
 						</div>
 
+						<div class="order-note" th:if="${proOrderVO.proOrdComm}">
+							<span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span>
+						</div>
+
 					</div>
 				</div>
 
@@ -513,9 +545,7 @@
 					</div>
 				</div>
 
-				<div class="order-note" th:if="${proOrderVO.proOrdComm}">
-					<span>訂單備註:</span><span th:text="${proOrderVO.proOrdComm}"></span>
-				</div>
+
 
 
 				<div class="back-button-area">

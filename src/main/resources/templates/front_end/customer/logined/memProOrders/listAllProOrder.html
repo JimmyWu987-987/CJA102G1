@@ -225,13 +225,6 @@ div.dataTables_wrapper {
 								</form>
 							</td>
 							<td>
-								<div
-									th:if="${proOrderVO.proPayStatus == 0 && proOrderVO.proOrdStatus != 1 && proOrderVO.proOrdStatus != 4}">
-									<form method="post"
-										th:action="@{/mem/proorders/listOneProOrder}">
-										<input type="submit" value="付款">
-									</form>
-								</div>
 
 								<div th:if="${proOrderVO.proOrdStatus == 3}">
 									<form method="post"
@@ -241,10 +234,28 @@ div.dataTables_wrapper {
 								</div>
 
 								<div
-									th:if="${proOrderVO.proOrdStatus == 0}">
-									<form method="post" th:action="@{/mem/proorders/return}">
-										<input type="submit" value="取消訂單"> <input type="hidden"
-											name="proOrdId" th:value="${proOrderVO.proOrdId}"> <input
+									th:if="${proOrderVO.proPayStatus == 0 && proOrderVO.proOrdStatus != 1 && proOrderVO.proOrdStatus <= 4}">
+									<form method="post"
+										th:action="@{/mem/proorders/listOneProOrder}">
+										<input type="submit" value="付款">
+									</form>
+								</div>
+
+								<div th:if="${proOrderVO.proOrdStatus == 0}">
+									<form method="post" th:action="@{/mem/proorders/updatestatus}">
+										<input type="submit" value="取消訂單"> <input
+											type="hidden" name="proOrdId"
+											th:value="${proOrderVO.proOrdId}"> <input
+											type="hidden" name="proOrdStatus"
+											th:value="${proOrderVO.proOrdStatus}">
+									</form>
+								</div>
+
+								<div th:if="${proOrderVO.proOrdStatus == 2}">
+									<form method="post" th:action="@{/mem/proorders/updatestatus}">
+										<input type="submit" value="通知到貨"> <input
+											type="hidden" name="proOrdId"
+											th:value="${proOrderVO.proOrdId}"> <input
 											type="hidden" name="proOrdStatus"
 											th:value="${proOrderVO.proOrdStatus}">
 									</form>
@@ -252,9 +263,19 @@ div.dataTables_wrapper {
 
 								<div
 									th:if="${proOrderVO.proOrdStatus >=2 && proOrderVO.proOrdStatus <= 3}">
-									<form method="post" th:action="@{/mem/proorders/return}">
+									<form method="post" th:action="@{/mem/proorders/updatestatus}">
 										<input type="submit" value="退貨"> <input type="hidden"
 											name="proOrdId" th:value="${proOrderVO.proOrdId}"> <input
+											type="hidden" name="proOrdStatus"
+											th:value="${proOrderVO.proOrdStatus}">
+									</form>
+								</div>
+
+								<div th:if="${proOrderVO.proOrdStatus == 4}">
+									<form method="post" th:action="@{/mem/proorders/updatestatus}">
+										<input type="submit" value="已寄出退貨"> <input
+											type="hidden" name="proOrdId"
+											th:value="${proOrderVO.proOrdId}"> <input
 											type="hidden" name="proOrdStatus"
 											th:value="${proOrderVO.proOrdStatus}">
 									</form>
