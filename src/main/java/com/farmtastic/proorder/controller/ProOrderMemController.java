@@ -346,7 +346,7 @@ public class ProOrderMemController {
 	// 修改訂單 (處理點數折抵及折價卷折抵)
 	@PostMapping("OrdDiscUpdate")
 	public String update(@RequestParam(name = "proOrdPointdisc", required = false) String proOrdPointdiscStr,
-			@RequestParam(name = "memProCpnVO", required = false) String cpnHolderDetailId,
+			@RequestParam(name = "memProCpnVO.cpnHolderDetailId", required = false) String cpnHolderDetailId,
 			HttpSession session, ModelMap model, RedirectAttributes redirectAttributes) {
 
 		// 取得 session 中的必要資訊
@@ -409,6 +409,21 @@ public class ProOrderMemController {
 			hasError = true;
 		}
 
+
+		
+		// ==============會員折價卷數錯誤驗證==============
+		// 取會員所選取的折價卷物件
+		
+		if(cpnHolderDetailId == null || cpnHolderDetailId.trim().isEmpty()) {
+			hasError = true;
+		}
+		
+		Optional<MemProCpnVO> tempMpcVO = mpcRepository.findById(Integer.valueOf(cpnHolderDetailId));
+		MemProCpnVO mpcVO = tempMpcVO.orElse(new MemProCpnVO());
+		
+		// 取該折價卷的所屬種類折扣之
+//		BigDecimal discValue = mpcVO.getProCpnVO().getDiscValue();
+		
 		// 如果有邏輯錯誤，返回原頁面
 		if (hasError) {
 			// 由於我們是手動返回頁面，必須確保將用戶輸入的值也放回 Model
@@ -420,15 +435,7 @@ public class ProOrderMemController {
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
 		
-		// ==============會員折價卷數錯誤驗證==============
-		// 取會員所選取的折價卷物件
-//		Optional<MemProCpnVO> tempMpcVO = mpcRepository.findById(Integer.valueOf(cpnHolderDetailId));
-//		MemProCpnVO mpcVO = tempMpcVO.orElse(null);
 		
-		// 取該折價卷的所屬折扣種類
-//		BigDecimal discValue = mpcVO.getProCpnVO().getDiscValue();
-		
-
 		// 4. 成功執行 (原有的邏輯)
 
 		// 實際折抵金額 (假設 1 點 = 1 元)
@@ -446,9 +453,13 @@ public class ProOrderMemController {
 		Integer proOrdPointGet = (int) (proOrdGrandTotal * POINTS_PER);
 		finalProOrderVO.setProOrdPointGet(proOrdPointGet);
 
-		finalProOrderVO.setProOrdCpndisc(123);
+		// (4) 儲存新的欄位狀態(保存已選取的欄位狀態)
+		MemProCpnVO finalMpcVO = mpcVO;
+		finalMpcVO.setCpnHolderDetailId(Integer.valueOf(cpnHolderDetailId));
+		finalProOrderVO.setMemProCpnVO(finalMpcVO);
+//		finalProOrderVO.setProOrdCpndisc(discValue.intValue());
 		
-
+		
 		
 		// 5. 將更新後的訂單物件存回 Session
 		session.setAttribute("cartToProOrder", finalProOrderVO);
