@@ -9,7 +9,7 @@
 
 	<link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-    <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateProfile.css}">
+<!--     <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateProfile.css}"> -->
     <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateStore.css}">
     
     <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
@@ -33,7 +33,7 @@
 
 
 </head>
-<body th:data-success="${success}">
+<body th:data-success="${success}" th:data-status="${accStatus}">
 
 	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
@@ -52,15 +52,15 @@
 	        	  enctype="multipart/form-data">
 	            <h3>修改小農商店資料</h3>
 	            <ul>
+	                <p class="warning-msg">* 啟用帳號必填欄位</p>
+	                
 	                <li>
-	                    <label for="">小農商店名稱</label>
+	                    <label for="">小農商店名稱<span class="star-tag">*</span></label>
 	                    <input type="text" th:field="*{storeName}">
-<!-- 	                    <span th:if="${#fields.hasErrors('storeName')}" th:errors="*{storeName}" class="error"></span> -->
 	                </li>
 	                <li>
-	                    <label for="">小農商店介紹</label>
+	                    <label for="">小農商店介紹<span class="star-tag">*</span></label>
 	                    <textarea type="text" th:field="*{storeIntro}"></textarea>
-<!-- 	                    <span th:if="${#fields.hasErrors('storeIntro')}" th:errors="*{storeIntro}" class="error"></span> -->
 	                </li>
 	                <li>
 	                    <label for="">小農商店樣式選擇</label>
@@ -71,11 +71,27 @@
 	                    </select>
 	                </li>
 	                
+	                
 	                <li class="list-pic first-pic">
-               			<label>小農商店主圖(點選下框以新增或更換圖片)</label>
+               			<label>小農頭像<span class="star-tag">*</span>(點選下框以新增或更換圖片)</label>
                    		<div class="picBox">
-                   			<img th:if="${storePicBase64 != null}" 
-                   				 th:src="@{'data:image/jpeg;base64,' + ${storePicBase64}}"
+                   			<img th:if="${tempFmemPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempFmemPicBase64}}"
+                   				 alt="小農頭像">
+					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+                   			<input type="file"  th:field="*{fmemPic}" class="fmemPic pic" accept="image/*">
+					    </div>
+					    <div class="picInfo"></div>
+					    <span th:if="${#fields.hasErrors('fmemPic')}" th:errors="*{fmemPic}" class="error"></span>
+          
+	               </li>
+	                
+	                
+	                <li class="list-pic">
+               			<label>小農商店主圖<span class="star-tag">*</span>(點選下框以新增或更換圖片)</label>
+                   		<div class="picBox">
+                   			<img th:if="${tempStorePicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempStorePicBase64}}"
                    				 alt="小農頭像">
 					        <div class="addPic"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
                    			<input type="file" th:field="*{storePic}" class="storePic pic" accept="image/*">
@@ -83,11 +99,8 @@
 					    <div class="picInfo"></div>
 					    <span th:if="${#fields.hasErrors('storePic')}" th:errors="*{storePic}" class="error"></span>
 	                </li>
-	               
-<!-- 	                <li class="list-fee"> -->
-<!-- 	                    <label>運費：</label> -->
-<!-- 	                    <span th:text = "${loggedInFmember.mktScore != null ? loggedInFmember.mktScore : '尚無評分'}"></span> -->
-<!-- 	                </li> -->
+	                
+	                
 	                
 	                <li class="list-score">
 	                    <label>商品總評價：</label>

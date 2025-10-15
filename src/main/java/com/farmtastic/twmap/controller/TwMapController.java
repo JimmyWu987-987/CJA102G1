@@ -47,10 +47,10 @@ public class TwMapController {
 	    @ResponseBody
 	    public byte[] fmemImage(@PathVariable Integer id) {
 	        Fmem f = twMapService.findOne(id);
-	        if (f == null || f.getStorePic() == null) {
+	        if (f == null || f.getFmemPic() == null) {
 	            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	        }
-	        return f.getStorePic();
+	        return f.getFmemPic();
 	    }
 	    
 	    

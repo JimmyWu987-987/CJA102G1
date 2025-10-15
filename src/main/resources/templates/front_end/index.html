@@ -34,7 +34,7 @@
                     <a href="#" class="link btn">關於本站</a>
                     <ul>
                         <li><a th:href="@{/forcusnews}">最新消息</a></li>
-                        <li><a href="#">常見QA</a></li>
+                        <li><a th:href="@{/qa/view}">常見QA</a></li>
                         <li><a href="#">聯絡我們</a></li>
                     </ul>
                 </li>
@@ -209,6 +209,22 @@
             </div> 
         </div>
     </div>
+    
+    <div class="container container-map">
+        <div class="map">
+            <div class="map-title title">小農地圖</div>
+            <div class="map-pic">
+                <!-- <img src="./images/farmer-poly02.png" alt="" style="max-width: 300px;"> -->
+            </div>
+            <!-- 小農地圖（首頁內嵌） -->
+			<iframe
+			  id="tw-map-iframe"
+			  src="/twMap"
+			  class="twmap-css">
+			</iframe>                  
+        </div> 
+    </div>
+    
 
     <div class="container container-shops">
         <div class="shops-title title">來逛逛我們的商店</div>
@@ -229,20 +245,7 @@
         </div>
     </div>
 
-    <div class="container container-map">
-        <div class="map">
-            <div class="map-title title">小農地圖</div>
-            <div class="map-pic">
-                <!-- <img src="./images/farmer-poly02.png" alt="" style="max-width: 300px;"> -->
-            </div>
-            <!-- 小農地圖（首頁內嵌） -->
-			<iframe
-			  id="tw-map-iframe"
-			  src="/twMap"
-			  class="twmap-css">
-			</iframe>                  
-        </div> 
-    </div>
+    
 
     <div class="container container-footer" th:fragment="footer">
         <div class="footer">

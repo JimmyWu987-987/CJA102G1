@@ -26,6 +26,9 @@ public class UpdateStoreFmem {
 	private Byte rptCnt;
 	
 	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
+	private MultipartFile fmemPic;
+	
+	@FileSize(max = 5 * 1024 * 1024, message = "圖片大小不能超過5MB")
 	private MultipartFile storePic;
 	
 //	@Min(value = 0, message = "運費不能小於0")
@@ -99,6 +102,16 @@ public class UpdateStoreFmem {
 
 	public void setRptCnt(Byte rptCnt) {
 		this.rptCnt = rptCnt;
+	}
+
+
+	public MultipartFile getFmemPic() {
+		return fmemPic;
+	}
+
+
+	public void setFmemPic(MultipartFile fmemPic) {
+		this.fmemPic = fmemPic;
 	}
 
 

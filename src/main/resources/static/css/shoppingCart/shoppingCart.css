@@ -1,5 +1,5 @@
 /* --- 全域與基礎設定 --- */
-    .container {
+    .container-cart {
         font-family: 'Helvetica Neue', Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif; /* 使用更現代化的字體，並提供備援字體 */
         background-color: #fdfaf6; /* 設定一個溫暖的米色背景，符合圖檔風格 */
         color: #333; /* 設定基礎文字顏色 */
@@ -9,12 +9,12 @@
     }
 
     /* --- 主要容器與標題 --- */
-    h1 {
+    .container-cart h1 {
         color: #5A8B4C; /* 使用圖檔中的綠色作為標題顏色 */
         margin-bottom: 20px;
     }
 
-    hr {
+    .container-cart hr {
         border: none;
         border-top: 1px solid #e0e0e0;
         width: 80%; /* 讓分隔線不要填滿整個寬度 */
@@ -22,7 +22,7 @@
     }
 
     /* --- 連結與操作按鈕 (通用樣式) --- */
-    a, button {
+    .container-cart a, button {
         text-decoration: none; /* 移除連結底線 */
         border-radius: 8px; /* 圓角 */
         padding: 10px 20px;
@@ -32,13 +32,13 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease; /* 加入平滑的動態效果 */
     }
 
-    a:hover, button:hover {
+    .container-cart a:hover, button:hover {
         transform: translateY(-2px); /* 滑鼠懸停時輕微上移 */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 滑鼠懸停時增加陰影 */
     }
     
     /* "回首頁" 和 "繼續購物" 連結 */
-    .top-links-container {
+    .container-cart .top-links-container {
         width: 100%;
         max-width: 900px; /* 設定最大寬度，與下方卡片對齊 */
         display: flex;
@@ -47,14 +47,14 @@
         margin-bottom: 20px;
     }
 
-    .top-links-container a {
+    .container-cart .top-links-container a {
         background-color: #ffffff;
         color: #5A8B4C;
         border: 1px solid #5A8B4C;
     }
 
     /* --- 小農購物車群組 (卡片化設計) --- */
-    .fmem-group {
+    .container-cart .fmem-group {
         width: 100%;
         max-width: 900px; /* 設定最大寬度，在大螢幕上更好看 */
         margin-bottom: 40px;
@@ -66,7 +66,7 @@
     }
 
     /* 小農標題 */
-    .fmem-header {
+    .container-cart .fmem-header {
         background-color: transparent; /* 移除舊的背景色 */
         padding: 0;
         margin: 0 0 20px 0; /* 調整邊距 */
@@ -78,74 +78,82 @@
     }
     
     /* --- 表格樣式美化 --- */
-    table {
+    .container-cart table {
         width: 100%;
         border-collapse: collapse; /* 移除儲存格間的空隙 */
         margin-top: 20px;
     }
 
-    th, td {
+    .container-cart th, td {
         border: none; /* 移除所有框線 */
         border-bottom: 1px solid #eee; /* 只保留底線來分隔列 */
         padding: 16px;
-        text-align: left;
+        text-align: center;
         vertical-align: middle; /* 垂直置中對齊 */
     }
 
-    th {
+    .container-cart th {
         background-color: #f9f9f9; /* 給表頭一個非常淺的灰色背景 */
         font-weight: bold;
         color: #555;
     }
 
-    tbody tr:last-child td {
+    .container-cart tbody tr:last-child td {
         border-bottom: none; /* 最後一行的商品移除底線 */
     }
 
     /* 表格結尾 (總計) */
-    tfoot td {
+    .container-cart tfoot td {
         border-top: 2px solid #e0e0e0; /* 在總計上方加上較粗的線 */
         font-weight: bold;
     }
 
-    .total {
+    .container-cart .total {
         text-align: right;
         font-weight: bold;
         font-size: 1.1em; /* 稍微放大總計金額 */
         color: #333;
     }
-
+	
     /* --- 表單元件 (數量輸入、更新按鈕) --- */
-    input[type="number"] {
+    .container-cart input[type="number"] {
         width: 60px;
+    	height: 40px;
         padding: 8px;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        border-radius: 8px;
         text-align: center;
+        font-size: 16px;
     }
-
-    td form {
-        display: flex;
+	.container-cart input[type="number"]:focus{
+		outline: 1px solid #6873ed;
+	}
+    
+    .container-cart td form {
+/*         display: flex; */
+/*         height: 100%; */
+        display: inline-block;
         align-items: center;
         gap: 10px; /* 在輸入框和按鈕間增加空隙 */
     }
 
     /* 更新按鈕 */
-    form button[type="submit"] {
+    .container-cart form button[type="submit"] {
+        height: 40px;
         background-color: #f0f0f0;
         color: #333;
         border: 1px solid #ccc;
     }
 
     /* 移除按鈕 */
-    form button[style*="color: red;"] {
+    .container-cart form button[style*="color: red;"] {
         background-color: #FFEBEB;
         color: #C70000;
         border: 1px solid #C70000;
     }
 
     /* --- 結帳與清空操作區塊 --- */
-    .checkout-actions {
+    .container-cart .checkout-actions {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -168,17 +176,18 @@
     }
 
     /* --- 頁面底部清空所有購物車 --- */
-    form[action*="clearAllCarts"] {
+    .container-cart form[action*="clearAllCarts"] {
         margin-top: 30px;
     }
 
-    form[action*="clearAllCarts"] button {
+    .container-cart form[action*="clearAllCarts"] button {
         background-color: #D32F2F; /* 使用更強烈的紅色來表示危險操作 */
         color: white;
     }
     
     /* --- 提示訊息 --- */
-    .success-message, .error-message {
+    .success-message, 
+    .error-message {
         width: 100%;
         max-width: 900px;
         padding: 15px;

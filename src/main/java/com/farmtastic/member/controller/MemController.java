@@ -122,9 +122,6 @@ public class MemController {
 		
 		
 		
-		
-		
-		
 		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
 
@@ -446,11 +443,10 @@ public class MemController {
 
 			model.addAttribute("loggedInMember", mem);
 
-//			model.addAttribute("memId", mem.getMemId());
+			model.addAttribute("memId", mem.getMemId());
 //			model.addAttribute("memName", mem.getMemName());
 
-//			session.setAttribute("loggedInMember", mem);  //@SessionAttributes
-//			session.setAttribute("memId", mem.getMemId());
+			session.setAttribute("memId", mem.getMemId());
 //			session.setAttribute("memName", mem.getMemName());
 
 			// 4.登入成功後 重導至原本頁面
@@ -478,6 +474,7 @@ public class MemController {
 		}
 		// 2. 清掉 HttpSession 屬性
 		session.removeAttribute("loggedInMember");
+		session.removeAttribute("memId");
 		// 3. 重導到首頁
 		return "redirect:/";
 	}

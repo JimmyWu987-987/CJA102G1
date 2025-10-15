@@ -69,22 +69,19 @@
 	                            <span class="prefix">$</span>
 	                            <span th:text="${pro.proPrice}" class="number"></span>
 	                        </div>
-	                        <div class="score">
-	                            <span class="prefix">⭐</span>
-	                            <span th:text="${pro.proScore}" class="number"></span>
-	                        </div>
+<!-- 	                        <div class="score"> -->
+<!-- 	                            <span class="prefix">⭐</span> -->
+<!-- 	                            <span th:text="${pro.proScore}" class="number"></span> -->
+<!-- 	                        </div> -->
 	                    </a>
                     </div>
-					<button class="addToCart">加入購物車</button>	                    
+                    
+                    <form th:action="@{/cart/add}" method="post">
+		                <input type="hidden" name="proId" th:value="${pro.proId}">
+		                <input type="hidden" id="quantity" name="quantity" value="1">
+		                <button type="submit" class="addToCart">加入購物車</button>
+		            </form>
                 </li>
-                
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
 
                 
             </ul>
