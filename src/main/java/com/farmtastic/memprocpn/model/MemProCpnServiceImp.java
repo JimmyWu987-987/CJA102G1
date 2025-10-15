@@ -107,34 +107,4 @@ public class MemProCpnServiceImp {
 		// ✅ 儲存
 		memProCpnRepository.save(memProCpn);
 	}
-
-//發放生日折價券（每天執行）	
-//	public void giveBirthdayCoupons() {
-//		// 今天日期（不含時間）
-//		LocalDate today = LocalDate.now();
-//		// 找出今天生日的會員
-//		List<Mem> birthdayMems = memRepository.findByMemBirthMonthAndDay(today.getMonthValue(), today.getDayOfMonth());
-//
-//		// 找出生日券
-//		ProCpnVO birthdayCpn = proCpnRepository.findByCpnNameAndIsActive("生日快樂折價券", IsActive.ACTIVE)
-//				.orElseThrow(() -> new RuntimeException("找不到啟用中的生日券！"));
-//
-//		for (Mem mem : birthdayMems) {
-//			// 避免重複發券
-//			boolean alreadyHas = memProCpnRepository.existsByMemVO_MemIdAndProCpnVO_ProCpnId(mem.getMemId(),
-//					birthdayCpn.getProCpnId());
-//			if (alreadyHas)
-//				continue;
-//
-//			MemProCpnVO vo = new MemProCpnVO();
-//			vo.setMemVO(mem);
-//			vo.setProCpnVO(birthdayCpn);
-//			vo.setCpnUseStatus((byte) 0);
-//			vo.setRcvAt(LocalDateTime.now());
-//			vo.setEffStart(LocalDate.now());
-//			vo.setEffEnd(LocalDate.now().plusDays(birthdayCpn.getValidDays()));
-//			memProCpnRepository.save(vo);
-//		}
-//	}
-
 }

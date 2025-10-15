@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的商品折價券 | Farmtastic 會員中心</title>
+  <title>我的活動折價券 | Farmtastic 會員中心</title>
 
   <!-- 共用樣式 -->
   <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
@@ -54,7 +54,7 @@
 
   <!-- 若有折價券 -->
   <div class="coupon-area">
-  <h2>🎫 我的商品折價券</h2>
+  <h2>🎫 我的活動折價券</h2>
   <p class="welcome" th:text="'您好，' + ${member.memName} + '！以下是您所有的折價券：'"></p>
  <!-- 無折價券 -->
       <div th:if="${#lists.isEmpty(coupons)}" class="empty text-center text-muted my-4">
@@ -80,7 +80,7 @@
                     th:attrappend="aria-controls='collapse-' + ${stat.index}">
               <div class="d-flex flex-column flex-md-row w-100 justify-content-between align-items-md-center">
                 <div>
-                  <span class="fw-bold" th:text="${c.proCpnVO.cpnName}"></span>
+                  <span class="fw-bold" th:text="${c.actCpnVO.cpnName}"></span>
                   <span class="coupon-status" th:text="${c.cpnUseStatus.text}"></span>
                 </div>
                 <small class="text-muted">
@@ -99,15 +99,15 @@
                th:attrappend="aria-labelledby='heading-' + ${stat.index}">
             <div class="accordion-body">
               <p><strong>折扣類型：</strong>
-                 <span th:text="${c.proCpnVO.discType.text}"></span></p>
+                 <span th:text="${c.actCpnVO.discType.text}"></span></p>
 
               <p><strong>折扣值：</strong>
-                 <span th:text="${c.proCpnVO.discType.code == 0 
-                     ? #numbers.formatDecimal(c.proCpnVO.discValue, 0, 0) + ' 元'
-                     : #numbers.formatDecimal(c.proCpnVO.discValue * 100, 0, 0) + ' %'}"></span></p>
+                 <span th:text="${c.actCpnVO.discType.code == 0 
+                     ? #numbers.formatDecimal(c.actCpnVO.discValue, 0, 0) + ' 元'
+                     : #numbers.formatDecimal(c.actCpnVO.discValue * 100, 0, 0) + ' %'}"></span></p>
 
               <p><strong>使用條件：</strong></p>
-              <p class="text-secondary small" th:text="${c.proCpnVO.cpnDesc}"></p>
+              <p class="text-secondary small" th:text="${c.actCpnVO.cpnDesc}"></p>
 
               <hr>
               <p><strong>領取時間：</strong>
