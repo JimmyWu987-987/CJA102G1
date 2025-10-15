@@ -198,7 +198,7 @@ public class ActController {
         Sort sort = Sort.by(Sort.Direction.ASC, "sesDate")
         				.and(Sort.by(Sort.Direction.ASC, "sesStart"));
         
-        List<Ses> allSes = sesSvc.findByActId(actId, sort);
+        List<Ses> allSes = sesSvc.findSesByActId(actId, sort);
         List<Ses> launchedSes = allSes.stream()
         							  .filter(s -> s.getSesLaunStat() != null)
         							  .filter(s -> s.getSesLaunStat().equals(1))
