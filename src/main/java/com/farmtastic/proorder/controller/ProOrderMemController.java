@@ -407,42 +407,49 @@ public class ProOrderMemController {
 			hasError = true;
 		}
 
-//		// ==============會員折價卷數錯誤驗證==============
-//		// 取會員所選取的折價卷物件
-//		Optional<MemProCpnVO> tempMpcVO = mpcRepository.findById(cpnHolderDetailId);
-//		MemProCpnVO mpcVO = tempMpcVO.orElse(new MemProCpnVO());
-//		// 取該折價卷的所屬種類（扣金額or百分比）
-//		BigDecimal mpcDisc = null;
-//		Integer finalMpcDisc = 0;
-//		
-//		
-//		if (cpnHolderDetailId == 0 && tempProOrdPointdisc == 0) {
-//			// 0 為未選取折假劵，所以不更新。
-//			model.addAttribute("cpnError", "未選擇折價卷！");
-//			hasError = true;
-//		} else {
-//			mpcDisc = mpcVO.getProCpnVO().getDiscValue();
-//			
-//			switch ((mpcVO.getProCpnVO().getDiscType())) {
-//			// 金額折抵
-//			case FULL_REDUCTION:
-//				// 折價卷折抵後的金額
-//				finalMpcDisc = Integer.valueOf(mpcDisc.intValue());
-//				break;
-//			// 百分比折抵
-//			case PERCENTAGE:
-//				// 折價卷折抵後的金額
-//				finalMpcDisc = proTotal * mpcDisc.intValue();
-//				break;
-//			default:
-//				break;
-//			}
-//		}
+		// ==============會員折價卷數錯誤驗證==============
+		// 取會員所選取的折價卷物件
+		if(cpnHolderDetailId == 0 && tempProOrdPointdisc == 0) {
+			// 由於我們是手動返回頁面，必須確保將用戶輸入的值也放回 Model
+			model.addAttribute("inputPointDisc", tempProOrdPointdisc);
+			// 取得會員的有效折價卷資料
+			List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
+			model.addAttribute("mpcList", mpcList);
+			redirectAttributes.addFlashAttribute("successMessage", "未使用折扣（點數or折價劵）");
+			return "redirect:addProOrder";
+		} 
+		Optional<MemProCpnVO> tempMpcVO = mpcRepository.findById(cpnHolderDetailId);
+		MemProCpnVO mpcVO = tempMpcVO.orElse(new MemProCpnVO());
+		// 取該折價卷的所屬種類（扣金額or百分比）
+		BigDecimal mpcDisc = null;
+		Integer finalMpcDisc = 0;
+	
+		if ( cpnHolderDetailId != 0) {
+			// 0 為未選取折假劵，所以不更新。
+
+			mpcDisc = mpcVO.getProCpnVO().getDiscValue();
+			
+			switch ((mpcVO.getProCpnVO().getDiscType())) {
+			// 金額折抵
+			case FULL_REDUCTION:
+				// 折價卷折抵後的金額
+				finalMpcDisc = Integer.valueOf(mpcDisc.intValue());
+				break;
+			// 百分比折抵
+			case PERCENTAGE:
+				// 折價卷折抵後的金額
+				finalMpcDisc = proTotal * mpcDisc.intValue();
+				break;
+			default:
+				break;
+			}
+		}
 		// 如果有邏輯錯誤，返回原頁面
 		if (hasError) {
 			// 儲存新的欄位狀態(保存已選取的欄位狀態)
-//			mpcVO.setCpnHolderDetailId(cpnHolderDetailId);
-//			finalProOrderVO.setMemProCpnVO(mpcVO);
+			mpcVO.setCpnHolderDetailId(cpnHolderDetailId);
+			finalProOrderVO.setMemProCpnVO(mpcVO);
+			model.addAttribute("cartToProOrder", finalProOrderVO);
 			// 由於我們是手動返回頁面，必須確保將用戶輸入的值也放回 Model
 			model.addAttribute("inputPointDisc", tempProOrdPointdisc);
 			// 取得會員的有效折價卷資料
@@ -470,21 +477,22 @@ public class ProOrderMemController {
 		finalProOrderVO.setProOrdPointGet(proOrdPointGet);
 
 		// (4) 儲存新的欄位狀態(保存已選取的欄位狀態)
-//		MemProCpnVO finalMpcVO = mpcVO;
-//		finalMpcVO.setCpnHolderDetailId(cpnHolderDetailId);
-//		finalProOrderVO.setMemProCpnVO(finalMpcVO);
-//		finalProOrderVO.setProOrdCpndisc(finalMpcDisc);
+		MemProCpnVO finalMpcVO = mpcVO;
+		finalMpcVO.setCpnHolderDetailId(cpnHolderDetailId);
+		finalProOrderVO.setMemProCpnVO(finalMpcVO);
+		finalProOrderVO.setProOrdCpndisc(finalMpcDisc);
 
 		// 5. 將更新後的訂單物件存回 Session
-		session.setAttribute("cartToProOrder", finalProOrderVO);
-		session.setAttribute("proOrderItems", finalProOrderVO.getProOrderItems());
+		model.addAttribute("cartToProOrder", finalProOrderVO);
+		model.addAttribute("proOrderItems", finalProOrderVO.getProOrderItems());
 		// 取得會員的有效折價卷資料
 		List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
 		model.addAttribute("mpcList", mpcList);
 
 		// 6. 成功重定向
-		redirectAttributes.addFlashAttribute("successMessage", "折抵" + cpnHolderDetailId + "已更新！");
-		return "redirect:addProOrder";
+		model.addAttribute("successMessage", "折抵" + cpnHolderDetailId + "已更新！");
+		//redirectAttributes.addFlashAttribute("successMessage", "未選擇折價卷！");
+		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}
 
 	// 確定新增訂單後，選則先付款還是先不付款
