@@ -26,6 +26,11 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Entity
 @Table(name = "pro_cpn")
 public class ProCpnVO implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 對應 AUTO_INCREMENT
 	@Column(name = "pro_cpn_id")
