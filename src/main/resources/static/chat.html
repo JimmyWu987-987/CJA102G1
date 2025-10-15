@@ -262,7 +262,7 @@
 
     userEmojis[myId] = getRandomEmoji(); // 自己的 Emoji
 
-    ws = new WebSocket("ws://localhost:8080/ws/chat/" + myId);
+    ws = new WebSocket("wss://localhost:8080/ws/chat/" + myId);
 
     ws.onopen = () => {
       document.getElementById("loginPage").style.display = "none";
