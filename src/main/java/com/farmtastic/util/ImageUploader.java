@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 public class ImageUploader {
     
     // 修改成你的資料庫密碼
-    private static final String PASSWORD = "pleomax0";
+    private static final String PASSWORD = "123456";
     
     public static void main(String[] args) {
         System.out.println("開始上傳圖片...\n");
@@ -81,6 +81,7 @@ public class ImageUploader {
                     System.out.println("✓ " + file.getName());
                     
                 } catch (Exception e) {
+                	e.printStackTrace();
                     System.out.println("✗ " + file.getName() + " (錯誤)");
                 }
             }
@@ -91,6 +92,7 @@ public class ImageUploader {
             System.out.println(folder + ": 上傳 " + count + " 張\n");
             
         } catch (Exception e) {
+        	e.printStackTrace();
             System.out.println("錯誤: " + e.getMessage());
         }
     }

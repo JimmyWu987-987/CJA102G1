@@ -227,8 +227,8 @@ public class ProAdController {
         		    }]
         		  }],
         		  "redirectUrls": {
-        		    "confirmUrl": "http://localhost:8080/fmem/proAd/return?proAdId=%d",
-        		    "cancelUrl": "http://localhost:8080/fmem/proAd/cancel"
+        		    "confirmUrl": "https://farmtastic.ddns.net/fmem/proAd/return?proAdId=%d",
+        		    "cancelUrl": "https://farmtastic.ddns.net/fmem/proAd/cancel"
         		  }
         		}
         		""".formatted(vo.getProAdFee(), proAdId, vo.getProAdFee(), vo.getProAdFee(), proAdId);
