@@ -114,8 +114,8 @@
 					<img class="mainImg" th:if="${act.actMainImg != null}" th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" alt="主照片"/>
 				</td>
 				<td th:text="${act.actName}"></td>
-				<td th:text="${act.actStart}"></td>
-				<td th:text="${act.actEnd}"></td>
+				<td th:text="${#dates.format(act.actStart, 'yyyy/MM/dd')}"></td>
+				<td th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></td>
 				<td th:text="${act.actFee}"></td>
 				<td th:text="${act.actStatText}"></td>
 				<td th:text="${act.actRemark}"></td>
