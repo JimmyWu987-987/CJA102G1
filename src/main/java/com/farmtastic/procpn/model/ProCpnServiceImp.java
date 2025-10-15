@@ -24,12 +24,6 @@ public class ProCpnServiceImp implements ProCpnService {
 	@Autowired
 	ProCpnMapper mapper;
 
-	@Autowired
-	public ProCpnServiceImp(ProCpnRepository repo, ProCpnMapper mapper) {
-		this.repository = repo;
-		this.mapper = mapper;
-	}
-
 //新增
 	@Override
 	public void addProCpn(ProCpnVO procpnVO) {
@@ -42,11 +36,15 @@ public class ProCpnServiceImp implements ProCpnService {
 		repository.save(procpnVO);
 	}
 
+// 刪除
+	@Override
+	public void deleteProCpn(Integer id) {
+		repository.deleteById(id);
+	}
+
 //查全部
 	@Override
-	public List<ProCpnVO> findAllProCpn() {
-		// (vo) -> mapper.toAdminDTO(vo) .collect把轉換後的資料流收集回一個 List。
-		// List<ProCpnAdminDTO>
+	public List<ProCpnVO> findAll() {
 		return repository.findAll();
 	}
 
@@ -83,17 +81,12 @@ public class ProCpnServiceImp implements ProCpnService {
 		return repository.findByStartDateBetween(start, end);
 	}
 
+//3點自動停過期卷
 	@Scheduled(cron = "0 0 3 * * *", zone = "Asia/Taipei")
 	@Override
 	public void deactivateExpiredCoupons() {
 		repository.deactivateExpiredCoupons();
 		System.out.println("[Scheduler] 自動停用過期折價券完成：" + LocalDate.now());
-	}
-
-//刪除
-	@Override
-	public void deleteProCpn(Integer id) {
-		repository.deleteById(id);
 	}
 
 //提供前台可領取清單

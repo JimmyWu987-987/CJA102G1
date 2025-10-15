@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>後台｜活動折價券詳細資料</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+<div class="container mt-4">
+    <h2>活動折價券詳細資料</h2>
+    <table class="table table-bordered bg-white">
+        <tr>
+            <th>會員帳號</th>
+            <td th:text="${memActCpn.memVO.memAcc}"></td>
+        </tr>
+        <tr>
+            <th>活動折價券名稱</th>
+            <td th:text="${memActCpn.actCpnVO.cpnName}"></td>
+        </tr>
+        <tr>
+            <th>使用狀態</th>
+            <td>
+                <span th:switch="${memActCpn.cpnUseStatus}">
+                    <span th:case="0" class="text-success fw-bold">未使用</span>
+                    <span th:case="1" class="text-primary fw-bold">已使用</span>
+                    <span th:case="2" class="text-danger fw-bold">已過期</span>
+                    <span th:case="*">未知</span>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th>領取日期</th>
+            <td th:text="${#temporals.format(memActCpn.rcvAt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        <tr>
+            <th>起始日</th>
+            <td th:text="${#temporals.format(memActCpn.effStart, 'yyyy-MM-dd')}"></td>
+        </tr>
+        <tr>
+            <th>到期日</th>
+            <td th:text="${#temporals.format(memActCpn.effEnd, 'yyyy-MM-dd')}"></td>
+        </tr>
+        <tr>
+            <th>使用時間</th>
+            <td th:text="${memActCpn.usedAt != null ? #temporals.format(memActCpn.usedAt, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+        </tr>
+        <tr>
+            <th>活動說明</th>
+            <td th:text="${memActCpn.actCpnVO.cpnDesc}"></td>
+        </tr>
+    </table>
+
+    <a th:href="@{/admin/memactcpn/list}" class="btn btn-secondary">返回清單</a>
+</div>
+</body>
+</html>

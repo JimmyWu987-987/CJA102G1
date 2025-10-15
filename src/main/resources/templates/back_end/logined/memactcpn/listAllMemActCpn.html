@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>後台｜會員折價券清單</title>
+<title>後台｜活動折價券清單</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 <style>
     body {
@@ -23,15 +23,15 @@
 <body>
 
 <div class="container mt-4">
-    <h2>會員折價券清單</h2>
+    <h2>活動折價券清單</h2>
 
     <!-- 🔍 搜尋與篩選 -->
-    <form th:action="@{/admin/memprocpn/list}" method="get" class="d-flex justify-content-center mb-3">
+    <form th:action="@{/admin/memactcpn/list}" method="get" class="d-flex justify-content-center mb-3">
         <input type="text" name="keyword" class="form-control me-2"
                placeholder="輸入會員帳號或折價券名稱..."
                style="max-width:300px;" th:value="${keyword}">
         <button type="submit" class="btn btn-outline-primary">搜尋</button>
-        <a th:href="@{/admin/memprocpn/list}" class="btn btn-outline-secondary ms-2">重置</a>
+        <a th:href="@{/admin/memactcpn/list}" class="btn btn-outline-secondary ms-2">重置</a>
     </form>
 
     <!-- ⚠️ 無資料提示 -->
@@ -50,7 +50,6 @@
                 <th>領取日期</th>
                 <th>起始日</th>
                 <th>到期日</th>
-                <th>使用訂單</th>
                 <th>操作</th>
             </tr>
         </thead>
@@ -58,7 +57,7 @@
            <tr th:each="mc, iterStat : ${memCoupons}">
     <td th:text="${iterStat.index + 1}"></td>
     <td th:text="${mc.memVO.memAcc}"></td>
-    <td th:text="${mc.proCpnVO.cpnName}"></td>
+    <td th:text="${mc.actCpnVO.cpnName}"></td>
     <td>
         <span th:switch="${mc.cpnUseStatus}">
             <span th:case="0" class="status-unused">未使用</span>
@@ -70,11 +69,12 @@
     <td th:text="${#temporals.format(mc.rcvAt, 'yyyy-MM-dd HH:mm')}"></td>
     <td th:text="${mc.effStart}"></td>
     <td th:text="${mc.effEnd}"></td>
-    <td th:text="${mc.proOrdVO != null ? mc.proOrdVO.proOrdId : '-'}"></td>
+    
                 <!-- 操作按鈕 -->
                 <td>
-                    <a th:href="@{'/admin/memprocpn/view/' + ${mc.cpnHolderDetailId}}"
+                    <a th:href="@{'/admin/memactcpn/view/' + ${mc.cpnHolderDetailId}}"
                        class="btn btn-sm btn-info">查看</a>
+                   
                 </td>
             </tr>
         </tbody>

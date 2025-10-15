@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>會員有效商品折價券清單</title>
+<title>會員有效活動折價券清單</title>
  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
  <style>
         body {
@@ -67,11 +67,11 @@
         <div class="row small">
             <div class="col-md-6">
                 <span class="text-muted">折扣類型：</span>
-                <span th:text="${coupon.proCpnVO.discType}">滿額折抵</span>
+                <span th:text="${coupon.actCpnVO.discType}">滿額折抵</span>
             </div>
             <div class="col-md-6">
                 <span class="text-muted">折扣數值：</span>
-                <span th:text="${coupon.proCpnVO.discValue}"></span>
+                <span th:text="${coupon.actCpnVO.discValue}"></span>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <a th:href="@{/admin/memprocpn/listAllMemProCpn}" class="btn btn-secondary btn-sm">
+        <a th:href="@{/admin/memactcpn/listAllMemActCpn}" class="btn btn-secondary btn-sm">
             ← 返回折價券管理
         </a>
     </div>
