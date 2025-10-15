@@ -322,6 +322,11 @@ public class ProOrderMemController {
 
 			// 更新網頁會員的session的資料
 			session.setAttribute("loggedInMember", loggedInMember);
+			// ================== 會員點數新增修改的邏輯 ======================
+			
+			
+			
+			
 			// ================== 扣商品庫存的邏輯 ======================
 			// 等同學寫好ORM
 			// 未完成
