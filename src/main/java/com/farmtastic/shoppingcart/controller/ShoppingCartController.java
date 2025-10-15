@@ -19,6 +19,7 @@ import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.shoppingcart.model.ShoppingCartService;
 import com.farmtastic.shoppingcart.model.ShoppingCartVO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -70,11 +71,14 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 	public String addProductToCart(@RequestParam("proId") Integer proId,
 			@RequestParam(value = "quantity", defaultValue = "1") Integer quantity,
 			// RedirectAttributes 用於在重定向後傳遞一次性的成功/錯誤訊息
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes,
+			HttpServletRequest request) {
 
 		// 取得 Product，Product 中包含 FmemVO，進而取得 fmemId
 		Pro product = productService.getOnePro(proId);
-
+		
+		String referer = request.getHeader("Referer"); // <--- 取得前一個頁面的 URL
+		
 		if (product != null && quantity > 0) {
 			cartService.addProduct(product, quantity);
 			redirectAttributes.addFlashAttribute("successMessage", product.getProName() + " 成功加入購物車！");
@@ -82,8 +86,15 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 			redirectAttributes.addFlashAttribute("errorMessage", "加入購物車失敗，商品不存在或數量無效。");
 		}
 		
-		// 使用重定向 (redirect) 到顯示頁面，遵循 Post/Redirect/Get 模式
-		return "redirect:/cart/products/list";
+		// 1. 檢查 referer 是否存在且非空，如果不存在，則回退到預設的商品列表頁面。
+		// 2. 使用重定向 (redirect) 到 referer URL，實現返回當前頁面。
+		if (referer != null && !referer.isEmpty()) {
+			return "redirect:" + referer; 
+		} else {
+			// 如果沒有 Referer 資訊（例如，使用者直接在網址列輸入 POST 請求），則重定向到預設列表頁
+			return "redirect:/cart/products/list"; 
+		}
+		
 	}
 
 	// ---
