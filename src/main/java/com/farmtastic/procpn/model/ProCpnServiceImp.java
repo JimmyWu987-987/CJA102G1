@@ -1,16 +1,21 @@
 package com.farmtastic.procpn.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.common.mapper.ProCpnMapper;
-import com.farmtastic.procpn.dto.ProCpnAdminDTO;
 
 @Service("proCpnService")
 public class ProCpnServiceImp implements ProCpnService {
@@ -39,10 +44,10 @@ public class ProCpnServiceImp implements ProCpnService {
 
 //查全部
 	@Override
-	public List<ProCpnAdminDTO> findAllProCpn() {
+	public List<ProCpnVO> findAllProCpn() {
 		// (vo) -> mapper.toAdminDTO(vo) .collect把轉換後的資料流收集回一個 List。
 		// List<ProCpnAdminDTO>
-		return repository.findAll().stream().map(mapper::toAdminDTO).collect(Collectors.toList());
+		return repository.findAll();
 	}
 
 	// 單筆查詢
@@ -52,8 +57,8 @@ public class ProCpnServiceImp implements ProCpnService {
 
 	// 查啟用券
 	@Override
-	public List<ProCpnAdminDTO> getActiveProCpn() {
-		return repository.findByIsActive(IsActive.ACTIVE).stream().map(mapper::toAdminDTO).collect(Collectors.toList());
+	public List<ProCpnVO> getActiveProCpn() {
+		return repository.findByIsActive(IsActive.ACTIVE);
 	}
 
 	// 改變卷狀態 啟用或停用
@@ -68,22 +73,45 @@ public class ProCpnServiceImp implements ProCpnService {
 
 	// 名稱模糊搜尋
 	@Override
-	public List<ProCpnAdminDTO> searchProCpnByName(String keyword) {
-		List<ProCpnVO> resultList = repository.findByCpnNameContaining(keyword);
-		return resultList.stream().map(mapper::toAdminDTO).collect(Collectors.toList());
+	public List<ProCpnVO> searchProCpnByName(String keyword) {
+		return repository.findByCpnNameContaining(keyword);
 	}
 
 	// 查詢指定日期範圍內的折價券
 	@Override
-	public List<ProCpnAdminDTO> findProCpnByDateRange(Date start, Date end) {
-		List<ProCpnVO> resultList = repository.findByStartDateBetween(start, end);
-		return resultList.stream().map(mapper::toAdminDTO).collect(Collectors.toList());
+	public List<ProCpnVO> findProCpnByDateRange(Date start, Date end) {
+		return repository.findByStartDateBetween(start, end);
+	}
+
+	@Scheduled(cron = "0 0 3 * * *", zone = "Asia/Taipei")
+	@Override
+	public void deactivateExpiredCoupons() {
+		repository.deactivateExpiredCoupons();
+		System.out.println("[Scheduler] 自動停用過期折價券完成：" + LocalDate.now());
+	}
+
+//刪除
+	@Override
+	public void deleteProCpn(Integer id) {
+		repository.deleteById(id);
+	}
+
+//提供前台可領取清單
+	@Override
+	public List<ProCpnVO> findAvailableForMember() {
+		return repository.findAvailableForMember();
+	}
+
+//分頁
+	public Page<ProCpnVO> findPagedProCpn(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("proCpnId").ascending());
+		return repository.findAll(pageable);
 	}
 
 	@Override
-	public void deactivateExpiredCoupons() {
+	public BigDecimal calculateDiscount(ProCpnVO coupon, BigDecimal originalPrice) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 }

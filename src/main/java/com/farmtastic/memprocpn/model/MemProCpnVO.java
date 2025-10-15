@@ -23,7 +23,9 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "mem_pro_cpn")
-public class MemProCpnVO {
+public class MemProCpnVO implements java.io.Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

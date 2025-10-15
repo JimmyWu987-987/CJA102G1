@@ -30,6 +30,7 @@ public class MemProCpnFrontendController {
 
 		// 查詢該會員所有折價券
 		List<MemProCpnVO> coupons = memProCpnSvc.getCpnsByMember(memId);
+		// System.out.print("Coupons: " + coupons);
 
 		model.addAttribute("member", loggedInMember);
 		model.addAttribute("coupons", coupons);

@@ -16,6 +16,34 @@ import com.farmtastic.procpn.model.ProCpnVO;
 public class ProCpnMapperImp implements ProCpnMapper {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
+	public ProCpnFormDTO toFormDTO(ProCpnVO vo) {
+		if (vo == null) {
+			return null;
+		}
+
+		ProCpnFormDTO dto = new ProCpnFormDTO();
+
+		// 1️⃣ 基本欄位直接轉
+		dto.setProCpnId(vo.getProCpnId());
+		dto.setCpnName(vo.getCpnName());
+		dto.setDiscType(vo.getDiscType());
+		dto.setDiscValue(vo.getDiscValue());
+		dto.setMinSpend(vo.getMinSpend());
+		dto.setStartDate(vo.getStartDate());
+		dto.setValidDays(vo.getValidDays());
+		dto.setCpnDesc(vo.getCpnDesc());
+
+		// 2️⃣ 枚舉欄位（直接轉即可，因為是 Enum）
+		dto.setApplScope(vo.getApplScope());
+		dto.setIsActive(vo.getIsActive());
+
+		// ✅ 注意：
+		// 這裡不需要轉 expDate（到期日），因為它是衍生欄位，
+		// 若你要顯示在編輯表單，可以在 Controller 額外處理。
+
+		return dto;
+	}
+
 	@Override
 	public ProCpnResponseDTO toResponseDTO(ProCpnVO vo) {
 		ProCpnResponseDTO dto = new ProCpnResponseDTO();
@@ -95,14 +123,19 @@ public class ProCpnMapperImp implements ProCpnMapper {
 
 	// from DTO to VO
 	public ProCpnVO toEntity(ProCpnFormDTO dto) {
+		if (dto == null) {
+			return null;
+		}
+
 		ProCpnVO vo = new ProCpnVO();
+		vo.setProCpnId(dto.getProCpnId());
 		vo.setCpnName(dto.getCpnName());
 		vo.setDiscType(dto.getDiscType());
 		vo.setDiscValue(dto.getDiscValue());
 		vo.setMinSpend(dto.getMinSpend());
 		// 防止 NullPointerException
 		if (dto.getStartDate() != null) {
-			vo.setStartDate(java.sql.Date.valueOf(dto.getStartDate()));
+			vo.setStartDate((dto.getStartDate()));
 		} else {
 			// 若表單未填，給預設今天
 			vo.setStartDate(new java.sql.Date(System.currentTimeMillis()));
