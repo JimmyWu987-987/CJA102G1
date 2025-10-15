@@ -194,8 +194,8 @@ public class ProOrderMemController {
 			BindingResult result, HttpSession session, RedirectAttributes redirectAttributes, ModelMap model) {
 
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-		ProOrderVO finalProOrderVO = (ProOrderVO) session.getAttribute("cartToProOrder");
-		List<ProOrderItemVO> finalItems = finalProOrderVO.getProOrderItems();
+		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
+		List<ProOrderItemVO> finalItems = sessionOrder.getProOrderItems();
 
 		// 🌟 除錯點 1: 檢查是否有驗證錯誤
 		System.out.println("===== 驗證結果 =====");
@@ -221,130 +221,146 @@ public class ProOrderMemController {
 
 			// 設置必要欄位
 			proOrderVO.setProOrderItems(finalItems);
-			proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
-			proOrderVO.setProTotal(finalProOrderVO.getProTotal());
-			proOrderVO.setProOrdShipFee(finalProOrderVO.getProOrdShipFee());
-			proOrderVO.setProOrdGrandTotal(finalProOrderVO.getProOrdGrandTotal());
-			proOrderVO.setProOrdPointGet(finalProOrderVO.getProOrdPointGet());
-			proOrderVO.setProOrdPointdisc(finalProOrderVO.getProOrdPointdisc());
-			proOrderVO.setProOrdCpndisc(finalProOrderVO.getProOrdCpndisc());
+			proOrderVO.setProOrdDate(sessionOrder.getProOrdDate());
+			proOrderVO.setProTotal(sessionOrder.getProTotal());
+			proOrderVO.setProOrdShipFee(sessionOrder.getProOrdShipFee());
 			proOrderVO.setMemVO(loggedInMember);
 
-			// 🌟 除錯點 3: 檢查 Model 屬性
+			// 檢查 Model 屬性
 			model.addAttribute("cartToProOrder", proOrderVO);
+
+			// 取得會員的有效折價券資料
+			List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
+			model.addAttribute("mpcList", mpcList);
+			model.addAttribute("cartToProOrder", proOrderVO);
+
 			System.out.println("===== Model 屬性 =====");
 			System.out.println("cartToProOrder 已添加到 model");
 			System.out.println("BindingResult 錯誤數: " + result.getErrorCount());
 
 			return "/front_end/customer/logined/memProOrders/addProOrder";
-		} else {
-			// 將所有可能為 NULL 的金額屬性從 finalProOrderVO 複製過來 🌟
-			proOrderVO.setProOrdDate(finalProOrderVO.getProOrdDate());
-			proOrderVO.setProOrdCpndisc(
-					finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0);
-			proOrderVO.setProOrdGrandTotal(finalProOrderVO.getProOrdGrandTotal());
-			proOrderVO.setProTotal(finalProOrderVO.getProTotal());
-			proOrderVO.setProOrdShipFee(finalProOrderVO.getProOrdShipFee());
-			proOrderVO.setProOrdPointdisc(
-					finalProOrderVO.getProOrdPointdisc() != null ? finalProOrderVO.getProOrdPointdisc() : 0);
-			proOrderVO.setProOrdPointGet(
-					finalProOrderVO.getProOrdPointGet() != null ? finalProOrderVO.getProOrdPointGet() : 0);
-
-			// 訂單狀態
-			proOrderVO.setProOrdStatus(finalProOrderVO.getProOrdStatus());
-
-			// 訂單付款狀態
-			proOrderVO.setProPayStatus(finalProOrderVO.getProPayStatus());
-
-			// 平台撥款狀態，預設為0(未撥款)
-			proOrderVO.setProOrdAllocStatus((byte) 0);
-
-			// 平台抽成金額
-			// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
-			Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
-			proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
-
-			// 平台撥款給小農的金額
-			// 假設運費為小農自行處理，已經扣出金流手續費。
-			// 假設 平台撥款金額 = 商品總金額 - 平台抽成金額。
-			Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
-			proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
-
-//		    // 3. 設定關聯和明細
-			proOrderVO.setMemVO(loggedInMember);
-			proOrderVO.setProOrderItems(finalItems);
-
-			// 🌟 關鍵修正 2：在 Controller/Service 確保明細回指主表 **並初始化複合主鍵 (ProId)** 🌟
-			for (ProOrderItemVO item : finalItems) {
-				// 1. 建立雙向關聯：讓每個明細知道它屬於哪個訂單 (proOrdId會在儲存時由JPA處理)
-				item.setProOrderVO(proOrderVO);
-
-				// 2. 🌟 關鍵修正：手動初始化 ProOrderItemId 並設定 proId 🌟
-				// 由於 ProOrderItemVO 使用 @EmbeddedId 和 @MapsId 且 proId 是現有外鍵，
-				// 我們必須確保 ProOrderItemId 實體本身已存在並包含 proId 值。
-
-				// 確保 id 欄位已被初始化
-				ProOrderItemId id = item.getId();
-				if (id == null) {
-					id = new ProOrderItemId();
-				}
-
-				// 從 Product 實體取得 proId，並設定給複合主鍵
-				// 假設您的 Product 實體有 getProId() 方法
-				id.setProId(item.getProductVO().getProId());
-
-				// 將設定好 proId 的 ProOrderItemId 設回給 ProOrderItemVO
-				item.setId(id);
-
-			}
-
-			try {
-				// proOrdSvc 是 ProOrderSevice 的實例
-				proOrdSvc.addProOrder(proOrderVO);
-
-			} catch (RuntimeException e) {
-				// 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
-				model.addAttribute("errorMessage", "新增訂單失敗：" + e.getMessage());
-				model.addAttribute("memVO", loggedInMember);
-				model.addAttribute("cartToProOrder", finalProOrderVO);
-				return "/front_end/customer/logined/memProOrders/addProOrder";
-			}
-			// ================== 會員點數新增修改的邏輯 ======================
-			// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
-			Integer memPoint = proOrderVO.getMemVO().getMemPoint();
-			Integer memPointDisc = proOrderVO.getProOrdPointdisc();
-			Integer memPointGet = proOrderVO.getProOrdPointGet();
-			Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
-			loggedInMember.setMemPoint(finalMemPoint);
-
-			// 將最終點數結果，存回DB
-			memSvc.updateMem(loggedInMember);
-
-			// 更新網頁會員的session的資料
-			session.setAttribute("loggedInMember", loggedInMember);
-			// ================== 會員點數新增修改的邏輯 ======================
-			
-			
-			
-			
-			// ================== 扣商品庫存的邏輯 ======================
-			// 等同學寫好ORM
-			// 未完成
-
-			// 清除 Session 相關屬性
-			session.removeAttribute("cartToProOrder");
-
-			// 清除 該訂單的購物車內容
-			// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
-			// 所以直接找集合內的第一個物件，取出fmemId
-			Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemId().getFmemId();
-			shoppingCartSvc.clearCartByFmemId(fmemId);
-
-			// 重導向到訂單列表頁面
-			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
-			return "redirect:/mem/proorders/listAllProOrder";
 		}
 
+		// 成功時：使用表單提交的折扣金額（這些是用戶最後確認的值）
+		// proOrderVO.getProOrdPointdisc() - 已經包含用戶設定的點數折抵
+		// proOrderVO.getProOrdCpndisc() - 已經包含用戶選擇的優惠券折扣
+		// proOrderVO.getProOrdGrandTotal() - 已經包含最終計算的實付金額
+		// proOrderVO.getProOrdPointGet() - 已經包含回饋點數
+
+		// 從 session 來的必要資料
+		proOrderVO.setProOrdDate(sessionOrder.getProOrdDate());
+		proOrderVO.setProTotal(sessionOrder.getProTotal());
+		proOrderVO.setProOrdShipFee(sessionOrder.getProOrdShipFee());
+
+		if (proOrderVO.getProOrdCpndisc() == null) {
+			proOrderVO.setProOrdCpndisc(0);
+		}
+
+		if (proOrderVO.getProOrdPointdisc() == null) {
+			proOrderVO.setProOrdPointdisc(0);
+		}
+		if (proOrderVO.getProOrdPointGet() == null) {
+			proOrderVO.setProOrdPointGet(0);
+		}
+
+		// 如果用戶有選擇優惠券（cpnHolderDetailId 不為 null 且不為 0）
+		if (proOrderVO.getMemProCpnVO() != null && proOrderVO.getMemProCpnVO().getCpnHolderDetailId() != null
+				&& proOrderVO.getMemProCpnVO().getCpnHolderDetailId() != 0) {
+
+			// 從資料庫重新載入這個優惠券物件（變成 managed 狀態）
+			Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
+			Optional<MemProCpnVO> mpcOptional = mpcRepository.findById(cpnHolderDetailId);
+
+			if (mpcOptional.isPresent()) {
+				// 設置 managed 狀態的優惠券物件
+				proOrderVO.setMemProCpnVO(mpcOptional.get());
+			} else {
+				// 如果找不到優惠券，設為 null
+				proOrderVO.setMemProCpnVO(null);
+			}
+		} else {
+			// 沒有使用優惠券，設為 null
+			proOrderVO.setMemProCpnVO(null);
+		}
+
+		// 訂單狀態
+		proOrderVO.setProOrdStatus((byte) 0);
+
+		// 訂單付款狀態
+		proOrderVO.setProPayStatus((byte) 0);
+
+		// 平台撥款狀態，預設為0(未撥款)
+		proOrderVO.setProOrdAllocStatus((byte) 0);
+
+		// 平台抽成金額
+		// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+		Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
+		proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
+
+		// 平台撥款給小農的金額
+		Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
+		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+
+		// 設定關聯和明細
+		proOrderVO.setMemVO(loggedInMember);
+		proOrderVO.setProOrderItems(finalItems);
+
+		// 建立雙向關聯
+		for (ProOrderItemVO item : finalItems) {
+
+			item.setProOrderVO(proOrderVO);
+
+			ProOrderItemId id = item.getId();
+			if (id == null) {
+				id = new ProOrderItemId();
+			}
+			id.setProId(item.getProductVO().getProId());
+			item.setId(id);
+
+		}
+
+		try {
+			proOrdSvc.addProOrder(proOrderVO);
+
+		} catch (RuntimeException e) {
+			// 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
+			model.addAttribute("errorMessage", "新增訂單失敗：" + e.getMessage());
+			model.addAttribute("memVO", loggedInMember);
+			proOrderVO.setProOrderItems(finalItems);
+			model.addAttribute("cartToProOrder", proOrderVO);
+			return "/front_end/customer/logined/memProOrders/addProOrder";
+		}
+		// ================== 會員點數新增修改的邏輯 ======================
+		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
+		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
+		Integer memPointDisc = proOrderVO.getProOrdPointdisc();
+		Integer memPointGet = proOrderVO.getProOrdPointGet();
+		Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
+		loggedInMember.setMemPoint(finalMemPoint);
+
+		// 將最終點數結果，存回DB
+		memSvc.updateMem(loggedInMember);
+
+		// 更新網頁會員的session的資料
+		session.setAttribute("loggedInMember", loggedInMember);
+		// ================== 會員點數新增修改的邏輯 ======================
+
+		// ================== 扣商品庫存的邏輯 ======================
+		// 等同學寫好ORM
+		// 未完成
+
+		// 清除 Session 相關屬性
+		session.removeAttribute("cartToProOrder");
+
+		// 清除 該訂單的購物車內容
+		// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
+		// 所以直接找集合內的第一個物件，取出fmemId
+		Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemId().getFmemId();
+		shoppingCartSvc.clearCartByFmemId(fmemId);
+
+		// 重導向到訂單列表頁面
+		redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
+		return "redirect:/mem/proorders/listAllProOrder";
 	}
 
 	// 修改訂單 (處理點數折抵及折價卷折抵)
@@ -418,7 +434,7 @@ public class ProOrderMemController {
 			// 0 為未選取折假劵，所以不更新。
 
 			mpcDisc = mpcVO.getProCpnVO().getDiscValue();
-			
+
 			// 取該折價卷的所屬種類（扣金額or百分比）
 			switch ((mpcVO.getProCpnVO().getDiscType())) {
 			// 金額折抵
@@ -438,7 +454,6 @@ public class ProOrderMemController {
 			}
 		}
 
-
 		// 3. 處理負數、超過持有/超過最高可折抵金額
 		// 可用來折抵的最高金額 (商品總金額 - 折價券折抵)
 		Integer maxDiscAmount = proTotal - pointCpndisc - finalMpcDisc;
@@ -453,15 +468,14 @@ public class ProOrderMemController {
 			model.addAttribute("pointDiscError", "折抵點數不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
 			hasError = true;
 		}
-		
+
 		if (tempMpcDisc < 0) {
 			model.addAttribute("cpnError", "折價劵折抵金額不能是負數。");
 			hasError = true;
-		} else if (tempMpcDisc > maxDiscAmount ) {
+		} else if (tempMpcDisc > maxDiscAmount) {
 			model.addAttribute("cpnError", "折價劵折抵金額不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
 			hasError = true;
 		}
-		
 
 		// 如果有邏輯錯誤，返回原頁面
 		if (hasError) {
@@ -504,7 +518,9 @@ public class ProOrderMemController {
 		// 5. 將更新後的訂單物件存回 model
 		model.addAttribute("cartToProOrder", finalProOrderVO);
 		model.addAttribute("proOrderItems", finalProOrderVO.getProOrderItems());
-		
+
+		session.setAttribute("cartToProOrder", finalProOrderVO);
+
 		// 取得會員的有效折價卷資料
 		List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
 		model.addAttribute("mpcList", mpcList);

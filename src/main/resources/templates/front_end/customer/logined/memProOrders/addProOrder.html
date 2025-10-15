@@ -36,7 +36,12 @@
 	
 	<h1>結帳頁面</h1><form method="post" th:action="@{insert}" th:object="${cartToProOrder}"> 
     
-    <input type="hidden" id="destination" name="destination" value="" />
+    <input type="hidden" th:field="*{proOrdPointdisc}" />
+    <input type="hidden" th:field="*{proOrdCpndisc}" />
+    <input type="hidden" th:field="*{proOrdGrandTotal}" />
+    <input type="hidden" th:field="*{proOrdPointGet}" />
+    <input type="hidden" th:field="*{memProCpnVO.cpnHolderDetailId}" />
+    
 		
 		<div>
 		<label>一般會員編號</label>
