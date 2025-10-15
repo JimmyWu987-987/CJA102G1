@@ -97,7 +97,7 @@ public class ActService {
 	    return actRepository.findByActIdWithImgs(actId);
 	}
 
-	// ========== 依小農ID查詢 ==========
+	// ========== 依小農ID查詢活動 ==========
 	public List<Act> findByFmemId(Integer fmemId, Sort sort) {
 		return actRepository.findByFmemId(fmemId, sort);
 	}

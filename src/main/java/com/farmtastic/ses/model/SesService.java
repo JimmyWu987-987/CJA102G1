@@ -32,7 +32,7 @@ public class SesService {
 
 	// ========== 查小農自己的全部場次 ==========
 	public List<Ses> findSesByFmemId(Integer fmemId, Sort sort) {
-		return sesRepository.findByFmemId(fmemId, sort);
+		return sesRepository.findByAct_Fmem_FmemId(fmemId, sort);
 	}
 	
 	// ========== 依活動ID查詢 ==========

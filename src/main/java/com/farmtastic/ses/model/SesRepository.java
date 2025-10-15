@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface SesRepository extends JpaRepository<Ses, Integer> {
 
 	List<Ses> findByActId(Integer actId, Sort sort);
-	List<Ses> findByFmemId(Integer fmemId, Sort sort);
+	List<Ses> findByAct_Fmem_FmemId(Integer fmemId, Sort sort);
 	Optional<Ses> findBySesId(Integer sesId);
 	List<Ses> findBySesLaunStat(Integer sesLaunStat, Sort sort);
 	List<Ses> findByRegStat(Integer regStat, Sort sort);
