@@ -112,6 +112,7 @@ public class FmemController{
 			List<Pro> proList = proSvc.findByFmemId(fmem.getFmemId());
 			model.addAttribute("proList", proList);
 			
+
 		} else {
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
