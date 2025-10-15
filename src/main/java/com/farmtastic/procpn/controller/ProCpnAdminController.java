@@ -24,7 +24,7 @@ import com.farmtastic.procpn.model.ProCpnVO;
 
 import jakarta.validation.Valid;
 
-//折價卷規則
+//商品折價卷規則
 @Controller
 @RequestMapping("/admin/procpn")
 public class ProCpnAdminController {
@@ -114,7 +114,7 @@ public class ProCpnAdminController {
 		// 驗證失敗 → 回到畫面 + 顯示紅字
 		if (result.hasErrors()) {
 			model.addAttribute("errors", result.getAllErrors());
-			model.addAttribute("coupons", proCpnSvc.findAllProCpn()); // 顯示全部
+			model.addAttribute("coupons", proCpnSvc.findAll()); // 顯示全部
 			return "/back_end/logined/procpn/listAllProCpn";
 		}
 
@@ -162,12 +162,4 @@ public class ProCpnAdminController {
 		return "redirect:/admin/procpn/list";
 	}
 
-//	// 分頁
-//	@GetMapping("/listPaged")
-//	public String listPaged(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
-//			Model model) {
-//		Page<ProCpnVO> pageData = proCpnSvc.findPagedProCpn(page, size);
-//		model.addAttribute("pageData", pageData);
-//		return "/back_end/logined/procpn/listAllProCpn";
-//	}
 }

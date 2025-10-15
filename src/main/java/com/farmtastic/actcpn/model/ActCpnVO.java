@@ -3,17 +3,30 @@ package com.farmtastic.actcpn.model;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+
+import com.farmtastic.common.converter.EnumConverters;
+import com.farmtastic.common.enums.DiscountType;
+import com.farmtastic.common.enums.IsActive;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "act_cpn")
-public class ActCpnVO {
+public class ActCpnVO implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 對應 AUTO_INCREMENT
 	@Column(name = "act_cpn_id")
@@ -22,8 +35,11 @@ public class ActCpnVO {
 	@Column(name = "cpn_name", nullable = false, length = 50)
 	private String cpnName; // 折價券名稱
 
+	@Convert(converter = EnumConverters.DiscountTypeConverter.class) // 指定轉換器
 	@Column(name = "disc_type", nullable = false)
-	private Byte discType; // 0: 滿額折抵, 1: 百分比
+	@NotNull(message = "折扣類型必填")
+	// java讀的Enem 資料庫還是byte
+	private DiscountType discType; // 0: 滿額折抵, 1: 百分比
 
 	@Column(name = "disc_value", nullable = false, precision = 10, scale = 2)
 	private BigDecimal discValue; // 折扣數值
@@ -40,8 +56,10 @@ public class ActCpnVO {
 	@Column(name = "cpn_desc", length = 200)
 	private String cpnDesc; // 折價券規則描述
 
+	@Convert(converter = EnumConverters.IsActiveConverter.class)
 	@Column(name = "is_active", nullable = false)
-	private Byte isActive; // 0:未啟用, 1:啟用
+	@NotNull
+	private IsActive isActive; // 0:未啟用, 1:啟用
 
 	@Column(name = "crt_at", nullable = false, insertable = false, updatable = false)
 	private Timestamp crtAt; // 建立時間 (由 DB 預設 CURRENT_TIMESTAMP)
@@ -62,11 +80,11 @@ public class ActCpnVO {
 		this.cpnName = cpnName;
 	}
 
-	public Byte getDiscType() {
+	public DiscountType getDiscType() {
 		return discType;
 	}
 
-	public void setDiscType(Byte discType) {
+	public void setDiscType(DiscountType discType) {
 		this.discType = discType;
 	}
 
@@ -110,11 +128,11 @@ public class ActCpnVO {
 		this.cpnDesc = cpnDesc;
 	}
 
-	public Byte getIsActive() {
+	public IsActive getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(Byte isActive) {
+	public void setIsActive(IsActive isActive) {
 		this.isActive = isActive;
 	}
 
@@ -130,8 +148,8 @@ public class ActCpnVO {
 		super();
 	}
 
-	public ActCpnVO(Integer actCpnId, String cpnName, Byte discType, BigDecimal discValue, Integer minSpend,
-			Date startDate, Integer validDays, String cpnDesc, Byte isActive, Timestamp crtAt) {
+	public ActCpnVO(Integer actCpnId, String cpnName, DiscountType discType, BigDecimal discValue, Integer minSpend,
+			Date startDate, Integer validDays, String cpnDesc, IsActive isActive, Timestamp crtAt) {
 		super();
 		this.actCpnId = actCpnId;
 		this.cpnName = cpnName;
@@ -152,4 +170,13 @@ public class ActCpnVO {
 				+ ", cpnDesc=" + cpnDesc + ", isActive=" + isActive + ", crtAt=" + crtAt + "]";
 	}
 
+	@Transient
+	public java.sql.Date getExpDate() {
+		if (startDate == null || validDays == null)
+			return null;
+
+		// 把 Date 轉成 LocalDate 加天數後再轉回 Date
+		LocalDate exp = startDate.toLocalDate().plusDays(validDays);
+		return java.sql.Date.valueOf(exp);
+	}
 }
