@@ -14,6 +14,12 @@
     <!-- flatpickr CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
+    
+    <!--貓頭鷹輪播器 -->
+  	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <style>
         :root {
             --primary-color: #ff7b42;
@@ -196,6 +202,70 @@
         .swal2-popup.swal2-toast .swal2-title {
             color: #fff !important;
         }
+        
+		/* 商城廣告區  */   
+		.pro-adarea{
+		  position: relative;
+		  width: 75%;
+		  height: 350px;   
+		  overflow: hidden;
+		  border-radius: 8px;
+		  margin: 0 auto 30px; 
+		}
+		
+		/* 貓頭鷹輪播器圖片設定  */
+		.owl-carousel{
+		  position: absolute;
+		  inset: 0;                 
+		}
+		
+		/* 高度限定在容器中 */
+		.pro-adarea .owl-stage-outer,
+		.pro-adarea .owl-stage,
+		.pro-adarea .owl-item,
+		.pro-adarea .item{
+		  height: 100%;
+		  inset: 0; 
+		}
+		
+		/* 把 nav 拉到左右置中 */
+		.pro-adarea .owl-nav{
+		  position:absolute; top:50%; left:0; right:0;
+		  transform:translateY(-50%);
+		  display:flex; justify-content:space-between;
+		  padding:0; z-index:5;
+		}
+		
+		/* 預設背景/陰影/邊框*/
+		.pro-adarea .owl-nav button{
+		  font-size:0 !important;
+		  width:33px; height:33px;
+		  display:flex; align-items:center; justify-content:center;
+		  border: none !important;
+		  box-shadow: none !important;
+		  padding:0;
+		  cursor:pointer;
+		}
+		
+		/* 真正的箭頭 */
+		.pro-adarea .owl-nav .oc-arrow{
+		  color:white;
+		  font-size:22px; 
+		}
+		
+		.pro-adarea .owl-nav button:hover{ 
+		transform:scale(1.1); 
+		}
+
+	.proad-img{
+	  width: 100%;
+	  height: 100%;
+	  object-fit: contain;     
+	  display: block;
+	  background:#fff;
+	  cursor: pointer;
+	}
+/* 商城廣告區  */   
     </style>
 </head>
 <body>
@@ -209,6 +279,19 @@
             <h1 class="fw-bold" style="color: var(--secondary-color);">小農商城</h1>
             <p class="text-muted">新鮮蔬果，產地直送</p>
         </div>
+        
+       <!-- 商城廣告區  -->
+		<section class="pro-adarea" th:if="${adIds != null and !adIds.isEmpty()}">
+		  <div class="owl-carousel owl-theme">
+		    <a class="item"
+		       th:each="adId : ${adIds}"
+		       th:href="@{/mall/proAd/hit/{adId}(adId=${adId})}">
+		      <img class="proad-img"
+		           th:src="@{/proAd/img/{id}(id=${adId})}"
+		           th:alt="${'ad-'+adId}">
+		    </a>
+		  </div>
+		</section>
         
         <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -375,6 +458,24 @@
                 });
             });
         }
+        
+        // 商城廣告區   
+        $(function(){
+        	  $('.pro-adarea .owl-carousel').owlCarousel({
+        	    items: 1,
+        	    loop: true,
+        	    autoplay: true,
+        	    autoplayTimeout: 4000,
+        	    smartSpeed: 600,
+        	    dots: true,
+        	    nav: true,
+        	    navText: [
+        	      '<span class="oc-arrow">⯇</span>',
+        	      '<span class="oc-arrow">⯈</span>'
+        	    ]
+        	  });
+        	});
+        // 商城廣告區 
     </script>
     
 </body>

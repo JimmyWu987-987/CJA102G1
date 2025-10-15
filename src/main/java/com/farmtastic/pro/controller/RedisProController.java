@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
+import com.farmtastic.proad.model.ProAdService;
 import com.farmtastic.procate.model.Procate;
 import com.farmtastic.procate.model.ProcateService;
 import com.farmtastic.proimage.model.ProImage;
@@ -39,6 +41,9 @@ public class RedisProController {
 
     @Autowired
     ProImageService proImageSvc;
+    
+    @Autowired
+    private ProAdService proAdService;
 
     @GetMapping("/products")
     public String listProducts(HttpServletRequest req, Model model, @RequestParam(defaultValue = "0") int page) {
@@ -72,6 +77,9 @@ public class RedisProController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("queryParams", queryParams != null ? queryParams : "");
+        
+      //商城廣告圖片
+        model.addAttribute("adIds", proAdService.getPassProAds());
         
         return "front_end/customer/unlogined/shopmall/mall";
     }
