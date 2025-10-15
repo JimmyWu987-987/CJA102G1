@@ -41,4 +41,13 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 			      AND is_active = 1
 			""", nativeQuery = true)
 	void deactivateExpiredCoupons();
+
+	@Query(value = """
+			    SELECT *
+			    FROM pro_cpn
+			    WHERE is_active = 1
+			      AND CURRENT_DATE BETWEEN start_date AND DATE_ADD(start_date, INTERVAL valid_days DAY)
+			""", nativeQuery = true)
+	List<ProCpnVO> findAvailableForMember();
+
 }

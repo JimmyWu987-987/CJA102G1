@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${#strings.equals(mode, 'edit') ? '編輯折價券' : '新增折價券'}"></title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<style>
+    .form-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+</style>
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="form-title" 
+        th:text="${#strings.equals(mode, 'edit') ? '編輯商品折價券' : '新增商品折價券'}"></h2>
+
+    <form th:action="@{${actionUrl}}"
+      th:object="${proCpnForm}"
+      method="post"
+      class="needs-validation">
+
+        <!-- 折價券編號 (編輯時顯示、不可修改) -->
+        <div th:if="${#strings.equals(mode, 'edit')}" class="mb-3">
+            <label class="form-label">折價券編號</label>
+            <input type="text" th:field="*{proCpnId}" class="form-control" readonly>
+        </div>
+
+        <!-- 名稱 -->
+        <div class="mb-3">
+            <label class="form-label">折價券名稱</label>
+            <input type="text" th:field="*{cpnName}" class="form-control">
+            <div class="text-danger small" th:errors="*{cpnName}"></div>
+        </div>
+
+        <!-- 折扣類型 -->
+        <div class="mb-3">
+            <label class="form-label">折扣類型</label>
+          <select th:field="*{discType}" class="form-select">
+    <option value="">請選擇折扣類型</option>
+    <option th:value="FULL_REDUCTION" th:text="'滿額折抵'"></option>
+    <option th:value="PERCENTAGE" th:text="'百分比折扣'"></option>
+</select>
+            <div class="text-danger small" th:errors="*{discType}"></div>
+        </div>
+
+        <!-- 折扣值 -->
+        <div class="mb-3">
+            <label class="form-label">折扣值</label>
+            <input type="number" step="0.01" th:field="*{discValue}" class="form-control">
+            <div class="text-danger small" th:errors="*{discValue}"></div>
+        </div>
+
+        <!-- 最低消費金額 -->
+        <div class="mb-3">
+            <label class="form-label">最低消費金額</label>
+            <input type="number" th:field="*{minSpend}" class="form-control">
+            <div class="text-danger small" th:errors="*{minSpend}"></div>
+        </div>
+
+        <!-- 適用範圍 -->
+        <div class="mb-3">
+            <label class="form-label">適用範圍</label>
+            <select th:field="*{applScope}" class="form-select">
+                <option value="ALL">全館</option>
+                <option value="FARMER">指定小農</option>
+                <option value="PRODUCT">指定商品</option>
+            </select>
+        </div>
+
+        <!-- 起始日期 -->
+        <div class="mb-3">
+            <label class="form-label">起始日期</label>
+            <input type="date" th:field="*{startDate}" class="form-control">
+            <div class="text-danger small" th:errors="*{startDate}"></div>
+        </div>
+
+        <!-- 有效天數 -->
+        <div class="mb-3">
+            <label class="form-label">有效天數</label>
+            <input type="number" th:field="*{validDays}" class="form-control">
+            <div class="text-danger small" th:errors="*{validDays}"></div>
+        </div>
+
+        <!-- 描述 -->
+        <div class="mb-3">
+            <label class="form-label">折價券描述</label>
+            <textarea th:field="*{cpnDesc}" class="form-control" rows="3"></textarea>
+        </div>
+
+        <!-- 狀態 -->
+        <div class="mb-3">
+            <label class="form-label">狀態</label>
+            <select th:field="*{isActive}" class="form-select">
+                <option th:value="ACTIVE">啟用中</option>
+                <option th:value="INACTIVE">未啟用</option>
+            </select>
+        </div>
+
+        <!-- 送出按鈕 -->
+        <div class="text-center mt-4">
+            <button type="submit" 
+                    class="btn btn-success px-5"
+                    th:text="${#strings.equals(mode, 'edit') ? '更新折價券' : '新增折價券'}"></button>
+            <a th:href="@{/admin/procpn/list}" class="btn btn-secondary px-4">返回列表</a>
+        </div>
+    </form>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

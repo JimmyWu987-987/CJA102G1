@@ -9,6 +9,8 @@ public interface ProCpnMapper {
 	// 單筆轉換
 	ProCpnResponseDTO toResponseDTO(ProCpnVO vo);
 
+	ProCpnFormDTO toFormDTO(ProCpnVO vo);
+
 	ProCpnAdminDTO toAdminDTO(ProCpnVO vo);
 //	ProCpnDetailDTO toDetailDTO(ProCpnVO vo);
 

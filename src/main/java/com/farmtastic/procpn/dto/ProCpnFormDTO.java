@@ -1,18 +1,21 @@
 package com.farmtastic.procpn.dto;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 
 import com.farmtastic.common.enums.ApplScope;
 import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public class ProCpnFormDTO {
+	private Integer proCpnId; // ✅ 編輯時會需要
 	@NotBlank(message = "折價券名稱不可空白")
 	private String cpnName;
 	@NotNull(message = "折扣類型必填")
@@ -23,7 +26,7 @@ public class ProCpnFormDTO {
 	@PositiveOrZero(message = "最低消費金額不可為負")
 	private Integer minSpend;
 	@NotNull(message = "請選擇開始日期")
-	private LocalDate startDate;
+	private Date startDate;
 	@NotNull(message = "有效天數必填")
 	@Positive(message = "有效天數需為正整數")
 	private Integer validDays;
@@ -31,6 +34,14 @@ public class ProCpnFormDTO {
 	@NotNull
 	private IsActive isActive = IsActive.ACTIVE;
 	private ApplScope applScope;
+
+	public Integer getProCpnId() {
+		return proCpnId;
+	}
+
+	public void setProCpnId(Integer proCpnId) {
+		this.proCpnId = proCpnId;
+	}
 
 	public String getCpnName() {
 		return cpnName;
@@ -88,11 +99,11 @@ public class ProCpnFormDTO {
 		this.applScope = applScope;
 	}
 
-	public LocalDate getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDate startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
@@ -104,4 +115,30 @@ public class ProCpnFormDTO {
 		this.isActive = isActive;
 	}
 
+	@AssertTrue(message = "百分比折扣需介於 0～1 之間")
+	public boolean isValidPercentage() {
+		if (discType == DiscountType.PERCENTAGE) {
+			return discValue != null && discValue.compareTo(BigDecimal.ZERO) > 0
+					&& discValue.compareTo(BigDecimal.ONE) <= 1;
+		}
+		return true;
+	}
+
+	@AssertTrue(message = "滿額折抵金額需大於 0")
+	public boolean isValidFullReduction() {
+		if (discType == DiscountType.FULL_REDUCTION) {
+			return discValue != null && discValue.compareTo(BigDecimal.ZERO) > 0;
+		}
+		return true;
+	}
+
+	@AssertTrue(message = "有效日期設定錯誤")
+	public boolean isValidDate() {
+		if (startDate != null && validDays != null) {
+			LocalDate start = startDate.toLocalDate(); // ✅ java.sql.Date 專屬安全轉法
+			LocalDate exp = start.plusDays(validDays);
+			return !exp.isBefore(start);
+		}
+		return true;
+	}
 }

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>後台｜商品折價券清單</title>
+<title>後台｜商品折價券規則</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 <style>
     .status-active { color: #28a745; font-weight: bold; }
@@ -13,6 +13,24 @@
         background-color: #e9ecef;
         font-size: 0.9rem;
     }
+.btn-outline-light {
+  border-color: #6c757d;
+  color: #e9ecef;
+}
+.btn-outline-light:hover {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+}
+.btn-success.active {
+  font-weight: 600;
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+}
+.btn-secondary.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -21,7 +39,7 @@
 
     <div th:if="${error}" class="alert alert-danger text-center" role="alert"
          th:text="${error}"></div>
-
+<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
     <div class="d-flex justify-content-between align-items-center mb-3">
 
         <!-- 模糊搜尋 -->
@@ -66,10 +84,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="c : ${coupons}" class="text-center">
+            <tr th:each="c : ${pageData.content}" class="text-center">
                 <td th:text="${c.proCpnId}"></td>
                 <td th:text="${c.cpnName}"></td>
-                <td th:text="${c.discType}"></td>
+                <td th:text="${c.discType != null ? c.discType.text : '-'}"></td>
                 <td th:text="${c.discValue}"></td>
                
 
@@ -82,29 +100,57 @@
                     </span>
                 </td>
 
-                <td th:text="${c.startDate != null ? c.startDate : '-'}"></td>
-                <td th:text="${c.validDays != null ? c.validDays + ' 天' : '-'}"></td>
-                <td th:text="${c.expDate != null ? c.expDate : '-'}"></td>
+                  <!-- 起始日、有期限、到期日 -->
+            <td th:text="${c.startDate != null ? c.startDate : '-'}"></td>
+            <td th:text="${c.validDays != null ? c.validDays + ' 天' : '-'}"></td>
+            <td th:text="${c.expDate != null ? c.expDate : '-'}"></td>
 
-                <!-- ✅ 改良版狀態 -->
-                <td>
-                    <span th:text="${c.isActive == 'ACTIVE' ? '啟用中' 
-                                 : (c.isActive == 'INACTIVE' ? '未啟用' : '-')}"></span>
-                </td>
+
+                <!-- ✅ 狀態中文 -->
+            <td th:text="${c.isActive != null ? c.isActive.text : '-'}"></td>
 
                 <td th:text="${c.crtAt}"></td>
-
+ <!-- 操作按鈕 -->
                 <td>
-                    <a th:href="@{'/admin/procpn/edit/' + ${c.proCpnId}}" class="btn btn-sm btn-warning">編輯</a>
-                    <a th:href="@{'/admin/procpn/toggle/' + ${c.proCpnId}}" class="btn btn-sm btn-secondary">切換狀態</a>
+                <a th:href="@{/admin/procpn/edit/{id}(id=${c.proCpnId}, page=${pageData.number}, size=${pageData.size})}"
+   class="btn btn-sm btn-warning">編輯</a>
+
+<a th:href="@{/admin/procpn/delete/{id}(id=${c.proCpnId}, page=${pageData.number}, size=${pageData.size})}"
+   onclick="return confirm('確定刪除此折價券？')">刪除</a>                  
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <div th:if="${#lists.isEmpty(coupons)}" class="text-center text-muted mt-4">
-        尚無折價券資料
-    </div>
+   <div th:if="${#lists.isEmpty(pageData.content)}" class="text-center text-muted mt-4">
+    尚無折價券資料
+</div>
+<!-- 分頁導覽列（行版） -->
+<div th:if="${pageData.totalPages > 1}" 
+     class="text-center mt-4 d-flex justify-content-center align-items-center gap-2 flex-wrap">
+
+    <!-- 上一頁 -->
+    <a class="btn btn-sm"
+       th:classappend="${pageData.first} ? 'btn-secondary disabled' : 'btn-outline-light'"
+       th:href="@{/admin/procpn/list(page=${pageData.number - 1}, size=${pageData.size})}">
+       &laquo; 上一頁
+    </a>
+
+    <!-- 頁碼 -->
+    <span th:each="i : ${#numbers.sequence(0, pageData.totalPages - 1)}" class="mx-1">
+        <a class="btn btn-sm"
+           th:classappend="${i == pageData.number} ? 'btn-success active' : 'btn-outline-light'"
+           th:href="@{/admin/procpn/list(page=${i}, size=${pageData.size})}"
+           th:text="${i + 1}"></a>
+    </span>
+
+    <!-- 下一頁 -->
+    <a class="btn btn-sm"
+       th:classappend="${pageData.last} ? 'btn-secondary disabled' : 'btn-outline-light'"
+       th:href="@{/admin/procpn/list(page=${pageData.number + 1}, size=${pageData.size})}">
+       下一頁 &raquo;
+    </a>
+</div>
 </div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
