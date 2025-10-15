@@ -36,7 +36,12 @@
 	
 	<h1>結帳頁面</h1><form method="post" th:action="@{insert}" th:object="${cartToProOrder}"> 
     
-    <input type="hidden" id="destination" name="destination" value="" />
+    <input type="hidden" th:field="*{proOrdPointdisc}" />
+    <input type="hidden" th:field="*{proOrdCpndisc}" />
+    <input type="hidden" th:field="*{proOrdGrandTotal}" />
+    <input type="hidden" th:field="*{proOrdPointGet}" />
+    <input type="hidden" th:field="*{memProCpnVO.cpnHolderDetailId}" />
+    
 		
 		<div>
 		<label>一般會員編號</label>
@@ -123,8 +128,6 @@
     		<label>付款方式</label>
     		<input type="radio" id="paymentCredit" th:field="*{proOrdPayment}" th:value="0"/>信用卡
     		<input type="radio" id="paymentLinePay" th:field="*{proOrdPayment}" th:value="1"/>LinePay
-<!--     		<input type="radio" id="paymentCOD" th:field="*{proOrdPayment}" th:value="2"/>貨到付款
-    		<input type="radio" id="paymentCSPP" th:field="*{proOrdPayment}" th:value="3"/>超商取貨付款<br> -->
 		</div>
 
 		<div id="shipmentMethods">
@@ -142,13 +145,6 @@
     		<br>
 		</div>
 		
-<!-- 在表單內，收件人資訊區塊前添加全局錯誤顯示 -->
-<!-- <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-    <h4>⚠️ 請修正以下錯誤：</h4>
-    <ul>
-        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-    </ul>
-</div> -->
 
 <label>*預設為會員資料</label>
 
@@ -209,7 +205,7 @@
 </div>
 		
 		<div>
-		<button type="submit" id="submitButton"> 送出新增 </button>
+		<button type="submit" id="submitButton"> 送出訂單 </button>
 		</div>
 		
 	</form>
