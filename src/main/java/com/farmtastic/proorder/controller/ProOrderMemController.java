@@ -192,7 +192,7 @@ public class ProOrderMemController {
 	@PostMapping("insert")
 	public String insert(
 			@Validated(RegistrationValidation.class) @ModelAttribute("cartToProOrder") ProOrderVO proOrderVO,
-			
+
 			BindingResult result, HttpSession session, RedirectAttributes redirectAttributes, ModelMap model) {
 
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
@@ -264,27 +264,36 @@ public class ProOrderMemController {
 		if (proOrderVO.getProOrdPointGet() == null) {
 			proOrderVO.setProOrdPointGet(0);
 		}
-
-		// 如果用戶有選擇優惠券（cpnHolderDetailId 不為 null 且不為 0）
-		if (proOrderVO.getMemProCpnVO() != null && proOrderVO.getMemProCpnVO().getCpnHolderDetailId() != null
-				&& proOrderVO.getMemProCpnVO().getCpnHolderDetailId() != 0) {
-
-			// 從資料庫重新載入這個優惠券物件（變成 managed 狀態）
+		
+		// 檢查是否有使用優惠券
+		// 有使用折價卷，才將資料傳入ＤＢ
+		boolean hasCoupon = false;
+		if (proOrderVO.getMemProCpnVO() != null) {
 			Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
-			Optional<MemProCpnVO> mpcOptional = mpcRepository.findById(cpnHolderDetailId);
 
-			if (mpcOptional.isPresent()) {
-				// 設置 managed 狀態的優惠券物件
-				proOrderVO.setMemProCpnVO(mpcOptional.get());
+			// cpnHolderDetailId 不為 null 且不為 0 才表示有使用優惠券
+			if (cpnHolderDetailId != null && cpnHolderDetailId != 0) {
+				// 從資料庫重新載入這個優惠券物件（變成 managed 狀態）
+				Optional<MemProCpnVO> mpcOptional = mpcRepository.findById(cpnHolderDetailId);
+
+				if (mpcOptional.isPresent()) {
+					// 設置 managed 狀態的優惠券物件
+					proOrderVO.setMemProCpnVO(mpcOptional.get());
+					hasCoupon = true;
+				} else {
+					// 如果找不到優惠券，設為 null
+					proOrderVO.setMemProCpnVO(null);
+				}
 			} else {
-				// 如果找不到優惠券，設為 null
+				// cpnHolderDetailId 為 0 或 null，表示沒有使用優惠券
 				proOrderVO.setMemProCpnVO(null);
 			}
 		} else {
-			// 沒有使用優惠券，設為 null
+			// memProCpnVO 為 null，表示沒有使用優惠券
 			proOrderVO.setMemProCpnVO(null);
 		}
-
+		
+		
 		// 訂單狀態
 		proOrderVO.setProOrdStatus((byte) 0);
 
@@ -346,13 +355,18 @@ public class ProOrderMemController {
 		// 更新網頁會員的session的資料
 		session.setAttribute("loggedInMember", loggedInMember);
 		// ================== 折價卷修改狀態 ======================
-		MemProCpnVO updateMpc =  mpcSvc.getOne(proOrderVO.getMemProCpnVO().getCpnHolderDetailId());
-		// 設定已經使用該這價卷
-		updateMpc.setCpnUseStatus(CpnUseStatus.USED);
-		// 將最終點數結果，存回DB
-		mpcSvc.updateMemProCpn(updateMpc);
-		
-		
+	    if (hasCoupon && proOrderVO.getMemProCpnVO() != null) {
+	        try {
+	            MemProCpnVO updateMpc = mpcSvc.getOne(proOrderVO.getMemProCpnVO().getCpnHolderDetailId());
+	            // 設定已經使用該折價券
+	            updateMpc.setCpnUseStatus(CpnUseStatus.USED);
+	            // 將最終點數結果，存回DB
+	            mpcSvc.updateMemProCpn(updateMpc);
+	        } catch (Exception e) {
+	            // 記錄錯誤但不影響訂單流程
+	            System.err.println("更新優惠券狀態失敗: " + e.getMessage());
+	        }
+	    }
 		// ================== 扣商品庫存的邏輯 ======================
 		// 等同學寫好ORM
 		// 未完成
