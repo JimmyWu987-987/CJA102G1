@@ -8,7 +8,7 @@
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 
-	<link rel="stylesheet" th:href="@{/css/mem/farmerStore.css}">
+	<link rel="stylesheet" th:href="@{/css/mem/farmerStore1ColorNature.css}">
 	
     <style>
         
@@ -31,34 +31,41 @@
         <div class="store-content">
 <!--             <h3>商品</h3> -->
             <ul class="activities">
-                <li class="activity" th:fragment="activity">
+<!--                 <li class="activity" th:fragment="activity"> -->
+                <li class="activity" th:each="act : ${actList}">
                     <div class="pic">
                     	<a href="#">
                     		<div class="mask"></div>
                     		<div class="tag">熱門</div>
-                    		<img th:src="@{/images/activity.png}" alt="">
+<!--                     		<img th:src="'data:image/jpeg;base64, ' + ${act.actMainImgBase64}" alt=""> -->
                     	</a>
                    	</div>
 	                <div class="text">
                     	<a href="#">
 <!--                     		<div class="mask"></div> -->
-	                        <div class="name">騎豬豬體驗</div>
-	                        <div class="intro">騎豬豬體驗是一場趣味與自然結合的農村冒險！適合親子同樂、情侶約會。感受與可愛豬豬的零距離互動，留下難忘回憶！</div>
+	                        <div th:text="${act.actName}" class="name"></div>
+	                        <div th:text="${act.actDes}" class="intro"></div>
 	                        <div class="price">
 	                            <span class="prefix">$</span>
-	                            <span class="number">2500</span>
+	                            <span th:text="${act.actFee}" class="number"></span>
+	                        </div>
+	                        <div class="score">
+	                            <span class="prefix">⭐</span>
+	                            <span th:text="${act.actScore}" class="number"></span>
 	                        </div>
 	                	</a>
                         <div class="date">
-                        	<span>可報名場次日期：</span>
-                        	<span>10/10、10/25、12/25</span>
+                        	<span>活動期間：</span>
+                        	<span th:text="${act.actStart}"></span>至
+                        	<span th:text="${act.actEnd}"></span>
+<!--                         	<span>10/10、10/25、12/25</span> -->
                         </div>
 						<button class="addToCart">立馬報名去</button>	                    
 	                </div>
                 </li>
                 
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li>
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li>
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li> -->
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li> -->
                  
             </ul>
         </div>

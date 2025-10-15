@@ -3,11 +3,13 @@ package com.farmtastic.member.controller;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.act.model.Act;
+import com.farmtastic.act.model.ActService;
 import com.farmtastic.common.constants.CpnConstants;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
@@ -33,6 +37,9 @@ import com.farmtastic.member.model.MemService;
 import com.farmtastic.member.model.UpdatePasswordMem;
 import com.farmtastic.member.model.UpdateProfileMem;
 import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
+import com.farmtastic.pro.model.Pro;
+import com.farmtastic.pro.model.ProService;
+import com.farmtastic.proimage.model.ProImage;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.validator.RegistrationValidation;
@@ -53,6 +60,12 @@ public class MemController {
 
 	@Autowired
 	FmemService fmemSvc;
+	
+	@Autowired
+	ActService actSvc;
+	
+	@Autowired
+	ProService proSvc;
 
 	@Autowired
 	RedisService redisSvc;
@@ -88,9 +101,30 @@ public class MemController {
 
 	@GetMapping("/farmerStoreProd")
 	public String farmerStoreProd(ModelMap model, @RequestParam("fmemId") String fmemId, HttpSession session) {
+		
+		Integer fmemIdInteger = Integer.valueOf(fmemId);
+		
+		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
 
-		Fmem fmem = fmemSvc.getOneByFmemId(Integer.valueOf(fmemId));
-
+		List<Pro> proList = proSvc.findByFmemId(fmemIdInteger);
+//		for(Pro pro : proList) {
+//			if(pro.getProImage() != null) {
+//				String tempImgBase64 = Base64.getEncoder().encodeToString(pro.getProImage().getProImg());
+//				pro.getProImage().setProImgBase64(tempImgBase64);
+//			}else {
+//				ProImage defaultImg = new ProImage();
+////				defaultImg.setProImgBase64("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+////				defaultImg.setProImgBase64("R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=");
+//				pro.setProImage(defaultImg);
+//			}
+//		}
+		model.addAttribute("proList", proList);
+		
+		
+		
+		
+		
+		
 		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
 
@@ -105,8 +139,20 @@ public class MemController {
 	@GetMapping("/farmerStoreAct")
 	public String farmerStoreAct(ModelMap model, @RequestParam("fmemId") String fmemId) {
 
-		Fmem fmem = fmemSvc.getOneByFmemId(Integer.valueOf(fmemId));
-
+		Integer fmemIdInteger = Integer.valueOf(fmemId);
+		
+		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
+		
+		List<Act> actList = actSvc.findByFmemId(fmemIdInteger, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
+		
+//		for(Act act : actList) {
+//			if(act.getActMainImg() != null) {
+//				act.setActMainImgBase64(Base64.getEncoder().encodeToString(act.getActMainImg()));
+//			}
+//		}
+		model.addAttribute("actList", actList);
+		
+		
 		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
 

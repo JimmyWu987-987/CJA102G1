@@ -7,18 +7,16 @@
 	
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 	
+	<th:block th:fragment="homeCss">
+	    <link rel="stylesheet" th:href="@{/css/fmem/home.css}">
+    </th:block>
+	
 	<!--     <link rel="stylesheet" th:if="${session.sty}" th:href="@{${session.sty.styCssPath}}"> -->
 	    
 	<!-- <link rel="stylesheet" th:href="@{/css/mem/memArea.css}"> -->
 
 <style>
-	.container-header,
-	.container-footer{
-		background-color: #dce2ef;	
-	}
-	.nav > li > a{
-		background-color: #4F9D9D;
-	}
+	
 	
 	.container-content{
 		font-size:80px;
@@ -51,7 +49,7 @@
                     <a href="#" class="link btn">商城</a>
                     <ul>
                         <li><a href="#">上架商品</a></li>
-                        <li><a href="#">商品管理</a></li>
+                        <li><a th:href="@{/pro/fmem/myPro}">商品管理</a></li>
   						<li><a href="#">商城商店佈置</a></li>
                     </ul>
                 </li>
@@ -69,7 +67,7 @@
                     <a href="#" class="link btn">訂單</a>
                     <ul>
                         <li><a th:href="@{/fmem/reg/list}">查看活動訂單</a></li>
-                        <li><a href="#">查看商品訂單</a></li>
+                        <li><a th:href="@{/fmem/proorders/listAllProOrder}">查看客戶商品訂單</a></li>
                     </ul>
                 </li>
                 <li>

@@ -8,7 +8,7 @@
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 
-	<link rel="stylesheet" th:href="@{/css/mem/farmerStore.css}">
+	<link rel="stylesheet" th:href="@{/css/mem/farmerStore1ColorNature.css}">
 	
     <style>
         
@@ -53,33 +53,38 @@
         <div class="store-content">
 <!--             <h3>商品</h3> -->
             <ul class="products">
-                <li class="product" th:fragment="product">
+<!--                 <li class="product" th:fragment="product"> -->
+                <li class="product" th:each="pro : ${proList}">
                    	<div class="pic">
 	                    <a href="#">
 	                   		<div class="mask"></div>
 	                   		<div class="tag">熱銷</div>
-	                   		<img th:src="@{/images/orange.png}" alt="">
+<!-- 	                   		<img th:src="'data:image/jpeg;base64, ' + ${pro.proImage?.proImgBase64}" alt="商品圖片"> -->
 	                    </a>
                    	</div>
                     <div class="text">
 	                    <a href="#">
-	                        <div class="name">現採柳丁</div>
+	                        <div th:text="${pro.proName}" class="name"></div>
 	                        <div class="price">
 	                            <span class="prefix">$</span>
-	                            <span class="number">200</span>
+	                            <span th:text="${pro.proPrice}" class="number"></span>
+	                        </div>
+	                        <div class="score">
+	                            <span class="prefix">⭐</span>
+	                            <span th:text="${pro.proScore}" class="number"></span>
 	                        </div>
 	                    </a>
                     </div>
 					<button class="addToCart">加入購物車</button>	                    
                 </li>
                 
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
-                <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li>
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
+<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: product}"></li> -->
 
                 
             </ul>
