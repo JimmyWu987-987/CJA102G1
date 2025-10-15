@@ -180,6 +180,11 @@ body{
     color: #fff;
     background-color: #f78d66;
 }
+
+.container-header .member .btn-farmer i{
+	background-color: #c08030;
+}
+
 .container-header .member .btn-logout{
 	display: inline-block;
 	font-size: 18px;
@@ -217,7 +222,10 @@ body{
 .container-header .member .btn-logout:hover i{
 	cursor: pointer;
 	transition: .3s ease;
-    background-color: #f1703f;
+    background-color: #f06a37;
+}
+.container-header .member .btn-farmer i:hover{
+	background-color: #9b642d;
 }
 .container-header .member .btn-logout {
     border: none;

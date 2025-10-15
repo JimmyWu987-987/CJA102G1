@@ -72,8 +72,9 @@
                 </li>
             </ul>
             <div class="member">
-                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn">
-                	<i class="fa-solid fa-user-tie"></i>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn btn-farmer">
+<!--                 	<i class="fa-solid fa-tree"></i> -->
+                	<i class="fa-solid fa-seedling"></i>
                 	<span class="icon-label">小農</span>
                 </a>
                 <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn">
@@ -107,7 +108,7 @@
     
     <div class="container container-banner">
         <div class="banner">
-            <img th:src="@{/images/banner.png}" alt="banner">
+            <img th:src="@{/images/banner-txt.png}" alt="banner">
 
             <div class="animate-box">
                 <svg class="car" id="car" width="115" height="80" viewBox="0 0 115 80" xmlns="http://www.w3.org/2000/svg">     
@@ -119,10 +120,10 @@
                 </svg>
             </div>
             
-            <div class="text">
-                <h2>農作物與它們的產地</h2>
-                <p>我們的目標是建立一個雙向互動的社群：消費者不再只是購買者，更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p>
-            </div>
+<!--             <div class="text"> -->
+<!--                 <h2>農作物與它們的產地</h2> -->
+<!--                 <p>我們的目標是建立一個雙向互動的社群：消費者不再只是購買者，更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p> -->
+<!--             </div> -->
         </div>
     </div>
 
@@ -181,7 +182,7 @@
                         <img th:src="@{/images/apple.png}" alt="apple" style="max-width: 100px; max-height: 100px;" >
                     </div>
                     <div class="concept-name">新鮮直送</div>
-                    <div class="concept-desc">小農現採直送，減少運輸時間，保留天然風味與完整營養，讓你在餐桌上品嚐到最鮮美的食材。</div>
+                    <div class="concept-desc">小農現採直送，減少運輸時間，保留天然風味與營養，讓你在餐桌上品嚐到最鮮美的食材。</div>
                 </a>  
             </div>
 

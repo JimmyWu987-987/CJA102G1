@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.farmtastic.style.model.Sty;
 import com.farmtastic.validator.FileSize;
 import com.farmtastic.validator.FmemPasswordMatches;
 import com.farmtastic.validator.RegistrationValidation;
@@ -16,10 +17,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
@@ -172,8 +174,13 @@ public class Fmem implements Serializable {
 	@Column(name = "store_intro", insertable = false)
 	private String storeIntro;
 	
-	@Column(name = "sty_no")
-	private Byte styNo = 1;
+	@ManyToOne
+	@JoinColumn(name = "sty_no")
+	private Sty sty;
+	
+//	@Column(name = "sty_no")
+//	private Byte styNo = 1;
+	
 	
 	@Column(name = "mkt_score", insertable = false)
 	private Integer mktScore;
@@ -400,12 +407,24 @@ public class Fmem implements Serializable {
 	public void setStoreIntro(String storeIntro) {
 		this.storeIntro = storeIntro;
 	}
-	public Byte getStyNo() {
-		return styNo;
+	
+	
+	
+	public Sty getSty() {
+		return sty;
 	}
-	public void setStyNo(Byte styNo) {
-		this.styNo = styNo;
+	public void setSty(Sty sty) {
+		this.sty = sty;
 	}
+	
+//	public Byte getStyNo() {
+//		return styNo;
+//	}
+//	public void setStyNo(Byte styNo) {
+//		this.styNo = styNo;
+//	}
+	
+
 	public Integer getMktScore() {
 		return mktScore;
 	}

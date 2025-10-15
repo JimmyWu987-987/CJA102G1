@@ -89,6 +89,7 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		// 1. 檢查 referer 是否存在且非空，如果不存在，則回退到預設的商品列表頁面。
 		// 2. 使用重定向 (redirect) 到 referer URL，實現返回當前頁面。
 		if (referer != null && !referer.isEmpty()) {
+			redirectAttributes.addFlashAttribute("successAddToCart", proId);
 			return "redirect:" + referer; 
 		} else {
 			// 如果沒有 Referer 資訊（例如，使用者直接在網址列輸入 POST 請求），則重定向到預設列表頁

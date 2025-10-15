@@ -112,6 +112,8 @@ public class FmemController{
 			List<Pro> proList = proSvc.findByFmemId(fmem.getFmemId());
 			model.addAttribute("proList", proList);
 			
+			
+			
 		} else {
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
@@ -149,9 +151,9 @@ public class FmemController{
 		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
 		
 //		 處理商店樣式
-		Byte styNo = loggedInFmember.getStyNo();
-		Sty sty = stySvc.getOneByStyNo(styNo);
-		session.setAttribute("sty", sty);
+//		Byte styNo = loggedInFmember.getStyNo();
+//		Sty sty = stySvc.getOneByStyNo(styNo);
+//		session.setAttribute("sty", sty);
 		///////////////////////
 		
 		return "/front_end/farmer/logined/fmemArea";
@@ -495,6 +497,9 @@ public class FmemController{
 				mailSvc.sendMail(loggedInFmember.getFmemEmail(), mailTitle, verifyUrl);
 			}
 		}
+		
+		String fmemCss = loggedInFmember.getSty().getStyCssPath();
+		session.setAttribute("fmemCss", fmemCss);
 		
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
@@ -953,6 +958,10 @@ public class FmemController{
 //			model.addAttribute("fmemName", fmem.getFmemName());
 			session.setAttribute("fmemId", fmem.getFmemId());
 //			session.setAttribute("fmemName", fmem.getFmemName());
+			
+
+			String fmemCss = fmem.getSty().getStyCssPath();
+			session.setAttribute("fmemCss", fmemCss);
 			
 			// 4.登入成功後 重導至原本頁面或會員中心
 //			String redirectUrl  = (String) session.getAttribute("redirectAfterLogin");

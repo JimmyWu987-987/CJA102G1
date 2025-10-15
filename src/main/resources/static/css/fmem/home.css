@@ -6,3 +6,12 @@
 .nav > li > a{
 	background-color: #4F9D9D;
 }
+
+
+
+.container-header .member .btn-logout i{
+	background-color: #c08030;
+}
+.container-header .member .btn-logout i:hover{
+	background-color: #9b642d;
+}

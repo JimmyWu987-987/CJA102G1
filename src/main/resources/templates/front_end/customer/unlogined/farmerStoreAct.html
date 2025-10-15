@@ -8,11 +8,10 @@
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 
-	<link rel="stylesheet" th:href="@{/css/mem/farmerStore1ColorNature.css}">
+	<link rel="stylesheet" th:href="@{/css/sty/farmerStore1ColorNature.css}">
+	<link rel="stylesheet" th:href="@{/css/sty/farmerStore1ColorWarm.css}">
 	
-    <style>
-        
-    </style>
+    
 </head>
 <body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
 
@@ -49,10 +48,6 @@
 	                            <span class="prefix">$</span>
 	                            <span th:text="${act.actFee}" class="number"></span>
 	                        </div>
-<!-- 	                        <div class="score"> -->
-<!-- 	                            <span class="prefix">⭐</span> -->
-<!-- 	                            <span th:text="${act.actScore}" class="number"></span> -->
-<!-- 	                        </div> -->
 	                	</a>
                         <div class="date">
 <!--                         	<span>活動期間：</span> -->
@@ -65,9 +60,6 @@
 	                </div>
                 </li>
                 
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li> -->
-<!--                 <li th:replace="~{/front_end/customer/unlogined/farmerStoreAct :: activity}"></li> -->
-                 
             </ul>
         </div>
         
@@ -79,7 +71,7 @@
    
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
-
+<!-- 	<script th:src="@{/js/mem/addToCartAlert.js}"></script> -->
     
 </body>
 </html>
