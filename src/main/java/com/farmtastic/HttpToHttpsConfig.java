@@ -9,16 +9,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HttpToHttpsConfig {
 	
-	@Bean
-	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
-		return server -> {
-			Connector connector = new Connector();
-			connector.setScheme("http");
-			connector.setPort(80);
-			connector.setSecure(false);
-			connector.setRedirectPort(443);
-			
-			server.addAdditionalTomcatConnectors(connector);
-		};
-	}
+//	@Bean
+//	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
+//		return server -> {
+//			Connector connector = new Connector();
+//			connector.setScheme("http");
+//			connector.setPort(80);
+//			connector.setSecure(false);
+//			connector.setRedirectPort(443);
+//			
+//			server.addAdditionalTomcatConnectors(connector);
+//		};
+//	}
 }
