@@ -1036,9 +1036,98 @@ VALUES (4, 1, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY));
 
 
 
+-- 刪除/建立 活動訂單
+DROP TABLE IF EXISTS reg;
+CREATE TABLE `reg` (
+  `reg_id` INT NOT NULL AUTO_INCREMENT,              -- 活動報名訂單編號 PK
+  `reg_at` DATETIME NOT NULL,                        -- 下單時間
+  `reg_stat` TINYINT NOT NULL DEFAULT 0,             -- 0 成立(已付款) 1 取消(待退款) 2 已退款 3 活動已完成 4 已撥款 5 已結案
+  `reg_name` VARCHAR(30) NOT NULL,                   -- 聯絡人姓名
+  `reg_mob` VARCHAR(20) NOT NULL,                    -- 聯絡人手機
+  `reg_mail` VARCHAR(100) NOT NULL,                  -- 聯絡人 email
+  `reg_count` INT NOT NULL DEFAULT 1,                -- 報名人數
+  -- ------------------------------評論------------------------------------------
+  `act_rate` TINYINT,                                -- 活動評分
+  `act_comm` VARCHAR(500),                           -- 活動評論
+  `act_commat` DATETIME,                             -- 活動評論時間
+  `act_commreply` VARCHAR(500),                      -- 活動評論回覆
+  -- -------------------------------fk------------------------------------------
+  `ses_id` INT NOT NULL,                             -- 場次編號(FK)
+  `mem_id` INT NOT NULL,                             -- 一般會員(FK)
+  `cpn_holder_detail_id` INT,                        -- 折價券持有者明細(FK) (可為 NULL)
+  -- -----------------------------金額計算-----------------------------------------
+  `reg_total` INT NOT NULL,                          -- 訂單總金額
+  `reg_pointdisc` INT NOT NULL DEFAULT 0,            -- 折抵點數
+  `reg_pointget` INT NOT NULL DEFAULT 0,             -- 回饋點數
+  `reg_cpndisc` INT NOT NULL DEFAULT 0,              -- 折價券折抵
+  `reg_grand_total` INT NOT NULL,                    -- 實付金額
+  PRIMARY KEY (`reg_id`)
+);
 
+INSERT INTO reg
+(ses_id, mem_id, reg_at, reg_count,
+ reg_total, reg_cpndisc, reg_pointdisc, reg_grand_total, reg_pointget,
+ reg_stat, reg_name, reg_mob, reg_mail,
+ act_comm, act_rate, act_commat, act_commreply, cpn_holder_detail_id)
+VALUES
+-- ===== 前 6 筆 mem_id = 1 (reg_id=1~6) =====
+(1,1,'2025-10-10 09:10:00',2, 3000,200,100,2700,27, 0,'王小明','0912-000-001','user1@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(2,1,'2025-10-10 10:20:00',1, 1500,  0,  0,1500,15, 1,'王小明','0912-000-001','user1@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(3,1,'2025-10-10 11:30:00',3, 4500,300,  0,4200,42, 2,'王小明','0912-000-001','user1@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+-- reg_id = 4 (完成/有評論+回覆)
+(4,1,'2025-10-10 12:40:00',2, 3000,  0,200,2800,28, 3,'王小明','0912-000-001','user1@example.com',
+  '導覽很用心，流程順暢，家人都玩得很開心！',5,'2025-10-12 09:00:00','感謝支持～歡迎再來！',NULL),
+-- reg_id = 5 (已撥款/有評論)
+(5,1,'2025-10-10 13:50:00',1, 1500,100,100,1300,13, 4,'王小明','0912-000-001','user1@example.com',
+  '整體不錯，但集合地點指示可再清楚一些。',4,'2025-10-12 10:15:00',NULL,NULL),
+-- reg_id = 6 (已結案/有評論+回覆)
+(6,1,'2025-10-10 14:00:00',4, 6000,500,  0,5500,55, 5,'王小明','0912-000-001','user1@example.com',
+  'CP 值高，手作體驗很有成就感！',5,'2025-10-12 11:30:00','謝謝肯定～我們會持續優化課程內容。',NULL),
 
--- 刪除/建立 報名訂單
+-- ===== 其餘 14 筆 (reg_id=7~20) =====
+(1,2,'2025-10-09 09:00:00',1, 1500,  0,  0,1500,15, 0,'李小華','0922-000-002','user2@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(1,2,'2025-10-09 10:10:00',2, 3000,150,  0,2850,28, 1,'李小華','0922-000-002','user2@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(1,2,'2025-10-09 11:20:00',3, 4500,  0,300,4200,42, 2,'李小華','0922-000-002','user2@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+-- reg_id = 10 (完成/有評論)
+(1,2,'2025-10-09 12:30:00',2, 3000,  0,  0,3000,30, 3,'李小華','0922-000-002','user2@example.com',
+  '講解專業，時間安排剛好。',4,'2025-10-11 16:20:00',NULL,NULL),
+
+-- reg_id = 11 (已撥款/有評論+回覆)
+(4,3,'2025-10-08 09:00:00',1, 1500,  0,  0,1500,15, 4,'張偉','0933-000-003','user3@example.com',
+  '活動還不錯，但人有點多，等候時間稍長。',3,'2025-10-11 18:05:00','收到建議，後續會分流控管人數，謝謝反饋！',NULL),
+-- reg_id = 12 (已結案/有評論)
+(5,3,'2025-10-08 10:15:00',2, 3000,100,  0,2900,29, 5,'張偉','0933-000-003','user3@example.com',
+  '小農很熱情，帶回家的產品品質很好！',5,'2025-10-11 19:10:00',NULL,NULL),
+
+(6,4,'2025-10-07 08:20:00',4, 6000,  0,200,5800,58, 0,'林小姐','0955-000-004','user4@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(7,4,'2025-10-07 09:30:00',1, 1500, 50, 50,1400,14, 1,'林小姐','0955-000-004','user4@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(1,4,'2025-10-07 10:40:00',2, 3000,  0,  0,3000,30, 2,'林小姐','0955-000-004','user4@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+
+-- reg_id = 16 (完成/有評論+回覆)
+(2,5,'2025-10-06 14:00:00',3, 4500,200,  0,4300,43, 3,'黃同學','0966-000-005','user5@example.com',
+  '親子友善，孩子們超愛體驗環節～',4,'2025-10-10 17:40:00','謝謝分享～下次會新增更多親子關卡！',NULL),
+-- reg_id = 17 (已撥款/有評論+回覆)
+(3,5,'2025-10-06 15:10:00',2, 3000,  0,100,2900,29, 4,'黃同學','0966-000-005','user5@example.com',
+  '臨時改期通知較晚，行程有受影響。',2,'2025-10-10 18:30:00','抱歉造成不便，我們已調整通知流程並提供補償方案。',NULL),
+
+-- reg_id = 18 (已結案/有評論)
+(4,6,'2025-10-05 16:20:00',1, 1500,  0,  0,1500,15, 5,'趙先生','0977-000-006','user6@example.com',
+  '風景漂亮、餐點好吃，整體大推！',5,'2025-10-10 20:00:00',NULL,NULL),
+(5,6,'2025-10-05 17:30:00',4, 6000,300,200,5500,55, 0,'趙先生','0977-000-006','user6@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(6,6,'2025-10-05 18:40:00',2, 3000,  0,  0,3000,30, 1,'趙先生','0977-000-006','user6@example.com',
+  NULL,NULL,NULL,NULL,NULL),
+(7,6,'2025-10-05 19:50:00',3, 4500,  0,300,4200,42, 2,'趙先生','0977-000-006','user6@example.com',
+  NULL,NULL,NULL,NULL,NULL);
 
 
 
@@ -1228,9 +1317,20 @@ ADD CONSTRAINT pro_com_mem_fk FOREIGN KEY (mem_id) REFERENCES mem(mem_id);
 ALTER TABLE mem_act_cpn
 ADD CONSTRAINT mem_act_cpn_fk FOREIGN KEY (act_cpn_id) REFERENCES act_cpn(act_cpn_id),
 ADD CONSTRAINT mem_act_cpn_mem_fk FOREIGN KEY (mem_id) REFERENCES mem(mem_id);
--- ADD CONSTRAINT mem_act_cpn_reg_fk FOREIGN KEY (reg_id) REFERENCES reg(reg_id) ;
+-- ADD CONSTRAINT mem_act_cpn_reg_fk FOREIGN KEY (reg_id) REFERENCES reg(reg_id);
+
 -- (2-6) 
 -- 報名訂單（FK場次編號）（FK一般會員編號）（FK活動折價卷持有者流水號）
+-- 報名訂單 FK 場次編號
+-- 報名訂單 FK 一般會員編號
+-- 報名訂單 FK 折價券持有者明細（可為 NULL）
+ALTER TABLE reg
+  ADD CONSTRAINT reg_ses_FK  FOREIGN KEY (ses_id)  REFERENCES ses(ses_id),
+  ADD CONSTRAINT reg_mem_FK  FOREIGN KEY (mem_id)  REFERENCES mem(mem_id),
+  ADD CONSTRAINT reg_cpn_holder_detail_FK
+      FOREIGN KEY (cpn_holder_detail_id) REFERENCES mem_act_cpn(cpn_holder_detail_id);
+
+
 
 -- (2-7) 
 -- 商品收藏清單（FK一般會員編號）（FK商品編號） 
