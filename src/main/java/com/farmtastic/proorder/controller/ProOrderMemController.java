@@ -364,15 +364,15 @@ public class ProOrderMemController {
 		// 雖然這個請求最終是 redirect，但為了在發生錯誤時能直接 return 頁面，我們先放
 		model.addAttribute("cartToProOrder", finalProOrderVO);
 
-		Integer tempProOrdPointdisc = 0; // 用於儲存有效的點數折抵值
+		Integer tempPointdisc = 0; // 用於儲存有效的點數折抵值
 
 		// 1. 驗證空值/無效輸入
 		if (proOrdPointdiscStr == null || proOrdPointdiscStr.trim().isEmpty()) {
 			// 如果為空，我們將其視為 0 折抵，並繼續執行，或您可以選擇添加錯誤
-			tempProOrdPointdisc = 0;
+			tempPointdisc = 0;
 		} else {
 			try {
-				tempProOrdPointdisc = Integer.valueOf(proOrdPointdiscStr);
+				tempPointdisc = Integer.valueOf(proOrdPointdiscStr);
 			} catch (NumberFormatException e) {
 				// 處理非數字輸入
 				model.addAttribute("pointDiscError", "請輸入有效的數字作為折抵點數。");
@@ -391,59 +391,73 @@ public class ProOrderMemController {
 		Integer proTotal = finalProOrderVO.getProTotal();
 		Integer pointCpndisc = finalProOrderVO.getProOrdCpndisc() != null ? finalProOrderVO.getProOrdCpndisc() : 0;
 
-		// 可用來折抵的最高金額 (商品總金額 - 折價券折抵)
-		Integer maxDiscAmount = proTotal - pointCpndisc;
-
-		// 3. 處理負數、超過持有/超過最高可折抵金額
-
-		if (tempProOrdPointdisc < 0) {
-			model.addAttribute("pointDiscError", "折抵點數不能是負數。");
-			hasError = true;
-		} else if (tempProOrdPointdisc > memPoint) {
-			model.addAttribute("pointDiscError", "您的折抵點數 (" + tempProOrdPointdisc + ") 超過您持有的總點數 (" + memPoint + ")。");
-			hasError = true;
-		} else if (tempProOrdPointdisc > maxDiscAmount && tempProOrdPointdisc != 0) {
-			model.addAttribute("pointDiscError", "折抵點數不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
-			hasError = true;
-		}
-
 		// ==============會員折價卷數錯誤驗證==============
 		// 取會員所選取的折價卷物件
-		if(cpnHolderDetailId == 0 && tempProOrdPointdisc == 0) {
+		if (cpnHolderDetailId == 0 && tempPointdisc == 0) {
 			// 由於我們是手動返回頁面，必須確保將用戶輸入的值也放回 Model
-			model.addAttribute("inputPointDisc", tempProOrdPointdisc);
+			model.addAttribute("inputPointDisc", tempPointdisc);
 			// 取得會員的有效折價卷資料
 			List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
 			model.addAttribute("mpcList", mpcList);
 			redirectAttributes.addFlashAttribute("successMessage", "未使用折扣（點數or折價劵）");
 			return "redirect:addProOrder";
-		} 
+		}
 		Optional<MemProCpnVO> tempMpcVO = mpcRepository.findById(cpnHolderDetailId);
 		MemProCpnVO mpcVO = tempMpcVO.orElse(new MemProCpnVO());
-		// 取該折價卷的所屬種類（扣金額or百分比）
+		// 設定折價卷折抵變數
 		BigDecimal mpcDisc = null;
+		Double tempMpcDisc = 0.0;
 		Integer finalMpcDisc = 0;
-	
-		if ( cpnHolderDetailId != 0) {
+
+		if (cpnHolderDetailId != 0) {
 			// 0 為未選取折假劵，所以不更新。
 
 			mpcDisc = mpcVO.getProCpnVO().getDiscValue();
 			
+			// 取該折價卷的所屬種類（扣金額or百分比）
 			switch ((mpcVO.getProCpnVO().getDiscType())) {
 			// 金額折抵
 			case FULL_REDUCTION:
 				// 折價卷折抵後的金額
-				finalMpcDisc = Integer.valueOf(mpcDisc.intValue());
+				tempMpcDisc = mpcDisc.doubleValue();
+				finalMpcDisc = tempMpcDisc.intValue();
 				break;
 			// 百分比折抵
 			case PERCENTAGE:
 				// 折價卷折抵後的金額
-				finalMpcDisc = proTotal * mpcDisc.intValue();
+				tempMpcDisc = proTotal.doubleValue() * mpcDisc.doubleValue();
+				finalMpcDisc = proTotal - tempMpcDisc.intValue();
 				break;
 			default:
 				break;
 			}
 		}
+
+
+		// 3. 處理負數、超過持有/超過最高可折抵金額
+		// 可用來折抵的最高金額 (商品總金額 - 折價券折抵)
+		Integer maxDiscAmount = proTotal - pointCpndisc - finalMpcDisc;
+
+		if (tempPointdisc < 0) {
+			model.addAttribute("pointDiscError", "折抵點數不能是負數。");
+			hasError = true;
+		} else if (tempPointdisc > memPoint) {
+			model.addAttribute("pointDiscError", "您的折抵點數 (" + tempPointdisc + ") 超過您持有的總點數 (" + memPoint + ")。");
+			hasError = true;
+		} else if (tempPointdisc > maxDiscAmount && tempPointdisc != 0) {
+			model.addAttribute("pointDiscError", "折抵點數不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
+			hasError = true;
+		}
+		
+		if (tempMpcDisc < 0) {
+			model.addAttribute("cpnError", "折價劵折抵金額不能是負數。");
+			hasError = true;
+		} else if (tempMpcDisc > maxDiscAmount ) {
+			model.addAttribute("cpnError", "折價劵折抵金額不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
+			hasError = true;
+		}
+		
+
 		// 如果有邏輯錯誤，返回原頁面
 		if (hasError) {
 			// 儲存新的欄位狀態(保存已選取的欄位狀態)
@@ -451,7 +465,7 @@ public class ProOrderMemController {
 			finalProOrderVO.setMemProCpnVO(mpcVO);
 			model.addAttribute("cartToProOrder", finalProOrderVO);
 			// 由於我們是手動返回頁面，必須確保將用戶輸入的值也放回 Model
-			model.addAttribute("inputPointDisc", tempProOrdPointdisc);
+			model.addAttribute("inputPointDisc", tempPointdisc);
 			// 取得會員的有效折價卷資料
 			List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
 			model.addAttribute("mpcList", mpcList);
@@ -462,14 +476,14 @@ public class ProOrderMemController {
 		// 4. 成功執行 (原有的邏輯)
 
 		// 實際折抵金額 (假設 1 點 = 1 元)
-		Integer pointDiscountAmount = tempProOrdPointdisc;
+		Integer pointDiscountAmount = tempPointdisc;
 
 		// (1) 更新折抵點數
 		finalProOrderVO.setProOrdPointdisc(pointDiscountAmount);
 
 		// (2) 計算新的實付金額 (Grand Total)
 		Integer proOrdShipFee = finalProOrderVO.getProOrdShipFee() != null ? finalProOrderVO.getProOrdShipFee() : 0;
-		Integer proOrdGrandTotal = proTotal + proOrdShipFee - pointCpndisc - pointDiscountAmount; // - finalMpcDisc;
+		Integer proOrdGrandTotal = proTotal + proOrdShipFee - pointCpndisc - pointDiscountAmount - finalMpcDisc;
 		finalProOrderVO.setProOrdGrandTotal(proOrdGrandTotal);
 
 		// (3) 計算新的回饋點數
@@ -482,16 +496,17 @@ public class ProOrderMemController {
 		finalProOrderVO.setMemProCpnVO(finalMpcVO);
 		finalProOrderVO.setProOrdCpndisc(finalMpcDisc);
 
-		// 5. 將更新後的訂單物件存回 Session
+		// 5. 將更新後的訂單物件存回 model
 		model.addAttribute("cartToProOrder", finalProOrderVO);
 		model.addAttribute("proOrderItems", finalProOrderVO.getProOrderItems());
+		
 		// 取得會員的有效折價卷資料
 		List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
 		model.addAttribute("mpcList", mpcList);
 
 		// 6. 成功重定向
-		model.addAttribute("successMessage", "折抵" + cpnHolderDetailId + "已更新！");
-		//redirectAttributes.addFlashAttribute("successMessage", "未選擇折價卷！");
+		model.addAttribute("successMessage", "折抵" + cpnHolderDetailId + "已更新！" + finalMpcDisc);
+		// redirectAttributes.addFlashAttribute("successMessage", "未選擇折價卷！");
 		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}
 
