@@ -50,6 +50,16 @@ public class MemActCpnServiceImp {
 		return memActCpnRepository.findUsedRecords(cpnId, CpnUseStatus.USED);
 	}
 
+	// 查「某會員」未使用且有效折價券
+	public List<MemActCpnVO> getValidCpnsByMember(Integer memId) {
+		return memActCpnRepository.findValidCpnByMember(memId);
+	}
+
+	// 查出一筆會員折價券
+	public MemActCpnVO getOne(Integer cpnHolderDetailId) {
+		return memActCpnRepository.findById(cpnHolderDetailId).orElse(null);
+	}
+
 	// 查「某會員」所有效折價券
 	public List<MemActCpnVO> getCpnsByMember(Integer memId) {
 		List<MemActCpnVO> list = memActCpnRepository.findAllByMember(memId);

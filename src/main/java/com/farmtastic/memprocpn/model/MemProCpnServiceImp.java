@@ -61,6 +61,11 @@ public class MemProCpnServiceImp {
 		return memProCpnRepository.findAll();
 	}
 
+// 查出一筆會員折價券
+	public MemProCpnVO getOne(Integer cpnHolderDetailId) {
+		return memProCpnRepository.findById(cpnHolderDetailId).orElse(null);
+	}
+
 	// 查「某會員」所有效折價券
 	public List<MemProCpnVO> getCpnsByMember(Integer memId) {
 		List<MemProCpnVO> list = memProCpnRepository.findAllByMember(memId);

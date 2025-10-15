@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>後台｜折價券詳細資料</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+<div class="container mt-4">
+    <h2>折價券詳細資料</h2>
+    <table class="table table-bordered bg-white">
+        <tr><th>會員帳號</th><td th:text="${memProCpn.memVO.memAcc}"></td></tr>
+        <tr><th>折價券名稱</th><td th:text="${memProCpn.proCpnVO.cpnName}"></td></tr>
+        <tr><th>使用狀態</th><td th:text="${memProCpn.cpnUseStatus}"></td></tr>
+        <tr><th>領取日期</th><td th:text="${#temporals.format(memProCpn.rcvAt,'yyyy-MM-dd HH:mm')}"></td></tr>
+        <tr><th>起始日</th><td th:text="${memProCpn.effStart}"></td></tr>
+        <tr><th>到期日</th><td th:text="${memProCpn.effEnd}"></td></tr>
+        <tr><th>使用訂單</th><td th:text="${memProCpn.proOrdVO != null ? memProCpn.proOrdVO.proOrdId : '-'}"></td></tr>
+    </table>
+
+    <a th:href="@{/admin/memprocpn/list}" class="btn btn-secondary">返回清單</a>
+</div>
+</body>
+</html>

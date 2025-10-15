@@ -55,7 +55,7 @@
   <!-- 若有折價券 -->
   <div class="coupon-area">
   <h2>🎫 我的活動折價券</h2>
-  <p class="welcome" th:text="'您好，' + ${member.memName} + '！以下是您所有的折價券：'"></p>
+  <p class="welcome" th:text="'您好，' + ${member.memName} + '！以下是您所有的活動折價券：'"></p>
  <!-- 無折價券 -->
       <div th:if="${#lists.isEmpty(coupons)}" class="empty text-center text-muted my-4">
         目前沒有可使用的折價券。
