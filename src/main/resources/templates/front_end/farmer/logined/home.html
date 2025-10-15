@@ -10,6 +10,9 @@
 	<th:block th:fragment="homeCss">
 	    <link rel="stylesheet" th:href="@{/css/fmem/home.css}">
     </th:block>
+
+
+	<link rel="stylesheet" th:href="@{/css/mem/farmerStore1ColorNature.css}">
 	
 	<!--     <link rel="stylesheet" th:if="${session.sty}" th:href="@{${session.sty.styCssPath}}"> -->
 	    
@@ -95,9 +98,81 @@
         </div>
     </div>
 
-	<div class="container container-content">
-		小農首頁
-	</div>
+<!-- --------------------------------------------------------------------- -->
+    
+    <div class="container container-fbanner">
+        <div class="fbanner">
+        	<div class="mask"></div>
+            <img th:src="'data:image/jpeg;base64,' + ${StorePicBase64}" alt="farmer-banner">
+
+            <div class="text">
+                <h2 class="store-name" th:text="${fmem.storeName}"></h2>
+                <p class="store-intro" th:text="${fmem.storeIntro}"></p>
+	            <div class="info">
+	                <span th:if="${fmem.fmemEmail}">信箱: <span th:text="${fmem.fmemEmail}"></span></span>
+<!-- 	                <span>電話: 03-4259888</span> -->
+	                <span th:if="${fmem.fmemAddr}">地址: <span th:text="${fmem.fmemAddr}"></span></span>
+	            </div>
+            </div>
+            
+            <div class="avatar">
+        		<img th:src="'data:image/jpeg;base64,' + ${fmemPicBase64}" alt="avatar">
+        	</div>
+        </div>
+    </div>
+
+    <div class="container container-main">
+        <div class="store-sidebar" th:fragment="sidebar">
+            <h3>分類</h3>
+            <ul th:fragment="memAreaLink">
+                <li><a th:href="@{'/mem/farmerStoreProd'(fmemId=${fmemId})}">所有商品</a></li>
+                <li><a th:href="@{'/mem/farmerStoreAct'(fmemId=${fmemId})}">所有活動</a></li>
+            </ul>
+        </div>
+
+        <div class="store-content">
+<!--             <h3>商品</h3> -->
+            <ul class="products">
+<!--                 <li class="product" th:fragment="product"> -->
+                <li class="product" th:each="pro : ${proList}">
+                   	<div class="pic">
+	                    <a href="#">
+	                   		<div class="mask"></div>
+	                   		<div class="tag">熱銷</div>
+<!-- 	                   		<img th:src="'data:image/jpeg;base64, ' + ${pro.proImage?.proImgBase64}" alt="商品圖片"> -->
+	                    </a>
+                   	</div>
+                    <div class="text">
+	                    <a href="#">
+	                        <div th:text="${pro.proName}" class="name"></div>
+	                        <div class="price">
+	                            <span class="prefix">$</span>
+	                            <span th:text="${pro.proPrice}" class="number"></span>
+	                        </div>
+	                        <div class="score">
+	                            <span class="prefix">⭐</span>
+	                            <span th:text="${pro.proScore}" class="number"></span>
+	                        </div>
+	                    </a>
+                    </div>
+					<button class="addToCart">加入購物車</button>	                    
+                </li>
+
+                
+            </ul>
+        </div>
+        
+    </div>
+
+    
+<!-- --------------------------------------------------------------------- -->
+  
+	
+	
+	
+	
+	
+	
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
 </body>

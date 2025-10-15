@@ -85,7 +85,19 @@ public class FmemController{
 	
 //	登入後的小農首頁
 	@GetMapping("/home")
-	public String fmemHome(HttpSession session) {
+	public String fmemHome(HttpSession session, ModelMap model) {
+		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");
+		if(fmem != null) {
+			String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
+			String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
+
+			model.addAttribute("fmem", fmem);
+			model.addAttribute("StorePicBase64", StorePicBase64);
+			model.addAttribute("fmemPicBase64", fmemPicBase64);
+		} else {
+			return "front_end/farmer/unlogined/fmemRegLogin";
+		}
+		
 		return "/front_end/farmer/logined/home";
 	}
 
@@ -312,9 +324,13 @@ public class FmemController{
 			@ModelAttribute("loggedInFmember") Fmem loggedInFmember,
 			ModelMap model) {
 		
+		if (loggedInFmember.getFmemPic() != null) {
+			String tempFmemPicBase64 = Base64.getEncoder().encodeToString(loggedInFmember.getFmemPic());
+			model.addAttribute("tempFmemPicBase64", tempFmemPicBase64);
+		}
 		if (loggedInFmember.getStorePic() != null) {
-			String storePicBase64 = Base64.getEncoder().encodeToString(loggedInFmember.getStorePic());
-			model.addAttribute("storePicBase64", storePicBase64);
+			String tempStorePicBase64 = Base64.getEncoder().encodeToString(loggedInFmember.getStorePic());
+			model.addAttribute("tempStorePicBase64", tempStorePicBase64);
 		}
 		
 		UpdateStoreFmem updateStoreFmem = new UpdateStoreFmem();
@@ -336,6 +352,7 @@ public class FmemController{
 		
 	
 		// 抓使用者選擇的圖片
+		MultipartFile fmemPicFile = updateStoreFmem.getFmemPic();
 		MultipartFile storePicFile = updateStoreFmem.getStorePic();
 		
 		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
@@ -343,60 +360,105 @@ public class FmemController{
 			return "redirect:/fmem/showFmemRegLoginForm";
 		}
 		
+		String tempFmemPicBase64 = null;
 		String tempStorePicBase64 = null;
 
 		TempPic tempPic = (TempPic) session.getAttribute("tempPic");
 //		第一次進來才做，把loggedInFmember的圖片存進暫存tempPic (byte[])
 		if (tempPic == null) { //
 			tempPic = new TempPic();
+			tempPic.setFmemPic(loggedInFmember.getFmemPic());
 			tempPic.setStorePic(loggedInFmember.getStorePic());
 			session.setAttribute("tempPic", tempPic);
 		}
-
+		
 //		給前端預覽用 (Base64)
 //    	fmemPicFile沒選擇圖片且tempPic裡原本有圖，用舊的temp顯示在前端預覽
 //    	fmemPicFile有選擇圖片且有錯誤的話，用舊的temp顯示在前端預覽** 且出現錯誤訊息紅字(後端驗證)
+		if (tempPic.getFmemPic() != null) {
+			tempFmemPicBase64 = Base64.getEncoder().encodeToString(tempPic.getFmemPic());			
+			model.addAttribute("tempFmemPicBase64", tempFmemPicBase64); 
+		}
 		if (tempPic.getStorePic() != null) {
 			tempStorePicBase64 = Base64.getEncoder().encodeToString(tempPic.getStorePic());			
 			model.addAttribute("tempStorePicBase64", tempStorePicBase64); 
 		}
-
-	//    	fmemPicFile有選擇圖片且沒有錯誤的話，要把新的存進tempPic DTO，並用tempXXXBase64顯示在前端預覽
+		
+		//    	fmemPicFile有選擇圖片且沒有錯誤的話，要把新的存進tempPic DTO，並用tempXXXBase64顯示在前端預覽
 	    if (result.hasErrors()) {
+	    	if(!result.hasFieldErrors("fmemPic")) {
+	    		if(fmemPicFile != null && !fmemPicFile.isEmpty()) {
+	    			tempFmemPicBase64 = Base64.getEncoder().encodeToString(fmemPicFile.getBytes());
+	    			model.addAttribute("tempFmemPicBase64", tempFmemPicBase64); //前端預覽用Base64
+	    			tempPic.setFmemPic(fmemPicFile.getBytes()); //後端暫存用byte[]
+	    		}
+	    	}
 	    	if(!result.hasFieldErrors("storePic")) {
 	    		if(storePicFile != null && !storePicFile.isEmpty()) {
 	    			tempStorePicBase64 = Base64.getEncoder().encodeToString(storePicFile.getBytes());
 	    			model.addAttribute("tempStorePicBase64", tempStorePicBase64); //前端預覽用Base64
-	    			tempPic.setFmemPic(storePicFile.getBytes()); //後端暫存用byte[]
+	    			tempPic.setStorePic(storePicFile.getBytes()); //後端暫存用byte[]
 	    		}
 	    	}
 	        return "/front_end/farmer/logined/fmemProfile/fmemUpdateStore";
 	    }
+
 		
 	    BeanUtils.copyProperties(updateStoreFmem, loggedInFmember);
 		
+		byte[] tempFmemPic = tempPic.getFmemPic();
 		byte[] tempStorePic = tempPic.getStorePic();
 
 //		如果新update有圖 => 優先用update的
 //		如果新update沒圖、但temp有圖 => 就用temp的
+		if (fmemPicFile != null && !fmemPicFile.isEmpty()) {
+			loggedInFmember.setFmemPic(fmemPicFile.getBytes());
+		} else if ((fmemPicFile == null || fmemPicFile.isEmpty()) && tempFmemPic != null && tempFmemPic.length > 0) {
+			loggedInFmember.setFmemPic(tempFmemPic);
+		}
 		if (storePicFile != null && !storePicFile.isEmpty()) {
-    		loggedInFmember.setFmemPic(storePicFile.getBytes());
+    		loggedInFmember.setStorePic(storePicFile.getBytes());
     	} else if ((storePicFile == null || storePicFile.isEmpty()) && tempStorePic != null && tempStorePic.length > 0) {
     		loggedInFmember.setStorePic(tempStorePic);
     	}
 		fmemSvc.updateFmem(loggedInFmember);
 	
+		if (fmemPicFile != null && !fmemPicFile.isEmpty()) {
+			loggedInFmember.setFmemPic(fmemPicFile.getBytes());
+		}
 		if (storePicFile != null && !storePicFile.isEmpty()) {
 			loggedInFmember.setStorePic(storePicFile.getBytes());
 		}
 		
+		
+		// 商店資料上傳完整就會"啟用"帳號
+		if(loggedInFmember.getAccStatus() == 1) {
+			if(loggedInFmember.getStoreName() != null
+					&& loggedInFmember.getStoreIntro() != null
+					&& loggedInFmember.getFmemPic() != null
+					&& loggedInFmember.getStorePic() != null) {
+				loggedInFmember.setAccStatus((byte) 2);
+				fmemSvc.updateFmem(loggedInFmember);
+				System.out.println("setAccStatus((byte) 2)");
+				redirectAttrs.addFlashAttribute("accStatus", "已啟用");
+				
+				// 寄信通知小農：商店已啟用
+				String baseUrl = request.getScheme() + "://" + request.getServerName() + 
+						 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
+				String mailTitle = "農作物與它們的產地：小農商店啟用通知信";
+				String verifyUrl = "恭喜您已完成開店流程！可開始上架及販售商品\n" 
+									+ "首頁連結：" + baseUrl + "\n"
+									+ "登入連結：" + baseUrl + "/fmem/showFmemRegLoginForm\n";
+				
+				mailSvc.sendMail(loggedInFmember.getFmemEmail(), mailTitle, verifyUrl);
+			}
+		}
 		
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
 		redirectAttrs.addFlashAttribute("success", "修改資料成功");
 		return "redirect:/fmem/fmemArea/updateStorePage";
 	}
-	
 	
 	
 	
@@ -846,9 +908,9 @@ public class FmemController{
 			model.addAttribute("loggedInFmember", fmem); //@SessionAttributes
 			
 			model.addAttribute("fmemId", fmem.getFmemId());
-			model.addAttribute("fmemName", fmem.getFmemName());
+//			model.addAttribute("fmemName", fmem.getFmemName());
 			session.setAttribute("fmemId", fmem.getFmemId());
-			session.setAttribute("fmemName", fmem.getFmemName());
+//			session.setAttribute("fmemName", fmem.getFmemName());
 			
 			// 4.登入成功後 重導至原本頁面或會員中心
 //			String redirectUrl  = (String) session.getAttribute("redirectAfterLogin");
@@ -873,6 +935,8 @@ public class FmemController{
 			status.setComplete();
 		}
 		session.removeAttribute("loggedInMember");
+		session.removeAttribute("fmemId");
+//		session.removeAttribute("fmemName");
 		return "redirect:/fmem/showFmemRegLoginForm";
 	}
 
