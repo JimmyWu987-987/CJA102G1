@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.act.model.Act;
 import com.farmtastic.act.model.ActCate;
@@ -59,64 +60,7 @@ public class FmemActController {
     @Autowired
     private ActRepository actRepo;
 
-    // =========== 新增活動 ============
-//	@GetMapping("addAct")
-//	public String addAct(ModelMap model) {
-//		Act act = new Act();
-//		model.addAttribute("act", act);
-//		return "front_end/farmer/logined/fmemAct/addAct";
-//	}
-//	
-//	@PostMapping("addAllActImg")
-//	public String addActImg(@Valid Act act, BindingResult result, ModelMap model,
-//	@RequestParam("upActMainImg") MultipartFile mainImg,
-//	@RequestParam("upActImg") MultipartFile[] actImgs)
-//	throws IOException {
-//		
-//		Integer order = 1;
-//		
-//		// 主圖
-//		if (mainImg == null || mainImg.isEmpty()) {
-//			model.addAttribute("errorMessage", "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
-//			return "front_end/farmer/logined/fmemAct/addAct";
-//		}
-//		
-//		act.setActMainImg(mainImg.getBytes());
-//		
-//		// 活動圖片 (可有可無) 
-//		if (actImgs != null) {
-//			for (MultipartFile file : actImgs) {
-//				if (! file.isEmpty()) {
-//					ActImg actImg = new ActImg();
-//					actImg.setActImg(file.getBytes());
-//					actImg.setActimgOrder(order);
-//					order++;
-//				}
-//			}
-//		}
-//		
-//		if (result.hasErrors()) {
-//			 return "front_end/farmer/logined/fmemAct/addAct";
-//		}
-//		
-//		/*************************** 2.開始新增資料 *****************************************/
-//		actSvc.addAct(act);
-//		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
-//		List<Act> list = actSvc.getAllAct();
-//			model.addAttribute("actListData", list);
-//			model.addAttribute("success", "- (新增成功)");
-//			return "redirect:front_end/farmer/logined/fmemAct/listAllAct";
-//	}
-    
-//
-//	@PostMapping("insert")
-//	public String insertAct(@ModelAttribute("act") Act act, ModelMap model) {
-//		actSvc.addAct(act);
-//		model.addAttribute("success", "活動新增成功！");
-//		return "redirect:/act/listAll";
-//	}
-//
-//	// =========== 修改活動 ============
+//	// =========== 編輯活動 ============
 //	@GetMapping("updateAct/{actId}")
 //	public String getUpdatePage(@PathVariable Integer actId, ModelMap model) {
 //		Act act = actSvc.getOneAct(actId);
@@ -130,16 +74,23 @@ public class FmemActController {
 //		model.addAttribute("success", "活動修改成功！");
 //		return "redirect:/act/listAll";
 //	}
-//
-//	// =========== 查詢單筆活動 ============
-//	@GetMapping("getOne/{actId}")
-//	public String getOneAct(@PathVariable Integer actId, ModelMap model) {
-//		Act act = actSvc.getOneAct(actId);
-//		model.addAttribute("act", act);
-//		return "front_end/farmer/logined/fmemAct/oneAct";
-//	}
+    
+    
+    
+//	// =========== 上下架活動 ============
+    
+    
+    
+//    // =========== 刪除活動 ============
+//    @GetMapping("delete/{actId}")
+//    public String deleteAct(@PathVariable Integer actId, ModelMap model) {
+//        actSvc.deleteAct(actId);
+//        model.addAttribute("success", "活動刪除成功！");
+//        return "redirect:/act/listAll";
+//    }
 
-	// =========== 小農查詢自己的活動 ============
+    
+    // =========== 小農查詢自己的活動 ============
     
     // 查全部
     @GetMapping("/listAllActForFmem")		// 之後要登入測試喔喔喔喔喔!!!
@@ -258,117 +209,83 @@ public class FmemActController {
         List<byte[]> imgs = actSvc.getAllActImagesForCarousel(actId);
         return imgs.toArray(new byte[0][]);
     }
-    
-    
-
-    
-//    // =========== 刪除活動 ============
-//    @GetMapping("delete/{actId}")
-//    public String deleteAct(@PathVariable Integer actId, ModelMap model) {
-//        actSvc.deleteAct(actId);
-//        model.addAttribute("success", "活動刪除成功！");
-//        return "redirect:/act/listAll";
-//    }
-
-
-
 
 
 //  =========== 新增活動 ============
 	@GetMapping("addAct")
-	public String addAct(@ModelAttribute("act") Act act,
-						 HttpSession session,
-						 BindingResult result,
-						 ModelMap model) {
-		
-		
-		
-		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
-        Integer fmemId = fmem.getFmemId();
-        
-        act.setFmemId(fmemId);
-        act.setActStat(1);	// 待審核
-        
-        java.sql.Date actStart = null;
-        java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
-        
-        try {
-        	actStart = act.getActStart();
-
-			if (actStart.before(after45)) {
-				model.addAttribute("message", "由於審核需要作業時間, 請選擇 45 天之後的日期。");
-			}
-		} catch (IllegalArgumentException e) {
-			actStart = new java.sql.Date(System.currentTimeMillis());
-			model.addAttribute("message", "請選擇活動開始日期");
-		}
-        
-
-		java.sql.Date actEnd = null;
-		
-		try {
-			actEnd = act.getActEnd();
-			if (actEnd.before(actStart)) {
-				model.addAttribute("message", "結束日期不得早於開始日期。");
-			}
-		} catch (IllegalArgumentException e) {
-			actEnd = new java.sql.Date(System.currentTimeMillis());
-			model.addAttribute("message", "請選擇活動結束日期");
-		}
-        
-		model.addAttribute("act", act);
-		return "front_end/farmer/logined/fmemAct/addAct";
+	public String showAddActForm(ModelMap model) {
+	    model.addAttribute("act", new Act());
+	    return "front_end/farmer/logined/fmemAct/addAct";
 	}
-
 	
-//	@Valid Act act???
-	@PostMapping("addAllActImg")
-	public String addActImg(@ModelAttribute("act") Act act, HttpSession session,
-							BindingResult result, ModelMap model,
-							@RequestParam("upActMainImg") MultipartFile actMainImg,
-							@RequestParam("upActImg") MultipartFile[] actImgs) throws IOException {
-		
-		Integer actId = act.getActId(); // 取得活動編號
-		
-		
-		Integer order = 1;
-		
-		// 主圖
-		if (actMainImg == null || actMainImg.isEmpty()) {
-			model.addAttribute("errorMessage", "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
-			return "front_end/farmer/logined/fmemAct/addAct";
+	@PostMapping("insert")
+	public String addAct(@Valid @ModelAttribute("act") Act act,
+						 BindingResult result,
+						 HttpSession session,
+						 RedirectAttributes redirectAttributes,
+						 ModelMap model,
+						 @RequestParam("actMainImg") MultipartFile actMainImg,
+						 @RequestParam("actImg") MultipartFile[] actImgs) throws IOException {
+
+		// 抓登入中的小農
+		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
+		Integer fmemId = fmem.getFmemId();
+		act.setFmemId(fmemId);
+	       
+		act.setActStat(1);	// 待審核
+	        
+		// 開始日期驗證
+		java.sql.Date actStart = act.getActStart();
+		java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
+		if (actStart == null) {
+			result.rejectValue("actStart", null, "請選擇活動開始日期");
+		} else if (actStart.before(after45)) {
+			result.rejectValue("actStart", null, "考慮到審核作業時間及消費者報名時間, 請選擇 45 天之後的日期。");
+		}
+	        
+		// 結束日期驗證
+		java.sql.Date actEnd = act.getActEnd();
+		if (actEnd == null) {
+			result.rejectValue("actEnd", null, "請選擇活動結束日期");
+		} else if (actEnd.before(actStart)) {
+			result.rejectValue("actEnd", null, "結束日期不得早於開始日期。");
 		}
 		
-		act.setActMainImg(actMainImg.getBytes());
+		// 主圖驗證
+		if (actMainImg == null || actMainImg.isEmpty()) {
+			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+		} else {
+			act.setActMainImg(actMainImg.getBytes());
+		}
 		
 		// 活動圖片 (可有可無) 
 		if (actImgs != null) {
+			Integer order = 1;
 			for (MultipartFile file : actImgs) {
 				if (! file.isEmpty()) {
 					ActImg actImg = new ActImg();
 					actImg.setActImg(file.getBytes());
 					actImg.setActimgOrder(order);
+					actImg.setAct(act);  // 這裡關聯到活動
+					act.getActImg().add(actImg);
 					order++;
 				}
 			}
 		}
-		
+			
 		if (result.hasErrors()) {
-			 return "front_end/farmer/logined/fmemAct/addAct";
+			return "front_end/farmer/logined/fmemAct/addAct";
 		}
-		
 		/*************************** 2.開始新增資料 *****************************************/
 		actSvc.addAct(act);
 		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
-		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
-        Integer fmemId = fmem.getFmemId();
-		
-		List<Act> list = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
-			model.addAttribute("actListData", list);
-			model.addAttribute("success", "- (新增成功)");
-			return "redirect:front_end/farmer/logined/fmemAct/listAllAct";
-		}
+			
+		// 設置 Flash Attribute，用於 SweetAlert
+		redirectAttributes.addFlashAttribute("successMessage", "新增成功！");
+	
+		return "redirect:front_end/farmer/logined/fmemAct/listAllActForFmem";
 	}
+}
 	
 ////  =========== 修改活動 ============
 //	@GetMapping("updateAct")
@@ -421,46 +338,7 @@ public class FmemActController {
 //	
 //	
 //	
-	
-	
-//
-//	/*
-//	 * This method will be called on addAct.html form submission, handling POST request It also validates the user input
-//	 */
-//	@PostMapping("insert")
-//	public String insert(@Valid EmpVO empVO, BindingResult result, ModelMap model,
-//			@RequestParam("upFiles") MultipartFile[] parts) throws IOException {
-//
-//		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-//		// 去除BindingResult中upFiles欄位的FieldError紀錄 --> 見第172行
-//		result = removeFieldError(empVO, result, "upFiles");
-//
-//		if (parts[0].isEmpty()) { // 使用者未選擇要上傳的圖片時
-//			model.addAttribute("errorMessage", "員工照片: 請上傳照片");
-//		} else {
-//			for (MultipartFile multipartFile : parts) {
-//				byte[] buf = multipartFile.getBytes();
-//				empVO.setUpFiles(buf);
-//			}
-//		}
-//		if (result.hasErrors() || parts[0].isEmpty()) {
-//			return "back-end/emp/addAct";
-//		}
-//		/*************************** 2.開始新增資料 *****************************************/
-//		// EmpService empSvc = new EmpService();
-//		empSvc.addAct(empVO);
-//		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
-//		List<EmpVO> list = empSvc.getAll();
-//		model.addAttribute("empListData", list); // for listAllEmp.html 第85行用
-//		model.addAttribute("success", "- (新增成功)");
-//		return "redirect:/emp/listAllEmp"; // 新增成功後重導至IndexController_inSpringBoot.java的第58行@GetMapping("/emp/listAllEmp")
-//	}
-	
-	
-	
-	
-	
-	
+
 	
 	
 //  =========== 新增或修改活動 ============
