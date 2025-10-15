@@ -1,6 +1,8 @@
 package com.farmtastic.proorder.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,8 +21,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
+import com.farmtastic.memprocpn.model.MemProCpnRepository;
 import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
 import com.farmtastic.memprocpn.model.MemProCpnVO;
+import com.farmtastic.procpn.model.ProCpnService;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemId;
@@ -54,6 +58,10 @@ public class ProOrderMemController {
 	ShoppingCartService shoppingCartSvc;
 	@Autowired
 	MemProCpnServiceImp mpcSvc;
+	@Autowired
+	MemProCpnRepository mpcRepository;
+	@Autowired
+	ProCpnService proCpnSvc;
 
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
@@ -413,6 +421,12 @@ public class ProOrderMemController {
 		}
 		
 		// ==============會員折價卷數錯誤驗證==============
+		// 取會員所選取的折價卷物件
+//		Optional<MemProCpnVO> tempMpcVO = mpcRepository.findById(Integer.valueOf(cpnHolderDetailId));
+//		MemProCpnVO mpcVO = tempMpcVO.orElse(null);
+		
+		// 取該折價卷的所屬折扣種類
+//		BigDecimal discValue = mpcVO.getProCpnVO().getDiscValue();
 		
 
 		// 4. 成功執行 (原有的邏輯)
@@ -444,7 +458,7 @@ public class ProOrderMemController {
 		model.addAttribute("mpcList", mpcList);
 
 		// 6. 成功重定向
-		redirectAttributes.addFlashAttribute("successMessage", "點數折抵已更新！");
+		redirectAttributes.addFlashAttribute("successMessage", "點數折抵"+cpnHolderDetailId+"已更新！" );
 		return "redirect:addProOrder";
 	}
 
