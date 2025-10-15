@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>QA 清單</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>常見 QA 管理</h1>
+    <hr>
+    <a th:href="@{/qa/new}" class="btn btn-primary mb-3">新增 QA</a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>標題</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${qaItems}">
+            <td th:text="${item.qaId}"></td>
+            <td th:text="${item.qaTitle}"></td>
+            <td>
+                <!-- 修改後的檢視按鈕，觸發 Modal -->
+                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#qaDetailModal" th:data-id="${item.qaId}">
+                    檢視
+                </button>
+                <a th:href="@{/qa/edit/{id}(id=${item.qaId})}" class="btn btn-warning btn-sm">修改</a>
+                <a th:href="@{/qa/delete/{id}(id=${item.qaId})}" class="btn btn-danger btn-sm"
+                   onclick="if (!(confirm('確定要刪除嗎？'))) return false">刪除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Bootstrap Modal (彈窗) 元件 -->
+<div class="modal fade" id="qaDetailModal" tabindex="-1" aria-labelledby="qaDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qaDetailModalLabel">QA 詳細內容</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4 id="modalQaTitle">載入中...</h4>
+                <hr>
+                <p id="modalQaContent" style="white-space: pre-wrap;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入 Bootstrap JS Bundle (包含 Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 用於處理 Modal 內容的 JavaScript -->
+<script>
+    const qaDetailModal = document.getElementById('qaDetailModal');
+    qaDetailModal.addEventListener('show.bs.modal', event => {
+        // 取得觸發 Modal 的按鈕
+        const button = event.relatedTarget;
+        // 從按鈕的 data-id 屬性獲取 QA ID
+        const qaId = button.getAttribute('data-id');
+
+        const modalTitle = qaDetailModal.querySelector('#modalQaTitle');
+        const modalContent = qaDetailModal.querySelector('#modalQaContent');
+
+        // 在載入資料前，先顯示預設文字
+        modalTitle.textContent = '載入中...';
+        modalContent.textContent = '';
+
+        // 使用 fetch 呼叫後端 API
+        fetch(`/qa/api/${qaId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('資料獲取失敗');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 成功獲取資料後，更新 Modal 的標題和內容
+                modalTitle.textContent = data.qaTitle;
+                modalContent.textContent = data.qaCont;
+            })
+            .catch(error => {
+                console.error('抓取 QA 資料時發生錯誤:', error);
+                modalTitle.textContent = '錯誤';
+                modalContent.textContent = '無法載入資料，請稍後再試。';
+            });
+    });
+</script>
+
+</body>
+</html>
