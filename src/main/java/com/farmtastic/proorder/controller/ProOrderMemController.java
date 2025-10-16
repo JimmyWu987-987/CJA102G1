@@ -408,15 +408,21 @@ public class ProOrderMemController {
 		switch (proOrderVO.getProOrdPayment()) {
 		case 0: // 信用卡
 			// 先暫時導向首頁
-			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
 			return "redirect:/mem/proorders/listAllProOrder";
 		case 1: // LinePay
 			return "redirect:/mem/proorders/linepayview?proOrdId="+newProOrdId;
 		default: // 未新增訂單
 			return "redirect:/mem/proorders/listAllProOrder";
 		}
-		
 	}
+	
+	// 確定新增訂單後，選則先付款還是先不付款
+	@PostMapping("doInsert")
+	public String diInsert() {
+		return null;
+
+	}
+
 
 	// 修改訂單 (處理點數折抵及折價卷折抵)
 	@PostMapping("OrdDiscUpdate")
@@ -585,20 +591,5 @@ public class ProOrderMemController {
 		// redirectAttributes.addFlashAttribute("successMessage", "未選擇折價卷！");
 		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}
-
-	// 確定新增訂單後，選則先付款還是先不付款
-	@PostMapping("doInsert")
-	public String diInsert(@RequestParam("destination") String destination) {
-
-		// 未完成，要將送出訂單後要導向信用卡或者linePay
-		if ("checkout".equals(destination)) {
-			// 【先結帳】: 導向到結帳/付款頁面，並帶上剛新增的訂單 ID
-			// 假設您的結帳頁面 URL 為 /mem/proorders/checkoutPage
-			return "redirect:/";
-
-		} else { // 包含 "query" (先不結帳) 或其他任何值
-			// 【先不結帳】: 導向查詢全部表單畫面 (您原本的列表頁)
-			return "redirect:/mem/proorders/listAllProOrder";
-		}
-	}
 }
+

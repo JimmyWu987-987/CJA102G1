@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
@@ -105,8 +106,13 @@ public class LinePayController {
     }
     
     @GetMapping("linepaysuccess")
-    String linepaysuccess() {
-    	return null;
+    String linepaysuccess(@RequestParam String proOrdId, Model model, RedirectAttributes redirectAttributes) {
+    	
+    	
+    	
+    	// 回傳新增訂單詢息給訊息給訂單查詢頁面
+    	redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
+    	return "redirect:/mem/proorders/listAllProOrder";
     }
     
 
