@@ -1227,7 +1227,7 @@ INSERT INTO administrator (admin_type_id, admin_acc, admin_pwd, admin_status, ad
 
 -- 功能權限
 CREATE TABLE admin_function (
-	admin_func_id INT NOT NULL PRIMARY KEY,
+	admin_func_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	admin_func_name VARCHAR(20) NOT NULL,
 	admin_func_des VARCHAR(100) NOT NULL
 );
