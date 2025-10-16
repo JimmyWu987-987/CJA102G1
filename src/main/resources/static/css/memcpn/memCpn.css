@@ -7,7 +7,8 @@
  box-shadow: 1px 1px 8px 0px #66333330; } 
  .coupon-area.center{ 
  display: flex; 
- justify-content: center; }
+ justify-content: center; 
+ }
   /* === 通用券卡樣式 === */
    .coupon-card {
   display: flex;
