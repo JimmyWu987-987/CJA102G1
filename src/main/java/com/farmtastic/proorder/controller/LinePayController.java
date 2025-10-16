@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,6 +22,7 @@ import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/mem/proorders")
@@ -106,13 +108,12 @@ public class LinePayController {
     }
     
     @GetMapping("linepaysuccess")
-    String linepaysuccess(@RequestParam String proOrdId, Model model, RedirectAttributes redirectAttributes) {
+    String linepaysuccess(@RequestParam Integer proOrdId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    	 	
+       	// 回傳新增訂單詢息給訊息回去 ProOrderMemController.java
+    	session.setAttribute("proOrdIdByPay", proOrdId);
     	
-    	
-    	
-    	// 回傳新增訂單詢息給訊息給訂單查詢頁面
-    	redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
-    	return "redirect:/mem/proorders/listAllProOrder";
+    	return "redirect:/mem/proorders/doInsert";
     }
     
 
