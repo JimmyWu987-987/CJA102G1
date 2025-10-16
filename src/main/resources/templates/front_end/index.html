@@ -23,7 +23,7 @@
 <body th:data-success="${success}">
 
     <div class="container container-header" th:fragment="header">
-        <div class="header">
+        <div class="header" th:fragment="header-inner">
             <div class="logo">
                 <a th:href="@{/}" class="link">
                     <img th:src="@{/images/logo-t.png}" alt="">
@@ -247,7 +247,7 @@
     
 
     <div class="container container-footer" th:fragment="footer">
-        <div class="footer">
+        <div class="footer" th:fragment="footer-inner">
             <div class="quick-link">
                 <a href="#">關於我們</a>
                 <a href="#">最新消息</a>

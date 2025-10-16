@@ -1,23 +1,31 @@
  /* === 收藏商品卡片（同 product-card） === */
     .favo-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      
+/*       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); */
+/*       gap: 20px; */
     }
 
     .favo-card {
-      border: 1px solid #eee;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      background-color: #fff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
+/*     box-sizing: border-box; */
+    	width: 31%;
+    	max-width: 300px;
+/*     	min-width: 240px; */
+    	margin-bottom: 36px;
+      	border: 1px solid #c5d8d8;
+      	border-radius: 10px;
+      	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      	overflow: hidden;
+      	background-color: #fff;
+      	transition: transform 0.3s ease, box-shadow 0.3s ease;
+      	position: relative;
     }
-
+	
     .favo-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     .favo-img {
@@ -28,7 +36,7 @@
     }
 
     .favo-body {
-      padding: 16px;
+      padding: 20px 24px;
     }
 
     .favo-title {
@@ -67,17 +75,19 @@
     }
 
     .btn-view {
-      background-color: var(--primary-color);
-      color: #fff;
+	    background-color: #4ba560;
+	    color: #fff;
+	    font-size: 16px;
     }
 
     .btn-view:hover {
-      background-color: #e65c2d;
+      background-color: #4d9960;
     }
 
     .btn-remove {
-      background-color: var(--danger-color);
-      color: #fff;
+     	background-color: #f56534;
+      	color: #fff;
+	    font-size: 16px;
     }
 
     .btn-remove:hover {
