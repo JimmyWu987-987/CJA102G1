@@ -296,7 +296,7 @@ public class ProOrderMemController {
 			if (cpnHolderDetailId != null && cpnHolderDetailId != 0) {
 				// 從資料庫重新載入這個優惠券物件（變成 managed 狀態）
 				Optional<MemProCpnVO> mpcOptional = mpcRepository.findById(cpnHolderDetailId);
-
+				
 				if (mpcOptional.isPresent()) {
 					// 設置 managed 狀態的優惠券物件
 					proOrderVO.setMemProCpnVO(mpcOptional.get());

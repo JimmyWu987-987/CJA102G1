@@ -99,4 +99,15 @@ public class ProOrderSevice {
 	public List<FmemOrderSummary> getAllByFmemIdCanAlloc(Integer fmemId) {
 		return repository.findFmemProOrdersCanAlloc(fmemId);
 	}
+	
+	// 訂單後台-修改訂單為已撥款狀態
+	public void updateAllocStatus (Integer proOrdId) {
+		ProOrderVO proOrderVO = getOneProOrder(proOrdId);
+		
+		if(proOrderVO.getProOrdAllocStatus() == 0) {
+			proOrderVO.setProOrdAllocStatus((byte)1);
+			
+			updateProOrder(proOrderVO);
+		}
+	}
 }
