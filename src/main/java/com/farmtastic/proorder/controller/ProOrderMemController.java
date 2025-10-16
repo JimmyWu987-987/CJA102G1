@@ -361,7 +361,6 @@ public class ProOrderMemController {
 	    	proVO.setProStock(finalStock);
 	    	proSvc.updatePro(proVO);
 	    	
-	    	
 	    }
 	    
 	    // ================== 會員點數新增修改的邏輯 ======================
@@ -401,10 +400,22 @@ public class ProOrderMemController {
 		// 所以直接找集合內的第一個物件，取出fmemId
 		Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemId().getFmemId();
 		shoppingCartSvc.clearCartByFmemId(fmemId);
-
-		// 重導向到訂單列表頁面
-		redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
-		return "redirect:/mem/proorders/listAllProOrder";
+		
+		// ================= 根據付款不同導向不同頁面 ==================
+		// 取得新增訂單後的 proOrdId
+		Integer newProOrdId = proOrderVO.getProOrdId();
+		
+		switch (proOrderVO.getProOrdPayment()) {
+		case 0: // 信用卡
+			// 先暫時導向首頁
+			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
+			return "redirect:/mem/proorders/listAllProOrder";
+		case 1: // LinePay
+			return "redirect:/mem/proorders/linepayview?proOrdId="+newProOrdId;
+		default: // 未新增訂單
+			return "redirect:/mem/proorders/listAllProOrder";
+		}
+		
 	}
 
 	// 修改訂單 (處理點數折抵及折價卷折抵)
