@@ -6,13 +6,12 @@
 	<link rel="icon" th:href="@{/images/logo.png}">
 
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
 
 	<link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-<!--     <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateProfile.css}"> -->
     <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateStore.css}">
     
-    <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
 
 
 </head>
@@ -35,28 +34,30 @@
 	        	  enctype="multipart/form-data">
 	            <h3>修改小農商店資料</h3>
 	            <ul>
-	                <p class="warning-msg">* 啟用帳號必填欄位</p>
+	                <p class="warning-msg" th:if="${loggedInFmember.accStatus}" th:text="${loggedInFmember.accStatus == 1 ? '請填寫 * 欄位以完成開店流程' : '✨商店已可開始上架及販售商品'}"></p>
+<!-- 	                <p class="warning-msg" th:if="*{accStatus == 2}" th:text="已啟用"></p> -->
 	                
 	                <li>
-	                    <label for="">小農商店名稱<span class="star-tag">*</span></label>
+	                    <label for="">小農商店名稱<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span></label>
 	                    <input type="text" th:field="*{storeName}">
 	                </li>
 	                <li>
-	                    <label for="">小農商店介紹<span class="star-tag">*</span></label>
+	                    <label for="">小農商店介紹<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span></label>
 	                    <textarea type="text" th:field="*{storeIntro}"></textarea>
 	                </li>
 	                <li>
 	                    <label for="">小農商店樣式選擇</label>
 	                    <select th:field="*{styNo}">
-	                    	<option value="1">樣式一</option>
-					        <option value="2">樣式二</option>
+	                    	<option value="1">清新色調</option>
+					        <option value="2">大地色調</option>
 					        <option value="3">樣式三</option>
+					        <option value="4">樣式四</option>
 	                    </select>
 	                </li>
 	                
 	                
 	                <li class="list-pic first-pic">
-               			<label>小農頭像<span class="star-tag">*</span>(點選下框以新增或更換圖片)</label>
+               			<label>小農頭像<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span>(點選下框以新增或更換圖片)</label>
                    		<div class="picBox">
                    			<img th:if="${tempFmemPicBase64 != null}" 
                    				 th:src="@{'data:image/jpeg;base64,' + ${tempFmemPicBase64}}"
@@ -71,7 +72,7 @@
 	                
 	                
 	                <li class="list-pic">
-               			<label>小農商店主圖<span class="star-tag">*</span>(點選下框以新增或更換圖片)</label>
+               			<label>小農商店主圖<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span>(點選下框以新增或更換圖片)</label>
                    		<div class="picBox">
                    			<img th:if="${tempStorePicBase64 != null}" 
                    				 th:src="@{'data:image/jpeg;base64,' + ${tempStorePicBase64}}"

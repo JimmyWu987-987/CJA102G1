@@ -94,7 +94,8 @@
     margin-top: 10px;
     border-radius: 22px;
     color: #1B5239;
-    background-color: #ecf4eb;
+/*     background-color: #ecf4eb; */
+    background-color: #e8f2e6;
     font-size: 18px;
 }
 .store-sidebar li a:hover{
@@ -121,9 +122,11 @@
 	width: 30%;
 	padding: 22px;
 	margin-bottom: 56px;
-	border: 1px solid #cdc;
+/* 	border: 1px solid #cdc; */
+	border: 1px solid #b7d7b9;
 	border-radius: 8px;
-	background-color: #f8faf8;
+/* 	background-color: #f9faf9; */
+	background-color: #f4f8f4;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -216,7 +219,7 @@
 .product .added{
 	width: 140px;
 	padding: 10px 14px;
-	border: 2px solid #ee9b80;
+	border: 2px solid #ed997c;
 	border-radius: 6px;
 	color: #715757;
 	background-color: #fbeeea;
@@ -245,9 +248,11 @@
 	width: 100%;
 	padding: 30px;
 	margin-bottom: 56px;
-	border: 1px solid #cdc;
+/* 	border: 1px solid #cdc; */
+	border: 1px solid #b7d7b9;
 	border-radius: 8px;
-	background-color: #f8faf8;
+/* 	background-color: #f8faf8; */
+	background-color: #f4f8f4;
 	display: flex;
 }
 .activity:hover{

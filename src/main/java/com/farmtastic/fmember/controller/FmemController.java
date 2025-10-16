@@ -100,10 +100,17 @@ public class FmemController{
 	public String fmemHomeProd(HttpSession session, ModelMap model) {
 		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");
 		if(fmem != null) {
+			if(fmem.getFmemPic() == null || 
+			   fmem.getStorePic() == null || 
+			   fmem.getLandPic() == null || 
+			   fmem.getInsurPic() == null) {
+				
+				return "/front_end/farmer/logined/homeNotOpen";
+			}
+			
 			String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 			String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
 
-			
 			model.addAttribute("fmem", fmem);
 //			model.addAttribute("fmemId", fmemId);
 			model.addAttribute("StorePicBase64", StorePicBase64);
@@ -111,8 +118,6 @@ public class FmemController{
 			
 			List<Pro> proList = proSvc.findByFmemId(fmem.getFmemId());
 			model.addAttribute("proList", proList);
-			
-			
 			
 		} else {
 			return "front_end/farmer/unlogined/fmemRegLogin";
@@ -379,6 +384,9 @@ public class FmemController{
 		
 		UpdateStoreFmem updateStoreFmem = new UpdateStoreFmem();
 		BeanUtils.copyProperties(loggedInFmember, updateStoreFmem);
+		
+		updateStoreFmem.setStyNo(loggedInFmember.getSty().getStyNo()); //sty
+		
 		model.addAttribute("updateStoreFmem", updateStoreFmem);
 		return "/front_end/farmer/logined/fmemProfile/fmemUpdateStore";
 	}
@@ -449,6 +457,13 @@ public class FmemController{
 
 		
 	    BeanUtils.copyProperties(updateStoreFmem, loggedInFmember);
+	    
+		
+		// 樣式更新
+		if(updateStoreFmem.getStyNo() != null) {
+			Sty sty = stySvc.getOneByStyNo(updateStoreFmem.getStyNo());
+			loggedInFmember.setSty(sty);
+		}
 		
 		byte[] tempFmemPic = tempPic.getFmemPic();
 		byte[] tempStorePic = tempPic.getStorePic();
@@ -473,7 +488,7 @@ public class FmemController{
 		if (storePicFile != null && !storePicFile.isEmpty()) {
 			loggedInFmember.setStorePic(storePicFile.getBytes());
 		}
-		
+
 		
 		// 商店資料上傳完整就會"啟用"帳號
 		if(loggedInFmember.getAccStatus() == 1) {
@@ -498,8 +513,8 @@ public class FmemController{
 			}
 		}
 		
-		String fmemCss = loggedInFmember.getSty().getStyCssPath();
-		session.setAttribute("fmemCss", fmemCss);
+//		String fmemCss = loggedInFmember.getSty().getStyCssPath();
+//		session.setAttribute("fmemCss", fmemCss);
 		
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
@@ -960,8 +975,8 @@ public class FmemController{
 //			session.setAttribute("fmemName", fmem.getFmemName());
 			
 
-			String fmemCss = fmem.getSty().getStyCssPath();
-			session.setAttribute("fmemCss", fmemCss);
+//			String fmemCss = fmem.getSty().getStyCssPath();
+//			session.setAttribute("fmemCss", fmemCss);
 			
 			// 4.登入成功後 重導至原本頁面或會員中心
 //			String redirectUrl  = (String) session.getAttribute("redirectAfterLogin");

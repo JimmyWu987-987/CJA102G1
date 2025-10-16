@@ -182,7 +182,7 @@ body{
 }
 
 .container-header .member .btn-farmer i{
-	background-color: #c08030;
+	background-color: #63a954;
 }
 
 .container-header .member .btn-logout{
@@ -204,10 +204,12 @@ body{
 .container-header .member a:last-of-type{
 	margin-right: 0px;
 }
-.container-header .member a.cart{
+.container-header .member a.cart,
+.container-header .member a.bell{
 	margin-right: 10px;
 }
-.container-header .member a.cart i{
+.container-header .member a.cart i,
+.container-header .member a.bell i{
 	line-height: 48px;
 }
 .container-header .member .icon-label{
@@ -218,14 +220,14 @@ body{
 	letter-spacing: 1px;
 }
 
-.container-header .member a:hover i,
+.container-header .member a:not(.btn-farmer):hover i,
 .container-header .member .btn-logout:hover i{
 	cursor: pointer;
 	transition: .3s ease;
     background-color: #f06a37;
 }
-.container-header .member .btn-farmer i:hover{
-	background-color: #9b642d;
+.container-header .member .btn-farmer:hover i{
+	background-color: #45963d;
 }
 .container-header .member .btn-logout {
     border: none;
