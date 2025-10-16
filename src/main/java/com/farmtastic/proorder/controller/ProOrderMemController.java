@@ -54,8 +54,6 @@ public class ProOrderMemController {
 	@Autowired
 	ProOrderItemService proOrderItemSvc;
 	@Autowired
-	FmemService femSvc;
-	@Autowired
 	MemService memSvc;
 	@Autowired
 	ShoppingCartService shoppingCartSvc;
@@ -63,10 +61,6 @@ public class ProOrderMemController {
 	MemProCpnServiceImp mpcSvc;
 	@Autowired
 	MemProCpnRepository mpcRepository;
-	@Autowired
-	ProCpnService proCpnSvc;
-	@Autowired
-	ProService proSvc;
 
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
