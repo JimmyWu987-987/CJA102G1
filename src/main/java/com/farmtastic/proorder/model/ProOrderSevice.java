@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.memprocpn.model.MemProCpnRepository;
+import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proorderitem.model.ProOrderItemRepository;
@@ -22,6 +24,8 @@ public class ProOrderSevice {
 	ProOrderRepository repository;
 	@Autowired
 	ProOrderItemRepository proOrderItemRepository;
+	@Autowired
+	MemProCpnRepository mpcRepository;
 	@Autowired
 	ProService productSvc;
 
@@ -96,12 +100,81 @@ public class ProOrderSevice {
 		return repository.findFmemProOrders(fmemId);
 	}
 
+
+	
+	
+	//	====================================訂單一般會員前台使用====================================
+	// 新增訂單的扣商品庫存的邏輯
+	@Transactional
+	public boolean discProductStock(ProOrderVO proOrderVO) {
+		List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
+		
+		for (ProOrderItemVO itemList : finalItems) {
+			// 查詢該產品的庫存
+			Pro proVO = productSvc.getOnePro(itemList.getProductVO().getProId());
+			Integer originalStock = proVO.getProStock();
+			Integer discStock = itemList.getProAmount();
+			Integer finalStock = originalStock - discStock;
+
+			if (finalStock < 0) {
+				return false;
+			} else {
+				proVO.setProStock(finalStock);
+				productSvc.updatePro(proVO);
+			}
+		}
+		return true;
+	}
+	
+	@Transactional
+	// 取消訂單返回庫存的邏輯
+	public void cancelOrderAndBackStock(ProOrderVO proOrderVO) {
+		
+		List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
+		
+		
+		for (ProOrderItemVO itemList : finalItems) {
+			// 查詢該產品的庫存
+			Pro proVO = productSvc.getOnePro(itemList.getProductVO().getProId());
+			Integer originalStock = proVO.getProStock();
+			Integer addStock = itemList.getProAmount();
+			Integer finalStock = originalStock + addStock;
+
+			proVO.setProStock(finalStock);
+			productSvc.updatePro(proVO);
+
+		}
+	}
+	@Transactional
+	// 檢查是否有使用折價劵
+	public boolean checkUseMcpn(ProOrderVO proOrderVO,Integer cpnHolderDetailId) {
+		
+		if (proOrderVO.getMemProCpnVO() != null) {
+
+			// cpnHolderDetailId 不為 null 且不為 0 才表示有使用優惠券
+			if (cpnHolderDetailId != null && cpnHolderDetailId != 0) {
+
+					return true;
+				
+			} else {
+				// cpnHolderDetailId 為 0 或 null，表示沒有使用優惠券
+				return false;
+			}
+		} else {
+			// memProCpnVO 為 null，表示沒有使用優惠券
+			return false;
+		}
+	}
+
+	
+	//	====================================訂單後台使用====================================
+	
 	// 查詢該小農“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
 	@Transactional
 	public List<FmemOrderSummary> getAllByFmemIdCanAlloc(Integer fmemId) {
 		return repository.findFmemProOrdersCanAlloc(fmemId);
 	}
-
+	
 	// 訂單後台 - 修改訂單為已撥款狀態
 	public void updateAllocStatus(Integer proOrdId) {
 		ProOrderVO proOrderVO = getOneProOrder(proOrdId);
