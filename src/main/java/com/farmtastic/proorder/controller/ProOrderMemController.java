@@ -136,7 +136,8 @@ public class ProOrderMemController {
 	 */
 	@PostMapping("updatestatus")
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
-			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes, HttpSession session) {
+			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes,
+			HttpSession session) {
 
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
@@ -148,9 +149,9 @@ public class ProOrderMemController {
 		case 1:
 			System.out.println("訂單取消！");
 			proOrderVO.setProOrdStatus((byte) 1);
-			
+
 			List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
-			
+
 			// ================== 取消訂單返回庫存的邏輯 ======================
 			for (ProOrderItemVO itemList : finalItems) {
 				// 查詢該產品的庫存
@@ -163,7 +164,7 @@ public class ProOrderMemController {
 				proSvc.updatePro(proVO);
 
 			}
-		
+
 			updateStatus = true;
 			redirectAttributes.addFlashAttribute("successMessage", "訂單已經取消！");
 			break;
@@ -385,16 +386,14 @@ public class ProOrderMemController {
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 		List<ProOrderItemVO> finalItems = sessionOrder.getProOrderItems();
-		
+
 		// ================== 付款狀態修改狀態 ======================
-		if(proOrderVO.getProPayStatus() == 0) {
+		if (proOrderVO.getProPayStatus() == 0) {
 			// 修改已付款(1)
-			proOrderVO.setProPayStatus((byte)1);
+			proOrderVO.setProPayStatus((byte) 1);
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
-		
-		
-		
+
 		// ================== 扣商品庫存的邏輯 ======================
 		for (ProOrderItemVO itemList : finalItems) {
 			// 查詢該產品的庫存
@@ -437,9 +436,6 @@ public class ProOrderMemController {
 				System.err.println("更新優惠券狀態失敗: " + e.getMessage());
 			}
 		}
-
-
-		
 
 		// 更新網頁會員的session的資料
 		session.setAttribute("loggedInMember", loggedInMember);

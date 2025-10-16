@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.farmtastic.common.mapper.MemProCpnMapperImp;
 import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
 import com.farmtastic.memprocpn.model.MemProCpnVO;
+import com.farmtastic.memprocpn.model.SpinSyncScheduler;
 
 @Controller
 @RequestMapping("/admin/memprocpn")
@@ -21,6 +23,16 @@ public class MemProCpnAdminController {
 	private MemProCpnServiceImp memProCpnSvc;
 	@Autowired
 	private MemProCpnMapperImp mapper;
+
+	@Autowired
+	private SpinSyncScheduler spinSyncScheduler;
+
+	@GetMapping("/syncNow")
+	@ResponseBody
+	public String triggerSyncNow() {
+		spinSyncScheduler.syncPendingCoupons();
+		return "✅ 已手動同步 Redis 暫存折價券至資料庫！";
+	}
 
 //	// 顯示新增頁面
 //	@GetMapping("/addForm")
