@@ -113,7 +113,7 @@ public class LinePayController {
        	// 回傳新增訂單詢息給訊息回去 ProOrderMemController.java
     	session.setAttribute("proOrdIdByPay", proOrdId);
     	
-    	return "redirect:/mem/proorders/doInsert";
+    	return "redirect:/mem/proorders/dopay";
     }
     
 

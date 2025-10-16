@@ -136,7 +136,7 @@ public class ProOrderMemController {
 	 */
 	@PostMapping("updatestatus")
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
-			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes) {
+			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes, HttpSession session) {
 
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
@@ -148,6 +148,22 @@ public class ProOrderMemController {
 		case 1:
 			System.out.println("訂單取消！");
 			proOrderVO.setProOrdStatus((byte) 1);
+			
+			List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
+			
+			// ================== 取消訂單返回庫存的邏輯 ======================
+			for (ProOrderItemVO itemList : finalItems) {
+				// 查詢該產品的庫存
+				Pro proVO = proSvc.getOnePro(itemList.getProductVO().getProId());
+				Integer originalStock = proVO.getProStock();
+				Integer addStock = itemList.getProAmount();
+				Integer finalStock = originalStock + addStock;
+
+				proVO.setProStock(finalStock);
+				proSvc.updatePro(proVO);
+
+			}
+		
 			updateStatus = true;
 			redirectAttributes.addFlashAttribute("successMessage", "訂單已經取消！");
 			break;
@@ -352,7 +368,7 @@ public class ProOrderMemController {
 		case 0: // 信用卡
 			// 先暫時導向首頁
 			session.setAttribute("proOrdIdByPay", newProOrdId);
-			return "redirect:/mem/proorders/doInsert";
+			return "redirect:/mem/proorders/dopay";
 		case 1: // LinePay
 			return "redirect:/mem/proorders/linepayview?proOrdId=" + newProOrdId;
 		default: // 未新增訂單
@@ -360,9 +376,9 @@ public class ProOrderMemController {
 		}
 	}
 
-	// 確定新增訂單後，才開始做修改訂單的邏輯
-	@GetMapping("doInsert")
-	public String diInsert(HttpSession session, RedirectAttributes redirectAttributes, ModelMap model) {
+	// 確定訂單付款後，才開始做修改訂單的邏輯
+	@GetMapping("dopay")
+	public String diInsert(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 		Integer proOrdIdByPay = (Integer) session.getAttribute("proOrdIdByPay");
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdIdByPay);
 
