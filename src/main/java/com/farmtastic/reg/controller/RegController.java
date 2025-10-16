@@ -1,5 +1,7 @@
 package com.farmtastic.reg.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +13,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
-import com.farmtastic.proad.model.ProAdVO;
+import com.farmtastic.proorder.model.ProOrderSevice;
+import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.reg.model.RegService;
 import com.farmtastic.reg.model.RegVO;
 
@@ -27,14 +33,57 @@ public class RegController {
 	@Autowired
     private RegService regService;
 	
+	@Autowired
+	ProOrderSevice proOrdSvc;
+	@Autowired
+	ProOrderItemService ProOrderItemSvc;
+	@Autowired
+	FmemService fmemSvc;
+	
 //  ******************************管理員功能**************************************
     //管理員查活動訂單全部
-	@GetMapping("admin/reg/list")
-    public String list(Model model) {
-        model.addAttribute("listReg", regService.getAll());       
+	@GetMapping("admin/cashflow/reg/list")
+	public String list(Model model,
+	                   @RequestParam(value = "regRevStat", required = false) Integer regRevStat) {
 
-        return "back_end/logined/reg/adminListAllReg";
-        }
+	    List<RegVO> list = (regRevStat == null)
+	            ? regService.getAll()                 // 沒帶參數：全部
+	            : regService.findByRevStat(regRevStat); // 有帶參數：依狀態過濾
+	    // ✅ 新增：載入所有小農給下拉選單用
+	    model.addAttribute("fmemList", fmemSvc.getAll());
+	    model.addAttribute("listReg", list);
+	    model.addAttribute("regRevStat", regRevStat); // 需要的話前端可用
+	    return "back_end/logined/reg/adminListAllReg";
+	}
+
+		//撥款成功後
+		@PostMapping("regMoney")
+		public String giveMonetToFmem(@RequestParam("regId") Integer regId,
+									  @RequestParam("regStat") Integer regStat,
+									  RedirectAttributes redirectAttributes ) {
+		
+		
+		regService.updateRegStat(regId, regStat);
+		redirectAttributes.addFlashAttribute("success","撥款成功");
+		return "redirect:/admin/cashflow/reg/list";
+	}
+	
+		@PostMapping("selectFmemReg")
+		public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId,
+		                                 ModelMap model,
+		                                 HttpSession session) {
+		    Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
+		    model.addAttribute("fmemName", fmem.getFmemName());
+		    session.setAttribute("fmemId", fmem.getFmemId());
+
+		    // 下拉選單資料來源
+		    List<Fmem> fmemList = fmemSvc.getAll();
+		    model.addAttribute("fmemList", fmemList);
+
+		    return "back_end/logined/reg/adminListAllReg";
+		}
+	
+	
 	
 	
 	
@@ -100,8 +149,12 @@ public class RegController {
 					            @RequestParam Integer sesId,
 					    		HttpSession session,					
 					    		ModelMap model) {
+    	
     	Mem mem = (Mem) session.getAttribute("loggedInMember");
-
+    	if(mem == null) {
+    		return "redirect:/mem/showMemRegLoginForm";
+    	}
+    	
     	Integer currentPoints = regService.getMemberPoints(mem.getMemId());
     	
     	// 傳遞報名場次的資訊

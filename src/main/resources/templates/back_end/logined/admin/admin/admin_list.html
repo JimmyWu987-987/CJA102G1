@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理員總表</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #FEFBF6; }
+        .content-card { background-color: white; padding: 1.5rem; border-radius: 0.75rem; margin-top: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); overflow-x: auto;}
+        .back-btn, .add-btn {
+            display: inline-block; margin-top: 2rem; color: white;
+            padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; transition: background-color 0.3s;
+        }
+        .back-btn { background-color: #6b7280; }
+        .add-btn { background-color: #2563eb; }
+        .back-btn:hover { background-color: #4b5563; }
+        .add-btn:hover { background-color: #1d4ed8; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background-color: #f9fafb; }
+        .action-btn {
+            padding: 0.25rem 0.75rem; border-radius: 0.375rem; color: white; text-decoration: none;
+        }
+        .edit-btn { background-color: #3b82f6; }
+        .delete-btn { background-color: #ef4444; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-gray-800">管理員總表</h1>
+            <a th:href="@{/admin/add}" class="add-btn self-end mb-2">新增管理員</a>
+        </div>
+
+        <!-- 成功/失敗訊息提示 -->
+        <div th:if="${successMessage}" class="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded" th:text="${errorMessage}"></div>
+        
+        <div class="content-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>帳號</th>
+                        <th>姓名</th>
+                        <th>狀態</th>
+                        <th>Email</th>
+                        <th>手機</th>
+                        <th>管理員類型</th>
+                        <th>操作</th> <!-- 新增操作欄位 -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="admin : ${admins}">
+                        <td th:text="${admin.adminId}">1</td>
+                        <td th:text="${admin.adminAcc}">admin1</td>
+                        <td th:text="${admin.adminName}">張三</td>
+                        <td>
+                            <span th:if="${admin.adminStatus == 1}" class="text-green-600 font-semibold">啟用</span>
+                            <span th:if="${admin.adminStatus != 1}" class="text-red-600 font-semibold">停用</span>
+                        </td>
+                        <td th:text="${admin.adminEmail}">admin1@example.com</td>
+                        <td th:text="${admin.adminMobile}">0912345678</td>
+                        <td th:text="${admin.adminType != null ? admin.adminType.adminTypeName : '未設定'}">超級管理員</td>
+                        <!-- 新增操作按鈕 -->
+                        <td class="space-x-2">
+                            <a th:href="@{/admin/edit/{id}(id=${admin.adminId})}" class="action-btn edit-btn">修改</a>
+                            <!-- 刪除功能尚未實作，此處為靜態按鈕 -->
+                            <a href="#" class="action-btn delete-btn">刪除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a th:href="@{/managepage}" class="back-btn">返回管理選單</a>
+    </div>
+</body>
+</html>
+

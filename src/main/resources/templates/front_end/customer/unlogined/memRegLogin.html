@@ -130,6 +130,13 @@
 	<!-- flatpickr JS -->
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script th:src="@{/js/mem/dateSelector.js}"></script>
+	
+	<!-- 消費者按下活動報名未登入時跳回登入頁面 -->
+	<script>
+	  if (window.top !== window.self) {
+	    window.top.location = window.location.href; 
+	  }
+	</script>
     
 </body>
 </html>

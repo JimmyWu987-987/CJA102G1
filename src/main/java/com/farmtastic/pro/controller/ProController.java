@@ -48,7 +48,7 @@ public class ProController {
 		model.addAttribute("action", "/pro/admin/insert");
 		model.addAttribute("pageTitle", "管理員新增產品");
 		model.addAttribute("pro", new Pro()); // 提供一個空的Pro物件給表單
-		return "back_end/pro/proForm";
+		return "back_end/logined/admin/pro/proForm";
 	}
 
 	@PostMapping("/admin/insert")
@@ -56,7 +56,7 @@ public class ProController {
 		if (result.hasErrors()) {
 			model.addAttribute("action", "/pro/admin/insert");
 			model.addAttribute("pageTitle", "管理員新增產品");
-			return "back_end/pro/proForm";
+			return "back_end/logined/admin/pro/proForm";
 		}
 		proSvc.addPro(pro);
 		redirectAttributes.addFlashAttribute("success", "- (管理員新增成功)");
@@ -69,7 +69,7 @@ public class ProController {
 		model.addAttribute("pro", pro);
 		model.addAttribute("action", "/pro/admin/update");
 		model.addAttribute("pageTitle", "管理員修改產品");
-		return "back_end/pro/proForm";
+		return "back_end/logined/admin/pro/proForm";
 	}
 	
 	@PostMapping("/admin/update")
@@ -77,7 +77,7 @@ public class ProController {
 		if (result.hasErrors()) {
 			model.addAttribute("action", "/pro/admin/update");
 			model.addAttribute("pageTitle", "管理員修改產品");
-			return "back_end/pro/proForm";
+			return "back_end/logined/admin/pro/proForm";
 		}
 		proSvc.updatePro(pro);
 		redirectAttributes.addFlashAttribute("success", "- (管理員修改成功)");
@@ -190,7 +190,7 @@ public class ProController {
 		List<Pro> proListData = proSvc.getAll();
 		proListData.forEach(pro -> proimageSvc.findFirstImageByProId(pro.getProId().longValue()).ifPresent(pro::setProImage));
 		model.addAttribute("proListData", proListData);
-		return "back_end/pro/listAllPro";
+		return "back_end/logined/admin/pro/listAllPro";
 	}
 
 	@PostMapping("listPros_ByCompositeQuery")
@@ -200,7 +200,7 @@ public class ProController {
 		List<Pro> list = proSvc.getAll(map);
 		list.forEach(pro -> proimageSvc.findFirstImageByProId(pro.getProId().longValue()).ifPresent(pro::setProImage));
 		model.addAttribute("proListData", list);
-		return "back_end/pro/listAllPro";
+		return "back_end/logined/admin/pro/listAllPro";
 	}
 	
 	@GetMapping("/view/{proid}")

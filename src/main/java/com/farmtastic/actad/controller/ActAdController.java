@@ -26,6 +26,7 @@ import com.farmtastic.actad.model.ActAdService;
 import com.farmtastic.actad.model.ActAdVO;
 import com.farmtastic.fmember.model.Fmem;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -195,31 +196,29 @@ public class ActAdController {
     
  // 小農付款：直接呼叫 LINE Pay Sandbox API
     @GetMapping("fmem/actAd/pay")
-    public String showFarmerPayView(Model model,@RequestParam Integer actAdId) throws Exception {
+    public String showFarmerPayView(Model model,@RequestParam Integer actAdId,HttpServletRequest request) throws Exception {
         ActAdVO vo = actAdService.getOneActAd(actAdId);  // 取得廣告資料
         model.addAttribute("actAdVO",vo);
         // ===== 1. 組出 LINE Pay 的請求內容 =====
+        String dynamicUrl = request.getScheme() +"://"+request.getServerName()+":"+request.getServerPort();
+
         String body = """
-        		{
-        		  "amount": %d,
-        		  "currency": "TWD",
-        		  "orderId": "ACTAD-%d",
-        		  "packages": [{
-        		    "id": "PKG1",
-        		    "amount": %d,
-        		    "name": "小農廣告上架費",
-        		    "products": [{
-        		      "name": "廣告上架費",
-        		      "quantity": 1,
-        		      "price": %d
-        		    }]
-        		  }],
-        		  "redirectUrls": {
-        		    "confirmUrl": "http://localhost:8080/fmem/actAd/return?actAdId=%d",
-        		    "cancelUrl": "http://localhost:8080/fmem/actAd/cancel"
-        		  }
-        		}
-        		""".formatted(vo.getActAdFee(), actAdId, vo.getActAdFee(), vo.getActAdFee(), actAdId);
+        {
+          "amount": %d,
+          "currency": "TWD",
+          "orderId": "ACTAD-%d",
+          "packages": [{
+            "id": "PKG1",
+            "amount": %d,
+            "name": "小農活動廣告上架費",
+            "products": [{"name":"活動廣告上架費","quantity":1,"price":%d}]
+          }],
+          "redirectUrls": {
+            "confirmUrl": "%s/fmem/actAd/return?actAdId=%d",
+            "cancelUrl": "%s/fmem/actAd/cancel"
+          }
+        }
+        """.formatted(vo.getActAdFee(), actAdId, vo.getActAdFee(), vo.getActAdFee(), dynamicUrl, actAdId, dynamicUrl);
 
 
         // ===== 2. 簽章 =====

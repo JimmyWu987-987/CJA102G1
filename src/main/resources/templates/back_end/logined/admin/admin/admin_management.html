@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網站總管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #FEFBF6; }
+        .content-card { background-color: white; padding: 2.5rem; border-radius: 0.75rem; margin-top: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .menu-btn {
+            background-color: #1f2937; color: white; font-weight: bold; padding: 1rem; border-radius: 0.5rem; text-align: center;
+            display: block; text-decoration: none; transition: background-color 0.3s;
+        }
+        .menu-btn:hover { background-color: #374151; }
+        .back-btn {
+            display: inline-block; margin-top: 2rem; background-color: #6b7280; color: white;
+            padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800">網站總管理選單</h1>
+        
+        <div class="content-card">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a th:href="@{/admin/list}" class="menu-btn">管理員總表</a>
+                <a th:href="@{/admin/permissions}" class="menu-btn">管理員權限表</a>
+                <a th:href="@{/news}" class="menu-btn">最新消息管理</a>
+            </div>
+        </div>
+
+        <a th:href="@{/managepage}" class="back-btn">返回主選單</a>
+    </div>
+</body>
+</html>

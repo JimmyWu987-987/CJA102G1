@@ -50,9 +50,15 @@
 	                    <select th:field="*{styNo}">
 	                    	<option value="1">清新色調</option>
 					        <option value="2">大地色調</option>
-					        <option value="3">樣式三</option>
-					        <option value="4">樣式四</option>
+<!-- 					        <option value="3">樣式三</option> -->
 	                    </select>
+	                    
+	                    <label>樣式預覽</label>
+                   		<div class="picBox">
+                   			<img th:if="${tempFmemPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempFmemPicBase64}}"
+                   				 alt="小農頭像">
+					    </div>
 	                </li>
 	                
 	                

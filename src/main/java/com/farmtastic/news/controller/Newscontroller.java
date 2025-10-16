@@ -124,4 +124,11 @@ public class Newscontroller {
         model.addAttribute("news", news);
         return "front_end/customer/unlogined/news/newsdetail";
     }
+    
+    @GetMapping("/fmem/news/{id}")
+    public String showFmemNewsDetail(@PathVariable("id") long id, Model model) {
+        News news = newsService.getNewsById(id);
+        model.addAttribute("news", news);
+        return "front_end/farmer/logined//fmemnews/fmemNewsDetail";
+    }
 }
