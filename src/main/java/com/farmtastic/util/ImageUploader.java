@@ -22,6 +22,9 @@ public class ImageUploader {
         // 上傳商店圖片
         uploadImages("store", "UPDATE fmem SET store_pic = ? WHERE fmem_id = ?");
         
+        // 上傳商店樣式預覽圖
+        uploadImages("sty", "UPDATE sty SET sty_pic = ? WHERE sty_no = ?");
+        
         // 方式2: 用同一張圖上傳到所有 ID
         // 上傳土地證明圖片
         uploadSameImage("land/template.png", "UPDATE fmem SET land_pic = ? WHERE fmem_id BETWEEN 1 AND 20");
