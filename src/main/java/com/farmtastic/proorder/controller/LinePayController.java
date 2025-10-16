@@ -12,14 +12,17 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorder.model.ProOrderVO;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/mem/proorders")
@@ -105,8 +108,12 @@ public class LinePayController {
     }
     
     @GetMapping("linepaysuccess")
-    String linepaysuccess() {
-    	return null;
+    String linepaysuccess(@RequestParam Integer proOrdId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    	 	
+       	// 回傳新增訂單詢息給訊息回去 ProOrderMemController.java
+    	session.setAttribute("proOrdIdByPay", proOrdId);
+    	
+    	return "redirect:/mem/proorders/dopay";
     }
     
 

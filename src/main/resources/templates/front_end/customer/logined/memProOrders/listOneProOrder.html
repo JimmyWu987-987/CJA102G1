@@ -238,11 +238,11 @@
                         </div>
 
                         <div class="info-item" th:if="${proOrderVO.memProCpnVO}">
-                            <span>商品折價卷流水號:</span> <span
-                                th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span>
+                            <span>折價卷名稱:</span> <span
+                                th:text="${proOrderVO.memProCpnVO.proCpnVO.cpnName}"></span>
                         </div>
                         <div class="info-item" th:unless="${proOrderVO.memProCpnVO}">
-                            <span>商品折價卷流水號:</span><span>無/未使用</span>
+                            <span>折價卷名稱:</span><span>無/未使用</span>
                         </div>
                     </div>
                 </div>
