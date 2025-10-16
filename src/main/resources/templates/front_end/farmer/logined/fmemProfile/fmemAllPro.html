@@ -8,14 +8,14 @@
 
 <!--     引入main.css, iconfonts -->
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-    
+    <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
 
 <!--     @{/css} + "/sty/storeSty2.css" -->
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <style>
-body {
+.container-content {
 	font-family: 'Noto Sans TC', sans-serif;
 	padding: 2rem;
 	background-color: #f4f6f9;
@@ -111,16 +111,16 @@ a:hover {
 </head>
 <body>
 
-	<div class="container">
-	
 		<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+		
+	<div class="container container-content">
 		
 		<div>
 			<!-- 【修正】直接從 session 取得小農的姓名和ID -->
 			<h2 th:if="${session.loggedInFmember != null}"></h2>
 
 		</div>
-	</div>	
+
 
 		<table id="productTable">
 			<thead>
