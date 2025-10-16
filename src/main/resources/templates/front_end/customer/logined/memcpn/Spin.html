@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>抽獎轉盤</title>
+<style>
+  body { font-family: "Microsoft JhengHei", sans-serif; background: #fafafa; }
+  .wheel-container { text-align: center; margin-top: 50px; }
+  canvas { background: #fff; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.2); }
+  .btn-use { background: #e63946; color: #fff; border: none; padding: 10px 20px;
+             border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+  .btn-use:hover { background: #d62839; }
+</style>
+</head>
+<body>
+  <div class="wheel-container">
+    <canvas id="wheel" width="300" height="300"></canvas>
+    <br>
+    <button id="spinBtn" class="btn-use">開始抽獎</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const center = { x: 150, y: 150 };
+    const sections = 6;
+    const colors = ["#f4a261", "#e76f51", "#e9c46a", "#2a9d8f", "#264653", "#9d4edd"];
+    const texts = ["謝謝參加", "折100", "折200", "再接再厲", "折50", "中獎！"];
+
+    let currentAngle = 0;
+
+    // 畫轉盤
+    function drawWheel() {
+      const angleStep = (2 * Math.PI) / sections;
+      for (let i = 0; i < sections; i++) {
+        ctx.beginPath();
+        ctx.moveTo(center.x, center.y);
+        ctx.arc(center.x, center.y, 140, i * angleStep, (i + 1) * angleStep);
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+        ctx.save();
+        ctx.translate(center.x, center.y);
+        ctx.rotate(i * angleStep + angleStep / 2);
+        ctx.fillStyle = "#fff";
+        ctx.font = "16px bold Microsoft JhengHei";
+        ctx.textAlign = "right";
+        ctx.fillText(texts[i], 130, 8);
+        ctx.restore();
+      }
+      // 中心圓
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, 40, 0, 2 * Math.PI);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+      ctx.fillStyle = "#e63946";
+      ctx.font = "bold 16px Microsoft JhengHei";
+      ctx.textAlign = "center";
+      ctx.fillText("GO!", center.x, center.y + 6);
+    }
+
+    drawWheel();
+
+    // 旋轉動畫
+    function spinWheel() {
+      const spinTime = 3000; // 毫秒
+      const start = performance.now();
+      const spinSpeed = Math.random() * 5 + 5; // 隨機速度
+
+      function animate(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / spinTime, 1);
+        currentAngle += spinSpeed * (1 - progress);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(center.x, center.y);
+        ctx.rotate(currentAngle);
+        ctx.translate(-center.x, -center.y);
+        drawWheel();
+        ctx.restore();
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          callBackend();
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    async function callBackend() {
+      try {
+        const res = await fetch("/mem/spin/coupons?memId=1", { method: "POST" });
+        const msg = await res.text();
+        alert(msg);
+      } catch (e) {
+        alert("伺服器連線失敗");
+      }
+    }
+
+    document.getElementById("spinBtn").addEventListener("click", spinWheel);
+  </script>
+</body>
+</html>
