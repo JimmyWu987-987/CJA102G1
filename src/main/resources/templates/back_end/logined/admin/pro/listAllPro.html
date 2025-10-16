@@ -163,8 +163,6 @@ a:hover {
 					<th>商品介紹</th>
 					<th>商品類別</th>
 					<th>小農</th>
-					<th>修改</th>
-					<th>圖片管理</th>
 					<th>刪除</th>
 				</tr>
 			</thead>
@@ -187,10 +185,6 @@ a:hover {
 					<td th:text="${pro.proDes}"></td>
 					<td th:text="${pro.procateId?.proCateName}"></td>
 					<td th:text="${pro.fmemId?.fmemName}"></td>
-					<td><a th:href="@{/pro/update/{id}(id=${pro.proId})}">修改</a></td>
-					<td><a
-						th:href="@{/pro-images/manage/{proId}(proId=${pro.proId})}"
-						class="action-btn btn-manage-img">圖片管理</a></td>
 					<td>
 						<form method="post" th:action="@{/pro/delete}" class="action-form">
 							<input type="submit" value="刪除"> <input type="hidden"
