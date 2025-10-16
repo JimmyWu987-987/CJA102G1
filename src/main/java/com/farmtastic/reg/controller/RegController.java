@@ -100,8 +100,12 @@ public class RegController {
 					            @RequestParam Integer sesId,
 					    		HttpSession session,					
 					    		ModelMap model) {
+    	
     	Mem mem = (Mem) session.getAttribute("loggedInMember");
-
+    	if(mem == null) {
+    		return "redirect:/mem/showMemRegLoginForm";
+    	}
+    	
     	Integer currentPoints = regService.getMemberPoints(mem.getMemId());
     	
     	// 傳遞報名場次的資訊
