@@ -85,10 +85,6 @@ public class ProOrderAdminController {
 			}
 		}
 		
-//		// 取全部訂單傳送到前端
-//		List<ProOrderVO> proOrderList = proOrdSvc.getAll();
-//		model.addAttribute("proOrderList", proOrderList);
-		
 		// 取該全部小農會員的id
 		List<Fmem> fmemList = fmemSvc.getAll();
 		model.addAttribute("fmemList", fmemList);
