@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>農場活動列表</title>
+<style>
+  body { font-family:"微軟正黑體"; background:#f5f5dc; padding:20px; }
+  h1 { text-align:center; color:#3e8e41; }
+  #activities { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+  .card { background:#fffbe6; border-radius:12px; padding:15px; width:180px; text-align:center; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;}
+  .card:hover { transform: translateY(-5px); }
+  .activity-name { font-weight:bold; margin-bottom:5px; }
+  .activity-date { font-size:0.9em; color:#666; margin-bottom:10px; }
+  button { border:none; border-radius:5px; padding:5px 10px; cursor:pointer; font-weight:bold; }
+  .favorite { background-color:#ffb347; color:#fff; }
+  .unfavorite { background-color:#3e8e41; color:#fff; }
+  a { display:block; text-align:center; margin-top:20px; color:#3e8e41; font-weight:bold; text-decoration:none; }
+</style>
+</head>
+<body>
+<h1>農場活動列表</h1>
+<div id="activities"></div>
+<a href="favorites.html">查看收藏清單</a>
+
+<script>
+let activities = [];
+let favoriteIds = [];
+
+async function loadData(){
+  const res1 = await fetch('/api/activities');
+  activities = await res1.json();
+
+  const res2 = await fetch('/api/favorites');
+  favoriteIds = await res2.json();
+
+  renderActivities();
+}
+
+function toggleFavorite(id, btn){
+  const action = favoriteIds.includes(id) ? 'DELETE' : 'POST';
+  fetch(`/api/favorite/${id}`, { method: action })
+    .then(() => {
+      if(favoriteIds.includes(id)){
+        favoriteIds = favoriteIds.filter(f=>f!==id);
+        btn.textContent = "收藏";
+        btn.className = "unfavorite";
+      } else {
+        favoriteIds.push(id);
+        btn.textContent = "已收藏";
+        btn.className = "favorite";
+      }
+    });
+}
+
+function renderActivities(){
+  const container = document.getElementById('activities');
+  container.innerHTML = '';
+  activities.forEach(a=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const iconDiv = document.createElement('div');
+    iconDiv.style.fontSize='2em';
+    iconDiv.style.marginBottom='10px';
+    iconDiv.textContent = a.icon;
+
+    const name = document.createElement('div');
+    name.className='activity-name';
+    name.textContent = a.name;
+
+    const date = document.createElement('div');
+    date.className='activity-date';
+    date.textContent = `日期: ${a.date}`;
+
+    const btn = document.createElement('button');
+    btn.textContent = favoriteIds.includes(a.id)? "已收藏" : "收藏";
+    btn.className = favoriteIds.includes(a.id)? "favorite":"unfavorite";
+    btn.addEventListener('click', ()=>toggleFavorite(a.id, btn));
+
+    card.append(iconDiv,name,date,btn);
+    container.appendChild(card);
+  });
+}
+
+loadData();
+</script>
+</body>
+</html>
