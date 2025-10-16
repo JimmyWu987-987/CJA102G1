@@ -1,19 +1,31 @@
 
+section{
+	margin-top: 32px;
+}
+
  .coupon-area { 
- flex-grow: 1; 
- padding: 40px 50px 60px; 
- color: #333; 
- background-color: #ffffff; /* border: 1px solid #f9bc97cb; */ border-radius: 12px; 
- box-shadow: 1px 1px 8px 0px #66333330; } 
- .coupon-area.center{ 
- display: flex; 
- justify-content: center; 
+	flex-grow: 1; 
+	padding: 40px 80px 60px; 
+	color: #333; 
+	background-color: #ffffff; /* border: 1px solid #f9bc97cb; */ border-radius: 12px; 
+	box-shadow: 1px 1px 8px 0px #66333330; 
+} 
+.coupon-area.center{ 
+	display: flex; 
+	justify-content: center; 
  }
+.coupon-area h2{
+	text-align: center;
+  	font-size: var(--subtitle-font-size);
+}
+.coupon-area p{
+  	line-height: 2.6;
+}
   /* === 通用券卡樣式 === */
-   .coupon-card {
+ .coupon-card {
   display: flex;
-  background: #1e1e1e;
-  color: #fff;
+  background: #e3edda;
+  color: #353;
   border-radius: 8px;
   margin: 16px 0;
   overflow: hidden;
@@ -29,7 +41,7 @@
 
     .coupon-left {
       background: linear-gradient(145deg, #7cc74f, #4ca72b);
-      width: 140px;
+      width: 170px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -87,30 +99,30 @@
 
     .coupon-desc {
       font-size: 0.9rem;
-      color: #ddd;
-      margin: 6px 0;
+      color: #343;
+      margin: 6px 0 2px;
     }
 
     .coupon-expire {
-      color: #ffcc00;
+      color: #ff3900;
       font-size: 0.85rem;
-      margin-top: 4px;
+      margin-bottom: 6px;
     }
 
     .coupon-actions {
       margin-top: 3px;
     }
 
-    .btn-use {
-    display: inline-block;
-      background: #e63946;
-      color: #fff;
-      text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-weight: bold;
-      transition: background 0.2s;
-    }
+.btn-use {
+	display: inline-block;
+    background: #f47640;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
 
     .btn-use:hover {
       background: #c82333;

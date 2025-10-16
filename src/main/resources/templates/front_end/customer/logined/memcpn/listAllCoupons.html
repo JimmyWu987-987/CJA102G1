@@ -19,7 +19,7 @@
   <!-- Header -->
   <div th:replace="~{/front_end/index :: header}"></div>
 
-  <div class="container-member">
+  <div class="container container-member">
     <!-- 左側選單 -->
     <div class="member-sidebar">
       <h3>會員專區</h3>
@@ -28,46 +28,46 @@
 
     <!-- 折價券內容 -->
     <div class="coupon-area">
-      <h2>🎫 我的折價券</h2>
-      <p th:text="'您好，' + ${member.memName} + '！以下是您所有的折價券：'"></p>
-<a href="/mem/spin" class="btn-use">🎡 前往抽獎</a>
+      	<h2>🎫 我的折價券</h2>
+      	<p th:text="'您好，' + ${member.memName} + '！以下是您所有的折價券：'"></p>
+		<a href="/mem/spin" class="btn-use">🎡 前往抽獎</a>
 
-      <!-- 活動券 -->
-      <section th:if="${!#lists.isEmpty(actCoupons)}">
-        <h3>🎉 活動券</h3>
-
-        <div th:each="c : ${actCoupons}" class="coupon-card">
-          <div class="coupon-left">
-            <div class="discount-value"
-                 th:text="${c.actCpnVO.discType.code == 1 ?
-                           #numbers.formatDecimal(c.actCpnVO.discValue * 100, 0, 0) + '%OFF' :
-                           '折 ' + #numbers.formatDecimal(c.actCpnVO.discValue, 0, 0)}"></div>
-            <div class="discount-label">COUPON</div>
-          </div>
-
-          <div class="coupon-right">
-            <div class="coupon-header">
-              <span class="badge"
-                    th:text="${c.cpnUseStatus.text}"
-                    th:classappend="${c.cpnUseStatus.name() == 'USED' ? ' used' :
-                                     c.cpnUseStatus.name() == 'EXPIRED' ? ' expired' : ' active'}"></span>
-              <span class="coupon-title" th:text="${c.actCpnVO.cpnName}"></span>
-            </div>
-            <div class="coupon-desc" th:text="${c.actCpnVO.cpnDesc}"></div>
-            <div class="coupon-expire">
-              有效期限：
-              <span th:text="${#temporals.format(c.effStart, 'yyyy/MM/dd')}"></span>～
-              <span th:text="${#temporals.format(c.effEnd, 'yyyy/MM/dd')}"></span>
-            </div>
-            <div class="coupon-actions">
-  <a th:href="@{/mall/products}" class="btn-use">查看可使用商品</a>
-</div>
-          </div>
-        </div>
+      	<!-- 活動券 -->
+      	<section th:if="${!#lists.isEmpty(actCoupons)}">
+	        <h3>🎉 活動券</h3>
+	
+	        <div th:each="c : ${actCoupons}" class="coupon-card">
+	          <div class="coupon-left">
+	            <div class="discount-value"
+	                 th:text="${c.actCpnVO.discType.code == 1 ?
+	                           #numbers.formatDecimal(c.actCpnVO.discValue * 100, 0, 0) + '%OFF' :
+	                           '折 ' + #numbers.formatDecimal(c.actCpnVO.discValue, 0, 0)}"></div>
+	            <div class="discount-label">COUPON</div>
+	          </div>
+	
+	          <div class="coupon-right">
+	            <div class="coupon-header">
+	              <span class="badge"
+	                    th:text="${c.cpnUseStatus.text}"
+	                    th:classappend="${c.cpnUseStatus.name() == 'USED' ? ' used' :
+	                                     c.cpnUseStatus.name() == 'EXPIRED' ? ' expired' : ' active'}"></span>
+	              <span class="coupon-title" th:text="${c.actCpnVO.cpnName}"></span>
+	            </div>
+	            <div class="coupon-desc" th:text="${c.actCpnVO.cpnDesc}"></div>
+	            <div class="coupon-expire">
+	              有效期限：
+	              <span th:text="${#temporals.format(c.effStart, 'yyyy/MM/dd')}"></span>～
+	              <span th:text="${#temporals.format(c.effEnd, 'yyyy/MM/dd')}"></span>
+	            </div>
+	            <div class="coupon-actions">
+				  <a th:href="@{/mall/products}" class="btn-use">查看可使用商品</a>
+				</div>
+	          </div>
+	        </div>
       </section>
 
       <!-- 商品券 -->
-      <section th:if="${!#lists.isEmpty(proCoupons)}">
+      <section th:if="${!#lists.isEmpty(proCoupons)}" class="section-prod">
         <h3 style="border-left-color:#1d73e8;color:#1d73e8;">🛒 商品券</h3>
 
         <div th:each="c : ${proCoupons}" class="coupon-card">
