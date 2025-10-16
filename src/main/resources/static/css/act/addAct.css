@@ -1,0 +1,78 @@
+body {
+    font-family: "Noto Sans", sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 20px;
+}
+
+h1.act-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.act-info {
+    display: flex;
+    justify-content: center;
+}
+
+.act-add-details {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    width: 600px;
+}
+
+.act-add-details label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.act-add-details input[type="text"],
+.act-add-details input[type="number"],
+.act-add-details input[type="date"],
+.act-add-details textarea,
+.act-add-details input[type="file"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.act-add-details textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.act-add-details button[type="submit"] {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.act-add-details button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.preview-container img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}

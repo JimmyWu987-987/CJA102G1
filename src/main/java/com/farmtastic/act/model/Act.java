@@ -29,7 +29,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -46,7 +48,7 @@ public class Act implements java.io.Serializable {
 	private Integer actId;
 	
 	@Column(name = "act_name", nullable = false)
-	@NotEmpty(message="活動名稱請勿空白")
+	@NotBlank(message="活動名稱請勿空白")
 	@Size(min=2,max=30,message="活動名稱必需在{min}到{max}之間")
 	private String actName;
 	
@@ -61,13 +63,14 @@ public class Act implements java.io.Serializable {
 	private Date actEnd;
 	
 	@Column(name = "act_des", nullable = false)
-	@NotEmpty(message="活動敘述請勿空白")
+	@NotBlank(message="活動敘述請勿空白")
 	@Size(min=10,max=1000,message="活動敘述必需在{min}到{max}字之間")
 	private String actDes;
 	
 	@Column(name = "act_fee", nullable = false)
 	@NotNull(message="請填入活動費用")
-	@DecimalMin(value = "0", message = "費用不得為負數")
+	@Min(value = 0, message = "活動費用不得為負數")
+	@Digits(integer= 6, fraction = 0, message = "費用不得超過6位整數(如有需求請向平台詢問), 且需為整數數字")
 	private Integer actFee;
 	
 	

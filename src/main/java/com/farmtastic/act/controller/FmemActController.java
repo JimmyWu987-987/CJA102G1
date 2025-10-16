@@ -6,8 +6,10 @@ import java.net.URLConnection;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -224,6 +226,7 @@ public class FmemActController {
 						 HttpSession session,
 						 RedirectAttributes redirectAttributes,
 						 ModelMap model,
+						 @RequestParam("actCateIds") Integer[] actCateIds,
 						 @RequestParam("actMainImg") MultipartFile actMainImg,
 						 @RequestParam("actImg") MultipartFile[] actImgs) throws IOException {
 
@@ -233,7 +236,9 @@ public class FmemActController {
 		act.setFmemId(fmemId);
 	       
 		act.setActStat(1);	// 待審核
-	        
+	    
+		// 活動名稱
+		
 		// 開始日期驗證
 		java.sql.Date actStart = act.getActStart();
 		java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
@@ -249,26 +254,59 @@ public class FmemActController {
 			result.rejectValue("actEnd", null, "請選擇活動結束日期");
 		} else if (actEnd.before(actStart)) {
 			result.rejectValue("actEnd", null, "結束日期不得早於開始日期。");
-		}
+		}	
+		
+		// 活動基本價格
+		if (act.getActFee() == null) {
+			result.rejectValue("actFee", "error.actFee", "請填入活動費用");
+	    }
+		
+		// 活動類別
+		if (actCateIds != null && actCateIds.length > 0) {
+	        Set<ActCate> actCateSet = new HashSet<>();
+	        for (Integer actCateId : actCateIds) {
+	        	ActCate actCate = new ActCate();
+	        	actCate.setActCateId(actCateId);
+	        	actCateSet.add(actCate);
+	        }
+	        act.setActCate(actCateSet);
+	    } else {
+	    	result.rejectValue("actCateIds", null, "請至少選擇一項類別");
+	    }
 		
 		// 主圖驗證
 		if (actMainImg == null || actMainImg.isEmpty()) {
 			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
-		} else {
-			act.setActMainImg(actMainImg.getBytes());
+		} if (actMainImg != null) {
+		    if (!actMainImg.getContentType().startsWith("image/")) {
+		        result.rejectValue("actMainImg", null, "只能上傳圖檔");
+		    } else if (actMainImg.getSize() > 4 * 1024 * 1024) {
+		        result.rejectValue("actMainImg", null, "活動主要圖片不得超過 4MB");
+		    } else {
+		    	act.setActMainImg(actMainImg.getBytes());
+		    }
 		}
 		
 		// 活動圖片 (可有可無) 
 		if (actImgs != null) {
 			Integer order = 1;
+			if (actImgs.length > 5) {
+		        result.rejectValue("actImg", null, "最多只能上傳 5 張圖片");
+		    }
 			for (MultipartFile file : actImgs) {
 				if (! file.isEmpty()) {
-					ActImg actImg = new ActImg();
-					actImg.setActImg(file.getBytes());
-					actImg.setActimgOrder(order);
-					actImg.setAct(act);  // 這裡關聯到活動
-					act.getActImg().add(actImg);
-					order++;
+					if (!file.getContentType().startsWith("image/")) {
+			            result.rejectValue("actImg", null, "所有檔案都必須是圖片");
+			        } else if (file.getSize() > 4 * 1024 * 1024) {
+			            result.rejectValue("actImg", null, "每張圖片不得超過 4MB");
+			        } else {
+						ActImg actImg = new ActImg();
+						actImg.setActImg(file.getBytes());
+						actImg.setActimgOrder(order);
+						actImg.setAct(act);  // 這裡關聯到活動
+						act.getActImg().add(actImg);
+						order++;
+			        }
 				}
 			}
 		}
@@ -283,9 +321,10 @@ public class FmemActController {
 		// 設置 Flash Attribute，用於 SweetAlert
 		redirectAttributes.addFlashAttribute("successMessage", "新增成功！");
 	
-		return "redirect:front_end/farmer/logined/fmemAct/listAllActForFmem";
+		return "redirect:/fmem/act/listAllActForFmem";		// 要傳URL
 	}
 }
+	
 	
 ////  =========== 修改活動 ============
 //	@GetMapping("updateAct")
