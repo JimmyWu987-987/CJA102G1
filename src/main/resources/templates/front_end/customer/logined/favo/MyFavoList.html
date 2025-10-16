@@ -3,148 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <title>我的收藏清單</title>
+     <!-- 共用樣式 -->
+  <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+  <link rel="stylesheet" th:href="@{/css/favo/Favo.css}">
     <style>
-        body {
-            font-family: "Microsoft JhengHei", Arial, sans-serif;
-            background-color: #fafafa;
-            padding: 30px;
-            color: #333;
-        }
+   /* === 左側會員選單 + 右側內容區 === */
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
 
-        h1 {
-            text-align: center;
-            color: #4a7c59;
-            margin-bottom: 25px;
-        }
+    .container-member {
+      display: flex;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
 
-        .message {
-            text-align: center;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            width: 60%;
-            margin: 0 auto 25px auto;
-        }
+    .member-sidebar {
+      width: 220px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      height: fit-content;
+    }
 
-        .success { background-color: #e8f8ee; color: #1e824c; border: 1px solid #b7e1c0; }
-        .error { background-color: #fdecea; color: #c0392b; border: 1px solid #f5b7b1; }
 
-        .favo-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
+    .favo-area {
+      flex: 1;
+      margin-left: 24px;
+      background: #fff;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
 
-        .favo-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            width: 260px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.05);
-            transition: 0.2s ease;
-        }
+    h2 {
+      color: var(--secondary-color);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    /* ✅ 訊息樣式 */
+    .message {
+      padding: 10px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
 
-        .favo-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-        }
+    .message.success {
+      background: #d1e7dd;
+      color: #0f5132;
+      border: 1px solid #badbcc;
+    }
 
-        .favo-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
+    .message.error {
+      background: #f8d7da;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+    }
 
-        .favo-card h3 {
-            margin: 8px 0;
-            font-size: 18px;
-            color: #2c3e50;
-        }
+    /* ✅ 無收藏時提示 */
+    .empty {
+      text-align: center;
+      color: #777;
+      font-size: 1rem;
+      margin-top: 40px;
+    }
 
-        .favo-card p {
-            font-size: 15px;
-            margin: 5px 0;
-        }
+    /* ✅ 返回連結 */
+    .back-link {
+      text-align: center;
+      margin-top: 30px;
+    }
 
-        button {
-            margin-top: 10px;
-            padding: 8px 14px;
-            border: none;
-            border-radius: 4px;
-            background-color: #4a7c59;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .back-link a {
+      color: #198754;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
 
-        button:hover {
-            background-color: #3b6548;
-        }
-
-        .empty {
-            text-align: center;
-            font-size: 16px;
-            color: #999;
-            margin-top: 40px;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .back-link a {
-            color: #4a7c59;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .back-link a:hover {
-            text-decoration: underline;
-        }
+    .back-link a:hover {
+      color: #145c34;
+    }
     </style>
 </head>
 <body>
+  <!-- Header -->
+  <div th:replace="~{/front_end/index :: header}"></div>
 
-<h1>💚 我的收藏清單</h1>
-
-<!-- ✅ 提示訊息 -->
-<div th:if="${message}" 
-     th:classappend="${message.contains('成功') ? 'message success' : 'message error'}"
-     th:text="${message}">
-</div>
-
-<!-- ✅ 收藏列表 -->
-<div class="favo-list">
-    <div th:each="favo : ${favorites}" class="favo-card">
-    
-
-        <h3 th:text="${favo.productVO.proName}">商品名稱</h3>
-        <p>價格：<span th:text="${favo.productVO.proPrice}">100</span> 元</p>
-
-        <!-- ✅ 取消收藏按鈕 -->
-        <form th:action="@{/mem/favopro/remove}" method="post">
-            <input type="hidden" name="proId" th:value="${favo.productVO.proId}" />
-            <button type="submit">取消收藏</button>
-        </form>
+  <div class="container-member">
+    <!-- 左側選單 -->
+    <div class="member-sidebar">
+      <h3>會員專區</h3>
+      <ul th:replace="~{/front_end/index :: memAreaLink}"></ul>
     </div>
-</div>
 
-<!-- ✅ 若沒有任何收藏 -->
-<div class="empty" th:if="${#lists.isEmpty(favorites)}">
-    <p>目前尚無收藏商品。</p>
-</div>
+    <!-- 收藏清單 -->
+    <div class="favo-area">
+      <h2>💚 我的收藏清單</h2>
 
-<!-- ✅ 返回商品列表 -->
-<div class="back-link">
-    <a th:href="@{/favo/products/list}">↩ 返回商品清單</a>
-</div>
+      <!-- 提示訊息 -->
+      <div th:if="${message}"
+           th:classappend="${message.contains('成功') ? 'message success' : 'message error'}"
+           th:text="${message}">
+      </div>
+  <!--  收藏清單卡片 -->
+      <div class="favo-list" th:if="${!#lists.isEmpty(favorites)}">
+        <div th:each="favo : ${favorites}" class="favo-card">
 
+          <!-- 圖片區 -->
+          <img th:src="@{${favo.productVO.proImage}}" alt="商品圖片" class="favo-img">
+
+          <div class="favo-body">
+            <div class="favo-title" th:text="${favo.productVO.proName}">商品名稱</div>
+            <div class="favo-price" th:text="${favo.productVO.proPrice} + ' 元'"></div>
+
+            <div class="favo-actions">
+              <a th:href="@{/mall/product/{id}(id=${favo.productVO.proId})}" class="btn-view">查看商品</a>
+              <form th:action="@{/mem/favopro/remove}" method="post" style="margin:0;">
+                <input type="hidden" name="proId" th:value="${favo.productVO.proId}" />
+                <button type="submit" class="btn-remove">取消收藏</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--  若沒有任何收藏 -->
+      <div class="empty" th:if="${#lists.isEmpty(favorites)}">
+        <p>目前尚無收藏商品。</p>
+      </div>
+
+      <!--  返回商品列表 -->
+      <div class="back-link">
+        <a th:href="@{/mall/products}">↩ 返回商品清單</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div th:replace="~{/front_end/index :: footer}"></div>
 </body>
 </html>
