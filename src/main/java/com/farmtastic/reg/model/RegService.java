@@ -1,5 +1,6 @@
 package com.farmtastic.reg.model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -100,6 +101,21 @@ public class RegService {
 	        regVO.setActComm(actComm);
 	        regVO.setActCommat(Timestamp.from(java.time.Instant.now()));
 	        repository.save(regVO);
+		}
+
+		//管理員查活動完城
+		@Transactional(readOnly = true)
+		public List<RegVO> findByRevStat(Integer regStat){
+			return repository.findByRegStat(regStat);
+		}
+		
+		//管理員撥款
+		@Transactional
+		public void updateRegStat(Integer regId, Integer regStat) {
+			RegVO regVO = repository.findById(regId)
+	                .orElseThrow();
+			regVO.setRegStat(4);
+			repository.save(regVO);
 		}
 		
 }

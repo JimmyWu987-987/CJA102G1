@@ -9,14 +9,15 @@ import org.springframework.data.repository.query.Param;
 
 import com.farmtastic.act.model.Act;
 import com.farmtastic.memactcpn.model.MemActCpnVO;
+import com.farmtastic.proad.model.ProAdVO;
 import com.farmtastic.ses.model.Ses;
 
 public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	// 管理員查詢活動訂單全部
 	List<RegVO> findAllByOrderByRegIdDesc();
 	
-	// 管理員查詢活動訂單狀態
-	RegVO findByRegStat(int i);
+	// 管理員查未審核
+	List<RegVO> findByRegStat(Integer regStat);
 	
 	//小農查詢活動訂單
 	 @Query(value = """
