@@ -1,124 +1,120 @@
-/* ==============================
-   折價券卡片樣式版 (memProCpn.css)
-   ============================== */
 
-/* 右側內容 */
-.coupon-area {
-  flex: 1;                    /* 填滿剩餘空間 */
-  background-color: #1a1a1a;  /* 深底（可依整站風格調） */
-  padding: 30px 40px;
+ .coupon-area { 
+ flex-grow: 1; 
+ padding: 40px 50px 60px; 
+ color: #333; 
+ background-color: #ffffff; /* border: 1px solid #f9bc97cb; */ border-radius: 12px; 
+ box-shadow: 1px 1px 8px 0px #66333330; } 
+ .coupon-area.center{ 
+ display: flex; 
+ justify-content: center; }
+  /* === 通用券卡樣式 === */
+   .coupon-card {
+  display: flex;
+  background: #1e1e1e;
+  color: #fff;
   border-radius: 8px;
-  color: #f1f1f1;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-
-/* 標題 */
-.coupon-area h2 {
-  color: #4a8f36;
-  border-bottom: 3px solid #4a8f36;
-  display: inline-block;
-  padding-bottom: 6px;
-  margin-bottom: 24px;
-}
-
-/* 歡迎文字 */
-.coupon-area .welcome {
-  font-size: 1.1rem;
-  margin-bottom: 24px;
-  color: #333;
-  text-align: center;
-}
-
-/* 折價券清單容器 */
-.coupon-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* 每一張折價券卡片 */
-.coupon-card {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin: 16px 0;
   overflow: hidden;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  border-left: 8px solid #4a8f36; /* 預設綠邊 */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .coupon-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
+ 
 
-/* 折價券左側資訊區 */
-.coupon-info {
-  flex: 1;
-  padding: 18px 24px;
-}
+    .coupon-left {
+      background: linear-gradient(145deg, #7cc74f, #4ca72b);
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
 
-.coupon-info h3 {
-  font-size: 1.25rem;
-  color: #333;
-  margin-bottom: 6px;
-}
+    .coupon-left.blue {
+      background: linear-gradient(145deg, #1d73e8, #1559b1);
+    }
 
-.coupon-info p {
-  margin: 4px 0;
-  color: #666;
-  font-size: 0.95rem;
-}
+    .discount-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #fff;
+    }
 
-/* 折價券右側狀態 */
-.coupon-status {
-  text-align: center;
-  padding: 20px;
-  min-width: 120px;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
+    .discount-label {
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #f5f5f5;
+    }
 
-/* 狀態樣式 */
-.status-unused {
-  color: #28a745;
-  border-left: 8px solid #28a745;
-}
+    .coupon-right {
+      flex: 1;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-.status-used {
-  color: #6c757d;
-  border-left: 8px solid #6c757d;
-  opacity: 0.8;
-}
+    .coupon-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-.status-expired {
-  color: #dc3545;
-  border-left: 8px solid #dc3545;
-  opacity: 0.8;
-}
+    .coupon-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
 
-/* 無資料 */
-.empty {
-  text-align: center;
-  color: #777;
-  font-style: italic;
-  margin-top: 40px;
-}
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #fff;
+    }
 
-/* 返回連結 */
-.back-link {
-  display: inline-block;
-  margin-top: 40px;
-  text-decoration: none;
-  color: #4a8f36;
-  border: 1px solid #4a8f36;
-  padding: 8px 18px;
-  border-radius: 6px;
-  transition: all 0.2s;
-}
+    .badge.active { background: #198754; }
+    .badge.used { background: #6c757d; }
+    .badge.expired { background: #dc3545; }
 
-.back-link:hover {
-  background-color: #4a8f36;
-  color: #fff;
-}
+    .coupon-desc {
+      font-size: 0.9rem;
+      color: #ddd;
+      margin: 6px 0;
+    }
+
+    .coupon-expire {
+      color: #ffcc00;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .coupon-actions {
+      margin-top: 3px;
+    }
+
+    .btn-use {
+    display: inline-block;
+      background: #e63946;
+      color: #fff;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn-use:hover {
+      background: #c82333;
+    }
+
+    .text-center { text-align: center; }
+    .text-muted { color: #999; }
+    .mt-5 { margin-top: 40px; }
