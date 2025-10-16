@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理後台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #FEFBF6; }
+        .dashboard-card { background-color: white; padding: 2.5rem; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .btn {
+            display: block; width: 100%; text-align: center; padding: 1rem;
+            border-radius: 0.5rem; font-weight: 600;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .btn-enabled {
+             background-color: #e65c2d; color: white;
+        }
+        .btn-enabled:hover {
+            background-color: #ff7b42; transform: translateY(-2px); box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+        }
+        .btn-disabled {
+            background-color: #e5e7eb; color: #9ca3af; cursor: not-allowed;
+        }
+        .section-title {
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e65c2d;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #374151;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="dashboard-card w-full max-w-5xl">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800">歡迎回來, <span th:text="${adminName}">管理員</span>！</h1>
+            <p class="mt-2 text-gray-500">請選擇您要執行的管理作業</p>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- *** 核心修改：新增一個獨立的「網站總管理」區塊 *** -->
+        <!-- ========================================================= -->
+        <div th:if="${permissions.contains('網站總管理')}" class="mt-8">
+            <h2 class="section-title">網站總管理</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+                <a th:href="@{/admin/list}" class="btn btn-enabled">管理員列表</a>
+                <a th:href="@{/func/list}" class="btn btn-enabled">功能權限列表</a>
+                <a th:href="@{/admin/permissions}" class="btn btn-enabled">角色權限設定</a>
+            </div>
+        </div>
+
+
+        <!-- 其他管理功能區塊 -->
+        <div class="mt-8">
+            <h2 class="section-title">其他管理功能</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+                <div th:each="buttonEntry : ${managementButtons}">
+                    <!-- 如果有權限，就產生一個可以點擊的 <a> 標籤 -->
+                    <a  th:if="${permissions.contains(buttonEntry.value[1])}"
+                        th:href="@{${buttonEntry.value[0]}}" 
+                        th:text="${buttonEntry.key}"
+                        class="btn btn-enabled">
+                    </a>
+                    
+                    <!-- 如果沒有權限 (unless)，就產生一個看起來一樣但不能點擊的 <span> 標籤 -->
+                    <span th:unless="${permissions.contains(buttonEntry.value[1])}"
+                          th:text="${buttonEntry.key}"
+                          class="btn btn-disabled">
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center">
+            <form th:action="@{/auth/logout}" method="post">
+                <button type="submit" class="w-full sm:w-auto px-10 py-3 bg-gray-600 text-white rounded-md font-semibold hover:bg-gray-700 transition">登出</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理員登入</title>
+    <!-- 我們只使用 Tailwind CSS 來美化頁面，不加入任何自訂的 JS 檔案 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #FEFBF6; }
+        .login-card { background-color: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .submit-btn { background-color: #FF7B42; color: white; font-weight: bold; padding: 0.75rem; border-radius: 0.375rem; width: 100%; transition: background-color 0.3s; }
+        .submit-btn:hover { background-color: #e65c2d; }
+        .error-banner { background-color: #fee2e2; color: #b91c1c; padding: 1rem; border-radius: 0.375rem; border: 1px solid #fca5a5; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">小農平台管理後台</h1>
+            <p class="text-gray-500">請登入以繼續</p>
+        </div>
+
+        <div class="login-card">
+            
+            <div th:if="${loginError}" class="error-banner mb-4">
+                <p th:text="${loginError}"></p>
+            </div>
+
+            <!-- 
+              *** 關鍵 ***
+              這是一個標準的 HTML 表單，action 指向後端的登入處理路徑。
+              當按鈕被點擊時，瀏覽器會用最傳統的方式提交資料，
+              並自動處理後端回傳的 "redirect" 指令來跳轉頁面。
+              請確保沒有任何自訂 JavaScript 來干擾這個過程。
+            -->
+            <form class="space-y-6" th:action="@{/auth/login}" method="post">
+                <div>
+                    <label for="account" class="block text-sm font-medium text-gray-700">管理員帳號</label>
+                    <div class="mt-1">
+                        <input id="account" name="account" type="text" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">密碼</label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="submit-btn">
+                        登入
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

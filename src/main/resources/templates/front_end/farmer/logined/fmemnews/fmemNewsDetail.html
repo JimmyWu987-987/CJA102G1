@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
+    <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
     
     <!-- flatpickr CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -46,9 +47,10 @@
     </style>
 </head>
 
-<div th:replace="~{/front_end/index :: header}"></div>
-
 <body style="background-color: #f8f9fa;">
+
+ 	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+	
     <div class="container my-5">
         <div class="news-container">
             <h1 class="news-title" th:text="${news.newsTitle}">消息標題</h1>
@@ -66,7 +68,7 @@
         </div>
     </div>
     
-<div th:replace="~{/front_end/index :: footer}"></div>
+		<div th:replace="~{/front_end/index :: footer}"></div>
     
 </body>
 </html>

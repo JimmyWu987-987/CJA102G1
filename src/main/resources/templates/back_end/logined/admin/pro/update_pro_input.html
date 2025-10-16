@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>修改產品資料</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style type="text/css">
+:root {
+	--sidebar-bg: #f8f9fa;
+	--main-bg: #ffffff;
+	--active-link-bg: #e9ecef;
+	--primary-btn-bg: #6741d9;
+	--primary-btn-hover-bg: #5f3dc4;
+	--text-primary: #212529;
+	--text-secondary: #6c757d;
+	--border-color: #dee2e6;
+	--input-bg: #f8f9fa;
+	--input-readonly-bg: #e9ecef;
+	--error-color: #e03131;
+}
+
+body {
+	margin: 0;
+	font-family: 'Noto Sans TC', sans-serif;
+	background-color: var(--sidebar-bg);
+	color: var(--text-primary);
+}
+
+.container-fluid {
+	display: flex;
+	min-height: 100vh;
+}
+
+.sidebar {
+	width: 260px;
+	background-color: var(--sidebar-bg);
+	padding: 1.5rem;
+	border-right: 1px solid var(--border-color);
+}
+
+.sidebar-header h2 {
+	font-size: 1.2rem;
+	font-weight: 700;
+	margin-bottom: 2rem;
+}
+
+.sidebar-nav ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.sidebar-nav li a {
+	display: flex;
+	align-items: center;
+	padding: 0.8rem 1rem;
+	border-radius: 8px;
+	text-decoration: none;
+	color: var(--text-primary);
+	font-weight: 500;
+	transition: background-color 0.2s;
+}
+
+.sidebar-nav li a:hover {
+	background-color: var(--active-link-bg);
+}
+
+.sidebar-nav li a.active {
+	background-color: var(--active-link-bg);
+	font-weight: 700;
+}
+
+.sidebar-nav li a svg {
+	margin-right: 0.75rem;
+	width: 20px;
+	height: 20px;
+}
+
+.main-content {
+	flex: 1;
+	padding: 2rem 3rem;
+	background-color: var(--main-bg);
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 2rem;
+}
+
+.header h1 {
+	font-size: 1.8rem;
+	font-weight: 700;
+}
+
+.back-link {
+	font-size: 0.9rem;
+	color: var(--text-secondary);
+	text-decoration: none;
+}
+
+.form-wrapper {
+	background-color: var(--main-bg);
+	border-radius: 12px;
+	padding: 2rem;
+	border: 1px solid var(--border-color);
+	max-width: 600px;
+}
+
+.form-group {
+	margin-bottom: 1.5rem;
+}
+
+.form-group label {
+	display: block;
+	font-weight: 500;
+	margin-bottom: 0.5rem;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+	width: 100%;
+	padding: 0.7rem 1rem;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	background-color: var(--input-bg);
+	box-sizing: border-box;
+}
+
+.form-group input:read-only {
+	background-color: var(--input-readonly-bg);
+	cursor: not-allowed;
+}
+
+.form-group .error {
+	color: var(--error-color);
+	font-size: 0.9rem;
+	margin-top: 0.5rem;
+	display: block;
+}
+
+.submit-btn {
+	background-color: var(--primary-btn-bg);
+	color: white;
+	padding: 0.7rem 1.5rem;
+	border: none;
+	border-radius: 8px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	font-size: 1rem;
+}
+
+.submit-btn:hover {
+	background-color: var(--primary-btn-hover-bg);
+}
+
+/* 圖片預覽和上傳欄位的 CSS */
+.image-preview-wrapper {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+.image-preview {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+.file-input {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+</style>
+</head>
+<body>
+
+	<div class="container-fluid">
+		<aside class="sidebar">
+			<div class="sidebar-header">
+				<h2>農產品銷售</h2>
+			</div>
+			<nav class="sidebar-nav">
+				<ul>
+					<li><a th:href="@{/pro/listAllPro}" class="active">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+							<line x1="3" y1="9" x2="21" y2="9"></line>
+							<line x1="9" y1="21" x2="9" y2="9"></line>
+						</svg> 產品
+					</a></li>
+				</ul>
+			</nav>
+		</aside>
+
+		<main class="main-content">
+			<div class="header">
+				<h1>修改產品資料</h1>
+				<a th:href="@{/pro/listAllPro}" class="back-link">← 返回商品清單</a>
+			</div>
+
+			<div class="form-wrapper">
+				<!-- ✅ 表單 action 正確 -->
+				<form th:action="@{/pro/update}" method="post" th:object="${pro}" enctype="multipart/form-data">
+
+					<!-- ✅ 商品編號欄位 (唯讀) -->
+					<div class="form-group">
+						<label>商品編號:</label>
+						<input type="text" th:field="*{proId}" readonly />
+					</div>
+					
+<!-- 					<div class="form-group" th:if="${pro.fmemId != null}"> -->
+<!-- 					    <label>所屬小農編號:</label> -->
+<!-- 					    <input type="text" class="form-control"  -->
+<!-- 					           th:value="${pro.fmemId.fmemId}" readonly /> -->
+<!-- 					    ✅ 隱藏欄位：確保表單提交時傳遞 fmemId -->
+<!-- 					    <input type="hidden" name="fmemId.fmemId" th:value="${pro.fmemId.fmemId}" /> -->
+<!-- 					</div> -->
+
+					<div class="form-group">
+						<label for="proName">商品名稱:</label>
+						<input type="text" id="proName" th:field="*{proName}" />
+						<span th:if="${#fields.hasErrors('proName')}" th:errors="*{proName}" class="error"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="proStock">商品庫存:</label>
+						<input type="text" id="proStock" th:field="*{proStock}" />
+						<span th:if="${#fields.hasErrors('proStock')}" th:errors="*{proStock}" class="error"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="proPrice">商品價格:</label>
+						<input type="text" id="proPrice" th:field="*{proPrice}" />
+						<span th:if="${#fields.hasErrors('proPrice')}" th:errors="*{proPrice}" class="error"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="proStatus">商品狀態:</label>
+						<select id="proStatus" th:field="*{proStatus}">
+							<option value="1">上架</option>
+							<option value="0">下架</option>
+						</select>
+						<span th:if="${#fields.hasErrors('proStatus')}" th:errors="*{proStatus}" class="error"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="proFrom">商品產地:</label>
+						<input type="text" id="proFrom" th:field="*{proFrom}" />
+						<span th:if="${#fields.hasErrors('proFrom')}" th:errors="*{proFrom}" class="error"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="procateid">商品類別:</label>
+						<select id="procateid" th:field="*{procateId.proCateId}">
+							<option value="">請選擇類別</option>
+							<option th:each="category : ${procateListData}"
+								th:value="${category.proCateId}"
+								th:text="${category.proCateName}"></option>
+						</select>
+						<span th:if="${#fields.hasErrors('procateId')}" th:errors="*{procateId}" class="error"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="proDes">商品介紹:</label>
+						<textarea id="proDes" th:field="*{proDes}" rows="4"></textarea>
+						<span th:if="${#fields.hasErrors('proDes')}" th:errors="*{proDes}" class="error"></span>
+					</div>
+					
+
+					<div>
+						<!-- ✅ 移除重複的隱藏欄位，th:field="*{proId}" 已經處理了 -->
+						<button type="submit" id="submit" class="submit-btn">送出修改</button>
+					</div>
+				</form>
+			</div>
+		</main>
+	</div>
+
+</body>
+</html>
