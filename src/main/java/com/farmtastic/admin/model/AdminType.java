@@ -29,7 +29,35 @@ public class AdminType implements Serializable{
 	@Column(name = "admin_type_name")
 	private String adminTypeName;
 	
-    @ManyToMany(fetch = FetchType.EAGER)
+    public Integer getAdminTypeId() {
+		return adminTypeId;
+	}
+
+	public void setAdminTypeId(Integer adminTypeId) {
+		this.adminTypeId = adminTypeId;
+	}
+
+	public String getAdminTypeName() {
+		return adminTypeName;
+	}
+
+	public void setAdminTypeName(String adminTypeName) {
+		this.adminTypeName = adminTypeName;
+	}
+
+	public Set<AdminFunction> getFunctions() {
+		return functions;
+	}
+
+	public void setFunctions(Set<AdminFunction> functions) {
+		this.functions = functions;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	@ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "admin_type_func_list",
             joinColumns = @JoinColumn(name = "admin_type_id"),

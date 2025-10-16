@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
-public class ImageUploader {
+public class adImage {
     
     // 修改成你的資料庫密碼
     private static final String PASSWORD = "minxuan0429";
@@ -16,18 +16,11 @@ public class ImageUploader {
         System.out.println("開始上傳圖片...\n");
         
         // 方式1: 每個 ID 對應不同圖片 (檔名要有數字)
-        // 上傳小農圖片
-        uploadImages("fmem", "UPDATE fmem SET fmem_pic = ? WHERE fmem_id = ?");
+        // 上傳商品廣告圖片
+        uploadImages("pro", "UPDATE pro_ad SET pro_ad_img = ? WHERE pro_ad_id = ?");
         
-        // 上傳商店圖片
-        uploadImages("store", "UPDATE fmem SET store_pic = ? WHERE fmem_id = ?");
-        
-        // 方式2: 用同一張圖上傳到所有 ID
-        // 上傳土地證明圖片
-        uploadSameImage("land/template.png", "UPDATE fmem SET land_pic = ? WHERE fmem_id BETWEEN 1 AND 20");
-        
-        // 上傳上傳農保圖片
-        uploadSameImage("insur/template.png", "UPDATE fmem SET insur_pic = ? WHERE fmem_id BETWEEN 1 AND 20");
+        // 上傳活動廣告圖片
+        uploadImages("act", "UPDATE act_ad SET act_ad_img = ? WHERE act_ad_id = ?");
         
         System.out.println("\n上傳完成！");
     }
@@ -35,7 +28,7 @@ public class ImageUploader {
     private static void uploadImages(String folder, String sql) {
         try {
             // 取得專案路徑下的圖片資料夾
-            File dir = new File("src/main/resources/static/images/sql/" + folder);
+            File dir = new File("src/main/resources/static/images/ad/imgs/" + folder);
             
             if (!dir.exists()) {
                 System.out.println("找不到資料夾: " + folder);
@@ -45,7 +38,8 @@ public class ImageUploader {
             File[] files = dir.listFiles((d, name) -> 
                 name.toLowerCase().endsWith(".jpg") || 
                 name.toLowerCase().endsWith(".png") ||
-                name.toLowerCase().endsWith(".jpeg"));
+                name.toLowerCase().endsWith(".jpeg") ||
+                name.toLowerCase().endsWith(".gif"));
             
             if (files == null || files.length == 0) {
                 System.out.println(folder + ": 沒有圖片");

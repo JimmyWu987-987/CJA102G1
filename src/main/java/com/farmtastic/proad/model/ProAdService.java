@@ -108,7 +108,7 @@ public class ProAdService {
 	//小農繳完商品廣告費(繳完費後進入已繳費及上架中狀態) (上架中狀態要寫排成器,暫時寫死)
     @Transactional
 	public void updatePayAd(ProAdVO proAdVO) {
-//    	proAdVO.setProAdRevStat(5);
+    	proAdVO.setProAdRevStat(5);
 		proAdVO.setProAdRevUpd(Timestamp.from(java.time.Instant.now()));
 		proAdVO.setProAdRevRemark("已繳費");
 		proAdVO.setProAdLaunStat(1);
