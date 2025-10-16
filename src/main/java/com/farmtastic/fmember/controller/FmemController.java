@@ -377,10 +377,17 @@ public class FmemController{
 			model.addAttribute("tempStorePicBase64", tempStorePicBase64);
 		}
 		
+		if(loggedInFmember.getSty().getStyPic() != null) {
+			String tempStyPicBase64 = Base64.getEncoder().encodeToString(loggedInFmember.getSty().getStyPic());
+			model.addAttribute("tempStyPicBase64", tempStyPicBase64);
+			System.out.println("dddddd");
+		}
+		
 		UpdateStoreFmem updateStoreFmem = new UpdateStoreFmem();
 		BeanUtils.copyProperties(loggedInFmember, updateStoreFmem);
 		
 		updateStoreFmem.setStyNo(loggedInFmember.getSty().getStyNo()); //sty
+		
 		
 		model.addAttribute("updateStoreFmem", updateStoreFmem);
 		return "/front_end/farmer/logined/fmemProfile/fmemUpdateStore";
