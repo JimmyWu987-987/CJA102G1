@@ -35,6 +35,7 @@ import com.farmtastic.proad.model.ProAdService;
 import com.farmtastic.proad.model.ProAdVO;
 import com.farmtastic.pro.model.Pro;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -207,10 +208,11 @@ public class ProAdController {
     
  // 小農付款：直接呼叫 LINE Pay Sandbox API
     @GetMapping("fmem/proAd/pay")
-    public String showFarmerPayView(Model model,@RequestParam Integer proAdId) throws Exception {
+    public String showFarmerPayView(Model model,@RequestParam Integer proAdId,HttpServletRequest request) throws Exception {
         ProAdVO vo = proAdService.getOneProAd(proAdId);  // 取得廣告資料
         model.addAttribute("proAdVO",vo);
         // ===== 1. 組出 LINE Pay 的請求內容 =====
+        String dynamicUrl = request.getScheme() +"://"+request.getServerName()+":"+request.getServerPort();
         String body = """
         		{
         		  "amount": %d,
@@ -227,11 +229,11 @@ public class ProAdController {
         		    }]
         		  }],
         		  "redirectUrls": {
-        		    "confirmUrl": "https://farmtastic.ddns.net/fmem/proAd/return?proAdId=%d",
-        		    "cancelUrl": "https://farmtastic.ddns.net/fmem/proAd/cancel"
+        		    "confirmUrl": "%s/fmem/proAd/return?proAdId=%d",
+        		  	"cancelUrl": "%s/fmem/proAd/cancel"
         		  }
         		}
-        		""".formatted(vo.getProAdFee(), proAdId, vo.getProAdFee(), vo.getProAdFee(), proAdId);
+        		""".formatted(vo.getProAdFee(), proAdId, vo.getProAdFee(), vo.getProAdFee(), dynamicUrl, proAdId, dynamicUrl);
 
 
         // ===== 2. 簽章 =====
