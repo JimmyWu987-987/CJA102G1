@@ -102,7 +102,11 @@ public class RegService {
 	        regVO.setActCommat(Timestamp.from(java.time.Instant.now()));
 	        repository.save(regVO);
 		}
+		
 
+
+		
+		
 		//管理員查活動完城
 		@Transactional(readOnly = true)
 		public List<RegVO> findByRevStat(Integer regStat){

@@ -49,10 +49,9 @@ public class RegController {
 	    List<RegVO> list = (regRevStat == null)
 	            ? regService.getAll()                 // 沒帶參數：全部
 	            : regService.findByRevStat(regRevStat); // 有帶參數：依狀態過濾
-	    // ✅ 新增：載入所有小農給下拉選單用
 	    model.addAttribute("fmemList", fmemSvc.getAll());
 	    model.addAttribute("listReg", list);
-	    model.addAttribute("regRevStat", regRevStat); // 需要的話前端可用
+	    model.addAttribute("regRevStat", regRevStat); 
 	    return "back_end/logined/reg/adminListAllReg";
 	}
 
@@ -72,16 +71,24 @@ public class RegController {
 		public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId,
 		                                 ModelMap model,
 		                                 HttpSession session) {
+
+		    // 找小農
 		    Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
 		    model.addAttribute("fmemName", fmem.getFmemName());
 		    session.setAttribute("fmemId", fmem.getFmemId());
 
-		    // 下拉選單資料來源
-		    List<Fmem> fmemList = fmemSvc.getAll();
-		    model.addAttribute("fmemList", fmemList);
+		    // 查該小農的訂單
+		    List<RegVO> list = regService.getByFmemId(fmemId);
+		    model.addAttribute("listReg", list);
+
+		    // 下拉選單資料與選中的 fmemId
+		    model.addAttribute("fmemList", fmemSvc.getAll());
+		    model.addAttribute("selectedFmemId", fmemId);
 
 		    return "back_end/logined/reg/adminListAllReg";
 		}
+
+
 	
 	
 	

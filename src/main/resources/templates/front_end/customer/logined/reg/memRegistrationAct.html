@@ -340,11 +340,11 @@ color:#c00;
       const discValue = parseFloat(selectedOption.getAttribute('data-value')); 
 
       // 2. 根據折扣類型計算 *優惠券的實際折抵金額*
-      if (discType === '0') {
+      if (discType === 'FULL_REDUCTION') {
           // 類型 0: 固定金額折抵 (discValue 就是折抵金額)
           couponDiscount = discValue;
           
-      } else if (discType === '1') {
+      } else if (discType === 'PERCENTAGE') {
           // 類型 1: 百分比 (discValue 是折扣比例，例如 0.85)
           // 實際折價額 = 總價 - (總價 * 折扣比例)
           let discountedPrice = total * discValue;
@@ -381,6 +381,43 @@ color:#c00;
 
   // 初始化一次
   calcSummary();
+  
+  // ===== 只負責印出折價券狀態 =====
+  function logCouponState() {
+    const sel = document.getElementById('coupon');
+    const opts = Array.from(sel.options);
+
+    console.log('=== All coupon options ===');
+    opts.forEach((o, i) => {
+      console.log(
+        i,
+        {
+          value: o.value,
+          text: o.text,
+          'data-type': o.dataset.type,
+          'data-value': o.dataset.value
+        }
+      );
+    });
+
+    const so = sel.options[sel.selectedIndex];
+    console.log(
+      '[Selected]',
+      'value=', so.value,
+      'data-type=', so.dataset.type,
+      'data-value=', so.dataset.value,
+      'text=', so.text
+    );
+  }
+
+  // 頁面載入就印一次
+  document.addEventListener('DOMContentLoaded', logCouponState);
+
+  // 換券時也印一次（方便你觀察）
+  document.getElementById('coupon').addEventListener('change', logCouponState);
+  
+  
+  
 </script>
 
 </body>

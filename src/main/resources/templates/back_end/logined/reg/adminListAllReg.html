@@ -7,30 +7,81 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <!-- jquery datatables 設定 -->
-<script th:src="@{/js/dataTable/dataTable.js}"></script>
+<script th:src="@{/js/dataTable/dataTable2.js}"></script>
 
 <title>活動報名訂單列表</title>
 <style>
-body {
-	font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+html body {
+	margin:0;
 	color: #111;
 }
-
-table {
-	width: 100%;
-	border-collapse: collapse;
+body{
+	padding: 0 3%;
 }
+/* body > *{ */
+/* width: 96%; */
+/* } */
+body table.dataTable {
+    width: 100%;
+/*     box-sizing:border-box; */
+    margin: 10px auto;
+    clear: both;
+    border-collapse: separate;
+    border-spacing: 0;
+/*     paddinrgb(248, 200, 7)x; */
+	border-radius:10px;
+	overflow:hidden;
+}
+table.dataTable.no-footer{
+	border:none;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+	padding:10px 10px;
+}
+
 
 th, td {
 	padding: 8px 10px;
-	border-bottom: 1px solid #eee;
 	text-align: center;
 }
 
 thead th {
-	background: #f5f7fa;
+	background: #ffb366;
 	font-weight: 600;
 }
+
+tbody td{
+	background-color:#fff7ed; 
+}
+
+tbody tr:nth-child(even) td{
+  background-color:white;
+}
+
+table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1 {
+    background-color: #fff7ed;
+}
+
+table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1{
+	background-color:white; 
+}
+
+
+#example.length{
+	margin-bottom:10px;
+	
+}
+
+.dataTables_filter{
+	margin-bottom:10px;
+}
+
+tr:hover{
+ background-color:black;
+}
+
+
 
 .badge-ok {
 	background: #e6f4ea;
@@ -77,111 +128,111 @@ thead th {
 .btn:hover {
 	background: #f6f8fa;
 }
+
+/* .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover { */
+/* 	background: black; */
+/* } */
+
+
 </style>
 </head>
 <body th:data-success="${success}">
-<h1 style="text-align:center; margin:12px 0;">查看活動訂單</h1>
+	<h1 style="text-align:center; margin:12px 0;">查看活動訂單</h1>
 	
-	
-	 <form method="post" th:action="@{/selectFmemReg}">
+	<div style="display: flex;gap: 10px;align-items: center; margin-bottom:2px;">
+	<form method="post" th:action="@{/selectFmemReg}">
 	  選擇小農編號：
-	  <select name="fmemId" required>
-	    <option value="" disabled selected>— 請選擇 —</option>
+	  <select name="fmemId" class="btn" required onchange="this.form.submit()">
+	    <option value="" disabled 
+	            th:selected="${selectedFmemId == null}">— 請選擇 —</option>
 	    <option th:each="f : ${fmemList}"
 	            th:value="${f.fmemId}"
-	            th:text="|[${f.fmemId}] ${f.fmemName}|">
+	            th:text="|[${f.fmemId}] ${f.fmemName}|"
+	            th:selected="${selectedFmemId != null and selectedFmemId == f.fmemId}">
 	    </option>
 	  </select>
-	  <input type="submit" value="送出">
-	</form>
-	
-	
-	<div style="display: flex;gap: 10px;align-items: center;">
-	<form id="regFinish" th:action="@{/admin/cashflow/reg/list}" method="get">
-	  <input type="hidden" name="regRevStat" value="3">
-	  <button type="submit" class="btn">查詢尚未撥款</button>
 	</form>
 	</div>
 	
-<table id="example" class="display" style="width:100%">
-  <thead>
-    <tr>
-      <th>訂單ID</th>
-      <th>下單時間</th>
-      <th>狀態</th>
-      <th>會員ID</th>
-      <th>場次ID</th>
-      <th>聯絡人</th>
-      <th>手機</th>
-      <th>人數</th>
-      <th>應付</th>
-      <th>折抵</th>
-      <th>點數折抵(點)</th>
-      <th>實付</th>
-      <th>平台抽成10%</th>
-      <th>回饋點數(點)</th>
-      <th>撥款給小農</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr th:each="r : ${listReg}">
-      <td th:text="${r.regId}"></td>
-      <td>
-      	<span th:text="${#dates.format(r.regAt, 'yyyy-MM-dd HH:mm')}"></span><br>
-      </td>
-
-      <!-- 狀態 badge -->
-      <td>
-        <span th:switch="${r.regStat}">
-		    <span th:case="0" class="badge badge-ok">報名成立(已付款)</span>
-		    <span th:case="1" class="badge badge-cancel">取消報名(待退款)</span>
-		    <span th:case="2" class="badge badge-cancel">已退款</span>
-		    <span th:case="3" class="badge badge-wait">活動已完成(待撥款)</span>
-		    <span th:case="4" class="badge badge-done">已撥款</span>
-		    <span th:case="5" class="badge badge-closed">已結案</span>
-		  </span>
-      </td>
-
-      <td>
-        <a th:href="@{/admin/mem/detail(memId=${r.memId})}" th:text="${r.memId}"></a>
-      </td>
-      <td>
-        <a th:href="@{/admin/ses/detail(sesId=${r.sesId})}" th:text="${r.sesId}"></a>
-      </td>
-
-      <td th:text="${r.regName}"></td>
-      <td th:text="${r.regMob}"></td>
-      <td th:text="${r.regCount}"></td>
-      <td class="money" th:text="|$ ${#numbers.formatInteger(r.regTotal,0,'COMMA')}|"></td>
-      <!-- 折抵總額 = 點數 + 券（title 顯示拆解） -->
-      <td class="money"
-          th:text="|-$ ${#numbers.formatInteger((r.regPointDisc?:0) + (r.regCpnDisc?:0),0,'COMMA')}|"
-          th:title="|點數折抵: ${r.regPointDisc?:0} 點；折價券: $${r.regCpnDisc?:0}|">
-      </td>
-	  <td th:text="${#numbers.formatInteger(r.regPointDisc?:0,0,'COMMA')} + ' 點'"></td>
-      <td class="money strong" th:text="|$ ${#numbers.formatInteger(r.regGrandTotal,0,'COMMA')}|"></td>
-
-      <td class="money strong"
-	    th:text="|$ ${#numbers.formatDecimal(r.regGrandTotal * 0.1, 1, 'COMMA', 0, 'POINT')}|">
-	  </td>
-      <td th:text="${#numbers.formatInteger(r.regPointGet?:0,0,'COMMA')} + ' 點'"></td>
-
-      
-
-   
-		<td>
-		
-		  <form th:if="${r.regStat == 3}" th:action="@{/regMoney}" class= "functions" method="post" >
-		      <input type="hidden" name="regId" th:value="${r.regId}">
-		      <input type="hidden" name="regStat" th:value="${r.regStat}">
-			  <button type="submit" class="btn">撥款</button>
-		  </form>
-		</td>
-    </tr>
-  </tbody>
-  
-  
-</table>
+	<div style="display: flex;gap: 10px;align-items: center; margin-bottom:5px;">
+		<form id="regFinish" th:action="@{/admin/cashflow/reg/list}" method="get">
+		  <input type="hidden" name="regRevStat" value="3">
+		  <button type="submit" class="btn">查詢尚未撥款</button>
+		</form>
+		<form th:if="${regRevStat == 3}"id="proNotReview" th:action="@{/admin/cashflow/reg/list}" method="get" >
+		  <button type="submit" class="btn">查全部</button>
+		</form>
+	</div>
+	
+	<table id="example" class="display">
+	  <thead>
+	    <tr>
+	      <th>訂單ID</th>
+	      <th>下單時間</th>
+	      <th>狀態</th>
+	      <th>聯絡人</th>
+	      <th>人數</th>
+	      <th>應付</th>
+	      <th>折抵</th>
+	      <th>點數折抵(點)</th>
+	      <th>實付</th>
+	      <th>平台抽成10%</th>
+	      <th>回饋點數(點)</th>
+	      <th>撥款給小農</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr th:each="r : ${listReg}">
+	      <td th:text="${r.regId}"></td>
+	      <td>
+	      	<span th:text="${#dates.format(r.regAt, 'yyyy-MM-dd HH:mm')}"></span><br>
+	      </td>
+	
+	      <!-- 狀態 badge -->
+	      <td>
+	        <span th:switch="${r.regStat}">
+			    <span th:case="0" class="badge badge-ok">報名成立(已付款)</span>
+			    <span th:case="1" class="badge badge-cancel">取消報名(待退款)</span>
+			    <span th:case="2" class="badge badge-cancel">已退款</span>
+			    <span th:case="3" class="badge badge-wait">活動已完成(待撥款)</span>
+			    <span th:case="4" class="badge badge-done">已撥款</span>
+			    <span th:case="5" class="badge badge-closed">已結案</span>
+			  </span>
+	      </td>
+	
+	
+	      <td th:text="${r.regName}"></td>
+	      <td th:text="${r.regCount}"></td>
+	      <td class="money" th:text="|$ ${#numbers.formatInteger(r.regTotal,0,'COMMA')}|"></td>
+	      <!-- 折抵總額 = 點數 + 券（title 顯示拆解） -->
+	      <td class="money"
+	          th:text="|-$ ${#numbers.formatInteger((r.regPointDisc?:0) + (r.regCpnDisc?:0),0,'COMMA')}|"
+	          th:title="|點數折抵: ${r.regPointDisc?:0} 點；折價券: $${r.regCpnDisc?:0}|">
+	      </td>
+		  <td th:text="${#numbers.formatInteger(r.regPointDisc?:0,0,'COMMA')} + ' 點'"></td>
+	      <td class="money strong" th:text="|$ ${#numbers.formatInteger(r.regGrandTotal,0,'COMMA')}|"></td>
+	
+	      <td class="money strong"
+		    th:text="|$ ${#numbers.formatDecimal(r.regGrandTotal * 0.1, 1, 'COMMA', 0, 'POINT')}|">
+		  </td>
+	      <td th:text="${#numbers.formatInteger(r.regPointGet?:0,0,'COMMA')} + ' 點'"></td>
+	
+	      
+	
+	   
+			<td>
+			
+			  <form th:if="${r.regStat == 3}" th:action="@{/regMoney}" class= "functions" method="post" >
+			      <input type="hidden" name="regId" th:value="${r.regId}">
+			      <input type="hidden" name="regStat" th:value="${r.regStat}">
+				  <button type="submit" class="btn">撥款</button>
+			  </form>
+			</td>
+	    </tr>
+	  </tbody>
+	  
+	  
+	</table>
 
 
 <!-- 撥款成功跳出 -->

@@ -103,6 +103,7 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	        r.actCommat desc
 	    """)
 	    List<RegVO> findReviewsByActId(@Param("actId") Integer actId);
+
 	    
 	    
 }
