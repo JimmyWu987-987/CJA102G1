@@ -45,19 +45,23 @@
 	                    <label for="">小農商店介紹<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span></label>
 	                    <textarea type="text" th:field="*{storeIntro}"></textarea>
 	                </li>
-	                <li>
-	                    <label for="">小農商店樣式選擇</label>
-	                    <select th:field="*{styNo}">
+	                <li class="list-sty">
+	                    <label for="">小農商店樣式選擇 & 預覽圖</label>
+	                    <select th:field="*{styNo}" class="stySelect">
 	                    	<option value="1">清新色調</option>
 					        <option value="2">大地色調</option>
-<!-- 					        <option value="3">樣式三</option> -->
+					        <option value="3">寧靜色調</option>
 	                    </select>
 	                    
-	                    <label>樣式預覽</label>
-                   		<div class="picBox">
-                   			<img th:if="${tempFmemPicBase64 != null}" 
-                   				 th:src="@{'data:image/jpeg;base64,' + ${tempFmemPicBase64}}"
-                   				 alt="小農頭像">
+                   		<div class="picBox sty">
+                   			<img th:if="${tempStyPicBase64 != null}" 
+                   				 th:src="@{'data:image/jpeg;base64,' + ${tempStyPicBase64}}"
+                   				 alt="樣式預覽圖"
+                   				 class="img-nail">
+                   			
+					    </div>
+					    <div id="img-display">
+					    	<img src="" >
 					    </div>
 	                </li>
 	                
@@ -127,6 +131,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script th:src="@{/js/fmem/uploadPic.js}"></script>
 	<script th:src="@{/js/mem/successUpdateProfileAlert.js}"></script>
+	<script th:src="@{/js/fmem/styPicPreview.js}"></script>
 	
 </body>
 </html>

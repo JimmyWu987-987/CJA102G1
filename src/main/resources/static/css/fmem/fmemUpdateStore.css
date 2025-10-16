@@ -38,4 +38,49 @@ form.userInfo .star-tag{
 	color: #f00;
 }
 
-	
+.userInfo li.list-sty{
+	margin-top: 26px;
+}
+.picBox.sty{
+    border: 1px solid #bcb;
+    margin-top: 6px;
+    cursor: pointer;
+}
+.picBox.sty:hover{
+	transition: .3s ease;
+	border: 1px solid #7a8dda;
+}
+
+
+/*  點擊小圖圖片放大 */
+#img-display{
+    box-sizing: border-box;
+    display: none;
+	position: fixed;
+    top: 5vh;
+    left: 5vw;
+	width: 90vw;
+	height: 90vh;
+    padding: 40px;
+    margin: auto;
+	background-color: #00000085;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+#img-display #close{
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    color: #fff;
+    font-size: 50px;
+}
+#img-display #close:hover{
+    cursor: pointer;
+}
+#img-display img{
+    max-width: 100%;
+	max-height: 100%;
+    border-radius: 10px;
+}

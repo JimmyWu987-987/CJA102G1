@@ -58,7 +58,7 @@ form.userInfo{
 }
 
 form.userInfo h3{
-    font-size: 22px;
+    font-size: var(--subtitle-font-size);
     margin-bottom: 20px;
     text-align: center;
 }
