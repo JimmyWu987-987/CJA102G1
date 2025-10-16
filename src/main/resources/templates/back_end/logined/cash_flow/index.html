@@ -12,10 +12,10 @@
 </head>
 <body>
 	<h1>這是金流管理系統首頁</h1>
-	<form method="post" th:action="@{/admin/cashflow/fmemProOrder}">
+	<form method="get" th:action="@{/admin/cashflow/fmemProOrder}">
 		<input type="submit" value="產品訂單金流明細">	
 	</form>
-	
+	<p th:text="${session.fmemId}">
 	<form method="get" th:action="@{reg/list}">
 		<input type="submit" value="活動訂單金流明細">	
 	</form>
