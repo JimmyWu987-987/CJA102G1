@@ -43,9 +43,6 @@ public class MemProCpnFrontendController {
 		model.addAttribute("proCoupons", proCoupons);
 		model.addAttribute("actCoupons", actCoupons);
 
-		System.out.println("🟢 Logged in member: " + loggedInMember);
-		System.out.println("🟢 proCoupons = " + proCoupons.size());
-		System.out.println("🟢 actCoupons = " + actCoupons.size());
 		return "front_end/customer/logined/memcpn/listAllCoupons"; // 對應 Thymeleaf 頁面
 	}
 }

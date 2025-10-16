@@ -29,15 +29,15 @@ public class SpinServiceImp {
 		String key = "spin:user:" + memId;
 
 		// 檢查是否抽過
-		if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(key))) {
-			return "⚠️ 您今天已抽過，請明天再來！";
-		}
+//		if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(key))) {
+//			return "⚠️ 您今天已抽過，請明天再來！";
+//		}
 		// 設定抽獎記錄 + 一天後過期
 		stringRedisTemplate.opsForValue().set(key, "done", 1, TimeUnit.DAYS);
 		// 模擬機率
 		int roll = random.nextInt(100);
 		ProCpnVO coupon = null;
-		if (roll < 5) {
+		if (roll < 90) {
 			coupon = proCpnRepo.findByCpnName("轉盤折200").orElse(null);
 		} else if (roll < 10) {
 			coupon = proCpnRepo.findByCpnName("轉盤折100").orElse(null);
@@ -45,19 +45,18 @@ public class SpinServiceImp {
 			return "沒中獎，再接再厲！";
 		}
 
+		// 中獎 → 記錄在 Redis 暫存區（而非立即進 DB）
 		if (coupon != null) {
 			// 標記今日已抽
 			stringRedisTemplate.opsForValue().set(key, "won", 1, TimeUnit.DAYS);
 
-			// 新增暫存中獎紀錄
+			// 新增暫存中獎紀錄 Key-Value spin: memId pending: coupon.getProCpnId()
 			String prizeKey = "spin:pending:" + memId + ":" + coupon.getProCpnId();
 			stringRedisTemplate.opsForValue().set(prizeKey, coupon.getCpnName());
 
-			return "🎉 恭喜獲得：" + coupon.getCpnName() + "（已登錄，稍後發券）";
-			// 用原本的發券方法
-			// memProCpnService.giveCoupon(memId, coupon.getProCpnId());
-			// return "恭喜獲得：" + coupon.getCpnName();
+			return "恭喜獲得：" + coupon.getCpnName() + "（已登錄，稍後發券）";
 		}
+
 		return "沒中獎，再接再厲！";
 	}
 }
