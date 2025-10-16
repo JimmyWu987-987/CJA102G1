@@ -103,7 +103,9 @@ public class FmemController{
 			if(fmem.getFmemPic() == null || 
 			   fmem.getStorePic() == null || 
 			   fmem.getLandPic() == null || 
-			   fmem.getInsurPic() == null) {
+			   fmem.getInsurPic() == null ||
+			   fmem.getStoreName() == null ||
+			   fmem.getStoreIntro() == null){
 				
 				return "/front_end/farmer/logined/homeNotOpen";
 			}
@@ -153,13 +155,6 @@ public class FmemController{
 	
 	@GetMapping("/fmemArea")
 	public String fmemArea(HttpSession session, ModelMap model) {
-		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
-		
-//		 處理商店樣式
-//		Byte styNo = loggedInFmember.getStyNo();
-//		Sty sty = stySvc.getOneByStyNo(styNo);
-//		session.setAttribute("sty", sty);
-		///////////////////////
 		
 		return "/front_end/farmer/logined/fmemArea";
 	}
