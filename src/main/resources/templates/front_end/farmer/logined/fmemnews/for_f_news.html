@@ -70,7 +70,7 @@
                     <tr th:each="news : ${farmerNewsList}">
                         <td th:text="${#temporals.format(news.newsAt, 'yyyy/MM/dd')}"></td>
                         <td>
-                            <a th:href="@{/news/{id}(id=${news.id})}" class="news-title-link" th:text="${news.newsTitle}"></a>
+                            <a th:href="@{/fmem/news/{id}(id=${news.id})}" class="news-title-link" th:text="${news.newsTitle}"></a>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(farmerNewsList)}">

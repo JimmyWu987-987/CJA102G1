@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">管理員表單</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #FEFBF6; }
+        .content-card { background-color: white; padding: 2.5rem; border-radius: 0.75rem; margin-top: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .form-input { margin-top: 0.25rem; display: block; width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; }
+        .back-btn { display: inline-block; background-color: #6b7280; color: white; padding: 0.6rem 1rem; border-radius: 0.375rem; text-decoration: none; }
+        .save-btn { display: inline-block; background-color: #FF7B42; color: white; padding: 0.6rem 1.5rem; border-radius: 0.375rem; text-decoration: none; border: none; cursor: pointer; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800" th:text="${pageTitle}">新增/修改管理員</h1>
+        
+        <div class="content-card">
+            <form th:action="@{/admin/save}" th:object="${admin}" method="post" class="space-y-6">
+                <input type="hidden" th:field="*{adminId}" />
+
+                <!-- ... 其他欄位如帳號、密碼、姓名等 ... -->
+                <div>
+                    <label for="adminAcc" class="block text-sm font-medium text-gray-700">帳號</label>
+                    <input type="text" th:field="*{adminAcc}" id="adminAcc" class="form-input">
+                </div>
+                <div>
+                    <label for="adminPwd" class="block text-sm font-medium text-gray-700">密碼 (若不修改請留白)</label>
+                    <input type="password" th:field="*{adminPwd}" id="adminPwd" class="form-input">
+                </div>
+                <div>
+                    <label for="adminName" class="block text-sm font-medium text-gray-700">姓名</label>
+                    <input type="text" th:field="*{adminName}" id="adminName" class="form-input">
+                </div>
+                <div>
+                    <label for="adminEmail" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" th:field="*{adminEmail}" id="adminEmail" class="form-input">
+                </div>
+                <div>
+                    <label for="adminMobile" class="block text-sm font-medium text-gray-700">手機</label>
+                    <input type="tel" th:field="*{adminMobile}" id="adminMobile" class="form-input">
+                </div>
+
+<!--                 <div>
+                    <label for="adminType" class="block text-sm font-medium text-gray-700">管理員類型</label>
+                    
+                      *** 關鍵修正 ***
+                      th:field="*{adminType}" 會將整個 <select> 標籤與 admin 物件中的 adminType 屬性綁定。
+                      Thymeleaf 會自動處理：
+                      1. 迭代 allAdminTypes 列表來生成選項。
+                      2. 當 admin 物件的 adminType 不為 null 時 (修改模式)，自動選中對應的選項。
+                   
+                    <select th:field="*{adminType}" id="adminType" class="form-input">
+                        <option value="">-- 請選擇 --</option>
+                        <option th:each="type : ${allAdminTypes}" 
+                                th:value="${type.adminTypeId}" 
+                                th:text="${type.adminTypeName}">
+                        </option>
+                    </select>
+                </div> -->
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">狀態</label>
+                    <div class="mt-2 space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" th:field="*{adminStatus}" value="1" class="form-radio">
+                            <span class="ml-2">啟用</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" th:field="*{adminStatus}" value="0" class="form-radio">
+                            <span class="ml-2">停用</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3">
+                    <a th:href="@{/admin/list}" class="back-btn">取消</a>
+                    <button type="submit" class="save-btn">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

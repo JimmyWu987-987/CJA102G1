@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理員權限設定</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #FEFBF6; }
+        .content-card { background-color: white; padding: 1.5rem; border-radius: 0.75rem; margin-top: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .back-btn { display: inline-block; margin-top: 2rem; background-color: #6b7280; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; transition: background-color 0.2s; }
+        .back-btn:hover { background-color: #4b5563; }
+        .save-btn { background-color: #e65c2d; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; transition: background-color 0.2s; }
+        .save-btn:hover { background-color: #ff7b42; }
+        .alert { padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; }
+        .alert-success { background-color: #d1fae5; color: #065f46; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800">管理員權限設定</h1>
+
+        <!-- 成功/失敗訊息提示框 -->
+        <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success mt-4"></div>
+        <div th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error mt-4"></div>
+
+        <!-- 迭代所有管理員類型，為每一個類型建立一個獨立的表單 -->
+        <div th:each="adminType : ${adminTypes}" class="content-card">
+            <form th:action="@{/admin/permissions/update}" method="post">
+                <!-- 隱藏欄位，用來傳送是哪個 adminType 被修改 -->
+                <input type="hidden" name="typeId" th:value="${adminType.adminTypeId}" />
+
+                <h2 class="text-xl font-semibold text-gray-700 mb-4" th:text="${adminType.adminTypeName}"></h2>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <!-- 迭代所有可用的功能權限，生成 checkbox -->
+                    <div th:each="func : ${allFunctions}" class="flex items-center">
+                        <input type="checkbox" name="functionIds" th:value="${func.adminFuncId}"
+                               th:id="|func_${adminType.adminTypeId}_${func.adminFuncId}|"
+                               class="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                               th:checked="${#sets.contains(adminType.functions.![adminFuncId], func.adminFuncId)}">
+                        <label th:for="|func_${adminType.adminTypeId}_${func.adminFuncId}|" 
+                               th:text="${func.adminFuncName}"
+                               class="ml-2 block text-sm text-gray-900"></label>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-right">
+                    <button type="submit" class="save-btn">儲存 <span th:text="${adminType.adminTypeName}"></span> 的變更</button>
+                </div>
+            </form>
+        </div>
+
+        <a th:href="@{/managepage}" class="back-btn">返回管理選單</a>
+    </div>
+</body>
+</html>

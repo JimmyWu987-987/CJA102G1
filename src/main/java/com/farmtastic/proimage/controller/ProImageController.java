@@ -93,10 +93,33 @@ public class ProImageController {
 	}
 
 	/**
+	 * ★★★ 更新指定的圖片 ★★★
+	 */
+	@PostMapping("/update")
+	public String updateImage(@RequestParam("proImgId") Long proImgId, @RequestParam("proId") Integer proId,
+			@RequestParam("imageFile") MultipartFile file, RedirectAttributes redirectAttributes) {
+
+		if (file.isEmpty()) {
+			redirectAttributes.addFlashAttribute("errorMessage", "更新失敗，您沒有選擇新的圖片檔案。");
+			return "redirect:/pro-images/manage/" + proId;
+		}
+
+		try {
+			byte[] newImageBytes = file.getBytes();
+			proImageService.updateProImage(proImgId, newImageBytes);
+			redirectAttributes.addFlashAttribute("successMessage", "圖片更新成功！");
+		} catch (IOException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", "檔案讀取失敗，更新終止。");
+		} catch (Exception e) {
+			// 捕捉 Service 層可能拋出的找不到圖片的例外
+			redirectAttributes.addFlashAttribute("errorMessage", "更新失敗：" + e.getMessage());
+		}
+
+		return "redirect:/pro-images/manage/" + proId;
+	}
+
+	/**
 	 * 刪除指定的圖片
-	 * 
-	 * @param proImgId 要刪除的圖片ID
-	 * @param proId    該圖片所屬的產品ID，用於刪除後跳轉回原頁面
 	 */
 	@PostMapping("/delete")
 	public String deleteImage(@RequestParam("proImgId") Long proImgId, @RequestParam("proId") Integer proId,
