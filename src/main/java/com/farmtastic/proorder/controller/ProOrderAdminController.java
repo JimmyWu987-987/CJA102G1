@@ -24,7 +24,7 @@ import com.farmtastic.proorderitem.model.ProOrderItemVO;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/admin/cashflow")
+@RequestMapping("/")
 public class ProOrderAdminController {
 	
 	// 每筆訂單的抽成百分筆
@@ -38,14 +38,14 @@ public class ProOrderAdminController {
 	FmemService fmemSvc;
 	
 	// 金流管理首頁
-	@GetMapping("/")
-	public String index(Model model) {
+	@GetMapping("admin/cashflow")
+	public String index() {
 		
 		return "/back_end/logined/cash_flow/index.html";
 	}
 
 	// 查詢全部訂單
-	@GetMapping("listAllProOrder")
+	@GetMapping("admin/cashflow/listAllProOrder")
 	public String listAll(Model model) {
 		
 		
@@ -97,7 +97,7 @@ public class ProOrderAdminController {
 	}
 
 	// 查詢單筆訂單
-	@PostMapping("listOneProOrder")
+	@PostMapping("admin/cashflow/listOneProOrder")
 	public String listOneProOrder(@RequestParam("proOrdId") String proOrdId, ModelMap model) {
 
 		if (proOrdId == null || proOrdId.trim().isEmpty()) {
@@ -117,7 +117,7 @@ public class ProOrderAdminController {
 	}
 	
 	// 金流系統首頁導向搜尋商品訂單的功能
-	@PostMapping("fmemProOrder")
+	@PostMapping("admin/cashflow/fmemProOrder")
 	public String cashFlowIndexToSelectFmemProOrder(ModelMap model) {
 		
 		model.addAttribute("fmemProOrder", "fmemProOrder");
@@ -130,7 +130,7 @@ public class ProOrderAdminController {
 	}
 	
 	// 搜尋該小農的全部訂單
-	@PostMapping("selectFmemProOrder")
+	@PostMapping("admin/cashflow/selectFmemProOrder")
 	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, 
 			ModelMap model,
 			HttpSession session) {
