@@ -460,13 +460,13 @@
 								th:case="*"></span>
 							</span>
 						</div>
-						<div th:if="${proOrderVO.memProCpnVO}" class="info-item">
-							<span>商品折價卷流水號:</span> <span
-								th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span>
-						</div>
-						<div th:unless="${proOrderVO.memProCpnVO}" class="info-item">
-							<span>商品折價卷流水號:</span><span>無/未使用</span>
-						</div>
+                        <div class="info-item" th:if="${proOrderVO.memProCpnVO}">
+                            <span>折價卷名稱:</span> <span
+                                th:text="${proOrderVO.memProCpnVO.proCpnVO.cpnName}"></span>
+                        </div>
+                        <div class="info-item" th:unless="${proOrderVO.memProCpnVO}">
+                            <span>折價卷名稱:</span><span>無/未使用</span>
+                        </div>
 						<div class="info-item">
 							<span>目前訂單狀態:</span> <span th:switch="${proOrderVO.proOrdStatus}">
 								<span th:case="0">成立訂單</span> <span th:case="1">取消訂單(未出貨)</span>
