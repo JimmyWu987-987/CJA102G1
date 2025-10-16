@@ -180,7 +180,7 @@ color:#c00;
 </head>
 
 <body>
- <form th:action="@{actReg}" method="post" th:object="${regVO}">
+ <form th:action="@{actReg}" method="post" th:object="${regVO}" target="_top">
   <div class="field">
     <div class="title">活動付款頁面</div>
     <div class="content">
@@ -291,7 +291,9 @@ color:#c00;
             <img src="/images/reg/LinePay.png" alt="LinePay" class="pay-img">
           </label>
         </div>
-        <input type="submit" value="前往付款" class="pay-btn" style="display:block; margin: 12px auto 0;">
+         <button type="submit" class="pay-btn" style="display:block; margin:12px auto 0;">
+	      前往付款
+	    </button>
 
       </div>
      </div>
@@ -381,42 +383,6 @@ color:#c00;
 
   // 初始化一次
   calcSummary();
-  
-  // ===== 只負責印出折價券狀態 =====
-  function logCouponState() {
-    const sel = document.getElementById('coupon');
-    const opts = Array.from(sel.options);
-
-    console.log('=== All coupon options ===');
-    opts.forEach((o, i) => {
-      console.log(
-        i,
-        {
-          value: o.value,
-          text: o.text,
-          'data-type': o.dataset.type,
-          'data-value': o.dataset.value
-        }
-      );
-    });
-
-    const so = sel.options[sel.selectedIndex];
-    console.log(
-      '[Selected]',
-      'value=', so.value,
-      'data-type=', so.dataset.type,
-      'data-value=', so.dataset.value,
-      'text=', so.text
-    );
-  }
-
-  // 頁面載入就印一次
-  document.addEventListener('DOMContentLoaded', logCouponState);
-
-  // 換券時也印一次（方便你觀察）
-  document.getElementById('coupon').addEventListener('change', logCouponState);
-  
-  
   
 </script>
 

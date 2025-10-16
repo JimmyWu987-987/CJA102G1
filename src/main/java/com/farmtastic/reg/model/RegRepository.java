@@ -1,16 +1,14 @@
 package com.farmtastic.reg.model;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.farmtastic.act.model.Act;
 import com.farmtastic.memactcpn.model.MemActCpnVO;
-import com.farmtastic.proad.model.ProAdVO;
-import com.farmtastic.ses.model.Ses;
 
 public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	// 管理員查詢活動訂單全部
@@ -33,10 +31,10 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	// 消費者查詢活動訂單
 	    List<RegVO> findAllByMemIdOrderByRegIdDesc(Integer memId);
 	    
-	    
+	 // 更換折價券的寫法
 	// 消費者報名活動時折價卷顯示
-	    @Query("SELECT m FROM MemActCpnVO m WHERE m.memVO.memId = :memId AND m.usedAt IS NULL AND m.effEnd >= CURRENT_DATE")
-	    List<MemActCpnVO> findAvailableCouponsByMemId(@Param("memId") Integer memId);
+//	    @Query("SELECT m FROM MemActCpnVO m WHERE m.memVO.memId = :memId AND m.usedAt IS NULL AND m.effEnd >= CURRENT_DATE")
+//	    List<MemActCpnVO> findAvailableCouponsByMemId(@Param("memId") Integer memId);
 
 	// 消費者報名活動時點數顯示
 	    @Query("SELECT m.memPoint FROM Mem m WHERE m.memId = :memId") 
@@ -103,7 +101,6 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	        r.actCommat desc
 	    """)
 	    List<RegVO> findReviewsByActId(@Param("actId") Integer actId);
-
 	    
 	    
 }
