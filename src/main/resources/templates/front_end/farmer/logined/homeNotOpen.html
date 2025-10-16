@@ -13,6 +13,14 @@
 	
 	<link rel="stylesheet" th:if="${session.loggedInFmember.sty}" th:href="@{${session.loggedInFmember.sty.styCssPath}}">
 
+	<style>
+		.container-not-open{
+			font-size: 28px;
+			color: #443;
+			text-align: center;
+			margin-top: 50px;
+		}
+	</style>
 
 </head>
 <body>
@@ -61,7 +69,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a th:href="@{/fmem/fmemArea/updateProfilePage}" class="link btn">會員中心</a>
+                    <a th:href="@{/fmem/fmemArea}" class="link btn">會員中心</a>
                     <ul th:fragment="fmemAreaLink">
                         <li><a th:href="@{/fmem/fmemArea/updateProfilePage}">管理個人資料</a></li>
                         <li><a th:href="@{/fmem/fmemArea/updatePasswordPage}">修改密碼</a></li>
@@ -76,8 +84,6 @@
                 	<div th:text="${session.loggedInFmember.fmemName} + '，'"></div>
                 	<div>您好</div>
                 </div>
-<!--                 <a th:if="${session.loggedInFmember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a> -->
-				
 				
                 <a th:href="@{/fmem/forfnews}" th:if="${session.loggedInFmember} != null" class="member-logo link btn bell">
                 	<i class="fa-solid fa-bell"></i>
@@ -97,68 +103,11 @@
 
 <!-- --------------------------------------------------------------------- -->
     
-    <div class="container container-fbanner" th:fragment="fbanner">
-        <div class="fbanner">
-        	<div class="mask"></div>
-            <img th:src="'data:image/jpeg;base64,' + ${StorePicBase64}" alt="farmer-banner">
-
-            <div class="text">
-                <h2 class="store-name" th:text="${fmem.storeName}"></h2>
-                <p class="store-intro" th:text="${fmem.storeIntro}"></p>
-	            <div class="info">
-	                <span th:if="${fmem.fmemEmail}">信箱: <span th:text="${fmem.fmemEmail}"></span></span>
-<!-- 	                <span>電話: 03-4259888</span> -->
-	                <span th:if="${fmem.fmemAddr}">地址: <span th:text="${fmem.fmemAddr}"></span></span>
-	            </div>
-            </div>
-            
-            <div class="avatar">
-        		<img th:src="'data:image/jpeg;base64,' + ${fmemPicBase64}" alt="avatar">
-        	</div>
-        </div>
-    </div>
-
-    <div class="container container-main">
-        <div class="store-sidebar" th:fragment="sidebar">
-            <h3>分類</h3>
-            <ul th:fragment="memAreaLink">
-                <li><a th:href="@{/fmem/home}">所有商品</a></li>
-                <li><a th:href="@{/fmem/homeAct}">所有活動</a></li>
-            </ul>
-        </div>
-
-        <div class="store-content">
-<!--             <h3>商品</h3> -->
-            <ul class="products">
-            	<p th:if="${proList == null or #lists.isEmpty(proList)}" th:text="目前尚無上架商品" class="no-item-msg"></p>
-<!--                 <li class="product" th:fragment="product"> -->
-                <li class="product" th:each="pro : ${proList}">
-                   	<div class="pic">
-	                    <a href="#">
-	                   		<div class="mask"></div>
-	                   		<div class="tag">熱銷</div>
-<!-- 	                   		<img th:src="'data:image/jpeg;base64, ' + ${pro.proImage?.proImgBase64}" alt="商品圖片"> -->
-	                    </a>
-                   	</div>
-                    <div class="text">
-	                    <a href="#">
-	                        <div th:text="${pro.proName}" class="name"></div>
-	                        <div class="price">
-	                            <span class="prefix">$</span>
-	                            <span th:text="${pro.proPrice}" class="number"></span>
-	                        </div>
-	                    </a>
-                    </div>
-                    
-					<button class="addToCart">加入購物車</button>	                    
-                </li>
-
-                
-            </ul>
-        </div>
+    <div class="container container-not-open">
+        
+        商店尚未啟用，請至 "會員中心/管理商店資料" 完成開店流程。
         
     </div>
-
     
 <!-- --------------------------------------------------------------------- -->
   

@@ -7,12 +7,12 @@
     <link rel="icon" href="./images/logo.png">
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<!--     <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block> -->
 
-	<link rel="stylesheet" th:href="@{/css/mem/farmerStore1ColorNature.css}">
+<!-- 	<link rel="stylesheet" th:href="@{/css/sty/farmerStore1ColorNature.css}"> -->
+<!-- 	<link rel="stylesheet" th:href="@{/css/sty/farmerStore1ColorWarm.css}"> -->
+	<link rel="stylesheet" th:if="${fmem.sty}" th:href="@{${fmem.sty.styCssPath}}">
 	
-    <style>
-        
-    </style>
 </head>
 <body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
 
@@ -76,10 +76,11 @@
 	                    </a>
                     </div>
                     
-                    <form th:action="@{/cart/add}" method="post">
-		                <input type="hidden" name="proId" th:value="${pro.proId}">
+                    <form th:action="@{/cart/add}" method="post" class="addToCartForm" th:data-success="${successAddToCart}">
+		                <input type="hidden" name="proId" th:value="${pro.proId}" class="proId">
 		                <input type="hidden" id="quantity" name="quantity" value="1">
 		                <button type="submit" class="addToCart">加入購物車</button>
+		                <div class="added hidden">已加入購物車</div>
 		            </form>
                 </li>
 
@@ -95,7 +96,7 @@
    
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
-
+	<script th:src="@{/js/mem/addToCartAlert.js}"></script>
     
 </body>
 </html>
