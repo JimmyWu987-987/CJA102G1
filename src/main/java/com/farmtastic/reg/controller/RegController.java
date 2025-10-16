@@ -295,11 +295,6 @@ public class RegController {
         RegVO regVO = regService.getOne(regId);
         // 更新已付款
         regService.updatePayReg(regVO); 
-        
-        // 檢查是否使用了折價券，若有就改狀態
-        if (cpnHolderDetailId != null) {
-            memActCpnService.markUsed(cpnHolderDetailId);
-        }
         redirectAttrs.addFlashAttribute("successMsg", "報名成功！");
         return "redirect:/mem/reg/list";
     }
