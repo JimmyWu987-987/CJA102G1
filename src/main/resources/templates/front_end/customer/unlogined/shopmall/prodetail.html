@@ -201,7 +201,7 @@
             <h1 class="product-title" th:text="${pro.proName}">商品名稱</h1>
             <p class="farmer-info">由 
                 <a th:if="${pro.fmemId != null}" 
-                   th:href="@{/farmer/{id}(id=${pro.fmemId.fmemId})}" 
+                   th:href="@{/mem/farmerStoreProd(fmemId=${pro.fmemId.fmemId})}" 
                    th:text="${pro.fmemId.fmemName}">小農姓名</a>
                 <span th:if="${pro.fmemId == null}">匿名小農</span> 提供
             </p>
