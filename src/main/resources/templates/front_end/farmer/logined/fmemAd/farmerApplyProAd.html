@@ -56,7 +56,7 @@ body {
 /* 圖片區 */
 .box {
 	border: 8px dashed #ccc;
-	margin: 65px 20px 0 20px;
+	margin: auto;
 	max-width: 660px;
 	height: 350px;
 	flex: 1;
@@ -96,10 +96,9 @@ body {
 /* 文字區 */
 .input-right {
 	background-color: white;
-	min-width: 280px;
-	max-width: 280px;
+	min-width: 290px;
+	max-width: 290px;
 	border-radius: 0 2% 2% 0;
-	margin-left: auto;
 	z-index: 4;
 }
 
@@ -168,10 +167,10 @@ input.textNo, select.textNo {
 	top: 60%;
 	left: 60%;
 	transform: translate(-50%, -60%);
-	width: 580px;
+	width: 700px;
 	height: 400px;
 	background: #fff;
-	padding: 18px 30px;
+	padding: 18px 50px;
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	box-shadow: 0 6px 24px;
@@ -418,7 +417,7 @@ openRule.addEventListener('click', (e) => {
 		
     let html = `
       <h4 style="text-align:center;margin:0; font-size:25px">${data.intro}</h4>
-      <p style="text-align:center;margin:6px 0 10px">${data.title}</p>
+      <p style="text-align:center;">${data.title}</p>
 			<ol>${listHtml}</ol>
       `;
     box.innerHTML = html;

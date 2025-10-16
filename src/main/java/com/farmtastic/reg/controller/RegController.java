@@ -18,8 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
-import com.farmtastic.proad.model.ProAdVO;
-import com.farmtastic.proorder.model.FmemOrderSummary;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.reg.model.RegService;
@@ -45,26 +43,24 @@ public class RegController {
 //  ******************************管理員功能**************************************
     //管理員查活動訂單全部
 	@GetMapping("admin/cashflow/reg/list")
-    public String list(Model model,
-    				   @RequestParam(value = "regRevStat", required = false) Integer regRevStat) {
-        model.addAttribute("listReg", regService.getAll());       
-        
-        
-        //查尚未審核
-        if (regRevStat != null) {
-            model.addAttribute("regRevStat", regRevStat);
-            model.addAttribute("listAllProAd",regService.findByRevStat(regRevStat));
-        }
-        
-        
-        
-        return "back_end/logined/reg/adminListAllReg";
-        }
-	
-	@PostMapping("regMoney")
-	public String giveMonetToFmem(@RequestParam("regId") Integer regId,
-								  @RequestParam("regStat") Integer regStat,
-								  RedirectAttributes redirectAttributes ) {
+	public String list(Model model,
+	                   @RequestParam(value = "regRevStat", required = false) Integer regRevStat) {
+
+	    List<RegVO> list = (regRevStat == null)
+	            ? regService.getAll()                 // 沒帶參數：全部
+	            : regService.findByRevStat(regRevStat); // 有帶參數：依狀態過濾
+	    // ✅ 新增：載入所有小農給下拉選單用
+	    model.addAttribute("fmemList", fmemSvc.getAll());
+	    model.addAttribute("listReg", list);
+	    model.addAttribute("regRevStat", regRevStat); // 需要的話前端可用
+	    return "back_end/logined/reg/adminListAllReg";
+	}
+
+		//撥款成功後
+		@PostMapping("regMoney")
+		public String giveMonetToFmem(@RequestParam("regId") Integer regId,
+									  @RequestParam("regStat") Integer regStat,
+									  RedirectAttributes redirectAttributes ) {
 		
 		
 		regService.updateRegStat(regId, regStat);
@@ -72,25 +68,19 @@ public class RegController {
 		return "redirect:/admin/cashflow/reg/list";
 	}
 	
-	// 搜尋該小農的全部訂單
 		@PostMapping("selectFmemReg")
-		public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, 
-				ModelMap model,
-				HttpSession session) {
-			
-			// 取該小農的姓名
-			Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
-			model.addAttribute("fmemName", fmem.getFmemName());
-			
-			// 進入詳細資料，按下回上一頁，保持列表為該小農的商品訂單列表
-			session.setAttribute("fmemId", fmem.getFmemId());
-			
-			// 取該全部小農會員的id，給搜尋特定小農用。
-			List<Fmem> fmemList = fmemSvc.getAll();
-			model.addAttribute("fmemList", fmemList);
-			
-			
-			return "/back_end/logined/cash_flow/index.html";
+		public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId,
+		                                 ModelMap model,
+		                                 HttpSession session) {
+		    Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
+		    model.addAttribute("fmemName", fmem.getFmemName());
+		    session.setAttribute("fmemId", fmem.getFmemId());
+
+		    // 下拉選單資料來源
+		    List<Fmem> fmemList = fmemSvc.getAll();
+		    model.addAttribute("fmemList", fmemList);
+
+		    return "back_end/logined/reg/adminListAllReg";
 		}
 	
 	

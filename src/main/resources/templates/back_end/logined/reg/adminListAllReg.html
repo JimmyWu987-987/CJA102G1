@@ -81,10 +81,24 @@ thead th {
 </head>
 <body th:data-success="${success}">
 <h1 style="text-align:center; margin:12px 0;">查看活動訂單</h1>
-
+	
+	
+	 <form method="post" th:action="@{/selectFmemReg}">
+	  選擇小農編號：
+	  <select name="fmemId" required>
+	    <option value="" disabled selected>— 請選擇 —</option>
+	    <option th:each="f : ${fmemList}"
+	            th:value="${f.fmemId}"
+	            th:text="|[${f.fmemId}] ${f.fmemName}|">
+	    </option>
+	  </select>
+	  <input type="submit" value="送出">
+	</form>
+	
+	
 	<div style="display: flex;gap: 10px;align-items: center;">
-	<form id="regFinish" th:action="@{/admin/reg/list}" method="get" >
-	  <input type="hidden" name="regStat" value="3"> 
+	<form id="regFinish" th:action="@{/admin/cashflow/reg/list}" method="get">
+	  <input type="hidden" name="regRevStat" value="3">
 	  <button type="submit" class="btn">查詢尚未撥款</button>
 	</form>
 	</div>
