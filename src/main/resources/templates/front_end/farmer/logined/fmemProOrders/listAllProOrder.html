@@ -1,175 +1,170 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>小農會員中心</title>
-<link rel="icon" th:href="@{/images/logo.png}">
-
-<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-
-<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-
-<link rel="stylesheet"
-	href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script
-	src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script th:src="@{/js/dataTable/dataTable.js}"></script>
-
-<style>
-		.container-header,
-		.container-footer{
-			background-color: #dce2ef;	
-		}
-		.nav > li > a{
-			background-color: #4F9D9D;
-		}
-		
-		.member-content {
-			padding: 40px 50px 40px;
-		}
-		
-        /* 根據上次的討論，新增會員中心整體居中的 CSS */
-        .container-member {
-            max-width: 1200px; /* 設置內容最大寬度，您可以依需求調整 */
-            margin-left: auto !important; /* 強制居中 */
-            margin-right: auto !important; /* 強制居中 */
-        }
-        
-        /* 訂單列表 h1 標題樣式 */
-        .member-content h1 {
-			font-size: var(--title-font-size);
-			font-weight: bold;
-			color: #555;
-			margin-bottom: 20px;
-			text-align: left; /* 保持靠左，與側邊欄對齊 */
-		}
-		
-		/* 調整 DataTables 搜尋和顯示筆數區塊與 h1 之間的間距 */
-		div.dataTables_wrapper {
-			margin-top: 10px;
-		}
-		
-		/* ----------------------------------- */
-		/* DataTables 外觀優化 (新增) */
-		/* ----------------------------------- */
-
-		/* 確保 DataTables 寬度滿版，並移除預設外框 */
-		#example {
-			width: 100% !important;
-			border-collapse: collapse;
-			border: none;
-		}
-
-		/* 表頭樣式 */
-		#example thead th {
-			background-color: var(--second-color); /* 深綠色 */
-			color: #fff;
-			padding: 12px 15px;
-			border: 1px solid #ddd;
-			text-align: center;
-			font-size: var(--content-font-size);
-			font-weight: bold;
-		}
-
-		/* 表格內文樣式 */
-		#example tbody td {
-			border: 1px solid #eee;
-			font-size: var(--content-font-size);
-			vertical-align: middle; /* 內容垂直置中 */
-			text-align: center;
-			color: #333;
-		}
-
-		/* 斑馬紋效果 */
-		#example tbody tr:nth-child(even) {
-			background-color: #f9f9f9; /* 輕微的灰色，增加可讀性 */
-		}
-		
-		/* 滑鼠懸停效果 */
-		#example tbody tr:hover {
-			background-color: #e6fff0; /* 淺綠色/主題色提示 */
-			cursor: pointer;
-		}
-		
-		/* 調整操作按鈕樣式 (訂單明細按鈕) */
-		#example tbody td form input[type="submit"] {
-			padding: 6px 14px;
-			font-size: 16px;
-			color: #fff;
-			border: none;
-			border-radius: 4px;
-			background-color: var(--btn-color); /* 主題按鈕色 */
-			cursor: pointer;
-			transition: 0.3s;
-		}
-		
-		#example tbody td form input[type="submit"]:hover {
-			background-color: var(--btn-hover-color); /* 主題按鈕懸停色 */
-		}
-
-		/* DataTables 控制區樣式 (搜尋、分頁) */
-
-		/* 調整整體文字顏色 */
-		div.dataTables_wrapper label,
-		div.dataTables_wrapper div.dataTables_info,
-		div.dataTables_wrapper div.dataTables_length,
-		div.dataTables_wrapper div.dataTables_filter {
-			color: #555;
-			font-size: var(--content-font-size);
-		}
-		
-		/* 搜尋框和下拉選單樣式 */
-		div.dataTables_wrapper input[type="search"],
-		div.dataTables_wrapper select {
-			padding: 6px 10px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			margin-left: 8px;
-			font-size: 16px;
-			color: #333;
-		}
-
-		/* 分頁按鈕樣式 */
-		div.dataTables_wrapper .dataTables_paginate .paginate_button {
-			padding: 6px 12px;
-			margin-left: 4px;
-			border: 1px solid #ddd;
-			background-color: #fff;
-			border-radius: 4px;
-			color: var(--btn-color) !important; /* 一般按鈕顏色 */
-			transition: 0.3s;
-		}
-
-		/* 當前頁面或活動按鈕樣式 */
-		div.dataTables_wrapper .dataTables_paginate .paginate_button.current,
-		div.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-			background-color: var(--btn-color) !important;
-			color: #fff !important;
-			border-color: var(--btn-color);
-		}
-		
-		/* 分頁按鈕懸停效果 */
-		div.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-			background-color: #f0f0f0;
-			border-color: #ccc;
-			color: var(--btn-hover-color) !important; /* 懸停色 */
-		}
-		
-		/* 禁用按鈕樣式 */
-		div.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-			color: #ccc !important;
-			background-color: #fff;
-			border-color: #ddd;
-		}
-
-		/* 調整資料表格的容器，讓資訊/分頁與表格有適當間距 */
-		div.dataTables_wrapper div.dataTables_info,
-		div.dataTables_wrapper div.dataTables_paginate {
-			margin-top: 15px;
-		}
-</style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>小農會員中心</title>
+	<link rel="icon" th:href="@{/images/logo.png}">
+	
+	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+	
+	<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+	
+	<link rel="stylesheet"
+		href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	<script th:src="@{/js/dataTable/dataTable.js}"></script>
+	
+	<style>
+			
+			
+			.member-content {
+				padding: 40px 50px 40px;
+			}
+			
+	        /* 根據上次的討論，新增會員中心整體居中的 CSS */
+	        .container-member {
+		        min-width: 768px;
+	            margin-left: auto;
+	            margin-right: auto;
+	        }
+	        /* 訂單列表 h1 標題樣式 */
+	        .member-content h1 {
+				font-size: var(--title-font-size);
+				font-weight: bold;
+				color: #555;
+				text-align: center;
+				margin-bottom: 20px;
+			}
+			
+			/* 調整 DataTables 搜尋和顯示筆數區塊與 h1 之間的間距 */
+			div.dataTables_wrapper {
+				margin-top: 10px;
+			}
+			
+			/* ----------------------------------- */
+			/* DataTables 外觀優化 (新增) */
+			/* ----------------------------------- */
+	
+			/* 確保 DataTables 寬度滿版，並移除預設外框 */
+			#example {
+				width: 100% !important;
+				border-collapse: collapse;
+				border: none;
+			}
+	
+			/* 表頭樣式 */
+			#example thead th {
+				background-color: var(--second-color); /* 深綠色 */
+				color: #fff;
+				padding: 12px 15px;
+				border: 1px solid #ddd;
+				text-align: center;
+				font-size: var(--content-font-size);
+				font-weight: bold;
+			}
+	
+			/* 表格內文樣式 */
+			#example tbody td {
+				border: 1px solid #eee;
+				font-size: var(--content-font-size);
+				vertical-align: middle; /* 內容垂直置中 */
+				text-align: center;
+				color: #333;
+			}
+	
+			/* 斑馬紋效果 */
+			#example tbody tr:nth-child(even) {
+				background-color: #f9f9f9; /* 輕微的灰色，增加可讀性 */
+			}
+			
+			/* 滑鼠懸停效果 */
+			#example tbody tr:hover {
+				background-color: #e6fff0; /* 淺綠色/主題色提示 */
+				cursor: pointer;
+			}
+			
+			/* 調整操作按鈕樣式 (訂單明細按鈕) */
+			#example tbody td form input[type="submit"] {
+				padding: 6px 14px;
+				font-size: 16px;
+				color: #fff;
+				border: none;
+				border-radius: 4px;
+				background-color: var(--btn-color); /* 主題按鈕色 */
+				cursor: pointer;
+				transition: 0.3s;
+			}
+			
+			#example tbody td form input[type="submit"]:hover {
+				background-color: var(--btn-hover-color); /* 主題按鈕懸停色 */
+			}
+	
+			/* DataTables 控制區樣式 (搜尋、分頁) */
+	
+			/* 調整整體文字顏色 */
+			
+			div.dataTables_wrapper label,
+			div.dataTables_wrapper div.dataTables_info,
+			div.dataTables_wrapper div.dataTables_length,
+			div.dataTables_wrapper div.dataTables_filter {
+				color: #555;
+				font-size: var(--content-font-size);
+			}
+			
+			/* 搜尋框和下拉選單樣式 */
+			div.dataTables_wrapper input[type="search"],
+			div.dataTables_wrapper select {
+				padding: 6px 10px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				margin-left: 8px;
+				font-size: 16px;
+				color: #333;
+			}
+	
+			/* 分頁按鈕樣式 */
+			div.dataTables_wrapper .dataTables_paginate .paginate_button {
+				padding: 6px 12px;
+				margin-left: 4px;
+				border: 1px solid #ddd;
+				background-color: #fff;
+				border-radius: 4px;
+				color: var(--btn-color) !important; /* 一般按鈕顏色 */
+				transition: 0.3s;
+			}
+	
+			/* 當前頁面或活動按鈕樣式 */
+			div.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+			div.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+				background-color: var(--btn-color) !important;
+				color: #fff !important;
+				border-color: var(--btn-color);
+			}
+			
+			/* 分頁按鈕懸停效果 */
+			div.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+				background-color: #f0f0f0;
+				border-color: #ccc;
+				color: var(--btn-hover-color) !important; /* 懸停色 */
+			}
+			
+			/* 禁用按鈕樣式 */
+			div.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+				color: #ccc !important;
+				background-color: #fff;
+				border-color: #ddd;
+			}
+	
+			/* 調整資料表格的容器，讓資訊/分頁與表格有適當間距 */
+			div.dataTables_wrapper div.dataTables_info,
+			div.dataTables_wrapper div.dataTables_paginate {
+				margin-top: 15px;
+			}
+	</style>
 
 </head>
 <body>
