@@ -520,7 +520,7 @@ public class ProOrderMemController {
 		if (tempMpcDisc < 0) {
 			model.addAttribute("cpnError", "折價劵折抵金額不能是負數。");
 			hasError = true;
-		} else if (tempMpcDisc > maxDiscAmount) {
+		} else if (tempMpcDisc > maxDiscAmount && tempPointdisc != 0) {
 			model.addAttribute("cpnError", "折價劵折抵金額不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
 			hasError = true;
 		}
