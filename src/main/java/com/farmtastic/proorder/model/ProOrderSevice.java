@@ -11,10 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
-import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
-import com.farmtastic.proorderitem.model.ProOrderItemRepository;
+import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
 @Service
@@ -23,7 +22,7 @@ public class ProOrderSevice {
 	@Autowired
 	ProOrderRepository repository;
 	@Autowired
-	ProOrderItemRepository proOrderItemRepository;
+	ProOrderItemService proOrdItemSvc;
 	@Autowired
 	MemProCpnRepository mpcRepository;
 	@Autowired
@@ -72,6 +71,7 @@ public class ProOrderSevice {
 	// 刪除
 	public void deleteProOrder(Integer proOrdId) {
 		if (repository.existsById(proOrdId)) {
+			proOrdItemSvc.deleteProOrderItem(proOrdId);
 			repository.deleteById(proOrdId);
 		}
 	}

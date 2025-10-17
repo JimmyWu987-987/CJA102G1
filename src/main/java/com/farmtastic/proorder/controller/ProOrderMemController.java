@@ -346,7 +346,9 @@ public class ProOrderMemController {
 		case 1: // LinePay
 			return "redirect:/mem/proorders/linepayview?proOrdId=" + newProOrdId;
 		default: // 未新增訂單
-			return "redirect:/mem/proorders/listAllProOrder";
+			//有其他不明錯誤，直接刪除訂單，重新下單。
+			proOrdSvc.deleteProOrder(newProOrdId);
+			return "redirect:/cart/view";
 		}
 	}
 
@@ -577,3 +579,6 @@ public class ProOrderMemController {
 		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}
 }
+
+	// 功能展示用，重新付款流程
+	// 本專案的業務邏輯，下訂單後一定要先付款，才會有產生訂單資料存回DB
