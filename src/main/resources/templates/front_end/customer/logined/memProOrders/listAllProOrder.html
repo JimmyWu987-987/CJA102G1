@@ -209,18 +209,39 @@ div.dataTables_wrapper {
 							<td><span th:text="${proOrderVO.proOrdGrandTotal}"></span></td>
 
 							<td>
-								<div th:switch="${proOrderVO.proPayStatus}">
-									<span th:case="0">未付款</span> <span th:case="1">已付款</span> <span
-										th:case="*"></span>
+								<div th:if="${proOrderVO.proPayStatus == 0}">
+									<div th:switch="${proOrderVO.proPayStatus}">
+										<span th:case="0">未付款</span> <span th:case="1">已付款</span> <span
+											th:case="*"></span>
+									</div>
 								</div>
+
+
+								<div th:if="${proOrderVO.proPayStatus == 1}">
+									<div th:switch="${proOrderVO.proPayStatus}">
+										<span th:case="0">未付款</span> <span th:case="1">已付款</span> <span
+											th:case="*"></span>
+									</div>
+								</div>
+
+
+
 
 								<div
 									th:if="${proOrderVO.proPayStatus == 0 && proOrderVO.proOrdStatus != 1 && proOrderVO.proOrdStatus <= 4}">
-									<form method="post"
-										th:action="@{/mem/proorders/listOneProOrder}">
-										<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
-										<input type="hidden" name="proPayStatus" th:value="${proOrderVO.proPayStatus}">
-										<input type="submit" value="付款">
+									<form method="post" th:action="@{/mem/proorders/resetpay}">
+
+										<div th:if="${proOrderVO.proPayStatus == 0}">
+											<input type="radio" name="proOrdPayment" value="0" />信用卡 <input
+												type="radio" name="proOrdPayment" value="1" />LinePay
+										</div>
+
+
+										<input type="hidden" name="proOrdId"
+											th:value="${proOrderVO.proOrdId}"> <input
+											type="hidden" name="proPayStatus"
+											th:value="${proOrderVO.proPayStatus}"> <input
+											type="submit" value="付款">
 									</form>
 								</div>
 							<td>
