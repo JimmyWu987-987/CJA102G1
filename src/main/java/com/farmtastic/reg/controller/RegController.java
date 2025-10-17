@@ -326,5 +326,23 @@ public class RegController {
 		model.addAttribute("reviews", regService.getReviewsByActId(actId));
 		return "front_end/customer/unlogined/act/actReview";
 	}
+	
+	// 消費者取消報名
+	@PostMapping("mem/reg/cancel")
+	public String cancelReg(@RequestParam Integer regId,
+	                        @RequestParam Integer regStat, 
+	                        HttpSession session,
+	                        RedirectAttributes ra) {
+	    regService.updateRegStat(regId, regStat); // 將狀態改為 1(待退款)
+	    ra.addFlashAttribute("successMsg", "已申請取消，待退款。");
+	    return "redirect:/mem/reg/list";
+	}
+	
+	
+	
+	
+	
+	
+	
 
 }
