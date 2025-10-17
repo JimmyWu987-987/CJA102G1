@@ -21,6 +21,26 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <style>
+    .myContainer:not(.container-header):not(.container-footer){
+   flex: 1; /*for footer貼到底端*/
+  }
+  .myContainer{
+      width: 100%;
+      margin: 0 auto;
+      min-width: 1200px;
+  /*  outline:1px solid #f00; */
+  }
+  .myContainer:not(.container-banner):not(.container-register){
+      padding-left: 10%;
+      padding-right: 10%;
+  }
+     .myContainer .btn{
+      font-size: var(--link-button-font-size)
+     }
+     .myContainer ol, 
+     .myContainer ul{
+      padding-left: 0;
+     }
         :root {
             --primary-color: #ff7b42;
             --secondary-color: #2a5a2a;
@@ -207,8 +227,8 @@
 		/* 商城廣告區  */   
 		.pro-adarea{
 		  position: relative;
-		  width: 75%;
-		  height: 350px;   
+		  width: 100%;
+		  height: 410px;   
 		  overflow: hidden;
 		  border-radius: 8px;
 		  margin: 0 auto 30px; 
@@ -261,6 +281,7 @@
 		.proad-img{
 		  width: 100%;
 		  height: 100%;
+		  border-radius: 8px;
 		  object-fit: contain;     
 		  display: block;
 		  background:#fff;
@@ -286,7 +307,7 @@
 
     <main class="container mt-4">
         
-        <div class="text-center mb-5">
+        <div class="text-center mb-0">
             <h1 class="fw-bold" style="color: var(--secondary-color);">小農商城</h1>
             <p class="text-muted">新鮮蔬果，產地直送</p>
         </div>
@@ -296,7 +317,7 @@
 		  <div class="owl-carousel owl-theme">
 		    <a class="item"
 		       th:each="adId : ${adIds}"
-		       th:href="@{/mall/proAd/hit/{adId}(adId=${adId})}">
+		       th:href="@{/mall/proAd/{adId}(adId=${adId})}">
 		      <img class="proad-img"
 		           th:src="@{/proAd/img/{id}(id=${adId})}"
 		           th:alt="${'ad-'+adId}">
@@ -431,8 +452,8 @@
         	    items: 1,
         	    loop: true,
         	    autoplay: true,
-        	    autoplayTimeout: 4000,
-        	    smartSpeed: 600,
+        	    autoplayTimeout: 6000,
+        	    smartSpeed: 800,
         	    dots: true,
         	    nav: true,
         	    navText: [

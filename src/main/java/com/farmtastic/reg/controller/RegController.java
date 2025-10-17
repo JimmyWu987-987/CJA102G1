@@ -17,12 +17,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
+import com.farmtastic.memactcpn.model.MemActCpnServiceImp;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.reg.model.RegService;
 import com.farmtastic.reg.model.RegVO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -49,10 +51,9 @@ public class RegController {
 	    List<RegVO> list = (regRevStat == null)
 	            ? regService.getAll()                 // 沒帶參數：全部
 	            : regService.findByRevStat(regRevStat); // 有帶參數：依狀態過濾
-	    // ✅ 新增：載入所有小農給下拉選單用
 	    model.addAttribute("fmemList", fmemSvc.getAll());
 	    model.addAttribute("listReg", list);
-	    model.addAttribute("regRevStat", regRevStat); // 需要的話前端可用
+	    model.addAttribute("regRevStat", regRevStat); 
 	    return "back_end/logined/reg/adminListAllReg";
 	}
 
@@ -72,16 +73,24 @@ public class RegController {
 		public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId,
 		                                 ModelMap model,
 		                                 HttpSession session) {
+
+		    // 找小農
 		    Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
 		    model.addAttribute("fmemName", fmem.getFmemName());
 		    session.setAttribute("fmemId", fmem.getFmemId());
 
-		    // 下拉選單資料來源
-		    List<Fmem> fmemList = fmemSvc.getAll();
-		    model.addAttribute("fmemList", fmemList);
+		    // 查該小農的訂單
+		    List<RegVO> list = regService.getByFmemId(fmemId);
+		    model.addAttribute("listReg", list);
+
+		    // 下拉選單資料與選中的 fmemId
+		    model.addAttribute("fmemList", fmemSvc.getAll());
+		    model.addAttribute("selectedFmemId", fmemId);
 
 		    return "back_end/logined/reg/adminListAllReg";
 		}
+
+
 	
 	
 	
@@ -163,14 +172,14 @@ public class RegController {
     	// 傳遞會員目前的點數餘額
         model.addAttribute("currentPoints", currentPoints);
         
-    	//取得會員折價卷
-    	model.addAttribute("availableCoupons", regService.getCouponsByMemId(mem.getMemId()));
+    	//取得會員折價卷(折價券的寫法)
+        model.addAttribute("availableCoupons", memActCpnService.getValidCpnsByMember(mem.getMemId()));
     	
     	 // 帶到頁報名頁面
         model.addAttribute("actId", actId);
         model.addAttribute("sesId", sesId);
     	
-    	// 同時把 regVO 帶好
+    	// 同時帶 regVO 
     	regVO.setSesId(sesId);
     	regVO.setMemId(mem.getMemId());
     return "front_end/customer/logined/reg/memRegistrationAct";
@@ -178,40 +187,126 @@ public class RegController {
     
     
     
-    //消費者送出報名
+    
+    
+    
+ // 消費者送出報名
     @PostMapping("mem/reg/actReg")
     public String memRegAct(@ModelAttribute("regVO") RegVO regVO,
-    						BindingResult binding,
-    						HttpSession session,
-    						ModelMap model) {
-    	
-    	//-------------錯誤驗證------------------
-        if (regVO.getRegName()==null || regVO.getRegName().isBlank())
-            binding.rejectValue("regName","blank","請輸入姓名!");
-        if (regVO.getRegMob()==null || !regVO.getRegMob().matches("^09\\d{8}$"))
-            binding.rejectValue("regMob","pattern","手機號碼格式錯誤!");
-        if (regVO.getRegMail()==null || !regVO.getRegMail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"))
-            binding.rejectValue("regMail","pattern","Email 格式不正確!");
+                            BindingResult binding,
+                            HttpSession session,
+                            ModelMap model) {
 
-        if (binding.hasErrors()) {               
+        //-------------錯誤驗證------------------
+        if (regVO.getRegName() == null || regVO.getRegName().isBlank())
+            binding.rejectValue("regName", "blank", "請輸入姓名!");
+        if (regVO.getRegMob() == null || !regVO.getRegMob().matches("^09\\d{8}$"))
+            binding.rejectValue("regMob", "pattern", "手機號碼格式錯誤!");
+        if (regVO.getRegMail() == null || !regVO.getRegMail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"))
+            binding.rejectValue("regMail", "pattern", "Email 格式不正確!");
+
+        if (binding.hasErrors()) {
             Mem mem = (Mem) session.getAttribute("loggedInMember");
             loadFormModel(model, regVO.getSesId(), mem.getMemId());
             return "front_end/customer/logined/reg/memRegistrationAct";
         }
-        
-    	if (regVO.getRegPointDisc() == null) {
-            regVO.setRegPointDisc(0); 
-        }
-    	regService.addReg(regVO);
-    return "redirect:/mem/reg/list";
+
+        if (regVO.getRegPointDisc() == null) regVO.setRegPointDisc(0);
+
+        // 回傳 regId
+        RegVO saved = regService.addRegAndReturn(regVO);
+        return "redirect:/mem/reg/pay?regId=" + saved.getRegId(); // 轉去付款
     }
     
     //錯誤時把資料回補
     private void loadFormModel(ModelMap model, Integer sesId, Integer memId) {
         model.addAttribute("sesInfo", regService.getSesInfoBySesId(sesId));
         model.addAttribute("currentPoints", regService.getMemberPoints(memId));
-        model.addAttribute("availableCoupons", regService.getCouponsByMemId(memId));
+        model.addAttribute("availableCoupons", memActCpnService.getValidCpnsByMember(memId));
     }
+    
+    // 消費者付款
+    @GetMapping("mem/reg/pay")
+    public String showMemPayView(@RequestParam Integer regId,
+                                 HttpServletRequest request) throws Exception {
+
+        RegVO vo = regService.getOne(regId); // 取得報名資料
+
+        // ===== 1. 組出 LINE Pay 請求內容 =====
+        String dynamicUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String body = """
+            {
+              "amount": %d,
+              "currency": "TWD",
+              "orderId": "ACTREG-%d",
+              "packages": [{
+                "id": "PKG1",
+                "amount": %d,
+                "name": "活動報名費",
+                "products": [{
+                  "name": "活動報名",
+                  "quantity": 1,
+                  "price": %d
+                }]
+              }],
+              "redirectUrls": {
+                "confirmUrl": "%s/mem/reg/return?regId=%d",
+                "cancelUrl": "%s/mem/reg/cancel"
+              }
+            }
+            """.formatted(vo.getRegGrandTotal(), regId, vo.getRegGrandTotal(), vo.getRegGrandTotal(), dynamicUrl, regId, dynamicUrl);
+
+        // ===== 2. 簽章 =====
+        String base = "https://sandbox-api-pay.line.me";
+        String path = "/v3/payments/request";
+        String nonce = java.util.UUID.randomUUID().toString();
+        String secret = "6e21d7668a02ac0e7f457fbf1bddd4e4";
+        String sig = sign(secret + path + body + nonce);
+        String channelId = "2008230869";
+
+        // ===== 3. 呼叫 LINE Pay Request API =====
+        var client = org.springframework.web.reactive.function.client.WebClient.create();
+        java.util.Map<String, Object> r = client.post().uri(base + path)
+            .header("X-LINE-ChannelId", channelId)
+            .header("X-LINE-Authorization-Nonce", nonce)
+            .header("X-LINE-Authorization", sig)
+            .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .retrieve().bodyToMono(java.util.Map.class).block();
+
+        // ===== 4. 取得付款頁網址並導轉 =====
+        String url = ((java.util.Map)((java.util.Map)r.get("info")).get("paymentUrl")).get("web").toString();
+        return "redirect:" + url;
+    }
+    
+    
+    //活動折價券使用
+    @Autowired
+    private MemActCpnServiceImp memActCpnService;
+    
+ // 更新狀態
+    @GetMapping("mem/reg/return")
+    public String linePayReturn(@RequestParam String transactionId,
+                                @RequestParam String orderId,
+                                @RequestParam Integer regId,
+                                @RequestParam(required = false) Integer cpnHolderDetailId,
+                                RedirectAttributes redirectAttrs) {
+
+        RegVO regVO = regService.getOne(regId);
+        // 更新已付款
+        regService.updatePayReg(regVO); 
+        redirectAttrs.addFlashAttribute("successMsg", "報名成功！");
+        return "redirect:/mem/reg/list";
+    }
+
+    // 簽章組成
+    private String sign(String msg) throws Exception {
+        javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
+        mac.init(new javax.crypto.spec.SecretKeySpec("6e21d7668a02ac0e7f457fbf1bddd4e4".getBytes(), "HmacSHA256"));
+        return java.util.Base64.getEncoder().encodeToString(mac.doFinal(msg.getBytes()));
+    }
+    
+   
     
     
     @GetMapping("act/review")

@@ -180,7 +180,7 @@ color:#c00;
 </head>
 
 <body>
- <form th:action="@{actReg}" method="post" th:object="${regVO}">
+ <form th:action="@{actReg}" method="post" th:object="${regVO}" target="_top">
   <div class="field">
     <div class="title">活動付款頁面</div>
     <div class="content">
@@ -291,7 +291,9 @@ color:#c00;
             <img src="/images/reg/LinePay.png" alt="LinePay" class="pay-img">
           </label>
         </div>
-        <input type="submit" value="前往付款" class="pay-btn" style="display:block; margin: 12px auto 0;">
+         <button type="submit" class="pay-btn" style="display:block; margin:12px auto 0;">
+	      前往付款
+	    </button>
 
       </div>
      </div>
@@ -340,11 +342,11 @@ color:#c00;
       const discValue = parseFloat(selectedOption.getAttribute('data-value')); 
 
       // 2. 根據折扣類型計算 *優惠券的實際折抵金額*
-      if (discType === '0') {
+      if (discType === 'FULL_REDUCTION') {
           // 類型 0: 固定金額折抵 (discValue 就是折抵金額)
           couponDiscount = discValue;
           
-      } else if (discType === '1') {
+      } else if (discType === 'PERCENTAGE') {
           // 類型 1: 百分比 (discValue 是折扣比例，例如 0.85)
           // 實際折價額 = 總價 - (總價 * 折扣比例)
           let discountedPrice = total * discValue;
@@ -381,6 +383,7 @@ color:#c00;
 
   // 初始化一次
   calcSummary();
+  
 </script>
 
 </body>

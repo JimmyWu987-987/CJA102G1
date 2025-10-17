@@ -309,4 +309,16 @@ public class ProAdController {
     public byte[] img(@PathVariable Integer id) {
         return proAdService.getImgBytes(id);
     }
+ // 商城廣告點擊 → 轉導到商品頁
+    @GetMapping("mall/proAd/{adId}")
+    public String redirectAdToProduct(@PathVariable Integer adId) {
+        ProAdVO ad = proAdService.getOneProAd(adId);
+        if (ad == null || ad.getProduct() == null) {
+            // 找不到就回商城首頁或你要的頁面
+            return "redirect:/mall/products";
+        }
+        Integer proId = ad.getProduct().getProId(); // 依你的 VO 取商品ID
+        return "redirect:/mall/product/" + proId;   // 不改商品 controller 的情況下直接轉導
+    }
+
 }
