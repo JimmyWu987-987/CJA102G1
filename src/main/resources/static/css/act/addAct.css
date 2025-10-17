@@ -1,3 +1,4 @@
+/* ---------- 基本樣式 ---------- */
 body {
     font-family: "Noto Sans", sans-serif;
     background-color: #f7f7f7;
@@ -40,6 +41,7 @@ h1.act-title {
     border: 1px solid #ccc;
     border-radius: 6px;
     box-sizing: border-box;
+    font-size: 14px;
 }
 
 .act-add-details textarea {
@@ -56,23 +58,9 @@ h1.act-title {
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.2s ease;
 }
 
 .act-add-details button[type="submit"]:hover {
     background-color: #45a049;
-}
-
-.preview-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.preview-container img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #ccc;
 }
