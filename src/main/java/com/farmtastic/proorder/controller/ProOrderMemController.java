@@ -601,7 +601,7 @@ public class ProOrderMemController {
 		model.addAttribute("mpcList", mpcList);
 
 		// 6. 成功重定向
-		model.addAttribute("successMessage", "折抵" + cpnHolderDetailId + "已更新！" + finalMpcDisc);
+		model.addAttribute("successMessage", "折抵已更新！");
 		// redirectAttributes.addFlashAttribute("successMessage", "未選擇折價卷！");
 		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}

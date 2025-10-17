@@ -1,265 +1,556 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小農商城 - 訂單結帳</title>
+<link rel="icon" href="./images/logo.png">
+
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+
 <style>
-.error-input {
-    border: 2px solid red !important;
-    background-color: #fff5f5;
+/* --- 全域與基礎設定 (與shoppingCart.css統一風格) --- */
+.container-checkout {
+    font-family: 'Helvetica Neue', Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    background-color: var(--bg-color); /* 使用全域變數的淺米色 */
+    color: #333;
+    padding: 40px 0;
+    max-width: 1400px; /* 增加最大寬度 */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-.error {
-    display: block;
+
+.container-checkout h1 {
+    color: #5A8B4C; /* 主色綠色 */
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: bold;
+    border-bottom: 3px solid #5A8B4C;
+    padding-bottom: 10px;
+}
+
+.container-checkout h2 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+/* --- 錯誤與成功訊息 --- */
+.success-message, 
+.error-message {
+    width: 100%;
+    max-width: 1000px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.success-message {
+    background-color: #E8F5E9; /* 淺綠色背景 */
+    color: #2E7D32; /* 深綠色文字 */
+    border: 1px solid #2E7D32;
+}
+
+.error-message {
+    background-color: #FFEBEE; /* 淺紅色背景 */
+    color: #C62828; /* 深紅色文字 */
+    border: 1px solid #C62828;
+}
+
+.error-message-text { /* 表單錯誤訊息文字 */
+    color: #C62828 !important; 
+    font-size: 0.85em; 
+    display: block; 
     margin-top: 5px;
+    text-align: left;
+}
+
+
+/* --- 主要表單區塊佈局 (Flexbox 雙欄) --- */
+.checkout-forms {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1000px; /* 主要內容最大寬度 */
+    gap: 30px;
+}
+
+.main-checkout-form,
+.discount-form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    height: fit-content; /* 讓區塊高度根據內容自動調整 */
+}
+
+.main-checkout-form {
+    flex: 2; /* 主要表單佔比較多空間 */
+}
+
+.discount-form {
+    flex: 1; /* 折抵表單佔較少空間 */
+    order: 2; /* 讓它在右側 */
+}
+
+/* --- 區段樣式 (卡片內的小標題) --- */
+.form-section {
+    margin-bottom: 20px;
+    /* border-bottom: 1px solid #eee; */
+}
+.form-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* --- 表單通用樣式 --- */
+.input-group,
+.info-group > div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.input-group label,
+.info-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+    display: block;
+}
+
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="number"],
+.info-group input[type="text"],
+.discount-form select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-group input:focus,
+.discount-form select:focus {
+    border-color: #5A8B4C; /* 聚焦時使用品牌色 */
+    box-shadow: 0 0 0 3px rgba(90, 139, 76, 0.2);
+    outline: none;
+}
+
+/* 唯讀輸入框樣式 */
+.info-group input[readonly],
+.total-summary input[readonly] {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #666;
+    cursor: default;
+}
+
+/* 錯誤輸入框 */
+.error-input {
+	border: 2px solid #C62828 !important; /* 強調紅色邊框 */
+	background-color: #fff5f5 !important;
+}
+
+/* --- 訂單資訊顯示區 --- */
+.info-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 20px;
+    gap: 15px;
+}
+.info-group span {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    padding: 10px 12px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    height: 40px;
+}
+.info-group > div {
+    margin-bottom: 0;
+}
+
+/* --- 總計區塊 --- */
+.total-summary {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+}
+.summary-item label {
+    font-weight: normal;
+    color: #666;
+}
+.summary-item:last-child {
+    border-bottom: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #5A8B4C; /* 在總金額上方加粗線 */
+}
+.summary-item span {
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+.grand-total label,
+.grand-total span {
+    font-size: 1.4em;
+    color: #C70000; /* 實付金額使用紅色強調 */
+    font-weight: bold;
+}
+.total-summary input[readonly] {
+    text-align: right;
+    width: 100px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    font-weight: inherit;
+    color: inherit;
+    font-size: inherit;
+}
+.total-summary .summary-item span input[readonly] {
+    margin-right: 5px;
+}
+
+
+/* --- 表格樣式美化 (與購物車表格統一) --- */
+.order-items-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.order-items-table th, td {
+    border: none;
+    border-bottom: 1px solid #eee; 
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.order-items-table th {
+    background-color: #f9f9f9; 
+    font-weight: bold;
+    color: #555;
+}
+
+.order-items-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* --- 單選框和下拉選單 --- */
+.radio-group {
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+.radio-group > label:first-child {
+    margin-right: 15px;
+    font-weight: bold;
+}
+.radio-group input[type="radio"] {
+    margin-left: 10px;
+}
+.radio-label {
+    font-weight: normal !important;
+    cursor: pointer;
+    margin-right: 20px;
+    transition: color 0.2s;
+}
+.radio-label:hover {
+    color: #5A8B4C;
+}
+
+.discount-form select {
+    appearance: none; /* 移除瀏覽器預設樣式 */
+    background: white url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%20197.8L146.2%2057%205.4%20197.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+}
+
+.default-info-hint {
+    color: #888;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    font-style: italic;
+    text-align: right;
+}
+
+/* --- 按鈕樣式 --- */
+.submit-button-container,
+.discount-actions,
+.back-to-cart-container {
+    padding-top: 15px;
+    text-align: center;
+}
+
+.container-checkout button {
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 1.1em;
+}
+
+.container-checkout button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 主要送出按鈕 (綠色主色) */
+.main-submit-btn {
+    width: 100%;
+    background-color: #5A8B4C; 
+    color: white;
+    font-size: 1.2em;
+}
+.main-submit-btn:hover {
+    background-color: #4B7A40;
+}
+
+/* 重新計算按鈕 (次要按鈕風格) */
+.recalculate-btn {
+    width: 100%;
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ccc;
+}
+.recalculate-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* 回購物車按鈕 (頁面底部) */
+.back-to-cart-container {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 1000px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+}
+.back-to-cart-btn {
+    background-color: #fff;
+    color: #5A8B4C;
+    border: 1px solid #5A8B4C;
+    font-weight: normal;
+}
+.back-to-cart-btn:hover {
+    background-color: #f0f8f0;
+    transform: none;
+    box-shadow: none;
 }
 </style>
 </head>
 <body>
-	<h1>這是一般會員新增訂單的頁面</h1>
-<!-- 	<span th:text="${session.loggedInMember}"></span><br>
-	<span th:text="${session.memId}"></span><br>
-	<span th:text="${session.memName}"></span><br>
-	<span th:text="${cartToProOrder}"></span><br>
-	<span th:text="${cartToProOrder.memVO}"></span><br>
-	<span th:text="${cartToProOrder.memVO.memPoint}"></span><br> -->
-	<!-- <span th:text="${cartToProOrder.memProCpnVO.cpnHolderDetailId}"></span> -->
 
-	 <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}"></p>
-    </div>
-    <div th:if="${errorMessage}" class="error-message">
-        <p th:text="${errorMessage}"></p>
-    </div>
-	
-	
-	<h1>結帳頁面</h1><form method="post" th:action="@{insert}" th:object="${cartToProOrder}"> 
-    
-    <input type="hidden" th:field="*{proOrdPointdisc}" />
-    <input type="hidden" th:field="*{proOrdCpndisc}" />
-    <input type="hidden" th:field="*{proOrdGrandTotal}" />
-    <input type="hidden" th:field="*{proOrdPointGet}" />
-    <input type="hidden" th:field="*{memProCpnVO.cpnHolderDetailId}" />
-    
-		
-		<div>
-		<label>一般會員編號</label>
-		<input type="text" th:field="*{memVO.memId}" readonly/><br>
-		</div>
-		
+	<div th:replace="~{/front_end/index :: header}"></div>
 
-		
-		<div>
-		<label>訂單日期</label>
-		<input type="text" th:field="*{proOrdDate}" readonly/><br>
+	<div class="container container-checkout"> <h1>商品訂單結帳</h1>
+
+		<div th:if="${successMessage}" class="success-message">
+			<p th:text="${successMessage}"></p>
 		</div>
-		
-<!-- 	<div> sql預設為0 (0:成立訂單)
-		<label>訂單狀態</label>
-		<input type="text" th:field="*{proOrdStatus}" readonly/><br>
-		</div> -->
-		
-<!-- 		<div> sql預設為0 (0:未付款)
-		<label>付款狀態</label>
-		<input type="text" th:field="*{proPayStatus}" readonly/><br>
-		</div> -->
-		<div>
-		<span>=================商品訂單明細的範圍==================</span><br>
-		<h2>訂單明細</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>商品 ID</th>
-					<th>商品名稱</th>
-					<th>單價</th>
-					<th>數量</th>
-					<th>小計</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="item, stat : *{proOrderItems}">
-					<td th:text="${item.productVO.proId}">商品 ID</td> 
-					<td th:text="${item.productVO.proName}">商品名稱</td> 
-					<td th:text="${item.proUnitPrice}">單價<</td>
-					<td th:text="${item.proAmount}">數量</td>
-					<td th:text="${item.proSubTotal}">小計</td>
+		<div th:if="${errorMessage}" class="error-message">
+			<p th:text="${errorMessage}"></p>
+		</div>
+
+
+		<div class="checkout-forms"> <form method="post" th:action="@{insert}"
+				th:object="${cartToProOrder}" class="main-checkout-form">
+
+				<input type="hidden" th:field="*{proOrdPointdisc}" /> <input
+					type="hidden" th:field="*{proOrdCpndisc}" /> <input type="hidden"
+					th:field="*{proOrdGrandTotal}" /> <input type="hidden"
+					th:field="*{proOrdPointGet}" /> <input type="hidden"
+					th:field="*{memProCpnVO.cpnHolderDetailId}" />
+
+				<div class="form-section order-summary">
+					<h2>訂單資訊</h2>
+					<div class="info-group">
+						<div>
+							<label>一般會員編號</label> <input type="text" th:field="*{memVO.memId}" readonly />
+						</div>
+						<div>
+							<label>訂單日期</label> <input type="text" th:field="*{proOrdDate}" readonly />
+						</div>
+						<div>
+							<label>會員持有點數</label> <span th:text="*{memVO.memPoint}"></span>
+						</div>
+						<div>
+							<label>訂單回饋會員點數</label> <input type="text" th:field="*{proOrdPointGet}" readonly />
+						</div>
+					</div>
 					
-					</tr>
-			</tbody>
-		</table>
-		<div>
-		<label>商品總金額</label>
-		<input type="text" th:field="*{proTotal}" readonly/><br>
-		</div>
-		<span>=================商品訂單明細的範圍==================</span>
-		</div><br>
+					
+					<h2>訂單明細</h2>
+					<div class="order-items-table">
+						<table>
+							<thead>
+								<tr>
+									<th>商品 ID</th>
+									<th>商品名稱</th>
+									<th>單價</th>
+									<th>數量</th>
+									<th>小計</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, stat : *{proOrderItems}">
+									<td th:text="${item.productVO.proId}">商品 ID</td>
+									<td th:text="${item.productVO.proName}">商品名稱</td>
+									<td th:text="${item.proUnitPrice}">單價</td>
+									<td th:text="${item.proAmount}">數量</td>
+									<td th:text="${item.proSubTotal}">小計</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="total-summary">
+						<div class="summary-item">
+							<label>商品總金額</label> <span><input type="text" th:field="*{proTotal}" readonly /> 元</span>
+						</div>
+						<div class="summary-item">
+							<label>折價券折抵</label> <span><input type="text" th:field="*{proOrdCpndisc}" readonly /> 元</span>
+						</div>
+						<div class="summary-item">
+							<label>點數折抵</label> <span><input type="text" th:field="*{proOrdPointdisc}" readonly /> 元</span>
+						</div>
+						<div class="summary-item">
+							<label>商品運費</label> <span><input type="text" th:field="*{proOrdShipFee}" readonly /> 元</span>
+						</div>
+						<div class="summary-item grand-total">
+							<label>實付金額</label> <span><input type="text" th:field="*{proOrdGrandTotal}" readonly /> 元</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-section payment-shipment">
+					<h2>付款與物流方式</h2>
+					<div id="paymentMethods" class="radio-group">
+						<label>付款方式 <span style="color: red;">*</span></label> 
+						<input type="radio" id="paymentCredit" th:field="*{proOrdPayment}" th:value="0" />
+						<label for="paymentCredit" class="radio-label">信用卡</label> 
+						<input type="radio" id="paymentLinePay" th:field="*{proOrdPayment}" th:value="1" />
+						<label for="paymentLinePay" class="radio-label">LinePay</label>
+					</div>
 		
+					<div id="shipmentMethods" class="radio-group">
+						<label>物流方式 <span style="color: red;">*</span></label> 
+						<span id="shipmentHomeDelivery"> 
+							<input type="radio" id="inputShipmentHome" th:field="*{proOrdShipment}" th:value="0" /> 
+							<label for="inputShipmentHome" class="radio-label">宅配</label>
+						</span> 
+						<span id="shipmentCVS"> 
+							<input type="radio" id="inputShipmentCVS" th:field="*{proOrdShipment}" th:value="1" />
+							<label for="inputShipmentCVS" class="radio-label">超商取貨</label>
+						</span> 
+					</div>
+				</div>
+
+				<div class="form-section recipient-info">
+					<h2>收件人資訊</h2>
+					<p class="default-info-hint">*預設為會員資料，可自行修改</p>
+					
+					<div class="input-group">
+						<label for="proOrdName">收件人姓名 <span style="color: red;">*</span></label> 
+						<input id="proOrdName" type="text" th:field="*{proOrdName}"
+							th:classappend="${#fields.hasErrors('proOrdName')} ? 'error-input' : ''"
+							placeholder="請輸入收件人姓名" /> 
+						<span th:if="${#fields.hasErrors('proOrdName')}" th:errors="*{proOrdName}" class="error-message-text"></span>
+					</div>
 		
+					<div class="input-group">
+						<label for="proOrdMobile">收件人電話 <span style="color: red;">*</span></label> 
+						<input id="proOrdMobile" type="text" th:field="*{proOrdMobile}"
+							th:classappend="${#fields.hasErrors('proOrdMobile')} ? 'error-input' : ''"
+							placeholder="範例: 0912-123456" /> 
+						<span th:if="${#fields.hasErrors('proOrdMobile')}" th:errors="*{proOrdMobile}" class="error-message-text"></span>
+					</div>
 		
+					<div class="input-group">
+						<label for="proOrdEmail">收件人電子郵件 <span style="color: red;">*</span></label> 
+						<input id="proOrdEmail" type="email" th:field="*{proOrdEmail}"
+							th:classappend="${#fields.hasErrors('proOrdEmail')} ? 'error-input' : ''"
+							placeholder="請輸入電子郵件" /> 
+						<span th:if="${#fields.hasErrors('proOrdEmail')}" th:errors="*{proOrdEmail}" class="error-message-text"></span>
+					</div>
 		
-		<div>
-		<label>商品運費</label>
-		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
-		</div>
-		
-		
-		<div>
-		<label>會員持有點數</label>
-		<span th:text="*{memVO.memPoint}"></span><br>
-		</div>
-		
-		<div>
-		<label>實付金額</label>
-		<input type="text" th:field="*{proOrdGrandTotal}" readonly/><br>
-		</div>
-		
-		<div>
-		<label>訂單回饋會員點數</label>
-		<input type="text" th:field="*{proOrdPointGet}" readonly/><br>
-		</div>
-		
-		<div>
-		<label>訂單備註</label>
-		<input type="text" th:field="*{proOrdComm}"/><br>
-		</div>
-		
-		<div id="paymentMethods">
-    		<label>付款方式</label>
-    		<input type="radio" id="paymentCredit" th:field="*{proOrdPayment}" th:value="0"/>信用卡
-    		<input type="radio" id="paymentLinePay" th:field="*{proOrdPayment}" th:value="1"/>LinePay
+					<div class="input-group">
+						<label for="proOrdAddr">收件人地址 <span style="color: red;">*</span></label> 
+						<input id="proOrdAddr" type="text" th:field="*{proOrdAddr}"
+							th:classappend="${#fields.hasErrors('proOrdAddr')} ? 'error-input' : ''"
+							placeholder="請輸入收件地址" /> 
+						<span th:if="${#fields.hasErrors('proOrdAddr')}" th:errors="*{proOrdAddr}" class="error-message-text"></span>
+					</div>
+					
+					<div class="input-group">
+						<label for="proOrdComm">訂單備註</label> 
+						<input id="proOrdComm" type="text" th:field="*{proOrdComm}" placeholder="選填" />
+					</div>
+					
+					<div class="submit-button-container">
+						<button type="submit" id="submitButton" class="main-submit-btn">送出訂單</button>
+					</div>
+				</div>
+
+			</form>
+
+			<form th:action="@{OrdDiscUpdate}" method="post" class="discount-form">
+				<h2>優惠/點數折抵</h2>
+
+				<div class="input-group">
+					<label for="coupon-select">一般商品折價卷</label> 
+					<select id="coupon-select" th:field="*{cartToProOrder.memProCpnVO.cpnHolderDetailId}">
+						<option value="0">請選擇折價券</option>
+						<option th:each="mpcVO : ${mpcList}"
+							th:value="${mpcVO.cpnHolderDetailId}"
+							th:text="${mpcVO.proCpnVO.cpnName}" />
+					</select> 
+					<span th:if="${cpnError != null}" th:text="${cpnError}" class="error-message-text"></span>
+				</div>
+
+				<div class="input-group">
+					<label for="inputPointDisc">折抵會員點數</label> 
+					<input id="inputPointDisc" type="number" name="proOrdPointdisc"
+						min="0"
+						th:value="${inputPointDisc != null ? inputPointDisc : (cartToProOrder.proOrdPointdisc != null ? cartToProOrder.proOrdPointdisc : 0)}"
+						placeholder="請輸入折抵點數"
+						th:classappend="${pointDiscError != null} ? 'error-input' : ''" />
+					<span th:if="${pointDiscError != null}" th:text="${pointDiscError}" class="error-message-text"></span>
+				</div>
+
+				<div class="discount-actions">
+					<button type="submit" class="recalculate-btn">重新計算折抵</button>
+				</div>
+			</form>
+		</div> <div class="back-to-cart-container">
+			<form th:action="@{/cart/view}" method="get">
+				<button type="submit" class="back-to-cart-btn">回購物車</button>
+			</form>
 		</div>
 
-		<div id="shipmentMethods">
-   		<label>物流方式</label>
-    
-    		<span id="shipmentHomeDelivery">
-        		<input type="radio" id="inputShipmentHome" th:field="*{proOrdShipment}" th:value="0"/>
-        		<label for="inputShipmentHome">宅配</label>
-    		</span>
+	</div>
 
-    		<span id="shipmentCVS">
-        		<input type="radio" id="inputShipmentCVS" th:field="*{proOrdShipment}" th:value="1"/>
-        		<label for="inputShipmentCVS">超商取貨</label>
-    		</span>
-    		<br>
-		</div>
-		
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
-<label>*預設為會員資料</label>
-
-<!-- 收件人姓名 -->
-<div>
-    <label>收件人姓名 <span style="color: red;">*</span></label>
-    <input type="text" 
-           th:field="*{proOrdName}" 
-           th:classappend="${#fields.hasErrors('proOrdName')} ? 'error-input' : ''"
-           placeholder="請輸入收件人姓名"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdName')}" 
-          th:errors="*{proOrdName}" 
-          class="error" 
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
-
-<!-- 收件人電話 -->
-<div>
-    <label>收件人電話 <span style="color: red;">*</span></label>
-    <input type="text" 
-           th:field="*{proOrdMobile}"
-           th:classappend="${#fields.hasErrors('proOrdMobile')} ? 'error-input' : ''"
-           placeholder="範例: 0912-123456"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdMobile')}" 
-          th:errors="*{proOrdMobile}" 
-          class="error"
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
-
-<!-- 收件人電子郵件 -->
-<div>
-    <label>收件人電子郵件 <span style="color: red;">*</span></label>
-    <input type="email" 
-           th:field="*{proOrdEmail}"
-           th:classappend="${#fields.hasErrors('proOrdEmail')} ? 'error-input' : ''"
-           placeholder="請輸入電子郵件"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdEmail')}" 
-          th:errors="*{proOrdEmail}" 
-          class="error"
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
-
-<!-- 收件人地址 -->
-<div>
-    <label>收件人地址 <span style="color: red;">*</span></label>
-    <input type="text" 
-           th:field="*{proOrdAddr}"
-           th:classappend="${#fields.hasErrors('proOrdAddr')} ? 'error-input' : ''"
-           placeholder="請輸入收件地址"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdAddr')}" 
-          th:errors="*{proOrdAddr}" 
-          class="error"
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
-		
-		<div>
-		<button type="submit" id="submitButton"> 送出訂單 </button>
-		</div>
-		
-	</form>
-	
-<form th:action="@{OrdDiscUpdate}" method="post">
-		
-		<div>
-			<label>一般商品折價卷持有者流水號編號</label>
-			<select th:field="*{cartToProOrder.memProCpnVO.cpnHolderDetailId}">
-				<option value="0">請選擇</option>
-				<option th:each="mpcVO : ${mpcList}" 
-						th:value="${mpcVO.cpnHolderDetailId}" 
-						th:text="${mpcVO.proCpnVO.cpnName}"
-						/>
-			</select>
-			  <span th:if="${cpnError != null}" 
-              th:text="${cpnError}" 
-              class="error"
-              style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-		</div>
-		
-		<div>
-		<label>折價券折抵額（商品金額計算）</label>
-		<input type="text" th:field="*{cartToProOrder.proOrdCpndisc}" readonly/><br>
-		</div>
-	
-	
-    <div>
-        <label>折抵會員點數</label>
-        <input type="number" 
-               name="proOrdPointdisc" 
-               min="0"
-               th:value="${inputPointDisc != null ? inputPointDisc : (cartToProOrder.proOrdPointdisc != null ? cartToProOrder.proOrdPointdisc : 0)}"
-               placeholder="請輸入折抵點數"
-               
-               th:classappend="${pointDiscError != null} ? 'error-input' : ''"
-               />
-        <br>
-        
-        <span th:if="${pointDiscError != null}" 
-              th:text="${pointDiscError}" 
-              class="error"
-              style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-    </div>
-    
-    <div>
-        <button type="submit"> 重新計算折抵 </button>
-    </div>
-</form>
-	
-	<form th:action="@{/cart/view}" method="get">
-    <div>
-        <button type="submit">回購物車</button>
-    </div>
-	</form>
 </body>
 </html>
