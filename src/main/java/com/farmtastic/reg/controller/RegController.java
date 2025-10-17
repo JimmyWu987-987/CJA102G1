@@ -22,6 +22,7 @@ import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
 import com.farmtastic.proorder.model.ProOrderSevice;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
+import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.reg.model.RegService;
 import com.farmtastic.reg.model.RegVO;
 
@@ -44,6 +45,10 @@ public class RegController {
 	FmemService fmemSvc;
 	@Autowired
 	private MemService memSvc;
+	
+	//寄信
+	@Autowired
+	private MailService mailService;
 
 //  ******************************管理員功能**************************************
 	// 管理員查活動訂單全部
@@ -346,6 +351,51 @@ public class RegController {
 
 		session.setAttribute("loggedInMember", mem);
 
+		   // ===== 寄信通知=====
+	    try {
+	        // 收件人
+	        String to = mem.getMemEmail();  
+	        String subject = "【Farmtastic】活動報名付款成功通知";
+
+	        String paidAt = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm")
+	                .format(new java.util.Date());
+
+	        String content = """
+	                親愛的 %s 您好，
+
+	                您的活動報名已付款成功！
+	                訂單編號：%d
+	                交易序號：%s
+	                付款時間：%s
+
+	                實付金額：$%d
+	                折抵點數：%d 點
+	                回饋點數：%d 點
+
+	                感謝您的支持，祝您活動愉快！
+	                （此為系統通知信，請勿直接回覆）
+	                """.formatted(
+	                r.getRegName(),
+	                r.getRegId(),
+	                transactionId,
+	                paidAt,
+	                r.getRegGrandTotal(),
+	                used,
+	                reward
+	        );
+
+	        if (to != null && !to.isBlank()) {
+	            mailService.sendMail(to, subject, content);
+	        }
+	      
+
+	    } catch (Exception e) {
+	        // 不讓寄信影響主流程
+	        e.printStackTrace();
+	    }
+	    // ===== 寄信結束 =====
+		
+		
 		redirectAttrs.addAttribute("memId", memId);
 		redirectAttrs.addAttribute("success", 1);
 		return "redirect:/mem/reg/list";
