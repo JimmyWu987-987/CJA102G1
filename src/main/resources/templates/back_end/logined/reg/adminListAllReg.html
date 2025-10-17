@@ -33,7 +33,9 @@ body table.dataTable {
 	overflow:hidden;
 }
 table.dataTable.no-footer{
-	border:none;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 table.dataTable thead th, table.dataTable thead td {
@@ -136,6 +138,11 @@ tr:hover{
 
 </style>
 </head>
+<h1>這是金流管理系統首頁</h1>
+	<form method="get" th:action="@{/admin/cashflow/fmemProOrder}">
+		<input type="submit" value="產品訂單金流明細">	
+	</form>
+
 <body th:data-success="${success}">
 	<h1 style="text-align:center; margin:12px 0;">查看活動訂單</h1>
 	
@@ -159,7 +166,13 @@ tr:hover{
 		  <input type="hidden" name="regRevStat" value="3">
 		  <button type="submit" class="btn">查詢尚未撥款</button>
 		</form>
-		<form th:if="${regRevStat == 3}"id="proNotReview" th:action="@{/admin/cashflow/reg/list}" method="get" >
+
+		<form id="regFinish" th:action="@{/admin/cashflow/reg/list}" method="get">
+		  <input type="hidden" name="regRevStat" value="1">
+		  <button type="submit" class="btn">查詢活動取消</button>
+		</form>
+		
+		<form th:if="${regRevStat == 3 || regRevStat == 1}"id="proNotReview" th:action="@{/admin/cashflow/reg/list}" method="get" >
 		  <button type="submit" class="btn">查全部</button>
 		</form>
 	</div>
@@ -170,22 +183,23 @@ tr:hover{
 	      <th>訂單ID</th>
 	      <th>下單時間</th>
 	      <th>狀態</th>
-	      <th>聯絡人</th>
-	      <th>人數</th>
+	      <th>消費者姓名</th>
+	      <th>小農姓名</th>
 	      <th>應付</th>
 	      <th>折抵</th>
 	      <th>點數折抵(點)</th>
 	      <th>實付</th>
 	      <th>平台抽成10%</th>
 	      <th>回饋點數(點)</th>
-	      <th>撥款給小農</th>
+	      <th>操作</th>
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr th:each="r : ${listReg}">
+	    <tr th:each="r, iterStat : ${listReg}">
 	      <td th:text="${r.regId}"></td>
 	      <td>
-	      	<span th:text="${#dates.format(r.regAt, 'yyyy-MM-dd HH:mm')}"></span><br>
+	      	<span th:text="${#dates.format(r.regAt, 'yyyy-MM-dd')}"></span><br>
+	      	<span th:text="${#dates.format(r.regAt, 'HH:mm')}"></span>
 	      </td>
 	
 	      <!-- 狀態 badge -->
@@ -202,7 +216,7 @@ tr:hover{
 	
 	
 	      <td th:text="${r.regName}"></td>
-	      <td th:text="${r.regCount}"></td>
+		  <td th:text="${names[iterStat.index]}">小農姓名</td>
 	      <td class="money" th:text="|$ ${#numbers.formatInteger(r.regTotal,0,'COMMA')}|"></td>
 	      <!-- 折抵總額 = 點數 + 券（title 顯示拆解） -->
 	      <td class="money"
@@ -222,10 +236,23 @@ tr:hover{
 	   
 			<td>
 			
-			  <form th:if="${r.regStat == 3}" th:action="@{/regMoney}" class= "functions" method="post" >
+			  <form th:if="${r.regStat == 3}" 
+			  th:action="@{/admin/reg/regMoney}" 
+			  class= "functions" 
+			  method="post" 
+			  onsubmit="return confirm('確認是否要撥款?');">
 			      <input type="hidden" name="regId" th:value="${r.regId}">
 			      <input type="hidden" name="regStat" th:value="${r.regStat}">
 				  <button type="submit" class="btn">撥款</button>
+			  </form>
+			  
+			  <form th:if="${r.regStat == 1}"
+		      th:action="@{/admin/reg/changeState}"
+		      method="post"
+		      onsubmit="return confirm('確認是否要退款?');">
+				  <input type="hidden" name="regId" th:value="${r.regId}">
+				  <input type="hidden" name="regStat" value="2">
+				  <button type="submit" class="btn">退款給消費者</button>
 			  </form>
 			</td>
 	    </tr>
@@ -233,7 +260,6 @@ tr:hover{
 	  
 	  
 	</table>
-
 
 <!-- 撥款成功跳出 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -247,6 +273,21 @@ tr:hover{
 					icon : 'success',
 					title : successMsg,
 					text : "請與會計確認是否送出撥款",
+					showConfirmButton : false,
+					customClass : {
+						icon : 'custom-icon',
+						popup : 'custom-swal',
+						title : 'custom-swal-title',
+						htmlContainer : 'custom-swal-content'
+					}
+				});
+
+			}
+			if (successMsg === "退款成功") {
+				Swal.fire({
+					icon : 'info',
+					title : successMsg,
+					text : "請與會計確認是否送出退款",
 					showConfirmButton : false,
 					customClass : {
 						icon : 'custom-icon',

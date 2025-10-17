@@ -208,6 +208,13 @@ white-space: nowrap;
   font-weight: 700;
 }
 
+/* 訂單狀態顏色 */
+.badge-ok{background:#e6f4ea;color:#1e7e34}
+.badge-cancel{background:#fdecea;color:#b02a37}
+.badge-wait{background:#fff4e5;color:#b26a00}
+.badge-done{background:#e7f1ff;color:#0b5ed7}
+.badge-closed{background:#f0f0f0;color:#555}
+
 
 
 
@@ -252,12 +259,12 @@ white-space: nowrap;
 
      <span style="margin-left:20px;">訂單狀態：
 		  <span th:switch="${r.regStat}">
-		    <span th:case="0">報名成立(已付款)</span>
-		    <span th:case="1">取消報名(待退款)</span>
-		    <span th:case="2">已退款</span>
-		    <span th:case="3">活動已完成</span>
-		    <span th:case="4">活動已完成</span>
-		    <span th:case="5">活動已完成</span>
+		    <span th:case="0" class="badge-ok">報名成立(已付款)</span>
+		    <span th:case="1" class="badge-cancel">取消報名(待退款)</span>
+		    <span th:case="2" class="badge-wait">已退款</span>
+		    <span th:case="3" class="badge-done">活動已完成</span>
+		    <span th:case="4" class="badge-done">活動已完成</span>
+		    <span th:case="5" class="badge-done">活動已完成</span>
 		  </span>
 	</span>
 
@@ -374,11 +381,14 @@ white-space: nowrap;
 
     <br>
 
-    <button class="cancel-btn"
-            th:disabled="${r.regStat != 0}"
-            th:attr="data-id=${r.regId}">
-      X 取消訂單
-    </button>
+		<form th:if="${r.regStat == 0}"
+	      th:action="@{/mem/reg/cancel}"
+	      method="post"
+	      onsubmit="return confirm('確定取消報名嗎？');">
+		  <input type="hidden" name="regId" th:value="${r.regId}">
+		  <input type="hidden" name="regStat" value="1"> <!-- 取消帶退款 -->
+		  <button type="submit" class="cancel-btn">X 取消報名</button>
+		</form>
   </div>
 
   <!-- 分頁 -->
@@ -507,6 +517,10 @@ window.addEventListener("load", function () {
 });
 
 
+//畫面鑲嵌在iframe問題
+if (window.top !== window.self) {
+	  window.top.location.replace(window.location.href);
+	}
 
 </script>
 </html>

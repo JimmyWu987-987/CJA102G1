@@ -85,7 +85,7 @@
 			<iframe id="memRegistration" 
 			name="memRegistration" 
 			src="about:blank" 
-			style="display:none;width:100%;height:600px;border:0"
+			style="display:none;width:100%;height:620px;border:0"
         	onload="this.contentWindow.location.href!=='about:blank'&&(this.style.display='block')">
 			</iframe>
 			
@@ -101,5 +101,8 @@
 	
     <!-- 分離 JS -->
     <script th:src="@{/js/act/actCarousel.js}"></script>
+	
+	<!-- 畫面跳轉 JS -->
+	<script th:src="@{/js/act/actJumpPage.js}"></script>
 </body>
 </html>

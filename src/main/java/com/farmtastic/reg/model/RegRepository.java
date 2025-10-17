@@ -17,6 +17,30 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	// 管理員查未審核
 	List<RegVO> findByRegStat(Integer regStat);
 	
+	// 管理員顯示小農姓名
+	@Query(value = """
+			  SELECT f.fmem_name
+			  FROM reg r
+			  JOIN ses s ON s.ses_id = r.ses_id
+			  JOIN act a ON a.act_id = s.act_id
+			  JOIN fmem f ON f.fmem_id = a.fmem_id
+			  ORDER BY r.reg_id DESC
+			  """, nativeQuery = true)
+			List<String> findAllFarmerNames();
+	
+	// 查單一小農的名字（針對 selectFmemReg）
+	@Query(value = """
+	  SELECT f.fmem_name
+	  FROM reg r
+	  JOIN ses s ON s.ses_id = r.ses_id
+	  JOIN act a ON a.act_id = s.act_id
+	  JOIN fmem f ON f.fmem_id = a.fmem_id
+	  WHERE a.fmem_id = :fmemId
+	  ORDER BY r.reg_id DESC
+	  """, nativeQuery = true)
+	List<String> findFarmerNamesByFmemId(@Param("fmemId") Integer fmemId);
+	
+	
 	//小農查詢活動訂單
 	 @Query(value = """
 		      select r.*

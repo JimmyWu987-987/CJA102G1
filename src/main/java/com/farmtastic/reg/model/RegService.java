@@ -26,6 +26,17 @@ public class RegService {
 		return repository.findAllByOrderByRegIdDesc();
 	}
 	
+	// 管理員顯示小農姓名
+	@Transactional(readOnly = true)
+	public List<String> getFarmerName() {
+		return repository.findAllFarmerNames();
+	}
+	
+	@Transactional(readOnly = true)
+	public List<String> getFarmerNameByFmemId(Integer fmemId) {
+	    return repository.findFarmerNamesByFmemId(fmemId);
+	}
+	
 	//取得登入後的小農編號 查活動訂單
 	@Transactional(readOnly = true)
 	public List<RegVO> getByFmemId(Integer fmemId) {
@@ -114,12 +125,12 @@ public class RegService {
 			return repository.findByRegStat(regStat);
 		}
 		
-		//管理員撥款
+		//改變訂單狀態
 		@Transactional
 		public void updateRegStat(Integer regId, Integer regStat) {
 			RegVO regVO = repository.findById(regId)
 	                .orElseThrow();
-			regVO.setRegStat(4);
+			regVO.setRegStat(regStat);
 			repository.save(regVO);
 		}
 		
