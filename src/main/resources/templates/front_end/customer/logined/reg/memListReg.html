@@ -507,6 +507,10 @@ window.addEventListener("load", function () {
 });
 
 
+//畫面鑲嵌在iframe問題
+if (window.top !== window.self) {
+	  window.top.location.replace(window.location.href);
+	}
 
 </script>
 </html>
