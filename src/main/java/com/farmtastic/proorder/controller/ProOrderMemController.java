@@ -54,8 +54,6 @@ public class ProOrderMemController {
 	@Autowired
 	ProOrderItemService proOrderItemSvc;
 	@Autowired
-	FmemService femSvc;
-	@Autowired
 	MemService memSvc;
 	@Autowired
 	ShoppingCartService shoppingCartSvc;
@@ -63,10 +61,6 @@ public class ProOrderMemController {
 	MemProCpnServiceImp mpcSvc;
 	@Autowired
 	MemProCpnRepository mpcRepository;
-	@Autowired
-	ProCpnService proCpnSvc;
-	@Autowired
-	ProService proSvc;
 
 	// 查詢該會員的全部訂單
 	@GetMapping("listAllProOrder")
@@ -149,21 +143,8 @@ public class ProOrderMemController {
 		case 1:
 			System.out.println("訂單取消！");
 			proOrderVO.setProOrdStatus((byte) 1);
-
-			List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
-
-			// ================== 取消訂單返回庫存的邏輯 ======================
-			for (ProOrderItemVO itemList : finalItems) {
-				// 查詢該產品的庫存
-				Pro proVO = proSvc.getOnePro(itemList.getProductVO().getProId());
-				Integer originalStock = proVO.getProStock();
-				Integer addStock = itemList.getProAmount();
-				Integer finalStock = originalStock + addStock;
-
-				proVO.setProStock(finalStock);
-				proSvc.updatePro(proVO);
-
-			}
+			// 取消訂單返回庫存的邏輯
+			proOrdSvc.cancelOrderAndBackStock(proOrderVO);
 
 			updateStatus = true;
 			redirectAttributes.addFlashAttribute("successMessage", "訂單已經取消！");
@@ -189,7 +170,8 @@ public class ProOrderMemController {
 			updateStatus = true;
 			redirectAttributes.addFlashAttribute("successMessage", "已通知賣家退貨！");
 			break;
-
+		// 已經是退貨狀態，不會更新狀態
+		// 已在前端隱藏退貨按鈕，以下判斷為預防用。
 		case 5:
 		case 6:
 			System.out.println("已經是退貨狀態！");
@@ -220,7 +202,7 @@ public class ProOrderMemController {
 		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 		List<ProOrderItemVO> finalItems = sessionOrder.getProOrderItems();
 
-		// 🌟 除錯點 1: 檢查是否有驗證錯誤
+		// 檢查是否有驗證錯誤
 		System.out.println("===== 驗證結果 =====");
 		System.out.println("是否有錯誤: " + result.hasErrors());
 		System.out.println("錯誤數量: " + result.getErrorCount());
@@ -235,7 +217,7 @@ public class ProOrderMemController {
 				System.out.println("---");
 			}
 
-			// 🌟 除錯點 2: 檢查輸入值
+			// 檢查輸入值
 			System.out.println("===== 輸入值 =====");
 			System.out.println("姓名: [" + proOrderVO.getProOrdName() + "]");
 			System.out.println("電話: [" + proOrderVO.getProOrdMobile() + "]");
@@ -287,31 +269,15 @@ public class ProOrderMemController {
 		}
 
 		// 檢查是否有使用優惠券
-		// 有使用折價卷，才將資料傳入ＤＢ
-
-		if (proOrderVO.getMemProCpnVO() != null) {
-			Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
-
-			// cpnHolderDetailId 不為 null 且不為 0 才表示有使用優惠券
-			if (cpnHolderDetailId != null && cpnHolderDetailId != 0) {
-				// 從資料庫重新載入這個優惠券物件（變成 managed 狀態）
-				Optional<MemProCpnVO> mpcOptional = mpcRepository.findById(cpnHolderDetailId);
-				
-				if (mpcOptional.isPresent()) {
-					// 設置 managed 狀態的優惠券物件
-					proOrderVO.setMemProCpnVO(mpcOptional.get());
-				} else {
-					// 如果找不到優惠券，設為 null
-					proOrderVO.setMemProCpnVO(null);
-				}
-			} else {
-				// cpnHolderDetailId 為 0 或 null，表示沒有使用優惠券
-				proOrderVO.setMemProCpnVO(null);
-			}
-		} else {
-			// memProCpnVO 為 null，表示沒有使用優惠券
+		Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
+		boolean checkUseMcpn = proOrdSvc.checkUseMcpn(proOrderVO,cpnHolderDetailId);
+		if(checkUseMcpn) {
+			MemProCpnVO uesedMpc =mpcSvc.getOne(cpnHolderDetailId);
+			proOrderVO.setMemProCpnVO(uesedMpc);
+		}else {
 			proOrderVO.setMemProCpnVO(null);
 		}
+		
 
 		// 訂單狀態
 		proOrderVO.setProOrdStatus((byte) 0);
@@ -348,7 +314,15 @@ public class ProOrderMemController {
 			item.setId(id);
 
 		}
-
+		
+		// ================== (先預扣)扣商品庫存的邏輯 ======================
+		boolean errorStock = proOrdSvc.discProductStock(proOrderVO);
+		if (!errorStock) {
+			// 返回購物車，修正數量。
+			redirectAttributes.addFlashAttribute("errorMessage", "商品[ XXX ]數量不足，無法購買！");
+			return "redirect:/mem/cart/view/";
+		}
+		//================== 新增訂單 =====================
 		try {
 			proOrdSvc.addProOrder(proOrderVO);
 
@@ -379,13 +353,13 @@ public class ProOrderMemController {
 
 	// 確定訂單付款後，才開始做修改訂單的邏輯
 	@GetMapping("dopay")
-	public String diInsert(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
+	public String doPay(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 		Integer proOrdIdByPay = (Integer) session.getAttribute("proOrdIdByPay");
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdIdByPay);
 
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
-		List<ProOrderItemVO> finalItems = sessionOrder.getProOrderItems();
+
 
 		// ================== 付款狀態修改狀態 ======================
 		if (proOrderVO.getProPayStatus() == 0) {
@@ -393,25 +367,7 @@ public class ProOrderMemController {
 			proOrderVO.setProPayStatus((byte) 1);
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
-
-		// ================== 扣商品庫存的邏輯 ======================
-		for (ProOrderItemVO itemList : finalItems) {
-			// 查詢該產品的庫存
-			Pro proVO = proSvc.getOnePro(itemList.getProductVO().getProId());
-			Integer originalStock = proVO.getProStock();
-			Integer discStock = itemList.getProAmount();
-			Integer finalStock = originalStock - discStock;
-
-			if (finalStock < 0) {
-				redirectAttributes.addFlashAttribute("errorMessage", "商品[ " + proVO.getProName() + " ]數量不足，無法購買！");
-				return "redirect:/mem/proorders/listAllProOrder";
-			}
-
-			proVO.setProStock(finalStock);
-			proSvc.updatePro(proVO);
-
-		}
-
+	
 		// ================== 會員點數新增修改的邏輯 ======================
 		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
 		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
