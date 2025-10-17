@@ -36,10 +36,7 @@ public class ActImg implements java.io.Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "act_id")
 	private Act act;
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "act_id", nullable = false)
-//	private Act act;
-	
+
 	// 單純直接拿到actId
 	@Transient
 	public Integer getActId() {

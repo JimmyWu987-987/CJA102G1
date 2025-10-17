@@ -47,56 +47,36 @@ public class Act implements java.io.Serializable {
 	@Column(name = "act_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer actId;
-	
-//	@Column(name = "act_name", nullable = false)
-//	@NotBlank(message="活動名稱請勿空白")
-//	@Size(min=2,max=30,message="活動名稱必需在{min}到{max}之間")
-//	private String actName;
 
-	@Column(name = "act_name")
+	@Column(name = "act_name", nullable = false)
+	@NotBlank(message="活動名稱請勿空白")
+	@Size(min=2,max=30,message="活動名稱必需在{min}到{max}之間")
 	private String actName;
 	
-	
-//	@Column(name = "act_start", nullable = false)
-//	@NotNull(message="請填入活動開始日期")
-//	@DateTimeFormat(pattern="yyyy-MM-dd")
-//	private Date actStart;
-	
-	@Column(name = "act_start")
+	@Column(name = "act_start", nullable = false)
+	@NotNull(message="請填入活動開始日期")
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date actStart;
-	
-//	@Column(name = "act_end", nullable = false)
-//	@NotNull(message="請填入活動結束日期")
-//	@DateTimeFormat(pattern="yyyy-MM-dd")
-//	private Date actEnd;
-	
-	@Column(name = "act_end")
+		
+	@Column(name = "act_end", nullable = false)
+	@NotNull(message="請填入活動結束日期")
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date actEnd;
-	
-//	@Column(name = "act_des", nullable = false)
-//	@NotBlank(message="活動敘述請勿空白")
-//	@Size(min=10,max=1000,message="活動敘述必需在{min}到{max}字之間")
-//	private String actDes;
-	
-	@Column(name = "act_des")
+		
+	@Column(name = "act_des", nullable = false)
+	@NotBlank(message="活動敘述請勿空白")
+	@Size(min=10,max=1000,message="活動敘述必需在{min}到{max}字之間")
 	private String actDes;
 	
-//	@Column(name = "act_fee", nullable = false)
-//	@NotNull(message="請填入活動費用")
-//	@Min(value = 0, message = "活動費用不得為負數")
-//	@Digits(integer= 6, fraction = 0, message = "費用不得超過6位整數(如有需求請向平台詢問), 且需為整數數字")
-//	private Integer actFee;
-	
-	@Column(name = "act_fee")
+	@Column(name = "act_fee", nullable = false)
+	@NotNull(message="請填入活動費用")
+	@Min(value = 0, message = "活動費用不得為負數")
+	@Digits(integer= 6, fraction = 0, message = "費用不得超過6位整數(如有需求請向平台詢問), 且需為整數數字")
 	private Integer actFee;
-	
-	
+		
 //	活動編輯. 審核相關
-//	@Column(name = "act_stat", nullable = false, columnDefinition = "TINYINT DEFAULT 0")
-//	@NotNull
-//	private Integer actStat;
-	
-	@Column(name = "act_stat", columnDefinition = "TINYINT DEFAULT 0")
+	@Column(name = "act_stat", nullable = false, columnDefinition = "TINYINT DEFAULT 0")
+	@NotNull
 	private Integer actStat;
 	
 	@Column(name = "act_upd")
@@ -124,34 +104,22 @@ public class Act implements java.io.Serializable {
 	@Column(name = "act_cnt")	
 	private Integer actCnt;
 	
-//	@Lob
-//  @Column(name = "act_mainimg", nullable = false, columnDefinition = "LONGBLOB")
-//	@NotNull(message="必須要有活動主照片")
-//  private byte[] actMainImg;
-	
 	@Lob
-	@Column(name = "act_mainimg", columnDefinition = "LONGBLOB")
-    private byte[] actMainImg;
+	@Column(name = "act_mainimg", nullable = false, columnDefinition = "LONGBLOB")
+	@NotNull(message="必須要有活動主照片")
+	private byte[] actMainImg;
+
 	
-//	對應多個分類
-//	@ManyToMany
-//	@NotEmpty(message="請至少選擇一項分類")
-//    @JoinTable(
-//        name = "actcate_list",
-//        joinColumns = @JoinColumn(name = "act_id"),
-//        inverseJoinColumns = @JoinColumn(name = "actcate_id")
-//    )
-//    private Set<ActCate> actCate = new HashSet<>();
 	
 //	對應多個分類
 	@ManyToMany
-    @JoinTable(
-        name = "actcate_list",
-        joinColumns = @JoinColumn(name = "act_id"),
-        inverseJoinColumns = @JoinColumn(name = "actcate_id")
-    )
-    private Set<ActCate> actCate = new HashSet<>();
-	
+	@NotEmpty(message="請至少選擇一項分類")
+	@JoinTable(
+    	name = "actcate_list",
+    	joinColumns = @JoinColumn(name = "act_id"),
+    	inverseJoinColumns = @JoinColumn(name = "actcate_id")
+	)
+	private Set<ActCate> actCate = new HashSet<>();	
 	
 //	對到多個活動圖片 
 	@OneToMany(mappedBy = "act", cascade = CascadeType.ALL, orphanRemoval = true)
