@@ -33,9 +33,13 @@
     	.myContainer ul{
     		padding-left: 0;
     	}
+    	.btn{
+		    border: none;
+		}
+		
     	
-    	
-        .news-container {
+        
+        .news-area {
             max-width: 800px;
             margin: auto;
             background: #fff;
@@ -69,14 +73,14 @@
 </head>
 
 
-<body style="background-color: #f8f9fa;">
+<body>
 
 	<div class="myContainer container-header">
 		<div th:replace="~{/front_end/index :: header-inner}"></div>
 	</div>	
 
-    <div class="myContainer my-5">
-        <div class="news-container">
+    <div class="myContainer container-content my-5">
+        <div class="news-area">
             <h1 class="news-title" th:text="${news.newsTitle}">消息標題</h1>
             <div class="news-meta">
                 <i class="bi bi-calendar-event"></i>
