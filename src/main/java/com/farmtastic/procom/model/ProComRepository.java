@@ -1,5 +1,5 @@
 package com.farmtastic.procom.model;
 
-public class ProComRepository {
+public interface ProComRepository {
 
 }
