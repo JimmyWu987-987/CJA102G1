@@ -33,6 +33,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.proad.model.ProAdService;
 import com.farmtastic.proad.model.ProAdVO;
+import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.pro.model.Pro;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,9 +43,13 @@ import jakarta.servlet.http.HttpSession;
 @Validated
 @RequestMapping("/")
 public class ProAdController {
-
+	
     @Autowired
     private ProAdService proAdService;
+    
+    //寄信
+    @Autowired
+    private MailService mailService;
 //  ******************************管理員功能**************************************
     @GetMapping("admin/proAd/list")
     public String list(@RequestParam(value = "proAdId", required = false) Integer proAdId,
@@ -191,6 +196,36 @@ public class ProAdController {
         proAdVO.setFmem(fmemRef);
         proAdVO.setProduct(productRef);
         proAdService.addProAd(proAdVO);
+        
+     // ===== 寄信 =====
+        try {
+            // 收件人
+            String farmerMail = (fmemRef.getFmemEmail() != null) ? fmemRef.getFmemEmail() : null;
+            String adminMail  = "testxuan0429@gmail.com"; // 換成管理員信箱
+
+            String subject = "【系統通知】商品廣告申請已送出";
+            String content = """
+                小農：%s
+                商品：%s
+                申請時間：%s
+
+                此為系統通知信，請勿直接回覆。
+                """.formatted(
+                    fmemRef.getFmemName(),
+                    productRef.getProName(),
+                    new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm")
+                    .format(new java.util.Date())
+                );
+
+            if (farmerMail != null) {
+                mailService.sendMail(farmerMail, subject, content);
+            }
+            mailService.sendMail(adminMail, subject + "（副本）", content);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         return "redirect:/fmem/proAd/list";
     }
     

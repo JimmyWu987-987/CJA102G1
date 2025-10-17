@@ -25,6 +25,7 @@ import com.farmtastic.act.model.Act;
 import com.farmtastic.actad.model.ActAdService;
 import com.farmtastic.actad.model.ActAdVO;
 import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.redis.verification.MailService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -36,6 +37,10 @@ public class ActAdController {
 
     @Autowired
     private ActAdService actAdService;
+    
+    //寄信
+    @Autowired
+    private MailService mailService;
 //  ******************************管理員功能**************************************
     @GetMapping("admin/actAd/list")
     public String list(@RequestParam(value = "actAdId", required = false) Integer actAdId,
@@ -178,6 +183,35 @@ public class ActAdController {
         actAdVO.setFmem(fmemRef);
         actAdVO.setAct(actRef);
         actAdService.addActAd(actAdVO);
+        // ===== 寄信 =====
+        try {
+            // 收件人
+            String farmerMail = (fmemRef.getFmemEmail() != null) ? fmemRef.getFmemEmail() : null;
+            String adminMail  = "testxuan0429@gmail.com"; // 換成管理員信箱
+
+            String subject = "【系統通知】活動廣告申請已送出";
+            String content = """
+                小農：%s
+                活動：%s
+                申請時間：%s
+
+                此為系統通知信，請勿直接回覆。
+                """.formatted(
+                    fmemRef.getFmemName(),
+                    actRef.getActName(),
+                    new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm")
+                    .format(new java.util.Date())
+                );
+
+            if (farmerMail != null) {
+                mailService.sendMail(farmerMail, subject, content);
+            }
+            mailService.sendMail(adminMail, subject + "（副本）", content);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         return "redirect:/fmem/actAd/list";
     }
     
