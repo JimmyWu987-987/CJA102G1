@@ -146,14 +146,14 @@ img{
 	
 	display: flex;
 	align-items: center;   /* 垂直置中文字與icon */
-	justify-content: center; /* 如果你想要文字在中間，非必要 */
+	justify-content: center; 
 	line-height: 1;       /* 避免 line-height 影響置中 */
 }
 .container-header .nav ul{
     display: none;
     position: absolute;
     top: 100%;
-    width: 146px;
+    width: 170px;
     border: 1px solid #68a087;
     border-radius: 8px;
     background-color: rgba(255,255,255, .8);
@@ -163,6 +163,7 @@ img{
     border-top: 1px solid #88b3a0;
     font-size: 18px;
     color: var(--second-color);
+    justify-content: left;
 }
 .container-header .nav ul a:hover{
     background-color: #d7d7cdb7;
@@ -366,4 +367,16 @@ img{
 
   	background-color: #bbb;	
 }
+
+
+
+
+a.test-farmerStore{
+	background-color: #FF8A65;
+}
+.test{
+	margin-left: 14px;
+}
+
+
 
