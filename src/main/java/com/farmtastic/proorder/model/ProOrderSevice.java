@@ -34,7 +34,7 @@ public class ProOrderSevice {
 	// 新增
 	@Transactional
 	public void addProOrder(ProOrderVO proOrderVO) {
-		// 🌟 關鍵修正：將脫管的 Product 實體轉換為受管實體 🌟
+		// 將脫管的 Product 實體轉換為受管實體
 		if (proOrderVO.getProOrderItems() != null) {
 			for (ProOrderItemVO item : proOrderVO.getProOrderItems()) {
 				// 1. 取得脫管 Product 的 ID
