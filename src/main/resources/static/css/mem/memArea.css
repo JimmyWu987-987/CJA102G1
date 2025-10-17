@@ -10,6 +10,7 @@
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 1px 1px 8px 0px #66333330;
+/*     flex-shrink: 0; */
     align-self: start;
 /*     box-shadow: [水平位移] [垂直位移] [模糊半徑] [擴散半徑] [顏色] [inset]; */
 }
@@ -58,7 +59,7 @@ form.userInfo{
 }
 
 form.userInfo h3{
-    font-size: 22px;
+    font-size: var(--subtitle-font-size);
     margin-bottom: 20px;
     text-align: center;
 }

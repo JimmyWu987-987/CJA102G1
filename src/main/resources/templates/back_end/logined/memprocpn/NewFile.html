@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Redis 折價券同步</title>
+<style>
+  .sync-container {
+    text-align: center;
+    margin-top: 120px;
+  }
+  .btn-sync {
+    padding: 14px 32px;
+    background-color: #198754;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .btn-sync:hover {
+    background-color: #157347;
+  }
+  .result {
+    margin-top: 30px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div class="sync-container">
+    <h2>🌀 Redis 暫存折價券同步測試</h2>
+    <button id="syncBtn" class="btn-sync">立即同步到資料庫</button>
+    <div id="syncMsg" class="result"></div>
+  </div>
+
+  <script>
+    async function syncCoupons() {
+      const msgEl = document.getElementById("syncMsg");
+      msgEl.textContent = "⏳ 正在同步中...";
+      try {
+        const res = await fetch("/admin/spin/syncNow");
+        const text = await res.text();
+        msgEl.textContent = text;
+      } catch (err) {
+        msgEl.textContent = "❌ 同步失敗，請稍後再試。";
+      }
+    }
+
+    document.getElementById("syncBtn").addEventListener("click", syncCoupons);
+  </script>
+</body>
+</html>

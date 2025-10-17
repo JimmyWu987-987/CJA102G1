@@ -16,8 +16,8 @@
     <h2 class="form-title" 
         th:text="${#strings.equals(mode, 'edit') ? '編輯商品折價券' : '新增商品折價券'}"></h2>
 
-    <form th:action="@{${actionUrl}}"
-      th:object="${proCpnForm}"
+    <form th:action="${actionUrl}" 
+      th:object="${proCpnForm}" 
       method="post"
       class="needs-validation">
 

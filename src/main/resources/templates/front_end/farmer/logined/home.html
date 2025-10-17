@@ -10,15 +10,9 @@
 	<th:block th:fragment="homeCss">
 	    <link rel="stylesheet" th:href="@{/css/fmem/home.css}">
     </th:block>
-
-
-	<link rel="stylesheet" th:href="@{/css/mem/farmerStore1ColorNature.css}">
 	
-	<!--     <link rel="stylesheet" th:if="${session.sty}" th:href="@{${session.sty.styCssPath}}"> -->
-	    
-	<!-- <link rel="stylesheet" th:href="@{/css/mem/memArea.css}"> -->
-
-
+	
+	<link rel="stylesheet" th:if="${session.loggedInFmember.sty}" th:href="@{${session.loggedInFmember.sty.styCssPath}}">
 
 </head>
 <body>
@@ -67,7 +61,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a th:href="@{/fmem/fmemArea}" class="link btn">會員中心</a>
+                    <a th:href="@{/fmem/fmemArea/updateProfilePage}" class="link btn">會員中心</a>
                     <ul th:fragment="fmemAreaLink">
                         <li><a th:href="@{/fmem/fmemArea/updateProfilePage}">管理個人資料</a></li>
                         <li><a th:href="@{/fmem/fmemArea/updatePasswordPage}">修改密碼</a></li>
@@ -82,10 +76,20 @@
                 	<div th:text="${session.loggedInFmember.fmemName} + '，'"></div>
                 	<div>您好</div>
                 </div>
-                <a th:if="${session.loggedInFmember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
+<!--                 <a th:if="${session.loggedInFmember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a> -->
+				
+				
+                <a th:href="@{/fmem/forfnews}" th:if="${session.loggedInFmember} != null" class="member-logo link btn bell">
+                	<i class="fa-solid fa-bell"></i>
+                	<span class="icon-label">通知</span>
+                </a>
+
 
             	<form th:action="@{/fmem/logout}" th:if="${session.loggedInFmember} != null" method="post" class="logout">
-            		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+            		<button type="submit" class="btn-logout">
+            			<i class="fa-solid fa-arrow-right-to-bracket"></i>
+            			<span class="icon-label">登出</span>
+            		</button>
             	</form>
             </div>
         </div>
@@ -159,12 +163,8 @@
 <!-- --------------------------------------------------------------------- -->
   
 	
-	
-	
-	
-	
-	
 	<div th:replace="~{/front_end/index :: footer}"></div>
+
 
 </body>
 </html>

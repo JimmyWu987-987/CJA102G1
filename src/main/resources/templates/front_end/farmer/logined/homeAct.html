@@ -6,26 +6,9 @@
 	<link rel="icon" th:href="@{/images/logo.png}">
 	
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-	
-	<th:block th:fragment="homeCss">
-	    <link rel="stylesheet" th:href="@{/css/fmem/home.css}">
-    </th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
 
-
-	<link rel="stylesheet" th:href="@{/css/mem/farmerStore1ColorNature.css}">
-	
-	<!--     <link rel="stylesheet" th:if="${session.sty}" th:href="@{${session.sty.styCssPath}}"> -->
-	    
-	<!-- <link rel="stylesheet" th:href="@{/css/mem/memArea.css}"> -->
-
-<style>
-	
-	
-	.container-content{
-		font-size:80px;
-	}
-</style>
-
+	<link rel="stylesheet" th:if="${session.loggedInFmember.sty.styCssPath}" th:href="@{${session.loggedInFmember.sty.styCssPath}}">
 
 </head>
 <body>

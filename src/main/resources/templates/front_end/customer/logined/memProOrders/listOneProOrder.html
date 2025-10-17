@@ -14,11 +14,11 @@
 /* 根據您的 memArea.css 和 main.css 風格新增的 CSS */
 
 .member-content h2 {
-    font-size: var(--title-font-size);
-    font-weight: bold;
-    color: #555;
-    margin-bottom: 20px;
-    text-align: center;
+	font-size: var(--subtitle-font-size);
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	margin-bottom: 20px;
 }
 
 /* 訂單資訊區塊的通用樣式 */
@@ -32,7 +32,7 @@
 }
 
 .order-detail-section h3 {
-    font-size: var(--subtitle-font-size);
+    font-size: 22px;
     color: var(--main-color);
     border-bottom: 2px solid var(--header-color);
     padding-bottom: 8px;
@@ -69,13 +69,15 @@
 .product-table {
     width: 100%;
     border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
     margin-top: 20px;
     margin-bottom: 20px;
     font-size: var(--content-font-size);
 }
 
 .product-table thead tr {
-    background-color: var(--second-color);
+    background-color: #6b8dc9;
     color: #fff;
 }
 
@@ -238,11 +240,11 @@
                         </div>
 
                         <div class="info-item" th:if="${proOrderVO.memProCpnVO}">
-                            <span>商品折價卷流水號:</span> <span
-                                th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span>
+                            <span>折價卷名稱:</span> <span
+                                th:text="${proOrderVO.memProCpnVO.proCpnVO.cpnName}"></span>
                         </div>
                         <div class="info-item" th:unless="${proOrderVO.memProCpnVO}">
-                            <span>商品折價卷流水號:</span><span>無/未使用</span>
+                            <span>折價卷名稱:</span><span>無/未使用</span>
                         </div>
                     </div>
                 </div>

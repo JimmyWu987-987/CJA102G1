@@ -5,15 +5,9 @@ window.addEventListener("load", function(){
 	 	if(statusMsg === "已啟用"){
 			const warningMsg = document.querySelector('.warning-msg');
 			const starTags = document.querySelectorAll('.star-tag');
-			if(warningMsg) {
-				warningMsg.textContent = " ✨商店已可開始上架及販售商品";
-				warningMsg.style.color = "#f26744"
-			}
-			if(starTags){
-				starTags.forEach(starTag => {
-					starTag.style.display = 'none';
-				})
-			}
+//			if(warningMsg) {
+//				warningMsg.style.color = "#f26744"
+//			}
 			
 	 		Swal.fire({
 	             icon: 'success',

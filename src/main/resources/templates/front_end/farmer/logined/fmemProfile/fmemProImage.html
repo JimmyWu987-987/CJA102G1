@@ -13,11 +13,13 @@
     .upload-section { background-color: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
     .upload-section h2 { margin-top: 0; font-size: 1.3rem; }
     .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem; }
-    .image-card { border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; position: relative; }
+    .image-card { border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
     .image-card img { width: 100%; height: 150px; object-fit: cover; display: block; }
-    .image-card .delete-form { position: absolute; top: 8px; right: 8px; }
-    .delete-btn { background-color: rgba(220, 53, 69, 0.8); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; font-size: 1rem; line-height: 30px; text-align: center; }
-    .delete-btn:hover { background-color: #dc3545; }
+    /* ★★★ 新增：按鈕容器 ★★★ */
+    .button-container { display: flex; justify-content: space-around; padding: 8px; background-color: #f8f9fa; }
+    .action-btn { background-color: rgba(0, 0, 0, 0.5); color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }
+    .update-btn { background-color: #198754; }
+    .delete-btn { background-color: #dc3545; }
     .btn { padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 500; }
     .btn-primary { background-color: #0d6efd; color: white; }
     .alert { padding: 1rem; margin-bottom: 1rem; border-radius: 8px; }
@@ -58,13 +60,27 @@
         <p>目前沒有任何圖片。</p>
     </div>
     <div class="image-grid" th:if="${!imageList.isEmpty()}">
+        <!-- ★★★ 修改後的圖片卡片 ★★★ -->
         <div class="image-card" th:each="image : ${imageList}">
             <img th:src="@{/product-image/{id}(id=${image.proImgId})}" alt="產品圖片">
-            <form th:action="@{/pro-images/delete}" method="post" class="delete-form" onsubmit="return confirm('您確定要刪除這張圖片嗎？');">
-                <input type="hidden" name="proImgId" th:value="${image.proImgId}" />
-                <input type="hidden" name="proId" th:value="${pro.proId}" />
-                <button type="submit" class="delete-btn">&times;</button>
-            </form>
+            
+            <div class="button-container">
+                <!-- 修改表單 -->
+                <form th:action="@{/pro-images/update}" method="post" enctype="multipart/form-data" style="display: inline;">
+                    <input type="hidden" name="proImgId" th:value="${image.proImgId}" />
+                    <input type="hidden" name="proId" th:value="${pro.proId}" />
+                    <!-- 將 file input 隱藏，透過 label 點擊來觸發 -->
+                    <input type="file" name="imageFile" th:id="'file-input-' + ${image.proImgId}" style="display: none;" onchange="this.form.submit()" accept="image/png, image/jpeg"/>
+                    <label th:for="'file-input-' + ${image.proImgId}" class="action-btn update-btn">修改</label>
+                </form>
+
+                <!-- 刪除表單 -->
+                <form th:action="@{/pro-images/delete}" method="post" style="display: inline;" onsubmit="return confirm('您確定要刪除這張圖片嗎？');">
+                    <input type="hidden" name="proImgId" th:value="${image.proImgId}" />
+                    <input type="hidden" name="proId" th:value="${pro.proId}" />
+                    <button type="submit" class="action-btn delete-btn">刪除</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

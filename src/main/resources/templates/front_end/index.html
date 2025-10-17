@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>農作物與它們的產地</title>
-    <link rel="icon" th:href="@{/images/logo.png}">
+    <link rel="icon" th:href="@{/images/logo.png}"> 
     
     <th:block th:fragment="mainCss">
 	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -23,7 +23,7 @@
 <body th:data-success="${success}">
 
     <div class="container container-header" th:fragment="header">
-        <div class="header">
+        <div class="header" th:fragment="header-inner">
             <div class="logo">
                 <a th:href="@{/}" class="link">
                     <img th:src="@{/images/logo-t.png}" alt="">
@@ -35,34 +35,30 @@
                     <ul>
                         <li><a th:href="@{/forcusnews}">最新消息</a></li>
                         <li><a th:href="@{/qa/view}">常見QA</a></li>
-                        <li><a href="#">聯絡我們</a></li>
                     </ul>
                 </li>
                 <li>
                     <a th:href="@{/mall/products}" class="link btn">小農商城</a>
-                    <ul>
-                        <li><a href="#">熱門排行榜</a></li>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">自行修改喔</a></li>
-                    </ul>
+<!--                     <ul> -->
+<!--                         <li><a href="#">熱門排行榜</a></li> -->
+<!--                     </ul> -->
                 </li>
                 <li>
                     <a th:href="@{/act}" class="link btn">活動專區</a>
-                    <ul>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">自行修改喔</a></li>
-                        <li><a href="#">自行修改喔</a></li>
-                    </ul>
+<!--                     <ul> -->
+<!--                         <li><a href="#">自行修改喔</a></li> -->
+<!--                         <li><a href="#">自行修改喔</a></li> -->
+<!--                     </ul> -->
                 </li>
 
                 <li>
-                    <a th:href="@{/mem/memArea}" class="link btn">會員中心</a>
+                    <a th:href="@{/mem/memArea}" class="link btn btn-member">會員中心</a>
                     <ul th:fragment="memAreaLink">
 			            <li><a th:href="@{/mem/memArea/updateProfilePage}">修改個人資料</a></li>
 			            <li><a th:href="@{/mem/memArea/updatePasswordPage}">修改密碼</a></li>
                         <li><a th:href="@{/mem/proorders/listAllProOrder}">商城訂單查詢</a></li>
 			            <li><a th:href="@{/mem/reg/list}">活動訂單查詢</a></li>
-			            <li><a th:href="@{/mem/memprocpn/list}">折價券</a></li>
+			            <li><a th:href="@{/mem/memcpn/list}">折價券</a></li>
 			            <li><a th:href="@{/mem/favopro/list}">收藏商品/活動</a></li>
                     </ul>
                 </li>
@@ -72,8 +68,9 @@
                 </li>
             </ul>
             <div class="member">
-                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn">
-                	<i class="fa-solid fa-user-tie"></i>
+                <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn btn-farmer">
+<!--                 	<i class="fa-solid fa-tree"></i> -->
+                	<i class="fa-solid fa-seedling"></i>
                 	<span class="icon-label">小農</span>
                 </a>
                 <a th:if="${session.loggedInMember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn">
@@ -87,6 +84,8 @@
                 		<span th:text="${session.loggedInMember.memPoint}"></span>
                 	</div>
                 </div>
+                
+                
                 <a th:href="@{/cart/view}" class="member-logo link btn cart">
                 	<i class="fa-solid fa-cart-shopping"></i>
                 	<span class="icon-label">購物車</span>
@@ -107,7 +106,7 @@
     
     <div class="container container-banner">
         <div class="banner">
-            <img th:src="@{/images/banner.png}" alt="banner">
+            <img th:src="@{/images/banner-txt.png}" alt="banner">
 
             <div class="animate-box">
                 <svg class="car" id="car" width="115" height="80" viewBox="0 0 115 80" xmlns="http://www.w3.org/2000/svg">     
@@ -119,10 +118,10 @@
                 </svg>
             </div>
             
-            <div class="text">
-                <h2>農作物與它們的產地</h2>
-                <p>我們的目標是建立一個雙向互動的社群：消費者不再只是購買者，更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p>
-            </div>
+<!--             <div class="text"> -->
+<!--                 <h2>農作物與它們的產地</h2> -->
+<!--                 <p>我們的目標是建立一個雙向互動的社群：消費者不再只是購買者，更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p> -->
+<!--             </div> -->
         </div>
     </div>
 
@@ -181,7 +180,7 @@
                         <img th:src="@{/images/apple.png}" alt="apple" style="max-width: 100px; max-height: 100px;" >
                     </div>
                     <div class="concept-name">新鮮直送</div>
-                    <div class="concept-desc">小農現採直送，減少運輸時間，保留天然風味與完整營養，讓你在餐桌上品嚐到最鮮美的食材。</div>
+                    <div class="concept-desc">小農現採直送，減少運輸時間，保留天然風味與營養，讓你在餐桌上品嚐到最鮮美的食材。</div>
                 </a>  
             </div>
 
@@ -248,7 +247,7 @@
     
 
     <div class="container container-footer" th:fragment="footer">
-        <div class="footer">
+        <div class="footer" th:fragment="footer-inner">
             <div class="quick-link">
                 <a href="#">關於我們</a>
                 <a href="#">最新消息</a>

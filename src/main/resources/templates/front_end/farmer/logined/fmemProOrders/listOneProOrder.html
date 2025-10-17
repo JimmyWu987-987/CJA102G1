@@ -1,329 +1,323 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>小農會員中心 - 商品訂單明細</title>
-<link rel="icon" th:href="@{/images/logo.png}">
-
-<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-
-<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-
-<style>
-/* ----------------------------------- */
-/* 訂單明細頁面專屬 CSS */
-/* ----------------------------------- */
-
-/* **新增修正點：讓整個會員內容區塊居中並限制最大寬度** */
-.container-member {
-	/* 設置內容最大寬度，您可以依需求調整 */
-	max-width: 1200px;
-	/* 強制覆蓋 memArea.css 或其他可能設定的 margin-left */
-	margin-left: auto !important;
-	/* 強制覆蓋 memArea.css 或其他可能設定的 margin-right */
-	margin-right: auto !important;
-}
-
-/* 確保標題置中且符合通用標題樣式 */
-.member-content h2 {
-	font-size: var(--title-font-size);
-	font-weight: bold;
-	color: #555;
-	margin-bottom: 20px;
-	text-align: center;
-}
-
-/* 訂單資訊區塊的通用樣式 (卡片設計) */
-.order-detail-section {
-	padding: 20px;
-	margin-bottom: 20px;
-	border: 1px solid #eee;
-	border-radius: 8px;
-	background-color: #fff;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.order-detail-section h3 {
-	font-size: var(--subtitle-font-size);
-	color: var(--main-color);
-	border-bottom: 2px solid var(--header-color);
-	padding-bottom: 8px;
-	margin-bottom: 15px;
-}
-
-/* Grid 佈局：用於並排顯示多個資訊項目，以兩欄為主 */
-.info-grid {
-	display: grid;
-	/* 盡量以兩欄來呈現，減少垂直高度 */
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 15px 20px;
-	font-size: var(--content-font-size);
-}
-
-.info-item {
-	display: flex;
-	/* 確保標籤和數值對齊 */
-}
-
-.info-item span:first-child {
-	font-weight: bold;
-	color: #555;
-	min-width: 160px; /* 統一標籤寬度，使數值對齊 (小農資訊標籤較長) */
-	display: inline-block;
-}
-
-.info-item span:last-child {
-	color: #333;
-	flex-grow: 1;
-}
-
-/* 訂單商品明細表格樣式 */
-.product-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	font-size: var(--content-font-size);
-}
-
-.product-table thead tr {
-	background-color: var(--second-color);
-	color: #fff;
-}
-
-.product-table th, .product-table td {
-	padding: 12px 15px;
-	text-align: center;
-	border: 1px solid #ddd;
-}
-
-.product-table td:nth-child(2) {
-	text-align: left; /* 商品名稱靠左 */
-}
-
-.product-table tbody tr:nth-child(even) {
-	background-color: #f7f7f7;
-}
-
-.product-table tbody tr:hover {
-	background-color: #fff4e6;
-}
-
-/* 總金額資訊區塊 (靠右對齊) */
-.total-summary {
-	max-width: 450px; /* 限制寬度 */
-	margin-left: auto;
-	font-size: var(--content-font-size);
-	padding: 15px 0;
-}
-
-.total-summary .info-item {
-	padding: 4px 0;
-}
-
-.total-summary .info-item span:first-child {
-	min-width: 180px; /* 調整總結區的標籤寬度 */
-	font-weight: normal;
-}
-
-.total-summary .info-item span:last-child {
-	text-align: right;
-}
-
-.total-summary .grand-total {
-	border-top: 1px solid #ccc;
-	padding-top: 8px;
-	margin-top: 8px;
-}
-
-.total-summary .grand-total span:first-child, .total-summary .grand-total span:last-child
-	{
-	font-size: 20px;
-	font-weight: bold;
-	color: var(--btn-color);
-}
-
-/* 訂單備註 */
-.order-note {
-	font-size: var(--content-font-size);
-	margin-top: 20px;
-	padding: 10px;
-	border-left: 5px solid var(--btn-color);
-	background-color: #fafff5;
-	border-radius: 4px;
-}
-
-.order-note span:first-child {
-	font-weight: bold;
-	color: var(--btn-color);
-}
-
-/* ----------------------------------- */
-/* 小農功能區塊 (Flex 容器) */
-/* ----------------------------------- */
-.admin-actions-flex {
-	display: flex;
-	gap: 20px;
-	margin-bottom: 20px; /* 在它與後續區塊之間增加間距 */
-	flex-wrap: wrap; /* 允許在小螢幕上換行 */
-}
-
-/* 訂單修改表單樣式 (左側) */
-.status-update-form {
-	flex: 2; /* 佔用 2 份空間 (約 66%) */
-	min-width: 300px;
-	margin-bottom: 0;
-	padding: 20px;
-	border: 1px solid var(--header-color);
-	border-radius: 8px;
-	background-color: #ffffff;
-}
-
-.status-update-form h3 {
-	font-size: var(--subtitle-font-size);
-	color: var(--btn-color);
-	margin-bottom: 20px;
-}
-
-.form-field {
-	display: flex;
-	align-items: center;
-	margin-bottom: 15px;
-	font-size: var(--content-font-size);
-}
-
-.form-field span {
-	font-weight: bold;
-	color: #555;
-	min-width: 120px;
-}
-
-.form-field select, .form-field input[type="text"], .form-field input[type="date"]
-	{
-	/* **保留上次的修正：設定固定寬度 180px，並強制不被 Flex 容器壓縮** */
-	width: 180px;
-	flex-shrink: 0;
-	padding: 8px 10px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	font-size: var(--content-font-size);
-}
-
-.form-actions {
-	margin-top: 25px;
-	text-align: right;
-}
-
-.form-actions input[type="submit"] {
-	/* 套用通用按鈕樣式 */
-	display: inline-block;
-	padding: 10px 30px;
-	font-size: var(--link-button-font-size);
-	color: #fff;
-	border: none;
-	border-radius: 5px;
-	background-color: var(--btn-color);
-	cursor: pointer;
-	transition: 0.8s;
-}
-
-.form-actions input[type="submit"]:hover {
-	background-color: var(--btn-hover-color);
-}
-
-/* 平台撥款資訊區塊樣式 (右側) */
-.platform-info-section {
-	flex: 1; /* 佔用 1 份空間 (約 33%) */
-	min-width: 300px;
-	margin-bottom: 0;
-	padding: 20px;
-	border: 1px solid var(--second-color);
-	border-radius: 8px;
-	background-color: #fafff5; /* 輕微的背景色區隔 */
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-	align-self: flex-start; /* 防止區塊被拉伸 */
-}
-
-.platform-info-section h3 {
-	font-size: var(--subtitle-font-size);
-	color: var(--second-color);
-	border-bottom: 2px solid var(--second-color);
-	padding-bottom: 8px;
-	margin-bottom: 15px;
-}
-
-/* 確保 info-item 的樣式在右側區塊也能套用 */
-.platform-info-section .info-item {
-	margin-bottom: 10px;
-	padding: 4px 0;
-}
-
-.platform-info-section .info-item span:first-child {
-	min-width: 140px; /* 調整標籤寬度 */
-	font-weight: bold;
-	color: #333;
-}
-
-.platform-info-section .info-item span:last-child {
-	color: var(--second-color); /* 強調金額資訊 */
-	font-weight: bold;
-}
-
-/* 回上一頁按鈕 (獨立的 form) */
-.back-button-area {
-	text-align: left;
-}
-
-.back-button-area form {
-	display: inline-block;
-}
-
-.back-button-area input[type="submit"] {
-	/* 讓回上一頁按鈕區別於修改按鈕，採用輕量風格 */
-	padding: 8px 20px;
-	font-size: var(--link-button-font-size);
-	color: #555;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	background-color: #f0f0f0;
-	cursor: pointer;
-	transition: 0.8s;
-}
-
-.back-button-area input[type="submit"]:hover {
-	background-color: #ddd;
-}
-
-/* 訊息/錯誤提示樣式 */
-.success-message, .error-message {
-	padding: 10px;
-	margin-bottom: 20px;
-	border-radius: 5px;
-	font-size: var(--content-font-size);
-	text-align: center;
-}
-
-.success-message {
-	background-color: #e6ffe6;
-	border: 1px solid #00cc00;
-	color: #008000;
-}
-
-.error-message {
-	background-color: #ffe6e6;
-	border: 1px solid #ff0000;
-	color: #cc0000;
-}
-
-/* 覆寫網站通用 CSS (如果需要，根據您的額外樣式來決定是否覆寫) */
-.container-header, .container-footer {
-	background-color: #dce2ef;
-}
-
-.nav>li>a {
-	background-color: #4F9D9D;
-}
-</style>
+	<meta charset="UTF-8">
+	<title>小農會員中心 - 商品訂單明細</title>
+	<link rel="icon" th:href="@{/images/logo.png}">
+	
+	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+	
+	<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+	
+	<style>
+	/* ----------------------------------- */
+	/* 訂單明細頁面專屬 CSS */
+	/* ----------------------------------- */
+	
+	/* **新增修正點：讓整個會員內容區塊居中並限制最大寬度** */
+	.container-member {
+		/* 設置內容最大寬度，您可以依需求調整 */
+		max-width: 1200px;
+		/* 強制覆蓋 memArea.css 或其他可能設定的 margin-left */
+		margin-left: auto !important;
+		/* 強制覆蓋 memArea.css 或其他可能設定的 margin-right */
+		margin-right: auto !important;
+	}
+	
+	/* 確保標題置中且符合通用標題樣式 */
+	.member-content h2 {
+		font-size: var(--title-font-size);
+		font-weight: bold;
+		color: #555;
+		margin-bottom: 20px;
+		text-align: center;
+	}
+	
+	/* 訂單資訊區塊的通用樣式 (卡片設計) */
+	.order-detail-section {
+		padding: 20px;
+		margin-bottom: 20px;
+		border: 1px solid #eee;
+		border-radius: 8px;
+		background-color: #fff;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	}
+	
+	.order-detail-section h3 {
+		font-size: var(--subtitle-font-size);
+		color: var(--main-color);
+		border-bottom: 2px solid var(--header-color);
+		padding-bottom: 8px;
+		margin-bottom: 15px;
+	}
+	
+	/* Grid 佈局：用於並排顯示多個資訊項目，以兩欄為主 */
+	.info-grid {
+		display: grid;
+		/* 盡量以兩欄來呈現，減少垂直高度 */
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 15px 20px;
+		font-size: var(--content-font-size);
+	}
+	
+	.info-item {
+		display: flex;
+		/* 確保標籤和數值對齊 */
+	}
+	
+	.info-item span:first-child {
+		font-weight: bold;
+		color: #555;
+		min-width: 160px; /* 統一標籤寬度，使數值對齊 (小農資訊標籤較長) */
+		display: inline-block;
+	}
+	
+	.info-item span:last-child {
+		color: #333;
+		flex-grow: 1;
+	}
+	
+	/* 訂單商品明細表格樣式 */
+	.product-table {
+		width: 100%;
+		border-collapse: collapse;
+		margin-top: 20px;
+		margin-bottom: 20px;
+		font-size: var(--content-font-size);
+	}
+	
+	.product-table thead tr {
+		background-color: var(--second-color);
+		color: #fff;
+	}
+	
+	.product-table th, .product-table td {
+		padding: 12px 15px;
+		text-align: center;
+		border: 1px solid #ddd;
+	}
+	
+	.product-table td:nth-child(2) {
+		text-align: left; /* 商品名稱靠左 */
+	}
+	
+	.product-table tbody tr:nth-child(even) {
+		background-color: #f7f7f7;
+	}
+	
+	.product-table tbody tr:hover {
+		background-color: #fff4e6;
+	}
+	
+	/* 總金額資訊區塊 (靠右對齊) */
+	.total-summary {
+		max-width: 450px; /* 限制寬度 */
+		margin-left: auto;
+		font-size: var(--content-font-size);
+		padding: 15px 0;
+	}
+	
+	.total-summary .info-item {
+		padding: 4px 0;
+	}
+	
+	.total-summary .info-item span:first-child {
+		min-width: 180px; /* 調整總結區的標籤寬度 */
+		font-weight: normal;
+	}
+	
+	.total-summary .info-item span:last-child {
+		text-align: right;
+	}
+	
+	.total-summary .grand-total {
+		border-top: 1px solid #ccc;
+		padding-top: 8px;
+		margin-top: 8px;
+	}
+	
+	.total-summary .grand-total span:first-child, .total-summary .grand-total span:last-child
+		{
+		font-size: 20px;
+		font-weight: bold;
+		color: var(--btn-color);
+	}
+	
+	/* 訂單備註 */
+	.order-note {
+		font-size: var(--content-font-size);
+		margin-top: 20px;
+		padding: 10px;
+		border-left: 5px solid var(--btn-color);
+		background-color: #fafff5;
+		border-radius: 4px;
+	}
+	
+	.order-note span:first-child {
+		font-weight: bold;
+		color: var(--btn-color);
+	}
+	
+	/* ----------------------------------- */
+	/* 小農功能區塊 (Flex 容器) */
+	/* ----------------------------------- */
+	.admin-actions-flex {
+		display: flex;
+		gap: 20px;
+		margin-bottom: 20px; /* 在它與後續區塊之間增加間距 */
+		flex-wrap: wrap; /* 允許在小螢幕上換行 */
+	}
+	
+	/* 訂單修改表單樣式 (左側) */
+	.status-update-form {
+		flex: 2; /* 佔用 2 份空間 (約 66%) */
+		min-width: 300px;
+		margin-bottom: 0;
+		padding: 20px;
+		border: 1px solid var(--header-color);
+		border-radius: 8px;
+		background-color: #ffffff;
+	}
+	
+	.status-update-form h3 {
+		font-size: var(--subtitle-font-size);
+		color: var(--btn-color);
+		margin-bottom: 20px;
+	}
+	
+	.form-field {
+		display: flex;
+		align-items: center;
+		margin-bottom: 15px;
+		font-size: var(--content-font-size);
+	}
+	
+	.form-field span {
+		font-weight: bold;
+		color: #555;
+		min-width: 120px;
+	}
+	
+	.form-field select, .form-field input[type="text"], .form-field input[type="date"]
+		{
+		/* **保留上次的修正：設定固定寬度 180px，並強制不被 Flex 容器壓縮** */
+		width: 180px;
+		flex-shrink: 0;
+		padding: 8px 10px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		font-size: var(--content-font-size);
+	}
+	
+	.form-actions {
+		margin-top: 25px;
+		text-align: right;
+	}
+	
+	.form-actions input[type="submit"] {
+		/* 套用通用按鈕樣式 */
+		display: inline-block;
+		padding: 10px 30px;
+		font-size: var(--link-button-font-size);
+		color: #fff;
+		border: none;
+		border-radius: 5px;
+		background-color: var(--btn-color);
+		cursor: pointer;
+		transition: 0.8s;
+	}
+	
+	.form-actions input[type="submit"]:hover {
+		background-color: var(--btn-hover-color);
+	}
+	
+	/* 平台撥款資訊區塊樣式 (右側) */
+	.platform-info-section {
+		flex: 1; /* 佔用 1 份空間 (約 33%) */
+		min-width: 300px;
+		margin-bottom: 0;
+		padding: 20px;
+		border: 1px solid var(--second-color);
+		border-radius: 8px;
+		background-color: #fafff5; /* 輕微的背景色區隔 */
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		align-self: flex-start; /* 防止區塊被拉伸 */
+	}
+	
+	.platform-info-section h3 {
+		font-size: var(--subtitle-font-size);
+		color: var(--second-color);
+		border-bottom: 2px solid var(--second-color);
+		padding-bottom: 8px;
+		margin-bottom: 15px;
+	}
+	
+	/* 確保 info-item 的樣式在右側區塊也能套用 */
+	.platform-info-section .info-item {
+		margin-bottom: 10px;
+		padding: 4px 0;
+	}
+	
+	.platform-info-section .info-item span:first-child {
+		min-width: 140px; /* 調整標籤寬度 */
+		font-weight: bold;
+		color: #333;
+	}
+	
+	.platform-info-section .info-item span:last-child {
+		color: var(--second-color); /* 強調金額資訊 */
+		font-weight: bold;
+	}
+	
+	/* 回上一頁按鈕 (獨立的 form) */
+	.back-button-area {
+		text-align: left;
+	}
+	
+	.back-button-area form {
+		display: inline-block;
+	}
+	
+	.back-button-area input[type="submit"] {
+		/* 讓回上一頁按鈕區別於修改按鈕，採用輕量風格 */
+		padding: 8px 20px;
+		font-size: var(--link-button-font-size);
+		color: #555;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		background-color: #f0f0f0;
+		cursor: pointer;
+		transition: 0.8s;
+	}
+	
+	.back-button-area input[type="submit"]:hover {
+		background-color: #ddd;
+	}
+	
+	/* 訊息/錯誤提示樣式 */
+	.success-message, .error-message {
+		padding: 10px;
+		margin-bottom: 20px;
+		border-radius: 5px;
+		font-size: var(--content-font-size);
+		text-align: center;
+	}
+	
+	.success-message {
+		background-color: #e6ffe6;
+		border: 1px solid #00cc00;
+		color: #008000;
+	}
+	
+	.error-message {
+		background-color: #ffe6e6;
+		border: 1px solid #ff0000;
+		color: #cc0000;
+	}
+	
+	
+	</style>
 
 </head>
 <body>
@@ -460,13 +454,13 @@
 								th:case="*"></span>
 							</span>
 						</div>
-						<div th:if="${proOrderVO.memProCpnVO}" class="info-item">
-							<span>商品折價卷流水號:</span> <span
-								th:text="${proOrderVO.memProCpnVO.cpnHolderDetailId}"></span>
-						</div>
-						<div th:unless="${proOrderVO.memProCpnVO}" class="info-item">
-							<span>商品折價卷流水號:</span><span>無/未使用</span>
-						</div>
+                        <div class="info-item" th:if="${proOrderVO.memProCpnVO}">
+                            <span>折價卷名稱:</span> <span
+                                th:text="${proOrderVO.memProCpnVO.proCpnVO.cpnName}"></span>
+                        </div>
+                        <div class="info-item" th:unless="${proOrderVO.memProCpnVO}">
+                            <span>折價卷名稱:</span><span>無/未使用</span>
+                        </div>
 						<div class="info-item">
 							<span>目前訂單狀態:</span> <span th:switch="${proOrderVO.proOrdStatus}">
 								<span th:case="0">成立訂單</span> <span th:case="1">取消訂單(未出貨)</span>

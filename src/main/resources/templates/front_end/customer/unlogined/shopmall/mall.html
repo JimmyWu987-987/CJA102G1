@@ -21,6 +21,26 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <style>
+    .myContainer:not(.container-header):not(.container-footer){
+   flex: 1; /*for footer貼到底端*/
+  }
+  .myContainer{
+      width: 100%;
+      margin: 0 auto;
+      min-width: 1200px;
+  /*  outline:1px solid #f00; */
+  }
+  .myContainer:not(.container-banner):not(.container-register){
+      padding-left: 10%;
+      padding-right: 10%;
+  }
+     .myContainer .btn{
+      font-size: var(--link-button-font-size)
+     }
+     .myContainer ol, 
+     .myContainer ul{
+      padding-left: 0;
+     }
         :root {
             --primary-color: #ff7b42;
             --secondary-color: #2a5a2a;
@@ -189,6 +209,7 @@
             padding: 3rem 0;
             margin-top: 5rem;
         } */
+        
         .footer a {
             color: #f0f0f0;
             text-decoration: none;
@@ -206,8 +227,8 @@
 		/* 商城廣告區  */   
 		.pro-adarea{
 		  position: relative;
-		  width: 75%;
-		  height: 350px;   
+		  width: 100%;
+		  height: 410px;   
 		  overflow: hidden;
 		  border-radius: 8px;
 		  margin: 0 auto 30px; 
@@ -257,14 +278,25 @@
 		transform:scale(1.1); 
 		}
 
-	.proad-img{
-	  width: 100%;
-	  height: 100%;
-	  object-fit: contain;     
-	  display: block;
-	  background:#fff;
-	  cursor: pointer;
-	}
+		.proad-img{
+		  width: 100%;
+		  height: 100%;
+		  border-radius: 8px;
+		  object-fit: contain;     
+		  display: block;
+		  background:#fff;
+		  cursor: pointer;
+		}
+		
+		.btn-actions .btn-icon {
+           width: 5.75rem; /* 設定固定寬度，使其成為正方形 */
+           height: 2.25rem; /* 設定固定高度 */
+           padding: 0; /* 移除內邊距，讓圖示能完美置中 */
+           display: inline-flex;
+           align-items: center;
+           justify-content: center;
+        }
+        
 /* 商城廣告區  */   
     </style>
 </head>
@@ -275,7 +307,7 @@
 
     <main class="container mt-4">
         
-        <div class="text-center mb-5">
+        <div class="text-center mb-0">
             <h1 class="fw-bold" style="color: var(--secondary-color);">小農商城</h1>
             <p class="text-muted">新鮮蔬果，產地直送</p>
         </div>
@@ -285,7 +317,7 @@
 		  <div class="owl-carousel owl-theme">
 		    <a class="item"
 		       th:each="adId : ${adIds}"
-		       th:href="@{/mall/proAd/hit/{adId}(adId=${adId})}">
+		       th:href="@{/mall/proAd/{adId}(adId=${adId})}">
 		      <img class="proad-img"
 		           th:src="@{/proAd/img/{id}(id=${adId})}"
 		           th:alt="${'ad-'+adId}">
@@ -351,9 +383,14 @@
 <!--                                 <a th:href="@{/mall/product/{id}(id=${pro.proId})}" class="btn btn-theme btn-sm btn-details"> -->
 <!--                                     <i class="fas fa-search me-1"></i> 查看詳情 -->
 <!--                                 </a> -->
-                                <button class="btn btn-theme btn-sm btn-icon" th:attr="onclick=|addToCart(${pro.proId})|">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                                <!-- 1. 加入購物車：使用 form 提交 -->
+                                <form th:action="@{/cart/add}" method="post" style="display: inline-block;">
+                                    <input type="hidden" name="proId" th:value="${pro.proId}" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-theme btn-sm btn-icon" title="加入購物車">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </button>
+                                </form>
                                 <button class="btn btn-theme btn-sm btn-icon" th:attr="onclick=|addToFavorites(${pro.proId})|">
                                     <i class="fas fa-heart"></i>
                                 </button>
@@ -408,56 +445,6 @@
     
     <!-- ★★★ 新增：加入購物車的 JavaScript 函式 ★★★ -->
     <script>
-        function addToCart(productId) {
-            // 使用 Fetch API 發送 POST 請求
-            fetch('/mall/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'proId=' + productId
-            })
-            .then(response => {
-                if (response.ok) {
-                    // 顯示成功提示
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: '已加入購物車！',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        background: '#2a5a2a', // 深綠色背景
-                        color: '#fff' // 白色文字
-                    });
-                } else {
-                    // 處理錯誤情況
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: '加入失敗！',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        background: '#dc3545', // 紅色背景
-                        color: '#fff'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: '發生錯誤！',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    background: '#dc3545',
-                    color: '#fff'
-                });
-            });
-        }
         
         // 商城廣告區   
         $(function(){
@@ -465,8 +452,8 @@
         	    items: 1,
         	    loop: true,
         	    autoplay: true,
-        	    autoplayTimeout: 4000,
-        	    smartSpeed: 600,
+        	    autoplayTimeout: 6000,
+        	    smartSpeed: 800,
         	    dots: true,
         	    nav: true,
         	    navText: [

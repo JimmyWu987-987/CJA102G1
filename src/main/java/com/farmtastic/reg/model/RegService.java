@@ -1,5 +1,6 @@
 package com.farmtastic.reg.model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -46,10 +47,11 @@ public class RegService {
 			repository.save(regVO);
 		}
 		
-		// 消費者報名活動時折價卷顯示
-		public List<MemActCpnVO> getCouponsByMemId(Integer memId){
-			return repository.findAvailableCouponsByMemId(memId);
-		}
+		// 更換折價券的寫法
+//		// 消費者報名活動時折價卷顯示
+//		public List<MemActCpnVO> getCouponsByMemId(Integer memId){
+//			return repository.findAvailableCouponsByMemId(memId);
+//		}
 		
 		//消費者報名時顯示會員點數
 		public Integer getMemberPoints(Integer memId) {
@@ -102,4 +104,47 @@ public class RegService {
 	        repository.save(regVO);
 		}
 		
+
+
+		
+		
+		//管理員查活動完城
+		@Transactional(readOnly = true)
+		public List<RegVO> findByRevStat(Integer regStat){
+			return repository.findByRegStat(regStat);
+		}
+		
+		//管理員撥款
+		@Transactional
+		public void updateRegStat(Integer regId, Integer regStat) {
+			RegVO regVO = repository.findById(regId)
+	                .orElseThrow();
+			regVO.setRegStat(4);
+			repository.save(regVO);
+		}
+		
+		
+		
+		// 回傳 RegVO 
+	    @Transactional
+	    public RegVO addRegAndReturn(RegVO regVO) {
+	        regVO.setRegAt(Timestamp.from(java.time.Instant.now()));
+	        regVO.setRegStat(0);
+	        return repository.save(regVO);
+	    }
+
+	    //新增：付款成功更新狀態
+	    @Transactional
+	    public void updatePayReg(RegVO regVO) {
+	        regVO.setRegStat(0); 
+	        repository.save(regVO);
+	    }
+	    
+	    //單筆查詢活動訂單
+	    @Transactional(readOnly = true)
+	    public RegVO getOne(Integer regId) {
+	        return repository.findById(regId)
+	                         .orElseThrow();
+	    }
+	    
 }

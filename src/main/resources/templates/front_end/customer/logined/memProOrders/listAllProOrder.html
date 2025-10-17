@@ -16,6 +16,17 @@
 <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
 
 <style>
+
+.member-content h2 {
+	min-width: 780px;
+	font-size: var(--subtitle-font-size);
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+}
+
+
+
 /* ----------------------------------- */
 /* DataTables 與表格樣式修正 */
 /* ----------------------------------- */
@@ -26,20 +37,33 @@ div.dataTables_wrapper {
 	color: #333; /* 統一字體顏色 */
 }
 
+
+#example_length{
+ 	margin-bottom: 4px;  
+}
+
+.dataTables_filter{
+	margin-bottom: 4px;
+}
+
+
 /* 表格外觀 (參考上個任務的表格風格) */
 #example {
 	width: 100% !important; /* 確保寬度為 100% */
 	border-collapse: collapse;
+	border-radius: 8px;
+	outline: 1px solid #cbddf9;
+	overflow: hidden;
 	margin-top: 0 !important; /* DataTables 預設可能有多餘 margin */
 }
 
 /* 表頭樣式：使用網站的第二主色 */
 #example thead th {
-	font-size: 14px; /* 略小於內容字體，但強調 */
+	font-size: 15px; 
 	font-weight: bold;
-	background-color: var(--second-color); /* 綠色背景 */
+	background-color: #6b8dc9; 
 	color: #fff;
-	padding: 10px 14px; /* 縮小垂直內距，減少高度 */
+	padding: 10px 12px; /* 縮小垂直內距，減少高度 */
 	border: 1px solid var(--second-color);
 	text-align: center;
 }

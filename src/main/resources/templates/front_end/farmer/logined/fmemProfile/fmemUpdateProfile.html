@@ -6,29 +6,11 @@
 	<link rel="icon" th:href="@{/images/logo.png}">
 
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
 
 	<link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-<!--     <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateProfile.css}"> -->
-
-<style>
-	
-	.container-header,
-	.container-footer{
-		background-color: #dce2ef;	
-	}
-	.nav > li > a{
-		background-color: #4F9D9D;
-	}
-	
-	.container-content{
-		font-size:80px;
-	}
-
-
-</style>
-
-
+    
 </head>
 <body th:data-success="${success}">
 

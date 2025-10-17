@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 public class ImageUploader {
     
     // 修改成你的資料庫密碼
-    private static final String PASSWORD = "YuKiGeSQ7";
+    private static final String PASSWORD = "minxuan0429";
     
     public static void main(String[] args) {
         System.out.println("開始上傳圖片...\n");
@@ -21,6 +21,9 @@ public class ImageUploader {
         
         // 上傳商店圖片
         uploadImages("store", "UPDATE fmem SET store_pic = ? WHERE fmem_id = ?");
+        
+        // 上傳商店樣式預覽圖
+        uploadImages("sty", "UPDATE sty SET sty_pic = ? WHERE sty_no = ?");
         
         // 方式2: 用同一張圖上傳到所有 ID
         // 上傳土地證明圖片
