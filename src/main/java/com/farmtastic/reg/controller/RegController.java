@@ -48,27 +48,23 @@ public class RegController {
 //  ******************************管理員功能**************************************
 	// 管理員查活動訂單全部
 	@GetMapping("admin/cashflow/reg/list")
-	public String list(Model model, @RequestParam(value = "regRevStat", required = false) Integer regRevStat) {
+	public String list(Model model,@RequestParam(value = "regRevStat", required = false) Integer regRevStat) {
 
 		List<RegVO> list = (regRevStat == null) ? regService.getAll() // 沒帶參數：全部
 				: regService.findByRevStat(regRevStat); // 有帶參數：依狀態過濾
+		
+		List<String> names = regService.getFarmerName();
+		model.addAttribute("names", names);
+		
 		model.addAttribute("fmemList", fmemSvc.getAll());
 		model.addAttribute("listReg", list);
 		model.addAttribute("regRevStat", regRevStat);
 		return "back_end/logined/reg/adminListAllReg";
 	}
 
-	// 撥款成功後
-	@PostMapping("regMoney")
-	public String giveMonetToFmem(@RequestParam("regId") Integer regId, @RequestParam("regStat") Integer regStat,
-			RedirectAttributes redirectAttributes) {
+	
 
-		regService.updateRegStat(regId, regStat);
-		redirectAttributes.addFlashAttribute("success", "撥款成功");
-		return "redirect:/admin/cashflow/reg/list";
-	}
-
-	// 小農清單切換
+	// 管理員切換小農清單
 	@PostMapping("selectFmemReg")
 	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, ModelMap model, HttpSession session) {
 
@@ -80,13 +76,40 @@ public class RegController {
 		// 查該小農的訂單
 		List<RegVO> list = regService.getByFmemId(fmemId);
 		model.addAttribute("listReg", list);
-
+		
+		List<String> names = regService.getFarmerNameByFmemId(fmemId);
+	    model.addAttribute("names", names);
+		
 		// 下拉選單資料與選中的 fmemId
 		model.addAttribute("fmemList", fmemSvc.getAll());
 		model.addAttribute("selectedFmemId", fmemId);
 
 		return "back_end/logined/reg/adminListAllReg";
 	}
+	
+	// 撥款成功後
+		@PostMapping("admin/reg/regMoney")
+		public String giveMonetToFmem(@RequestParam("regId") Integer regId, @RequestParam("regStat") Integer regStat,
+				RedirectAttributes redirectAttributes) {
+
+			regService.updateRegStat(regId, regStat);
+			redirectAttributes.addFlashAttribute("success", "撥款成功");
+			return "redirect:/admin/cashflow/reg/list";
+		}
+	
+		// 管理員退款給消費者
+		@PostMapping("admin/reg/changeState")
+		public String changeStateByAdmin(@RequestParam Integer regId,
+		                        @RequestParam Integer regStat,
+		                        HttpSession session,
+		                        RedirectAttributes redirectAttributes) {
+
+		    regService.updateRegStat(regId, regStat); 
+		    redirectAttributes.addFlashAttribute("success", "退款成功");
+		    return "redirect:/admin/cashflow/reg/list";
+		}
+	
+	
 
 //  ******************************小農功能**************************************
 	// 小農查詢廣告列表
@@ -109,6 +132,21 @@ public class RegController {
 		regService.addActCommReply(regId, actCommReply);
 		return "redirect:/fmem/reg/list";
 	}
+	
+	
+	// 小農改變訂單狀態(結案、取消訂單)
+	@PostMapping("fmem/reg/changeState")
+	public String cancelByFmemReg(@RequestParam Integer regId,
+	                        @RequestParam Integer regStat,
+	                        HttpSession session,
+	                        RedirectAttributes ra) {
+
+	    regService.updateRegStat(regId, regStat); 
+	    ra.addFlashAttribute("successMsg", "已成功結案");
+	    return "redirect:/fmem/reg/list";
+	}
+	
+	
 
 //  ******************************消費者功能**************************************
 	// 消費者查詢廣告列表
