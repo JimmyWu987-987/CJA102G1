@@ -20,8 +20,6 @@ import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.memactcpn.model.MemActCpnServiceImp;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
-import com.farmtastic.proorder.model.ProOrderSevice;
-import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.reg.model.RegService;
 import com.farmtastic.reg.model.RegVO;
@@ -138,17 +136,30 @@ public class RegController {
 	}
 	
 	
-	// 小農改變訂單狀態(結案、取消訂單)
-	@PostMapping("fmem/reg/changeState")
+	// 小農改變訂單狀態(取消訂單)
+	@PostMapping("fmem/reg/cancel")
 	public String cancelByFmemReg(@RequestParam Integer regId,
 	                        @RequestParam Integer regStat,
 	                        HttpSession session,
-	                        RedirectAttributes ra) {
+	                        RedirectAttributes redirectAttributes) {
 
 	    regService.updateRegStat(regId, regStat); 
-	    ra.addFlashAttribute("successMsg", "已成功結案");
+	    redirectAttributes.addFlashAttribute("success", "取消成功");
 	    return "redirect:/fmem/reg/list";
 	}
+	
+	// 小農改變訂單狀態(結案)
+	@PostMapping("fmem/reg/finish")
+	public String finishByFmemReg(@RequestParam Integer regId,
+	                        @RequestParam Integer regStat,
+	                        HttpSession session,
+	                        RedirectAttributes redirectAttributes) {
+
+	    regService.updateRegStat(regId, regStat); 
+	    redirectAttributes.addFlashAttribute("success", "結案成功");
+	    return "redirect:/fmem/reg/list";
+	}
+	
 	
 	
 
@@ -420,7 +431,7 @@ public class RegController {
 	                        HttpSession session,
 	                        RedirectAttributes ra) {
 	    regService.updateRegStat(regId, regStat); // 將狀態改為 1(待退款)
-	    ra.addFlashAttribute("successMsg", "已申請取消，待退款。");
+	    ra.addFlashAttribute("success", "已取消，待退款。");
 	    return "redirect:/mem/reg/list";
 	}
 	

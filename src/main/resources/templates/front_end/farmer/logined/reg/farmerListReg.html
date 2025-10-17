@@ -261,7 +261,7 @@
 
   </style>
 </head>
-<body> 
+<body th:data-success="${success}"> 
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
 
@@ -289,7 +289,7 @@
   </select>
 </div>
 
-  <div class="reg-area">
+  <div class="reg-area" >
             <div class="reg-list">
   <div class="reg-box" th:each="r : ${listReg}" th:attr="data-stat=${r.regStat}">
 	<h2 style="margin:0;">
@@ -313,7 +313,7 @@
 		
 		  <!-- 狀態=4 才顯示「結案」按鈕 -->
 		  <form th:if="${r.regStat == 4}"
-		      th:action="@{/fmem/reg/changeState}"
+		      th:action="@{/fmem/reg/finish}"
 		      method="post"
 		      onsubmit="return confirm('確認是否要結案?');"
 		      style="display:inline; margin-left:8px;">
@@ -430,7 +430,7 @@
 
     <br>
     <form th:if="${r.regStat == 0}"
-		      th:action="@{/fmem/reg/changeState}"
+		      th:action="@{/fmem/reg/cancel}"
 		      method="post"
 		      onsubmit="return confirm('確認是否要取消訂單?');"
 		      style="display:inline; margin-left:8px;">
@@ -473,6 +473,8 @@
 
 
 <div th:replace="~{/front_end/index :: footer}"></div>
+<!-- 撥款、取消訂單特效 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
 //審核狀態
@@ -535,6 +537,44 @@ document.addEventListener('click', function(e){
 });
 
 
+	
+	
+window.addEventListener("load", function() {
+	const successMsg = document.body.dataset.success;
+	if (successMsg != null) {
+		console.log(successMsg);
+		if (successMsg === "結案成功") {
+			Swal.fire({
+				icon : 'success',
+				title : successMsg,
+				text : "恭喜您活動順利完成!",
+				showConfirmButton : false,
+				customClass : {
+					icon : 'custom-icon',
+					popup : 'custom-swal',
+					title : 'custom-swal-title',
+					htmlContainer : 'custom-swal-content'
+				}
+			});
+
+		}
+		if (successMsg === "取消成功") {
+			Swal.fire({
+				icon : 'info',
+				title : successMsg,
+				text : "請待管理員確認退款",
+				showConfirmButton : false,
+				customClass : {
+					icon : 'custom-icon',
+					popup : 'custom-swal',
+					title : 'custom-swal-title',
+					htmlContainer : 'custom-swal-content'
+				}
+			});
+
+		}
+	}
+});
 
 </script>
 </body>

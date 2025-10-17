@@ -220,7 +220,7 @@ white-space: nowrap;
 
 </style>
 </head>
-<body th:data-success="${successMsg}">
+<body th:data-success="${success}">
 
 	<div th:replace="~{/front_end/index :: header}"></div>
 
@@ -238,10 +238,10 @@ white-space: nowrap;
 			<div>
 			<select id="filterStat" style="font-size: 20px; margin: 10px 0 10px 0; padding-left: 5px;">
 			    <option value="">訂單狀態</option>
-			    <option value="0">報名成立(已付款)</option>
-			    <option value="1">取消報名(待退款)</option>
-			    <option value="2">已退款</option>
-			    <option value="3">活動已完成</option>
+			    <option value="0" class="badge-ok">報名成立(已付款)</option>
+			    <option value="1" class="badge-cancel">取消報名(待退款)</option>
+			    <option value="2" class="badge-wait">已退款</option>
+			    <option value="3" class="badge-done">活動已完成</option>
 			  </select>
 			</div>
 
@@ -505,8 +505,7 @@ window.addEventListener("load", function () {
       icon: 'success',
       title: msg,                 
       text: '我們已收到您的訂單',
-      showConfirmButton: false,
-      timer: 2200,                
+      showConfirmButton: false,             
       customClass: {
         popup: 'custom-swal',
         title: 'custom-swal-title',
