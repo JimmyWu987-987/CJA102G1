@@ -170,7 +170,8 @@ public class ProOrderMemController {
 			updateStatus = true;
 			redirectAttributes.addFlashAttribute("successMessage", "已通知賣家退貨！");
 			break;
-
+		// 已經是退貨狀態，不會更新狀態
+		// 已在前端隱藏退貨按鈕，以下判斷為預防用。
 		case 5:
 		case 6:
 			System.out.println("已經是退貨狀態！");
@@ -352,13 +353,13 @@ public class ProOrderMemController {
 
 	// 確定訂單付款後，才開始做修改訂單的邏輯
 	@GetMapping("dopay")
-	public String diInsert(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
+	public String doPay(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 		Integer proOrdIdByPay = (Integer) session.getAttribute("proOrdIdByPay");
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdIdByPay);
 
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
-		List<ProOrderItemVO> finalItems = sessionOrder.getProOrderItems();
+
 
 		// ================== 付款狀態修改狀態 ======================
 		if (proOrderVO.getProPayStatus() == 0) {
