@@ -13,6 +13,7 @@ import com.farmtastic.member.model.Mem;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
+import com.farmtastic.proorderitem.model.ProOrderItemId;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
@@ -36,29 +37,26 @@ public class ProOrderSevice {
 	public void addProOrder(ProOrderVO proOrderVO) {
 		// 將脫管的 Product 實體轉換為受管實體
 		if (proOrderVO.getProOrderItems() != null) {
-			for (ProOrderItemVO item : proOrderVO.getProOrderItems()) {
-				// 1. 取得脫管 Product 的 ID
-				Integer proId = item.getProductVO().getProId();
-
-				// 2. 從資料庫中重新載入 Product 實體 (受管)
-				// 假設 productSvc.getOneProduct(proId) 會回傳 Product 實體
-				Pro managedProduct = productSvc.getOnePro(proId);
-
-				if (managedProduct == null) {
-					// 如果找不到商品，則拋出錯誤
-					throw new RuntimeException("商品編號 " + proId + " 不存在，無法新增訂單明號。");
+			for (ProOrderItemVO proOrderItemVO : proOrderVO.getProOrderItems()) {
+				// 1. 商品訂單與訂單明細們的關聯
+				proOrderItemVO.setProOrderVO(proOrderVO);
+				
+				// 2. 將訂單明細的複合主鍵 ProOrderItemId 設定給 proId
+				// 確保 proOrderItemId 非空值 (proOrderItemId 為一個物件)
+				ProOrderItemId proOrderItemId = proOrderItemVO.getId();
+				if(proOrderItemId == null) {
+					proOrderItemId = new ProOrderItemId();
 				}
-
-				// 3. 將脫管的 Product 實體替換為受管實體
-				item.setProductVO(managedProduct);
-
-				// 4. 由於您在 Controller 中已設定複合主鍵，此處保持不變。
-				// 確保明細指向當前訂單 (雙向關聯)，雖然在 Controller 中已設定，但多做一次確保
-				item.setProOrderVO(proOrderVO);
+				// 3. 從 ProVO 取得 proId, 設定給複合主鍵
+				if(proOrderItemVO.getProductVO() != null) {
+					proOrderItemId.setProId(proOrderItemVO.getProductVO().getProId());
+				}
+				// 4. proOrderItemId 已經有 proId 資訊，存回 item
+				proOrderItemVO.setId(proOrderItemId);
 			}
 		}
-
-		// 執行儲存操作，現在所有關聯的 Product 都是受管實體，不會報錯。
+		
+		// 儲存訂單, 連帶儲存訂單明細
 		repository.save(proOrderVO);
 	}
 
