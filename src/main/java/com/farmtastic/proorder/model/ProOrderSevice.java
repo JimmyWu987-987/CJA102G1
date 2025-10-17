@@ -41,6 +41,13 @@ public class ProOrderSevice {
 				// 1. 商品訂單與訂單明細們的關聯
 				proOrderItemVO.setProOrderVO(proOrderVO);
 				
+				// 目前 proOrderItemVO 內的 proVO 為游移狀態
+				// 重新附加 (Re-attach) 游離的 Pro 實體
+				// 用 proId 從資料庫查詢該 proVO，確保 proVO 為 JPA 託管
+				Integer proId = proOrderItemVO.getProductVO().getProId();
+				Pro managerProVO = productSvc.getOnePro(proId);
+				proOrderItemVO.setProductVO(managerProVO);
+				
 				// 2. 將訂單明細的複合主鍵 ProOrderItemId 設定給 proId
 				// 確保 proOrderItemId 非空值 (proOrderItemId 為一個物件)
 				ProOrderItemId proOrderItemId = proOrderItemVO.getId();
@@ -167,7 +174,7 @@ public class ProOrderSevice {
 	
 	//	====================================訂單後台使用====================================
 	
-	// 查詢該小農“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
+	// 查詢該小農“已付款“之“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
 	@Transactional
 	public List<FmemOrderSummary> getAllByFmemIdCanAlloc(Integer fmemId) {
 		return repository.findFmemProOrdersCanAlloc(fmemId);

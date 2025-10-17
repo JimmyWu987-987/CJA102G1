@@ -268,16 +268,31 @@ public class ShoppingCartService implements Serializable {
 		// 步驟 1: 宣告一個新的 List 來存放轉換後的商品訂單明細
 		List<ProOrderItemVO> proOrderItemsList = new ArrayList<>();
 //		List<ShoppingCartVO> cartItems = getCartItems();
+		
 		// 步驟 2: 遍歷購物車清單 (cartItems)
 		for (ShoppingCartVO shoppingCartVO : cartItemsForFmem) {
 			// 步驟 3: 在迴圈內，建立一個新的 ProOrderItemVO 物件
 			ProOrderItemVO proOrderItemVO = new ProOrderItemVO();
-			Pro productVO = new Pro();
-			// 步驟 4: 取出 ShoppingCartVO 的欄位資料，存入 ProOrderItemVO
-			productVO.setProId(shoppingCartVO.getProId());
-			productVO.setProName(shoppingCartVO.getCartName());
+			
+			
+			// （錯誤寫法）Pro proVO = new Pro();
+			// 不能直接 new 一個物件，對 JPA 來說，這是一個 "游離 (Detached)" 或 "暫時 (Transient)" 的物件
 
-			proOrderItemVO.setProductVO(productVO);
+			// 因為這邊 proVO 的資訊會儲存在 proOrderVO 
+			// proVO 必須受JPA託管
+			// 需要從資料庫中「查詢」出完整的、受 JPA 管理的 Pro 實體物件
+			// 然後再將它設定到 ProOrderItemVO 中。
+			Pro managedProVO = productSvc.getOnePro(shoppingCartVO.getProId());
+			if( managedProVO == null) {
+				System.err.println("警告！找不到商品ID:[ " +shoppingCartVO.getProId() + " ]！");
+				continue; // 忽略這個商品
+				
+			}
+			
+			// 步驟 4: 儲存其他欄位
+			// ShoppingCartVO 的欄位資料，存入 ProOrderItemVO
+			proOrderItemVO.setProductVO(managedProVO);
+			// 其他欄位
 			proOrderItemVO.setProUnitPrice(shoppingCartVO.getCartUnitPrice());
 			proOrderItemVO.setProAmount(shoppingCartVO.getCartAmount());
 			proOrderItemVO.setProSubTotal(shoppingCartVO.getCartSubTotal());

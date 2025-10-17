@@ -297,22 +297,9 @@ public class ProOrderMemController {
 		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
 
 		// 設定關聯和明細
-		proOrderVO.setMemVO(loggedInMember);
+		Mem memVO = memSvc.getOneByMemId(loggedInMember.getMemId());
+		proOrderVO.setMemVO(memVO);
 		proOrderVO.setProOrderItems(finalItems);
-
-		// 建立雙向關聯
-		for (ProOrderItemVO item : finalItems) {
-
-			item.setProOrderVO(proOrderVO);
-
-			ProOrderItemId id = item.getId();
-			if (id == null) {
-				id = new ProOrderItemId();
-			}
-			id.setProId(item.getProductVO().getProId());
-			item.setId(id);
-
-		}
 
 		// ================== (先預扣)扣商品庫存的邏輯 ======================
 		Pro errorProStock = proOrdSvc.discProductStock(proOrderVO);
