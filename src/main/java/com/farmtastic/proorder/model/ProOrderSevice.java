@@ -106,7 +106,7 @@ public class ProOrderSevice {
 	//	====================================訂單一般會員前台使用====================================
 	// 新增訂單的扣商品庫存的邏輯
 	@Transactional
-	public boolean discProductStock(ProOrderVO proOrderVO) {
+	public Pro discProductStock(ProOrderVO proOrderVO) {
 		List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
 		
 		for (ProOrderItemVO itemList : finalItems) {
@@ -117,13 +117,13 @@ public class ProOrderSevice {
 			Integer finalStock = originalStock - discStock;
 
 			if (finalStock < 0) {
-				return false;
+				return proVO;
 			} else {
 				proVO.setProStock(finalStock);
 				productSvc.updatePro(proVO);
 			}
 		}
-		return true;
+		return null;
 	}
 	
 	@Transactional

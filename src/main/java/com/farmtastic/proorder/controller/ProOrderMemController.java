@@ -270,14 +270,13 @@ public class ProOrderMemController {
 
 		// 檢查是否有使用優惠券
 		Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
-		boolean checkUseMcpn = proOrdSvc.checkUseMcpn(proOrderVO,cpnHolderDetailId);
-		if(checkUseMcpn) {
-			MemProCpnVO uesedMpc =mpcSvc.getOne(cpnHolderDetailId);
+		boolean checkUseMcpn = proOrdSvc.checkUseMcpn(proOrderVO, cpnHolderDetailId);
+		if (checkUseMcpn) {
+			MemProCpnVO uesedMpc = mpcSvc.getOne(cpnHolderDetailId);
 			proOrderVO.setMemProCpnVO(uesedMpc);
-		}else {
+		} else {
 			proOrderVO.setMemProCpnVO(null);
 		}
-		
 
 		// 訂單狀態
 		proOrderVO.setProOrdStatus((byte) 0);
@@ -314,15 +313,15 @@ public class ProOrderMemController {
 			item.setId(id);
 
 		}
-		
+
 		// ================== (先預扣)扣商品庫存的邏輯 ======================
-		boolean errorStock = proOrdSvc.discProductStock(proOrderVO);
-		if (!errorStock) {
+		Pro errorProStock = proOrdSvc.discProductStock(proOrderVO);
+		if (errorProStock != null) {
 			// 返回購物車，修正數量。
-			redirectAttributes.addFlashAttribute("errorMessage", "商品[ XXX ]數量不足，無法購買！");
+			redirectAttributes.addFlashAttribute("errorMessage", "商品[ " + errorProStock.getProName() + " ]數量不足，無法購買！");
 			return "redirect:/mem/cart/view/";
 		}
-		//================== 新增訂單 =====================
+		// ================== 新增訂單 =====================
 		try {
 			proOrdSvc.addProOrder(proOrderVO);
 
@@ -360,14 +359,13 @@ public class ProOrderMemController {
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 
-
 		// ================== 付款狀態修改狀態 ======================
 		if (proOrderVO.getProPayStatus() == 0) {
 			// 修改已付款(1)
 			proOrderVO.setProPayStatus((byte) 1);
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
-	
+
 		// ================== 會員點數新增修改的邏輯 ======================
 		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
 		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
