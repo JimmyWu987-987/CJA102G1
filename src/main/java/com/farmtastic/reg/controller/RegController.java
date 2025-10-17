@@ -69,6 +69,7 @@ public class RegController {
 		return "redirect:/admin/cashflow/reg/list";
 	}
 	
+		//小農清單切換
 		@PostMapping("selectFmemReg")
 		public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId,
 		                                 ModelMap model,
@@ -205,9 +206,24 @@ public class RegController {
         if (regVO.getRegMail() == null || !regVO.getRegMail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"))
             binding.rejectValue("regMail", "pattern", "Email 格式不正確!");
 
+        
+        Mem mem = (Mem) session.getAttribute("loggedInMember");
+        int memberPoints =  mem.getMemPoint();
+
+        Integer req = regVO.getRegPointDisc();           
+        int reqPoints = (req == null || req < 0) ? 0 : req;   // 負數視為 0
+        regVO.setRegPointDisc(reqPoints);                     // 回寫
+
+        if (reqPoints > memberPoints) {
+            binding.rejectValue("regPointDisc", "points.exceed",
+                    "點數不可超過持有點數（最多可用 " + memberPoints + " 點）");
+        }
+
+        
         if (binding.hasErrors()) {
-            Mem mem = (Mem) session.getAttribute("loggedInMember");
-            loadFormModel(model, regVO.getSesId(), mem.getMemId());
+        	//錯誤時回填
+            Mem mem2 = (Mem) session.getAttribute("loggedInMember");
+            loadFormModel(model, regVO.getSesId(), mem2.getMemId());
             return "front_end/customer/logined/reg/memRegistrationAct";
         }
 
@@ -308,7 +324,7 @@ public class RegController {
     
    
     
-    
+    // 活動詳細頁面評論區
     @GetMapping("act/review")
     public String showActReview(@ModelAttribute("regVO") RegVO regVO,
 							   @RequestParam Integer actId,

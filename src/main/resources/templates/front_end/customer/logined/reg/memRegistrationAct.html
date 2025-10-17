@@ -12,7 +12,7 @@ html,body{
 }
 
 .field{
-  width:810px;height:540px;
+  width:810px;height:560px;
   background-color: #FFFDF5;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -74,7 +74,7 @@ margin-top:25px;
 }
 
 .inputArea{
-  height: 280px;
+  height: 310px;
   background:white;
   border-radius:8px;
   margin-top: 10px;
@@ -176,11 +176,16 @@ margin-left:6px;
 color:#c00;
 }
 
+.pointError{
+	margin-left:160px; 
+	color:#c00;
+}
+
   </style>
 </head>
 
 <body>
- <form th:action="@{actReg}" method="post" th:object="${regVO}" target="_top">
+ <form th:action="@{actReg}" method="post" th:object="${regVO}" >
   <div class="field">
     <div class="title">活動付款頁面</div>
     <div class="content">
@@ -261,7 +266,9 @@ color:#c00;
           <label for="discountPoint">點數折扣：</label>
 		  <input type="number" id="discountPoint" th:field="*{regPointDisc}" min="0"> 點
 		  <span style="color:blue;" th:text="' (餘額：' + ${currentPoints} + ' 點)'">點</span>
-
+		  <div th:if="${#fields.hasErrors('regPointDisc')}"
+	      th:errors="*{regPointDisc}"
+	      class="pointError"></div>
         </div>
       </div>
 
