@@ -37,12 +37,11 @@ public class RegController {
 	@Autowired
 	private RegService regService;
 
-	@Autowired
-	ProOrderSevice proOrdSvc;
-	@Autowired
-	ProOrderItemService ProOrderItemSvc;
+	// 取得小農
 	@Autowired
 	FmemService fmemSvc;
+	
+	// 取得一般會員
 	@Autowired
 	private MemService memSvc;
 	
@@ -390,7 +389,6 @@ public class RegController {
 	      
 
 	    } catch (Exception e) {
-	        // 不讓寄信影響主流程
 	        e.printStackTrace();
 	    }
 	    // ===== 寄信結束 =====
