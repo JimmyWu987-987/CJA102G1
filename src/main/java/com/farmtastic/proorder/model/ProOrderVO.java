@@ -42,7 +42,6 @@ public class ProOrderVO implements Serializable {
 	private Integer proOrdId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-
 	@JoinColumn(name = "mem_id")
 	private Mem memVO;
 
