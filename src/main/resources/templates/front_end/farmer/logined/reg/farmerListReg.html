@@ -232,6 +232,31 @@
   font-weight: 700;
 }
 
+/* 狀態顏色 */
+.badge-ok {
+	background: #e6f4ea;
+	color: #1e7e34
+}
+
+.badge-cancel {
+	background: #fdecea;
+	color: #b02a37
+}
+
+.badge-wait {
+	background: #fff4e5;
+	color: #b26a00
+}
+
+.badge-done {
+	background: #e7f1ff;
+	color: #0b5ed7
+}
+
+.badge-closed {
+	background: #f0f0f0;
+	color: #555
+}
 
 
   </style>
@@ -255,12 +280,12 @@
   <div>
   <select id="filterStat" style="font-size: 20px; margin: 10px 0 10px 0; padding-left: 5px;">
     <option value="">訂單狀態</option>
-    <option value="0">報名成立(已付款)</option>
-    <option value="1">取消報名(待退款)</option>
-    <option value="2">已退款</option>
-    <option value="3">活動已完成(待撥款)</option>
-    <option value="4">已撥款</option>
-    <option value="5">已結案</option>
+    <option value="0" class="badge-ok">報名成立(已付款)</option>
+    <option value="1" class="badge-cancel">取消報名(待退款)</option>
+    <option value="2" class="badge-wait">已退款</option>
+    <option value="3" class="badge-wait">活動已完成(待撥款)</option>
+    <option value="4" class="badge-done">已撥款</option>
+    <option value="5" class="badge-done">已結案</option>
   </select>
 </div>
 
@@ -278,25 +303,26 @@
 
      <span style="margin-left:20px;">訂單狀態：
 		  <span th:switch="${r.regStat}">
-		    <span th:case="0">報名成立(已付款)</span>
-		    <span th:case="1">取消報名(待退款)</span>
-		    <span th:case="2">已退款</span>
-		    <span th:case="3">活動已完成(待撥款)</span>
-		    <span th:case="4">已撥款</span>
-		    <span th:case="5">已結案</span>
+		    <span th:case="0" class="badge-ok">報名成立(已付款)</span>
+		    <span th:case="1" class="badge-cancel">取消報名(待退款)</span>
+		    <span th:case="2" class="badge-wait">已退款</span>
+		    <span th:case="3" class="badge-wait">活動已完成(待撥款)</span>
+		    <span th:case="4" class="badge-done">已撥款</span>
+		    <span th:case="5" class="badge-done">已結案</span>
 		  </span>
 		
 		  <!-- 狀態=4 才顯示「結案」按鈕 -->
 		  <form th:if="${r.regStat == 4}"
-		        th:action="@{/fmem/reg/close}" method="post"
-		        style="display:inline; margin-left:8px;">
-		    <input type="hidden" name="regId" th:value="${r.regId}">
-		    <button type="submit"
-		            class="function-btn"
-		            th:onclick="|return confirm('確定要結案 #${r.regId} 嗎？')|">
-		      結案
-		    </button>
-		  </form>
+		      th:action="@{/fmem/reg/changeState}"
+		      method="post"
+		      onsubmit="return confirm('確認是否要結案?');"
+		      style="display:inline; margin-left:8px;">
+		  <input type="hidden" name="regId" th:value="${r.regId}">
+		  <input type="hidden" name="regStat" value="5">
+		  <button type="submit" class="function-btn">結案</button>
+		</form>
+		  
+		  
 		</span>
 
       <!-- 有評語或回覆才顯示 -->
@@ -403,12 +429,16 @@
     </div>
 
     <br>
-
-    <button class="cancel-btn"
-            th:disabled="${r.regStat != 0}"
-            th:attr="data-id=${r.regId}">
-      X 取消訂單
-    </button>
+    <form th:if="${r.regStat == 0}"
+		      th:action="@{/fmem/reg/changeState}"
+		      method="post"
+		      onsubmit="return confirm('確認是否要取消訂單?');"
+		      style="display:inline; margin-left:8px;">
+		  <input type="hidden" name="regId" th:value="${r.regId}">
+		  <input type="hidden" name="regStat" value="1">
+		  <button type="submit" class="cancel-btn">X 取消訂單</button>
+	</form>
+    
   </div>
 
   <!-- 分頁 -->
