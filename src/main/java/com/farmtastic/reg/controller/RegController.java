@@ -20,8 +20,7 @@ import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.memactcpn.model.MemActCpnServiceImp;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
-import com.farmtastic.proorder.model.ProOrderSevice;
-import com.farmtastic.proorderitem.model.ProOrderItemService;
+import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.reg.model.RegService;
 import com.farmtastic.reg.model.RegVO;
 
@@ -36,14 +35,17 @@ public class RegController {
 	@Autowired
 	private RegService regService;
 
-	@Autowired
-	ProOrderSevice proOrdSvc;
-	@Autowired
-	ProOrderItemService ProOrderItemSvc;
+	// 取得小農
 	@Autowired
 	FmemService fmemSvc;
+	
+	// 取得一般會員
 	@Autowired
 	private MemService memSvc;
+	
+	//寄信
+	@Autowired
+	private MailService mailService;
 
 //  ******************************管理員功能**************************************
 	// 管理員查活動訂單全部
@@ -134,17 +136,30 @@ public class RegController {
 	}
 	
 	
-	// 小農改變訂單狀態(結案、取消訂單)
-	@PostMapping("fmem/reg/changeState")
+	// 小農改變訂單狀態(取消訂單)
+	@PostMapping("fmem/reg/cancel")
 	public String cancelByFmemReg(@RequestParam Integer regId,
 	                        @RequestParam Integer regStat,
 	                        HttpSession session,
-	                        RedirectAttributes ra) {
+	                        RedirectAttributes redirectAttributes) {
 
 	    regService.updateRegStat(regId, regStat); 
-	    ra.addFlashAttribute("successMsg", "已成功結案");
+	    redirectAttributes.addFlashAttribute("success", "取消成功");
 	    return "redirect:/fmem/reg/list";
 	}
+	
+	// 小農改變訂單狀態(結案)
+	@PostMapping("fmem/reg/finish")
+	public String finishByFmemReg(@RequestParam Integer regId,
+	                        @RequestParam Integer regStat,
+	                        HttpSession session,
+	                        RedirectAttributes redirectAttributes) {
+
+	    regService.updateRegStat(regId, regStat); 
+	    redirectAttributes.addFlashAttribute("success", "結案成功");
+	    return "redirect:/fmem/reg/list";
+	}
+	
 	
 	
 
@@ -346,6 +361,50 @@ public class RegController {
 
 		session.setAttribute("loggedInMember", mem);
 
+		   // ===== 寄信通知=====
+	    try {
+	        // 收件人
+	        String to = mem.getMemEmail();  
+	        String subject = "【Farmtastic】活動報名付款成功通知";
+
+	        String paidAt = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm")
+	                .format(new java.util.Date());
+
+	        String content = """
+	                親愛的 %s 您好，
+
+	                您的活動報名已付款成功！
+	                訂單編號：%d
+	                交易序號：%s
+	                付款時間：%s
+
+	                實付金額：$%d
+	                折抵點數：%d 點
+	                回饋點數：%d 點
+
+	                感謝您的支持，祝您活動愉快！
+	                （此為系統通知信，請勿直接回覆）
+	                """.formatted(
+	                r.getRegName(),
+	                r.getRegId(),
+	                transactionId,
+	                paidAt,
+	                r.getRegGrandTotal(),
+	                used,
+	                reward
+	        );
+
+	        if (to != null && !to.isBlank()) {
+	            mailService.sendMail(to, subject, content);
+	        }
+	      
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    // ===== 寄信結束 =====
+		
+		
 		redirectAttrs.addAttribute("memId", memId);
 		redirectAttrs.addAttribute("success", 1);
 		return "redirect:/mem/reg/list";
@@ -372,7 +431,7 @@ public class RegController {
 	                        HttpSession session,
 	                        RedirectAttributes ra) {
 	    regService.updateRegStat(regId, regStat); // 將狀態改為 1(待退款)
-	    ra.addFlashAttribute("successMsg", "已申請取消，待退款。");
+	    ra.addFlashAttribute("success", "已取消，待退款。");
 	    return "redirect:/mem/reg/list";
 	}
 	
