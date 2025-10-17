@@ -27,38 +27,73 @@ public class Ses {
 	@Column(name = "ses_id")
 	private Integer sesId;
 
-	@Column(name = "ses_date", nullable = false)
+	@Column(name = "ses_date")
 	private Date sesDate;
 
-	@Column(name = "ses_start", nullable = false)
+	@Column(name = "ses_start")
 	private Time sesStart;
 
-	@Column(name = "ses_end", nullable = false)
+	@Column(name = "ses_end")
 	private Time sesEnd;
 
-	@Column(name = "reg_start", nullable = false)
+	@Column(name = "reg_start")
     private Date regStart;
 
-	@Column(name = "reg_end", nullable = false)
+	@Column(name = "reg_end")
 	private Date regEnd;
 
-	@Column(name = "minppl", nullable = false)
+	@Column(name = "minppl")
 	private Integer minPpl = 1;		// 預設1
 
-	@Column(name = "maxppl", nullable = false)
+	@Column(name = "maxppl")
 	private Integer maxPpl;
 
-	@Column(name = "ses_fee", nullable = false)
+	@Column(name = "ses_fee")
 	private Integer sesFee;
 
-	@Column(name = "notice", nullable = false)
+	@Column(name = "notice")
 	private Integer notice = 1;		// 預設1天前
 
-	@Column(name = "ses_launstat", nullable = false)
+	@Column(name = "ses_launstat")
 	private Integer sesLaunStat = 0;	// 預設0 (下架)
 
-	@Column(name = "reg_stat", nullable = false)
+	@Column(name = "reg_stat")
 	private Integer regStat = 0; // 預設正常
+	
+	
+	
+//	@Column(name = "ses_date", nullable = false)
+//	private Date sesDate;
+//	
+//	@Column(name = "ses_start", nullable = false)
+//	private Time sesStart;
+//	
+//	@Column(name = "ses_end", nullable = false)
+//	private Time sesEnd;
+//	
+//	@Column(name = "reg_start", nullable = false)
+//	private Date regStart;
+//	
+//	@Column(name = "reg_end", nullable = false)
+//	private Date regEnd;
+//	
+//	@Column(name = "minppl", nullable = false)
+//	private Integer minPpl = 1;		// 預設1
+//	
+//	@Column(name = "maxppl", nullable = false)
+//	private Integer maxPpl;
+//	
+//	@Column(name = "ses_fee", nullable = false)
+//	private Integer sesFee;
+//	
+//	@Column(name = "notice", nullable = false)
+//	private Integer notice = 1;		// 預設1天前
+//	
+//	@Column(name = "ses_launstat", nullable = false)
+//	private Integer sesLaunStat = 0;	// 預設0 (下架)
+//	
+//	@Column(name = "reg_stat", nullable = false)
+//	private Integer regStat = 0; // 預設正常
 
 	@Column(name = "ses_launupd")
 	private Timestamp sesLaunUpd;
