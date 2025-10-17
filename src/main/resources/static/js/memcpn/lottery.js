@@ -79,15 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
 
     // 2.5 秒後 → 開花
-    setTimeout(() => {
+    setTimeout(async () => {
       germ.style.display = "none";
       bloom.style.display = "block";
       bloom.style.opacity = "1";
-	  bloom.src = window.BASE_IMG_PATH + "gram.png"; // 預設先開花
-	     }, 2500);
-
-    // 4 秒後 → 顯示抽獎結果
-    setTimeout(async () => {
       try {
         const res = await fetch('/mem/spin/coupons', { method: 'POST' });
 		const data = await res.json(); 
@@ -148,6 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       btn.disabled = false;
-    }, 4000);
+    }, 2500);
   });
 });
