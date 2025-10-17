@@ -333,8 +333,9 @@ public class ProOrderMemController {
 			
 			// 成功實現信用卡API，導向該API
 //			session.setAttribute("proOrdIdByPay", newProOrdId);
-//			return "redirect:XXXXXX";
+//			return "redirect:XXXXXX + newProOrdId"; // API需要的資料
 		case 1: // LinePay
+			// 導向 LinePayController.java
 			return "redirect:/mem/proorders/linepayview?proOrdId=" + newProOrdId;
 		default: // 未新增訂單
 			//有其他不明錯誤，直接刪除訂單，重新下單。
