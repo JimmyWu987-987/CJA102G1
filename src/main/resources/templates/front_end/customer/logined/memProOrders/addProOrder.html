@@ -1,265 +1,245 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小農商城 - 訂單結帳</title>
+<link rel="icon" href="./images/logo.png">
+
+<!--     引入main.css, iconfonts -->
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 <style>
 .error-input {
-    border: 2px solid red !important;
-    background-color: #fff5f5;
+	border: 2px solid red !important;
+	background-color: #fff5f5;
 }
+
 .error {
-    display: block;
-    margin-top: 5px;
+	display: block;
+	margin-top: 5px;
 }
 </style>
 </head>
 <body>
-	<h1>這是一般會員新增訂單的頁面</h1>
-<!-- 	<span th:text="${session.loggedInMember}"></span><br>
-	<span th:text="${session.memId}"></span><br>
-	<span th:text="${session.memName}"></span><br>
-	<span th:text="${cartToProOrder}"></span><br>
-	<span th:text="${cartToProOrder.memVO}"></span><br>
-	<span th:text="${cartToProOrder.memVO.memPoint}"></span><br> -->
-	<!-- <span th:text="${cartToProOrder.memProCpnVO.cpnHolderDetailId}"></span> -->
 
-	 <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}"></p>
-    </div>
-    <div th:if="${errorMessage}" class="error-message">
-        <p th:text="${errorMessage}"></p>
-    </div>
-	
-	
-	<h1>結帳頁面</h1><form method="post" th:action="@{insert}" th:object="${cartToProOrder}"> 
-    
-    <input type="hidden" th:field="*{proOrdPointdisc}" />
-    <input type="hidden" th:field="*{proOrdCpndisc}" />
-    <input type="hidden" th:field="*{proOrdGrandTotal}" />
-    <input type="hidden" th:field="*{proOrdPointGet}" />
-    <input type="hidden" th:field="*{memProCpnVO.cpnHolderDetailId}" />
-    
-		
-		<div>
-		<label>一般會員編號</label>
-		<input type="text" th:field="*{memVO.memId}" readonly/><br>
-		</div>
-		
+	<div th:replace="~{/front_end/index :: header}"></div>
 
-		
-		<div>
-		<label>訂單日期</label>
-		<input type="text" th:field="*{proOrdDate}" readonly/><br>
+	<div class="container">
+		<h1>商品訂單結帳</h1>
+
+		<div th:if="${successMessage}" class="success-message">
+			<p th:text="${successMessage}"></p>
 		</div>
-		
-<!-- 	<div> sql預設為0 (0:成立訂單)
+		<div th:if="${errorMessage}" class="error-message">
+			<p th:text="${errorMessage}"></p>
+		</div>
+
+
+
+		<form method="post" th:action="@{insert}"
+			th:object="${cartToProOrder}">
+
+			<input type="hidden" th:field="*{proOrdPointdisc}" /> <input
+				type="hidden" th:field="*{proOrdCpndisc}" /> <input type="hidden"
+				th:field="*{proOrdGrandTotal}" /> <input type="hidden"
+				th:field="*{proOrdPointGet}" /> <input type="hidden"
+				th:field="*{memProCpnVO.cpnHolderDetailId}" />
+
+
+			<div>
+				<label>一般會員編號</label> <input type="text" th:field="*{memVO.memId}"
+					readonly /><br>
+			</div>
+
+
+
+			<div>
+				<label>訂單日期</label> <input type="text" th:field="*{proOrdDate}"
+					readonly /><br>
+			</div>
+
+			<!-- 	<div> sql預設為0 (0:成立訂單)
 		<label>訂單狀態</label>
 		<input type="text" th:field="*{proOrdStatus}" readonly/><br>
 		</div> -->
-		
-<!-- 		<div> sql預設為0 (0:未付款)
+
+			<!-- 		<div> sql預設為0 (0:未付款)
 		<label>付款狀態</label>
 		<input type="text" th:field="*{proPayStatus}" readonly/><br>
 		</div> -->
-		<div>
-		<span>=================商品訂單明細的範圍==================</span><br>
-		<h2>訂單明細</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>商品 ID</th>
-					<th>商品名稱</th>
-					<th>單價</th>
-					<th>數量</th>
-					<th>小計</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="item, stat : *{proOrderItems}">
-					<td th:text="${item.productVO.proId}">商品 ID</td> 
-					<td th:text="${item.productVO.proName}">商品名稱</td> 
-					<td th:text="${item.proUnitPrice}">單價<</td>
-					<td th:text="${item.proAmount}">數量</td>
-					<td th:text="${item.proSubTotal}">小計</td>
-					
-					</tr>
-			</tbody>
-		</table>
-		<div>
-		<label>商品總金額</label>
-		<input type="text" th:field="*{proTotal}" readonly/><br>
-		</div>
-		<span>=================商品訂單明細的範圍==================</span>
-		</div><br>
-		
-		
-		
-		
-		<div>
-		<label>商品運費</label>
-		<input type="text" th:field="*{proOrdShipFee}" readonly/><br>
-		</div>
-		
-		
-		<div>
-		<label>會員持有點數</label>
-		<span th:text="*{memVO.memPoint}"></span><br>
-		</div>
-		
-		<div>
-		<label>實付金額</label>
-		<input type="text" th:field="*{proOrdGrandTotal}" readonly/><br>
-		</div>
-		
-		<div>
-		<label>訂單回饋會員點數</label>
-		<input type="text" th:field="*{proOrdPointGet}" readonly/><br>
-		</div>
-		
-		<div>
-		<label>訂單備註</label>
-		<input type="text" th:field="*{proOrdComm}"/><br>
-		</div>
-		
-		<div id="paymentMethods">
-    		<label>付款方式</label>
-    		<input type="radio" id="paymentCredit" th:field="*{proOrdPayment}" th:value="0"/>信用卡
-    		<input type="radio" id="paymentLinePay" th:field="*{proOrdPayment}" th:value="1"/>LinePay
-		</div>
+			<div>
+				<span>=================商品訂單明細的範圍==================</span><br>
+				<h2>訂單明細</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>商品 ID</th>
+							<th>商品名稱</th>
+							<th>單價</th>
+							<th>數量</th>
+							<th>小計</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item, stat : *{proOrderItems}">
+							<td th:text="${item.productVO.proId}">商品 ID</td>
+							<td th:text="${item.productVO.proName}">商品名稱</td>
+							<td th:text="${item.proUnitPrice}">單價<</td>
+							<td th:text="${item.proAmount}">數量</td>
+							<td th:text="${item.proSubTotal}">小計</td>
 
-		<div id="shipmentMethods">
-   		<label>物流方式</label>
-    
-    		<span id="shipmentHomeDelivery">
-        		<input type="radio" id="inputShipmentHome" th:field="*{proOrdShipment}" th:value="0"/>
-        		<label for="inputShipmentHome">宅配</label>
-    		</span>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<label>商品總金額</label> <input type="text" th:field="*{proTotal}"
+						readonly /><br>
+				</div>
+				<span>=================商品訂單明細的範圍==================</span>
+			</div>
+			<br>
 
-    		<span id="shipmentCVS">
-        		<input type="radio" id="inputShipmentCVS" th:field="*{proOrdShipment}" th:value="1"/>
-        		<label for="inputShipmentCVS">超商取貨</label>
-    		</span>
-    		<br>
-		</div>
-		
 
-<label>*預設為會員資料</label>
 
-<!-- 收件人姓名 -->
-<div>
-    <label>收件人姓名 <span style="color: red;">*</span></label>
-    <input type="text" 
-           th:field="*{proOrdName}" 
-           th:classappend="${#fields.hasErrors('proOrdName')} ? 'error-input' : ''"
-           placeholder="請輸入收件人姓名"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdName')}" 
-          th:errors="*{proOrdName}" 
-          class="error" 
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
 
-<!-- 收件人電話 -->
-<div>
-    <label>收件人電話 <span style="color: red;">*</span></label>
-    <input type="text" 
-           th:field="*{proOrdMobile}"
-           th:classappend="${#fields.hasErrors('proOrdMobile')} ? 'error-input' : ''"
-           placeholder="範例: 0912-123456"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdMobile')}" 
-          th:errors="*{proOrdMobile}" 
-          class="error"
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
+			<div>
+				<label>商品運費</label> <input type="text" th:field="*{proOrdShipFee}"
+					readonly /><br>
+			</div>
 
-<!-- 收件人電子郵件 -->
-<div>
-    <label>收件人電子郵件 <span style="color: red;">*</span></label>
-    <input type="email" 
-           th:field="*{proOrdEmail}"
-           th:classappend="${#fields.hasErrors('proOrdEmail')} ? 'error-input' : ''"
-           placeholder="請輸入電子郵件"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdEmail')}" 
-          th:errors="*{proOrdEmail}" 
-          class="error"
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
 
-<!-- 收件人地址 -->
-<div>
-    <label>收件人地址 <span style="color: red;">*</span></label>
-    <input type="text" 
-           th:field="*{proOrdAddr}"
-           th:classappend="${#fields.hasErrors('proOrdAddr')} ? 'error-input' : ''"
-           placeholder="請輸入收件地址"/>
-    <br>
-    <span th:if="${#fields.hasErrors('proOrdAddr')}" 
-          th:errors="*{proOrdAddr}" 
-          class="error"
-          style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-</div>
-		
-		<div>
-		<button type="submit" id="submitButton"> 送出訂單 </button>
-		</div>
-		
-	</form>
-	
-<form th:action="@{OrdDiscUpdate}" method="post">
-		
-		<div>
-			<label>一般商品折價卷持有者流水號編號</label>
-			<select th:field="*{cartToProOrder.memProCpnVO.cpnHolderDetailId}">
-				<option value="0">請選擇</option>
-				<option th:each="mpcVO : ${mpcList}" 
-						th:value="${mpcVO.cpnHolderDetailId}" 
-						th:text="${mpcVO.proCpnVO.cpnName}"
-						/>
-			</select>
-			  <span th:if="${cpnError != null}" 
-              th:text="${cpnError}" 
-              class="error"
-              style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-		</div>
-		
-		<div>
-		<label>折價券折抵額（商品金額計算）</label>
-		<input type="text" th:field="*{cartToProOrder.proOrdCpndisc}" readonly/><br>
-		</div>
-	
-	
-    <div>
-        <label>折抵會員點數</label>
-        <input type="number" 
-               name="proOrdPointdisc" 
-               min="0"
-               th:value="${inputPointDisc != null ? inputPointDisc : (cartToProOrder.proOrdPointdisc != null ? cartToProOrder.proOrdPointdisc : 0)}"
-               placeholder="請輸入折抵點數"
-               
-               th:classappend="${pointDiscError != null} ? 'error-input' : ''"
-               />
-        <br>
-        
-        <span th:if="${pointDiscError != null}" 
-              th:text="${pointDiscError}" 
-              class="error"
-              style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
-    </div>
-    
-    <div>
-        <button type="submit"> 重新計算折抵 </button>
-    </div>
-</form>
-	
-	<form th:action="@{/cart/view}" method="get">
-    <div>
-        <button type="submit">回購物車</button>
-    </div>
-	</form>
+			<div>
+				<label>會員持有點數</label> <span th:text="*{memVO.memPoint}"></span><br>
+			</div>
+
+			<div>
+				<label>實付金額</label> <input type="text"
+					th:field="*{proOrdGrandTotal}" readonly /><br>
+			</div>
+
+			<div>
+				<label>訂單回饋會員點數</label> <input type="text"
+					th:field="*{proOrdPointGet}" readonly /><br>
+			</div>
+
+			<div>
+				<label>訂單備註</label> <input type="text" th:field="*{proOrdComm}" /><br>
+			</div>
+
+			<div id="paymentMethods">
+				<label>付款方式</label> <input type="radio" id="paymentCredit"
+					th:field="*{proOrdPayment}" th:value="0" />信用卡 <input type="radio"
+					id="paymentLinePay" th:field="*{proOrdPayment}" th:value="1" />LinePay
+			</div>
+
+			<div id="shipmentMethods">
+				<label>物流方式</label> <span id="shipmentHomeDelivery"> <input
+					type="radio" id="inputShipmentHome" th:field="*{proOrdShipment}"
+					th:value="0" /> <label for="inputShipmentHome">宅配</label>
+				</span> <span id="shipmentCVS"> <input type="radio"
+					id="inputShipmentCVS" th:field="*{proOrdShipment}" th:value="1" />
+					<label for="inputShipmentCVS">超商取貨</label>
+				</span> <br>
+			</div>
+
+
+			<label>*預設為會員資料</label>
+
+			<!-- 收件人姓名 -->
+			<div>
+				<label>收件人姓名 <span style="color: red;">*</span></label> <input
+					type="text" th:field="*{proOrdName}"
+					th:classappend="${#fields.hasErrors('proOrdName')} ? 'error-input' : ''"
+					placeholder="請輸入收件人姓名" /> <br> <span
+					th:if="${#fields.hasErrors('proOrdName')}"
+					th:errors="*{proOrdName}" class="error"
+					style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+			</div>
+
+			<!-- 收件人電話 -->
+			<div>
+				<label>收件人電話 <span style="color: red;">*</span></label> <input
+					type="text" th:field="*{proOrdMobile}"
+					th:classappend="${#fields.hasErrors('proOrdMobile')} ? 'error-input' : ''"
+					placeholder="範例: 0912-123456" /> <br> <span
+					th:if="${#fields.hasErrors('proOrdMobile')}"
+					th:errors="*{proOrdMobile}" class="error"
+					style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+			</div>
+
+			<!-- 收件人電子郵件 -->
+			<div>
+				<label>收件人電子郵件 <span style="color: red;">*</span></label> <input
+					type="email" th:field="*{proOrdEmail}"
+					th:classappend="${#fields.hasErrors('proOrdEmail')} ? 'error-input' : ''"
+					placeholder="請輸入電子郵件" /> <br> <span
+					th:if="${#fields.hasErrors('proOrdEmail')}"
+					th:errors="*{proOrdEmail}" class="error"
+					style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+			</div>
+
+			<!-- 收件人地址 -->
+			<div>
+				<label>收件人地址 <span style="color: red;">*</span></label> <input
+					type="text" th:field="*{proOrdAddr}"
+					th:classappend="${#fields.hasErrors('proOrdAddr')} ? 'error-input' : ''"
+					placeholder="請輸入收件地址" /> <br> <span
+					th:if="${#fields.hasErrors('proOrdAddr')}"
+					th:errors="*{proOrdAddr}" class="error"
+					style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+			</div>
+
+			<div>
+				<button type="submit" id="submitButton">送出訂單</button>
+			</div>
+
+		</form>
+
+		<form th:action="@{OrdDiscUpdate}" method="post">
+
+			<div>
+				<label>一般商品折價卷持有者流水號編號</label> <select
+					th:field="*{cartToProOrder.memProCpnVO.cpnHolderDetailId}">
+					<option value="0">請選擇</option>
+					<option th:each="mpcVO : ${mpcList}"
+						th:value="${mpcVO.cpnHolderDetailId}"
+						th:text="${mpcVO.proCpnVO.cpnName}" />
+				</select> <span th:if="${cpnError != null}" th:text="${cpnError}"
+					class="error"
+					style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+			</div>
+
+			<div>
+				<label>折價券折抵額（商品金額計算）</label> <input type="text"
+					th:field="*{cartToProOrder.proOrdCpndisc}" readonly /><br>
+			</div>
+
+
+			<div>
+				<label>折抵會員點數</label> <input type="number" name="proOrdPointdisc"
+					min="0"
+					th:value="${inputPointDisc != null ? inputPointDisc : (cartToProOrder.proOrdPointdisc != null ? cartToProOrder.proOrdPointdisc : 0)}"
+					placeholder="請輸入折抵點數"
+					th:classappend="${pointDiscError != null} ? 'error-input' : ''" />
+				<br> <span th:if="${pointDiscError != null}"
+					th:text="${pointDiscError}" class="error"
+					style="color: red; font-size: 12px; display: block; margin-top: 5px;"></span>
+			</div>
+
+			<div>
+				<button type="submit">重新計算折抵</button>
+			</div>
+		</form>
+
+		<form th:action="@{/cart/view}" method="get">
+			<div>
+				<button type="submit">回購物車</button>
+			</div>
+		</form>
+
+	</div>
+
+	<div th:replace="~{/front_end/index :: footer}"></div>
+
 </body>
 </html>
