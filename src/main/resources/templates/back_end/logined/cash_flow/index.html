@@ -8,10 +8,300 @@
 <!-- jquery datatables 設定 -->
 <script th:src="@{/js/dataTable/dataTable.js}"></script>
 
-<title>這是金流管理系統首頁</title>
+<style>
+html body {
+	margin:0;
+	color: #111;
+}
+body{
+	padding: 0 3%;
+}
+
+/* 確保 h1 樣式與 adminListAllReg.html 中的其他 h1 一致 */
+h1 {
+	text-align: center;
+    margin: 12px 0;
+}
+
+/* Form 和 Div 的基本樣式調整 */
+/* 讓選擇小農的表單和資訊區塊有一致的間距 */
+body > form, body > div > form {
+	margin-bottom: 15px; /* 增加表單間距 */
+}
+
+/* 小農資訊區塊的樣式 */
+.pro-order-div > div:nth-of-type(1),
+.pro-order-div > div:nth-of-type(2) {
+    margin-bottom: 5px;
+    padding: 8px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background-color: #f6f8fa;
+    line-height: 1.5;
+}
+
+.pro-order-div > div:nth-of-type(1) span,
+.pro-order-div > div:nth-of-type(2) span {
+    margin-right: 15px;
+}
+
+/* ------------------ DataTables 樣式 ------------------ */
+body table.dataTable {
+    width: 100%;
+    margin: 10px auto;
+    clear: both;
+    border-collapse: separate;
+    border-spacing: 0;
+	border-radius:10px;
+	overflow:hidden;
+}
+table.dataTable.no-footer{
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+	padding:10px 10px;
+}
+
+th, td {
+	padding: 8px 10px;
+	text-align: center;
+}
+
+thead th {
+	background: #66B2FF;
+	font-weight: 600;
+}
+
+tbody td{
+	background-color:#EDF7FF; 
+}
+
+tbody tr:nth-child(even) td{
+  background-color:white;
+}
+
+table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1 {
+    background-color: #EDF7FF;
+}
+
+table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1{
+	background-color:white; 
+}
+
+
+#example.length{
+	margin-bottom:10px;
+	
+}
+
+.dataTables_filter{
+	margin-bottom:10px;
+}
+
+tr:hover{
+ background-color:black; /* 懸停時的樣式，請注意：Datatables 預設的 hover 樣式可能需要更精確的選擇器來覆蓋。 */
+}
+
+/* ------------------ 狀態徽章樣式 (Badge) ------------------ */
+.badge-ok {
+	background: #e6f4ea;
+	color: #1e7e34;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-cancel {
+	background: #fdecea;
+	color: #b02a37;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-wait {
+	background: #fff4e5;
+	color: #b26a00;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-done {
+	background: #e7f1ff;
+	color: #0b5ed7;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-closed {
+	background: #f0f0f0;
+	color: #555;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* ------------------ 其他通用樣式 ------------------ */
+.money {
+	font-variant-numeric: tabular-nums;
+}
+
+.strong {
+	font-weight: 700;
+}
+
+
+.btn {
+	padding: 4px 8px;
+	border: 1px solid #d0d5dd;
+	/* background: #fff; */
+	border-radius: 8px;
+	cursor: pointer;
+    font-size: 1em; /* 調整按鈕字體大小 */
+    line-height: 1.5; /* 確保按鈕高度適中 */
+}
+
+.btn:hover {
+	background: #f6f8fa;
+}
+
+.btn.btn-alloc {
+	color: #fff;
+	background: #156aa8;
+}
+
+.btn.btn-return {
+	color: #fff;
+	background: #e51c23;
+}
+
+/* 針對 listAllProOrder.html 中的 input[type="submit"] 也套用 btn 樣式 */
+input[type="submit"] {
+    padding: 4px 8px;
+	border: 1px solid #d0d5dd;
+	background: #fff;
+	border-radius: 8px;
+	cursor: pointer;
+    font-size: 1em; 
+    line-height: 1.5;
+}
+
+input[type="submit"]:hover {
+    background: #f6f8fa;
+}
+/* ------------------ 小農名片樣式 (fmem-info-card) ------------------ */
+
+.fmem-info-card {
+    display: flex; /* 讓基本資訊和銀行資訊可以並排或排列 */
+    gap: 20px; /* 區塊間距 */
+    margin-bottom: 20px; /* 名片區塊與下方表格的間距 */
+}
+
+/* 名片區塊的基礎樣式 */
+.card-section {
+    flex: 1; /* 讓兩個區塊平均分配空間 */
+    background-color: #fff; /* 名片背景色 */
+    border: 1px solid #d0d5dd; /* 輕微邊框 */
+    border-radius: 12px; /* 更大的圓角 */
+    padding: 15px 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* 輕微陰影 */
+}
+
+/* 標題樣式 */
+.card-title {
+    font-size: 1.2em;
+    color: #66b2ff; /* 使用表頭顏色作為強調色 */
+    border-bottom: 2px solid #66b2ff;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* 顯示「XXX的商品訂單資料」的段落 
+.data-owner {
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1e7e34;
+}
+*/
+
+/* 資訊項目排版 */
+.basic-info {
+    display: flex;
+    flex-wrap: wrap; /* 允許換行 */
+    align-content: flex-start; /* 確保內容從頂部開始 */
+}
+.bank-info {
+    flex: 0 0 300px; /* 銀行資訊區塊固定寬度 */
+}
+
+.info-item {
+    width: 50%; /* 每個資訊項目佔 50% 寬度，實現兩欄排版 */
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.info-item.full-width {
+    width: 100%; /* 讓地址和信箱佔滿一行 */
+}
+
+.field-label {
+    flex: 0 0 80px; /* 讓標籤固定寬度，保持對齊 */
+    font-weight: 500;
+    color: #555;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.field-value {
+    flex-grow: 1; /* 數值佔據剩餘空間 */
+    font-weight: 600;
+    color: #111;
+}
+
+/* 針對銀行帳號加粗 */
+.bank-info .field-value {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums; /* 讓數字對齊 */
+}
+
+/* 針對行動版調整 */
+@media (max-width: 768px) {
+    .fmem-info-card {
+        flex-direction: column; /* 小螢幕下垂直堆疊 */
+    }
+    .info-item {
+        width: 100%; /* 小螢幕下單欄排版 */
+    }
+    .bank-info {
+        flex: 1; /* 取消固定寬度 */
+    }
+}
+
+</style>
+
+<title>金流管理系統</title>
+
 </head>
 <body>
-	<h1>這是金流管理系統首頁</h1>
+	<h1>金流管理系統首頁</h1>
 	<form method="get" th:action="@{/admin/cashflow/fmemProOrder}">
 		<input type="submit" value="產品訂單金流明細">	
 	</form>
@@ -22,8 +312,6 @@
 	<div th:if="${fmemProOrder}">
 		<div th:insert="~{/back_end/logined/cash_flow/listAllProOrder :: pro-order-div}">
 	</div>
-	
-	
 	
 	</div>
 </body>

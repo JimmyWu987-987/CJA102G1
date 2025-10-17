@@ -10,6 +10,7 @@
 <!-- jquery datatables 設定 -->
 <script th:src="@{/js/dataTable/dataTable.js}"></script>
 <title>金流管理系統</title>
+
 </head>
 <body>
 	<h1>這是金流管理系統的頁面</h1>
@@ -29,20 +30,57 @@
 		</div>
 
 		<div th:unless="${#lists.isEmpty(proOrderList)}">
-			<div>
-				<span th:text="${fmemVO.fmemName}"></span><span>的商品訂單資料</span> <br>
-				<span>農場名稱:</span><span th:text="${fmemVO.fmemName}"></span> <span>聯絡手機:</span><span
-					th:text="${fmemVO.fmemMobile}"></span> <span>聯絡市話:</span><span
-					th:text="${fmemVO.fmemTel}"></span> <span>聯絡地址:</span><span
-					th:text="${fmemVO.fmemZipcode}+${fmemVO.fmemCity}+${fmemVO.fmemDist}+${fmemVO.fmemAddr}"></span>
-				<span>聯絡信箱:</span><span th:text="${fmemVO.fmemEmail}"></span>
+			<div class="fmem-info-card">
+				<div class="card-section basic-info">
+					<h3 class="card-title">小農基本資料</h3>
+					<!--   <p class="data-owner"><span th:text="${fmemVO.fmemName}"></span>的商品訂單資料</p> -->
+					<br>
+					<div class="info-item">
+					</div>
+					
+					<div class="info-item">
+						<span class="field-label">負責人:</span> <span class="field-value"
+							th:text="${fmemVO.fmemName}"></span>
+					</div>
+					
+					<div class="info-item">
+						<span class="field-label">農場名稱:</span> <span class="field-value"
+							th:text="${fmemVO.storeName}"></span>
+					</div>
+					
+					<div class="info-item">
+						<span class="field-label">聯絡手機:</span> <span class="field-value"
+							th:text="${fmemVO.fmemMobile}"></span>
+					</div>
+					<div class="info-item">
+						<span class="field-label">聯絡市話:</span> <span class="field-value"
+							th:text="${fmemVO.fmemTel}"></span>
+					</div>
+					<div class="info-item full-width">
+						<span class="field-label">聯絡地址:</span> <span class="field-value"
+							th:text="${fmemVO.fmemZipcode}+${fmemVO.fmemCity}+${fmemVO.fmemDist}+${fmemVO.fmemAddr}"></span>
+					</div>
+					<div class="info-item full-width">
+						<span class="field-label">聯絡信箱:</span> <span class="field-value"
+							th:text="${fmemVO.fmemEmail}"></span>
+					</div>
+
+				</div>
+
+				<div class="card-section bank-info">
+					<h3 class="card-title">撥款帳戶資料</h3>
+					<div class="info-item">
+						<span class="field-label">銀行代碼:</span> <span class="field-value"
+							th:text="${fmemVO.bankCode}"></span>
+					</div>
+					<div class="info-item">
+						<span class="field-label">銀行帳號:</span> <span
+							class="field-value strong" th:text="${fmemVO.bankAcc}"></span>
+					</div>
+				</div>
 			</div>
 
-			<div>
-				<span>銀行代碼:</span><span th:text="${fmemVO.bankCode}"></span> <span>銀行帳號:</span><span
-					th:text="${fmemVO.bankAcc}"></span>
-			</div>
-			<br>
+			<br> <br>
 
 			<table id="example" class="display">
 				<thead>
@@ -69,10 +107,12 @@
 
 						<td>
 							<div th:switch="${proOrderVO.proOrdStatus}">
-								<span th:case="0">成立訂單</span> <span th:case="1">取消訂單(未出貨)</span>
-								<span th:case="2">出貨中</span> <span th:case="3">已到貨</span> <span
-									th:case="4">申請退貨(已出貨)</span> <span th:case="5">退貨中</span> <span
-									th:case="6">已退貨</span> <span th:case="*">N/A</span>
+								<span th:case="0" class="badge badge-ok">成立訂單</span> <span
+									th:case="1" class="badge badge-cancel">取消訂單(未出貨)</span> <span
+									th:case="2">出貨中</span> <span th:case="3"
+									class="badge badge-wait">已到貨</span> <span th:case="4">申請退貨(已出貨)</span>
+								<span th:case="5">退貨中</span> <span th:case="6"
+									class="badge badge-cancel">已退貨</span> <span th:case="*">N/A</span>
 							</div>
 						</td>
 
@@ -96,7 +136,8 @@
 						<td>
 
 							<div th:switch="${proOrderVO.proOrdAllocStatus}">
-								<span th:case="0">未撥款</span> <span th:case="1">已撥款</span> <span
+								<span th:case="0" class="badge badge-wait">未撥款</span> <span
+									th:case="1" class="badge badge-done">已撥款</span> <span
 									th:case="*">N/A</span>
 							</div>
 
@@ -116,17 +157,21 @@
 								<input type="submit" value="詳細資料"> <input type="hidden"
 									name="proOrdId" th:value="${proOrderVO.proOrdId}">
 							</form> -->
-							<div th:if="${proOrderVO.proOrdAllocStatus == 0 && proOrderVO.proOrdStatus == 3}">
+							<div
+								th:if="${proOrderVO.proOrdAllocStatus == 0 && proOrderVO.proOrdStatus == 3}">
 								<form method="post" th:action="@{/admin/cashflow/alloc}">
-									<input type="submit" value="撥款"> <input type="hidden"
-										name="proOrdId" th:value="${proOrderVO.proOrdId}">
+									<input type="submit" class="btn btn-alloc" value="撥款"> <input
+										type="hidden" name="proOrdId"
+										th:value="${proOrderVO.proOrdId}">
 								</form>
 							</div>
 
-							<div th:if="${proOrderVO.proOrdAllocStatus == 0 && (proOrderVO.proOrdStatus == 1 || proOrderVO.proOrdStatus == 6)}">
+							<div
+								th:if="${proOrderVO.proOrdAllocStatus == 0 && (proOrderVO.proOrdStatus == 1 || proOrderVO.proOrdStatus == 6)}">
 								<form method="post" th:action="@{/admin/cashflow/alloc}">
-									<input type="submit" value="退款"> <input type="hidden"
-										name="proOrdId" th:value="${proOrderVO.proOrdId}">
+									<input type="submit" class="btn btn-return" value="退款"> <input
+										type="hidden" name="proOrdId"
+										th:value="${proOrderVO.proOrdId}">
 								</form>
 							</div>
 

@@ -36,111 +36,100 @@ public class ProOrderAdminController {
 	ProOrderItemService ProOrderItemSvc;
 	@Autowired
 	FmemService fmemSvc;
-	
+
 	// 金流管理首頁
 	@GetMapping("/")
-	public String index(Model model,HttpSession session) {
-		
+	public String index(Model model, HttpSession session) {
+
 		// 刪除 session 清空頁面
 		session.removeAttribute("fmemId");
-		
+
 		return "/back_end/logined/cash_flow/index";
 	}
 
-
-	
 	// 金流系統首頁導向搜尋商品訂單的功能
 	@GetMapping("fmemProOrder")
 	public String cashFlowIndexToSelectFmemProOrder(Model model) {
-		
+
 		// 計算訂單列表需要抽成的金額，
 		proOrdSvc.calculateListsAllocTotal();
-		
+
 		model.addAttribute("fmemProOrder", "fmemProOrder");
-		
+
 		// 取該全部小農會員的id
 		List<Fmem> fmemList = fmemSvc.getAll();
 		model.addAttribute("fmemList", fmemList);
-		
-		
-		
+
 		return "/back_end/logined/cash_flow/index";
 	}
-	
+
 	// 搜尋該小農的全部訂單
-	
+
 	@PostMapping("selectFmemProOrder")
-	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, 
-			Model model,
-			HttpSession session) {
-		
-		
+	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, Model model, HttpSession session) {
+
 		// 維持金流系統首頁是商品分支
 		model.addAttribute("fmemProOrder", "fmemProOrder");
-		
+
 		// 取該小農可以撥款的表單（已出貨以及已退款）
 		List<FmemOrderSummary> proOrderList = proOrdSvc.getAllByFmemIdCanAlloc(fmemId);
 		model.addAttribute("proOrderList", proOrderList);
-		
+
 		// 取該小農的聯絡資訊
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
-		model.addAttribute("fmemVO",fmem);
-		
+		model.addAttribute("fmemVO", fmem);
+
 		// 進入詳細資料，按下回上一頁，保持列表為該小農的商品訂單列表
 		session.setAttribute("fmemId", fmem.getFmemId());
-		
+
 		// 取該全部小農會員的id，給搜尋特定小農用。
 		List<Fmem> fmemList = fmemSvc.getAll();
 		model.addAttribute("fmemList", fmemList);
-		
-		
+
 		return "/back_end/logined/cash_flow/index";
 	}
-	
+
 	@PostMapping("alloc")
-	public String alloc(@RequestParam("proOrdId") Integer proOrdId,Model model, HttpSession session,HttpServletRequest request) {
-		
+	public String alloc(@RequestParam("proOrdId") Integer proOrdId, Model model, HttpSession session,
+			HttpServletRequest request) {
+
 		System.err.println(proOrdId);
 		// 修改為已撥款狀態
 		proOrdSvc.updateAllocStatus(proOrdId);
-		
+
 		model.addAttribute("fmemProOrder", "fmemProOrder");
-		
+
 		// 取該小農的姓名
 		Integer fmemId = (Integer) session.getAttribute("fmemId");
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
-		model.addAttribute("fmemVO",fmem);
-		
+		model.addAttribute("fmemVO", fmem);
+
 		// 取該小農可以撥款的表單（已出貨以及已退款）
 		List<FmemOrderSummary> proOrderList = proOrdSvc.getAllByFmemIdCanAlloc(fmemId);
 		model.addAttribute("proOrderList", proOrderList);
-		
+
 		// 取該全部小農會員的id
 		List<Fmem> fmemList = fmemSvc.getAll();
 		model.addAttribute("fmemList", fmemList);
-		
-		
-		
+
 		return "/back_end/logined/cash_flow/index";
 	}
-	
+
 	// 查詢全部訂單
-//	@GetMapping("listAllProOrder")
-//	public String listAll(Model model) {
-//		
-//		
-//
-//		
-//		// 取全部訂單傳送到前端
-//		List<ProOrderVO> proOrderList = proOrdSvc.getAll();
-//		model.addAttribute("proOrderList", proOrderList);
-//		
-//		// 取該全部小農會員的id
-//		List<Fmem> fmemList = fmemSvc.getAll();
-//		model.addAttribute("fmemList", fmemList);
-//
-//		return "/back_end/logined/cash_flow/listAllProOrder";
-//	}
+	@GetMapping("listAllProOrder")
+	public String listAll(Model model,
+			 HttpSession session) {
+
+		// 取全部訂單傳送到前端
+		List<ProOrderVO> proOrderList = proOrdSvc.getAll();
+		model.addAttribute("proOrderList", proOrderList);
+
+		// 取該全部小農會員的id
+		List<Fmem> fmemList = fmemSvc.getAll();
+		model.addAttribute("fmemList", fmemList);
+
+		return "/back_end/logined/cash_flow/listAllProOrder";
+	}
 
 	// 查詢單筆訂單
 //	@PostMapping("listOneProOrder")
