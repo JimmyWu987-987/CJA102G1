@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,15 +26,17 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 	Optional<ProCpnVO> findByCpnNameAndIsActive(String cpnName, IsActive isActive);
 
 	// 名稱模糊查詢
-	List<ProCpnVO> findByCpnNameContaining(String keyword);
+	Page<ProCpnVO> findByCpnNameContaining(String keyword, Pageable pageable);
 
 	// 折扣類型查詢
 //	List<ProCpnVO> findByDiscType(DiscountType discType);
 
 	// 上架日期篩選
-	List<ProCpnVO> findByStartDateAfter(Date startDate);
+	Page<ProCpnVO> findByStartDateBetween(Date start, Date end, Pageable pageable);
 
-	List<ProCpnVO> findByStartDateBetween(Date start, Date end);
+	Page<ProCpnVO> findByStartDateAfter(Date start, Pageable pageable);
+
+	Page<ProCpnVO> findByStartDateBefore(Date end, Pageable pageable);
 
 	// 批次停用過期券
 	@Modifying
