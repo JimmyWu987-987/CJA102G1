@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
-import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
-import com.farmtastic.proorderitem.model.ProOrderItemRepository;
+import com.farmtastic.proorderitem.model.ProOrderItemId;
+import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 
 @Service
@@ -23,7 +23,7 @@ public class ProOrderSevice {
 	@Autowired
 	ProOrderRepository repository;
 	@Autowired
-	ProOrderItemRepository proOrderItemRepository;
+	ProOrderItemService proOrdItemSvc;
 	@Autowired
 	MemProCpnRepository mpcRepository;
 	@Autowired
@@ -35,31 +35,35 @@ public class ProOrderSevice {
 	// 新增
 	@Transactional
 	public void addProOrder(ProOrderVO proOrderVO) {
-		// 🌟 關鍵修正：將脫管的 Product 實體轉換為受管實體 🌟
+		// 將脫管的 Product 實體轉換為受管實體
 		if (proOrderVO.getProOrderItems() != null) {
-			for (ProOrderItemVO item : proOrderVO.getProOrderItems()) {
-				// 1. 取得脫管 Product 的 ID
-				Integer proId = item.getProductVO().getProId();
-
-				// 2. 從資料庫中重新載入 Product 實體 (受管)
-				// 假設 productSvc.getOneProduct(proId) 會回傳 Product 實體
-				Pro managedProduct = productSvc.getOnePro(proId);
-
-				if (managedProduct == null) {
-					// 如果找不到商品，則拋出錯誤
-					throw new RuntimeException("商品編號 " + proId + " 不存在，無法新增訂單明號。");
+			for (ProOrderItemVO proOrderItemVO : proOrderVO.getProOrderItems()) {
+				// 1. 商品訂單與訂單明細們的關聯
+				proOrderItemVO.setProOrderVO(proOrderVO);
+				
+				// 目前 proOrderItemVO 內的 proVO 為游移狀態
+				// 重新附加 (Re-attach) 游離的 Pro 實體
+				// 用 proId 從資料庫查詢該 proVO，確保 proVO 為 JPA 託管
+				Integer proId = proOrderItemVO.getProductVO().getProId();
+				Pro managerProVO = productSvc.getOnePro(proId);
+				proOrderItemVO.setProductVO(managerProVO);
+				
+				// 2. 將訂單明細的複合主鍵 ProOrderItemId 設定給 proId
+				// 確保 proOrderItemId 非空值 (proOrderItemId 為一個物件)
+				ProOrderItemId proOrderItemId = proOrderItemVO.getId();
+				if(proOrderItemId == null) {
+					proOrderItemId = new ProOrderItemId();
 				}
-
-				// 3. 將脫管的 Product 實體替換為受管實體
-				item.setProductVO(managedProduct);
-
-				// 4. 由於您在 Controller 中已設定複合主鍵，此處保持不變。
-				// 確保明細指向當前訂單 (雙向關聯)，雖然在 Controller 中已設定，但多做一次確保
-				item.setProOrderVO(proOrderVO);
+				// 3. 從 ProVO 取得 proId, 設定給複合主鍵
+				if(proOrderItemVO.getProductVO() != null) {
+					proOrderItemId.setProId(proOrderItemVO.getProductVO().getProId());
+				}
+				// 4. proOrderItemId 已經有 proId 資訊，存回 item
+				proOrderItemVO.setId(proOrderItemId);
 			}
 		}
-
-		// 執行儲存操作，現在所有關聯的 Product 都是受管實體，不會報錯。
+		
+		// 儲存訂單, 連帶儲存訂單明細
 		repository.save(proOrderVO);
 	}
 
@@ -72,6 +76,7 @@ public class ProOrderSevice {
 	// 刪除
 	public void deleteProOrder(Integer proOrdId) {
 		if (repository.existsById(proOrdId)) {
+			proOrdItemSvc.deleteProOrderItem(proOrdId);
 			repository.deleteById(proOrdId);
 		}
 	}
@@ -106,7 +111,7 @@ public class ProOrderSevice {
 	//	====================================訂單一般會員前台使用====================================
 	// 新增訂單的扣商品庫存的邏輯
 	@Transactional
-	public boolean discProductStock(ProOrderVO proOrderVO) {
+	public Pro discProductStock(ProOrderVO proOrderVO) {
 		List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
 		
 		for (ProOrderItemVO itemList : finalItems) {
@@ -117,13 +122,13 @@ public class ProOrderSevice {
 			Integer finalStock = originalStock - discStock;
 
 			if (finalStock < 0) {
-				return false;
+				return proVO;
 			} else {
 				proVO.setProStock(finalStock);
 				productSvc.updatePro(proVO);
 			}
 		}
-		return true;
+		return null;
 	}
 	
 	@Transactional
@@ -169,7 +174,7 @@ public class ProOrderSevice {
 	
 	//	====================================訂單後台使用====================================
 	
-	// 查詢該小農“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
+	// 查詢該小農“已付款“之“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
 	@Transactional
 	public List<FmemOrderSummary> getAllByFmemIdCanAlloc(Integer fmemId) {
 		return repository.findFmemProOrdersCanAlloc(fmemId);

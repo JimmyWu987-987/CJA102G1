@@ -47,7 +47,7 @@ public interface ProOrderRepository extends JpaRepository<ProOrderVO,Integer>{
 	    """, nativeQuery = true)
 	    List<FmemOrderSummary> findFmemProOrders(Integer fmemId);
 	
-	// 查詢該小農“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
+	// 查詢該小農已付款之“已到貨”以及“已退貨的”及“取消訂單”的全部訂單，可以撥款的訂單
 	@Query(value = """
 	        SELECT
 				PO.PRO_ORD_ID,
@@ -74,7 +74,7 @@ public interface ProOrderRepository extends JpaRepository<ProOrderVO,Integer>{
 	        JOIN
 	            mem AS M ON PO.MEM_ID = M.MEM_ID
 	        WHERE
-	            P.FMEM_ID = :fmemId AND (PO.PRO_ORD_STATUS = 3 OR PO.PRO_ORD_STATUS = 6)
+	            P.FMEM_ID = :fmemId AND (PO.PRO_ORD_STATUS = 1 OR PO.PRO_ORD_STATUS = 3 OR PO.PRO_ORD_STATUS = 6 )
 	        GROUP BY PO.PRO_ORD_ID
 	        ORDER BY PO.PRO_ORD_DATE DESC, PO.PRO_ORD_STATUS DESC
 	    """, nativeQuery = true)

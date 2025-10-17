@@ -29,13 +29,13 @@ import jakarta.servlet.http.HttpSession;
 public class LinePayController {
 
 	@Autowired
-	ProOrderSevice proSvc;
+	ProOrderSevice proOrdSvc;
 
 	@GetMapping("linepayview")
 	public String showLinePayView(Model model, HttpServletRequest request, @RequestParam Integer proOrdId)
 			throws Exception {
 
-		ProOrderVO proOrderVO = proSvc.getOneProOrder(proOrdId);
+		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
 		
 		int amount = proOrderVO.getProOrdGrandTotal();
 		int orderId = proOrdId;
@@ -60,7 +60,7 @@ public class LinePayController {
 				  }],
 				  "redirectUrls": {
 				    "confirmUrl": "%s/mem/proorders/linepaysuccess?proOrdId=%d",
-				   	"cancelUrl": "%s/mem/proorders/linepaycancel?proOrdId=%d"
+				   	"cancelUrl": "%s/mem/proorders/linepayerror?proOrdId=%d"
 				  }
 				}
 				""";
@@ -107,13 +107,31 @@ public class LinePayController {
         return Base64.getEncoder().encodeToString(mac.doFinal(msg.getBytes()));
     }
     
+    // linepay 成功
     @GetMapping("linepaysuccess")
-    String linepaysuccess(@RequestParam Integer proOrdId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    String linepPaySuccess(@RequestParam Integer proOrdId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
     	 	
        	// 回傳新增訂單詢息給訊息回去 ProOrderMemController.java
     	session.setAttribute("proOrdIdByPay", proOrdId);
     	
     	return "redirect:/mem/proorders/dopay";
+    }
+    
+    // linepay 失敗
+    @GetMapping("linepayerror")
+    String linePaySuccess(@RequestParam Integer proOrdId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    	 	
+    	// 訂單已經預扣庫存，要加回庫存
+    	ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
+    	proOrdSvc.cancelOrderAndBackStock(proOrderVO);
+    	
+    	// 刪除訂單資料，傳導至購物車，重新下單。
+    	session.removeAttribute("cartToProOrder");
+    	proOrdSvc.deleteProOrder(proOrdId);
+    	
+    	redirectAttributes.addFlashAttribute("errorMessage", "Linepay付款失敗，請重新下單！");
+    	
+    	return "redirect:/cart/view";
     }
     
 

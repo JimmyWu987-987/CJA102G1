@@ -16,7 +16,6 @@
 <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
 
 <style>
-
 .member-content h2 {
 	min-width: 780px;
 	font-size: var(--subtitle-font-size);
@@ -24,8 +23,6 @@
 	color: #333;
 	text-align: center;
 }
-
-
 
 /* ----------------------------------- */
 /* DataTables 與表格樣式修正 */
@@ -37,15 +34,13 @@ div.dataTables_wrapper {
 	color: #333; /* 統一字體顏色 */
 }
 
-
-#example_length{
- 	margin-bottom: 4px;  
-}
-
-.dataTables_filter{
+#example_length {
 	margin-bottom: 4px;
 }
 
+.dataTables_filter {
+	margin-bottom: 4px;
+}
 
 /* 表格外觀 (參考上個任務的表格風格) */
 #example {
@@ -59,9 +54,9 @@ div.dataTables_wrapper {
 
 /* 表頭樣式：使用網站的第二主色 */
 #example thead th {
-	font-size: 15px; 
+	font-size: 15px;
 	font-weight: bold;
-	background-color: #6b8dc9; 
+	background-color: #6b8dc9;
 	color: #fff;
 	padding: 10px 12px; /* 縮小垂直內距，減少高度 */
 	border: 1px solid var(--second-color);
@@ -218,6 +213,16 @@ div.dataTables_wrapper {
 									<span th:case="0">未付款</span> <span th:case="1">已付款</span> <span
 										th:case="*"></span>
 								</div>
+
+								<div
+									th:if="${proOrderVO.proPayStatus == 0 && proOrderVO.proOrdStatus != 1 && proOrderVO.proOrdStatus <= 4}">
+									<form method="post"
+										th:action="@{/mem/proorders/listOneProOrder}">
+										<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
+										<input type="hidden" name="proPayStatus" th:value="${proOrderVO.proPayStatus}">
+										<input type="submit" value="付款">
+									</form>
+								</div>
 							<td>
 								<div th:switch="${proOrderVO.proOrdPayment}">
 									<span th:case="0">信用卡</span> <span th:case="1">LinePay</span> <span
@@ -257,13 +262,7 @@ div.dataTables_wrapper {
 									</form>
 								</div>
 
-								<div
-									th:if="${proOrderVO.proPayStatus == 0 && proOrderVO.proOrdStatus != 1 && proOrderVO.proOrdStatus <= 4}">
-									<form method="post"
-										th:action="@{/mem/proorders/listOneProOrder}">
-										<input type="submit" value="付款">
-									</form>
-								</div>
+
 
 								<div th:if="${proOrderVO.proOrdStatus == 0}">
 									<form method="post" th:action="@{/mem/proorders/updatestatus}">

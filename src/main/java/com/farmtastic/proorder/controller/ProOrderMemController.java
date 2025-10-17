@@ -270,14 +270,13 @@ public class ProOrderMemController {
 
 		// 檢查是否有使用優惠券
 		Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
-		boolean checkUseMcpn = proOrdSvc.checkUseMcpn(proOrderVO,cpnHolderDetailId);
-		if(checkUseMcpn) {
-			MemProCpnVO uesedMpc =mpcSvc.getOne(cpnHolderDetailId);
+		boolean checkUseMcpn = proOrdSvc.checkUseMcpn(proOrderVO, cpnHolderDetailId);
+		if (checkUseMcpn) {
+			MemProCpnVO uesedMpc = mpcSvc.getOne(cpnHolderDetailId);
 			proOrderVO.setMemProCpnVO(uesedMpc);
-		}else {
+		} else {
 			proOrderVO.setMemProCpnVO(null);
 		}
-		
 
 		// 訂單狀態
 		proOrderVO.setProOrdStatus((byte) 0);
@@ -298,31 +297,18 @@ public class ProOrderMemController {
 		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
 
 		// 設定關聯和明細
-		proOrderVO.setMemVO(loggedInMember);
+		Mem memVO = memSvc.getOneByMemId(loggedInMember.getMemId());
+		proOrderVO.setMemVO(memVO);
 		proOrderVO.setProOrderItems(finalItems);
 
-		// 建立雙向關聯
-		for (ProOrderItemVO item : finalItems) {
-
-			item.setProOrderVO(proOrderVO);
-
-			ProOrderItemId id = item.getId();
-			if (id == null) {
-				id = new ProOrderItemId();
-			}
-			id.setProId(item.getProductVO().getProId());
-			item.setId(id);
-
-		}
-		
 		// ================== (先預扣)扣商品庫存的邏輯 ======================
-		boolean errorStock = proOrdSvc.discProductStock(proOrderVO);
-		if (!errorStock) {
+		Pro errorProStock = proOrdSvc.discProductStock(proOrderVO);
+		if (errorProStock != null) {
 			// 返回購物車，修正數量。
-			redirectAttributes.addFlashAttribute("errorMessage", "商品[ XXX ]數量不足，無法購買！");
+			redirectAttributes.addFlashAttribute("errorMessage", "商品[ " + errorProStock.getProName() + " ]數量不足，無法購買！");
 			return "redirect:/mem/cart/view/";
 		}
-		//================== 新增訂單 =====================
+		// ================== 新增訂單 =====================
 		try {
 			proOrdSvc.addProOrder(proOrderVO);
 
@@ -347,7 +333,9 @@ public class ProOrderMemController {
 		case 1: // LinePay
 			return "redirect:/mem/proorders/linepayview?proOrdId=" + newProOrdId;
 		default: // 未新增訂單
-			return "redirect:/mem/proorders/listAllProOrder";
+			//有其他不明錯誤，直接刪除訂單，重新下單。
+			proOrdSvc.deleteProOrder(newProOrdId);
+			return "redirect:/cart/view";
 		}
 	}
 
@@ -360,14 +348,13 @@ public class ProOrderMemController {
 		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
 		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 
-
 		// ================== 付款狀態修改狀態 ======================
 		if (proOrderVO.getProPayStatus() == 0) {
 			// 修改已付款(1)
 			proOrderVO.setProPayStatus((byte) 1);
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
-	
+
 		// ================== 會員點數新增修改的邏輯 ======================
 		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
 		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
@@ -520,7 +507,7 @@ public class ProOrderMemController {
 		if (tempMpcDisc < 0) {
 			model.addAttribute("cpnError", "折價劵折抵金額不能是負數。");
 			hasError = true;
-		} else if (tempMpcDisc > maxDiscAmount) {
+		} else if (tempMpcDisc > maxDiscAmount && tempPointdisc != 0) {
 			model.addAttribute("cpnError", "折價劵折抵金額不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
 			hasError = true;
 		}
@@ -579,3 +566,6 @@ public class ProOrderMemController {
 		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}
 }
+
+	// 功能展示用，重新付款流程
+	// 本專案的業務邏輯，下訂單後一定要先付款，才會有產生訂單資料存回DB

@@ -42,11 +42,10 @@ public class ProOrderVO implements Serializable {
 	private Integer proOrdId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-
 	@JoinColumn(name = "mem_id")
 	private Mem memVO;
 
-	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "cpn_holder_detail_id")
 //	@Column(insertable = false)
 	private MemProCpnVO memProCpnVO;
