@@ -113,8 +113,8 @@ public class Act implements java.io.Serializable {
 	
 //	對應多個分類
 	@ManyToMany
-	@NotNull(message="請至少選擇一項分類")
-	@Size(min = 1, message="請至少選擇一項分類")
+//	@NotNull(message="請至少選擇一項分類")
+//	@Size(min = 1, message="請至少選擇一項分類")
 	@JoinTable(
     	name = "actcate_list",
     	joinColumns = @JoinColumn(name = "act_id"),
