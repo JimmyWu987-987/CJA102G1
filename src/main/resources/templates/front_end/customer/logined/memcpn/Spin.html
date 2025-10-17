@@ -6,32 +6,39 @@
   <!-- 共用樣式 -->
 <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 <link rel="stylesheet" th:href="@{/css/memcpn/lottery.css}">
-<style>
-
-</style>
 </head>
 <body>
+  <!--  Loading 畫面 -->
+  <div class="loading" id="loading">
+    <img th:src="@{/svg/taiwan-with-ids2.svg}" alt="logo" />
+    <div class="loading-text" id="loadingText">
+      <span id="textContent">正在接入折價券伺服器</span><span class="ellipsis"></span>
+    </div>
+    <div class="progress-box">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
  <!-- 主內容外層要有 container -->
   <div class="container container-main">
   <h2>小農成長故事</h2>
   <p>每一顆種子，都是希望的開始。</p>
 </div>
 <div class="garden-box">
-<div class="garden">
-  <img src="/images/CpnLottery/seed.png" alt="seed" class="seed" id="seed">
-  <img src="/images/CpnLottery/gram.png" alt="germ" class="germ" id="germ">
-  <img src="/images/apple.png" alt="bloom" class="bloom" id="bloom">
-</div>
+  <div class="garden">
+    <img th:src="@{/images/CpnLottery/seed.png}" alt="seed" class="seed" id="seed">
+    <img th:src="@{/images/CpnLottery/gram.png}" alt="germ" class="germ" id="germ">
+    <img alt="bloom" class="bloom" id="bloom">
+  </div>
 <button class="btn-plant" id="plantBtn">🌾 播種開始</button>
 </div>
-
-<script>
-
+<!--  Footer 區 -->
+<div th:replace="~{/front_end/index :: footer}"></div>
+<!--  SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+  window.BASE_IMG_PATH = /*[[@{/images/CpnLottery/}]]*/ "";
 </script>
-<!-- Footer -->
-  <div th:replace="~{/front_end/index :: footer}"></div>
-  <!-- SweetAlert2 官方套件 -->
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script th:src="@{/js/memcpn/lottery.js}"></script>
+<!--  外部 JS  -->
+<script th:src="@{/js/memcpn/lottery.js}"></script>
 </body>
 </html>

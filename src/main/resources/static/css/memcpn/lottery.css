@@ -1,13 +1,98 @@
-
+/* === 主畫面 === */
 .container-main {
-  flex: 1;
+  opacity: 0;
+  transition: opacity 1.2s ease-in;
+}
+.container-main.show {
+  opacity: 1;
+}
+/* === Loading 畫面 === */
+.loading {
+ position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, var(--header-color), var(--bg-color));
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 往上靠 */
+  justify-content: center;
   align-items: center;
-  padding-top: 60px;  /* 上方間距 */
+  transition: opacity 0.4s ease-out;
+  z-index: 1000;
+  opacity: 1;
+}
+.loading img {
+  width: 200px;
+  height: 200px;
+   animation: scharge 2s ease-in-out infinite alternate;
 }
 
+.loading-text {
+  margin-top: 22px;
+  font-size: 20px;
+  color: var(--second-color);
+  text-shadow: 0 0 8px rgba(17,113,25,0.3);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.loading-text span.ellipsis::after {
+  content: "";
+  animation: dots 0.8s infinite steps(4, end);
+}
+.loading.fade-out {
+  opacity: 0;
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 12px rgba(78,145,115,0.6));
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+@keyframes dots {
+  0%   { content: ""; }
+  25%  { content: "."; }
+  50%  { content: ".."; }
+  75%  { content: "..."; }
+  100% { content: ""; }
+}
+
+/* 白轉綠的「充能動畫」 */
+@keyframes charge {
+  0% {
+    filter: brightness(1.5) sepia(0) hue-rotate(0deg) saturate(0);
+  }
+  100% {
+    filter: brightness(1.2) sepia(1) hue-rotate(90deg) saturate(4);
+  }
+}
+/* 綠光↔橘光交錯的柔光動畫 */
+@keyframes glow {
+  0% {
+    filter: drop-shadow(0 0 8px var(--second-color));
+  }
+  100% {
+    filter: drop-shadow(0 0 16px var(--btn-hover-color));
+  }
+}
+/* === 進度條容器 === */
+.progress-box {
+ width: 300px;
+  height: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  margin-top: 30px; /* ← 與文字保持距離 */
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(79,195,247,0.4);
+}
+
+/* === 進度條 === */
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  border-radius: 10px;
+  transition: width 0.1s linear;
+  animation: glow 1.2s ease-in-out infinite alternate,fadeInBar 0.4s ease-out 0.2s forwards;
+}
+@keyframes fadeInBar {
+  from { opacity: 0; transform: scaleX(0.8); }
+  to { opacity: 1; transform: scaleX(1); }
+}
 /* === 動畫區 === */
 @keyframes fadeGrow {
   0%   { opacity: 0; transform: scale(0.8); }

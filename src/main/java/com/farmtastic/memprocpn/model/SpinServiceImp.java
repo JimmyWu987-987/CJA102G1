@@ -1,7 +1,8 @@
 package com.farmtastic.memprocpn.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,9 +26,9 @@ public class SpinServiceImp {
 		return proCpnRepo.findByCpnName(cpnName).orElseThrow(() -> new IllegalStateException("⚠️ 折價券不存在: " + cpnName));
 	}
 
-	public String spinAndGiveCoupon(Integer memId) {
+	public Map<String, Object> spinAndGiveCoupon(Integer memId) {
+		Map<String, Object> result = new HashMap<>();
 		String key = "spin:user:" + memId;
-
 		// 檢查是否抽過
 //		if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(key))) {
 //			return "⚠️ 您今天已抽過，請明天再來！";
@@ -37,26 +38,24 @@ public class SpinServiceImp {
 		// 模擬機率
 		int roll = random.nextInt(100);
 		ProCpnVO coupon = null;
-		if (roll < 9910) {
+		if (roll < 10) {
 			coupon = findCouponOrThrow("轉盤折200");
-		} else if (roll < 1) {
+			result.put("status", "WIN");
+			result.put("result", coupon.getCpnName());
+		} else if (roll < 25) {
 			coupon = findCouponOrThrow("轉盤折100");
+			result.put("status", "WIN");
+			result.put("result", coupon.getCpnName());
 		} else {
-			return "沒中獎，再接再厲！";
+			result.put("status", "LOSE");
+			result.put("message", "沒中獎，再接再厲！");
 		}
-
 		// 中獎 → 記錄在 Redis 暫存區（而非立即進 DB）
 		if (coupon != null) {
-			// 標記今日已抽
-			stringRedisTemplate.opsForValue().set(key, "won", 1, TimeUnit.DAYS);
-
 			// 新增暫存中獎紀錄 Key-Value spin: memId pending: coupon.getProCpnId()
 			String prizeKey = "spin:pending:" + memId + ":" + coupon.getProCpnId();
 			stringRedisTemplate.opsForValue().set(prizeKey, coupon.getCpnName());
-
-			return "恭喜獲得：" + coupon.getCpnName() + "（已登錄，稍後發券）";
 		}
-
-		return "沒中獎，再接再厲！";
+		return result;
 	}
 }
