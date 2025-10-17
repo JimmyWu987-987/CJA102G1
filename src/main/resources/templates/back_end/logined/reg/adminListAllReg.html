@@ -33,7 +33,9 @@ body table.dataTable {
 	overflow:hidden;
 }
 table.dataTable.no-footer{
-	border:none;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 table.dataTable thead th, table.dataTable thead td {
@@ -136,6 +138,11 @@ tr:hover{
 
 </style>
 </head>
+<h1>這是金流管理系統首頁</h1>
+	<form method="get" th:action="@{/admin/cashflow/fmemProOrder}">
+		<input type="submit" value="產品訂單金流明細">	
+	</form>
+
 <body th:data-success="${success}">
 	<h1 style="text-align:center; margin:12px 0;">查看活動訂單</h1>
 	
@@ -191,7 +198,8 @@ tr:hover{
 	    <tr th:each="r, iterStat : ${listReg}">
 	      <td th:text="${r.regId}"></td>
 	      <td>
-	      	<span th:text="${#dates.format(r.regAt, 'yyyy-MM-dd HH:mm')}"></span><br>
+	      	<span th:text="${#dates.format(r.regAt, 'yyyy-MM-dd')}"></span><br>
+	      	<span th:text="${#dates.format(r.regAt, 'HH:mm')}"></span>
 	      </td>
 	
 	      <!-- 狀態 badge -->
@@ -252,7 +260,6 @@ tr:hover{
 	  
 	  
 	</table>
-
 
 <!-- 撥款成功跳出 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
