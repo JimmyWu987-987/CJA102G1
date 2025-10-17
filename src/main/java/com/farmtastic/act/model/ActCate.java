@@ -23,8 +23,11 @@ public class ActCate implements java.io.Serializable {
 	private Integer actCateId;
 
 	@Column(name = "actcate_name")
-	@NotEmpty(message = "活動分類名稱請勿空白")
 	private String actCateName;
+	
+//	@Column(name = "actcate_name")
+//	@NotEmpty(message = "活動分類名稱請勿空白")
+//	private String actCateName;
 
 //	對應多個活動
 	@ManyToMany(mappedBy = "actCate")
