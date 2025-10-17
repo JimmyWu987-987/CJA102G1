@@ -145,9 +145,16 @@ public class ShoppingCartController { // 類別名稱修正為標準的 Controll
 		if (removed) {
 			redirectAttributes.addFlashAttribute("successMessage", "商品已成功移除。");
 		} else {
-			redirectAttributes.addFlashAttribute("errorMessage", "移除失敗，購物車中找不到該商品。");
+			redirectAttributes.addFlashAttribute("errorMessage", "移除失敗，購物車中找不到該商品。");		
 		}
-
+		// 當 fmemId 內的購物車沒有商品，則刪除 fmemId 的專屬購物車。
+		Map<Integer, List<ShoppingCartVO>> getGroupedCartItems = cartService.getGroupedCartItems();
+		List<ShoppingCartVO> cartList = getGroupedCartItems.get(fmemId);
+		
+		if(cartList == null || cartList.isEmpty()) {
+			cartService.clearCartByFmemId(fmemId);
+		}
+		
 		return "redirect:/cart/view";
 	}
 
