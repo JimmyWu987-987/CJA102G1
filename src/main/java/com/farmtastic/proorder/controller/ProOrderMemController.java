@@ -554,7 +554,7 @@ public class ProOrderMemController {
 		model.addAttribute("cartToProOrder", finalProOrderVO);
 		model.addAttribute("proOrderItems", finalProOrderVO.getProOrderItems());
 
-		session.setAttribute("cartToProOrder", finalProOrderVO);
+		model.addAttribute("cartToProOrder", finalProOrderVO);
 
 		// 取得會員的有效折價卷資料
 		List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
