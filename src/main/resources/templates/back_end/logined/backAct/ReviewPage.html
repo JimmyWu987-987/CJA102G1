@@ -17,7 +17,7 @@
     <h1>活動列表</h1>
 
 	<div th:if="${#lists.isEmpty(actList)}">
-    	<p>目前無已過審之活動</p>
+    	<p>目前無待審核之活動</p>
 	</div>
 
 	<div th:unless="${#lists.isEmpty(actList)}">
@@ -40,7 +40,7 @@
 			<tr th:each="act : ${actList}">
 				<td th:text="${act.actId}"></td>
 				<td>
-					<img th:if="${act.actMainImg != null}" th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" alt="主照片"/>
+					<img th:if="${act.actMainImg != null}" th:src="@{'/admin/act/mainImg/' + ${act.actId}}" alt="主照片"/>
 				</td>
 				<td th:text="${act.actName}"></td>
 				<td th:text="${act.actStart}"></td>
@@ -50,7 +50,7 @@
 				<td th:text="${act.actRemark}"></td>
 				<td th:text="${act.actLaunStatText}"></td>
 				<td>
-					<a th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>
+					<a th:href="@{/backAct/reviewDetail/{actId}(actId=${act.actId})}" class="btn btn-primary btn-sm">進行審核</a>
 				</td>
 			</tr>
 		</tbody>

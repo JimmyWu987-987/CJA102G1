@@ -220,11 +220,11 @@ public class FmemActController {
 
 
 //  =========== 新增活動 ============
-    @GetMapping("addAct")
+	@GetMapping("addAct")
 	public String showAddActForm(ModelMap model) {
     	model.addAttribute("act", new Act());
-        // 將分類丟給前端使用
-        List<ActCate> allCategories = actCateRepo.findAll();
+    	// 將分類丟給前端使用
+    	List<ActCate> allCategories = actCateRepo.findAll();
         model.addAttribute("allCategories", allCategories);
         return "front_end/farmer/logined/fmemAct/addAct";
 	}
@@ -250,11 +250,11 @@ public class FmemActController {
 		
 		// 不選分類的驗證
 		if (actCateIds == null || actCateIds.isEmpty()) {
-		    result.rejectValue("actCate", null, "請至少選擇一項分類");
+			result.rejectValue("actCate", null, "請至少選擇一項分類");
 		} else {
-		    Set<ActCate> cates = new HashSet<>();
+			Set<ActCate> cates = new HashSet<>();
 		    for (Integer id : actCateIds) {
-		        ActCate cate = actCateRepo.findById(id).orElse(null);
+		    	ActCate cate = actCateRepo.findById(id).orElse(null);
 		        if (cate != null) cates.add(cate);
 		    }
 		    act.setActCate(cates);
@@ -336,7 +336,9 @@ public class FmemActController {
 	}
 }
 
-////  =========== 修改活動 ============
+
+//↓ 大吳老師的參考
+//  =========== 修改活動 ============
 //	@GetMapping("updateAct")
 //	public String updateAct(ModelMap model) {
 //		Act act = new Act();
@@ -387,9 +389,6 @@ public class FmemActController {
 //	
 //	
 //	
-
-	
-
 //	@PostMapping("getOne_For_Display")
 //	public String getOne_For_Display(
 //		/***************************1.接收請求參數 - 輸入格式的錯誤處理*************************/

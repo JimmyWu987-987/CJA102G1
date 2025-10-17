@@ -44,39 +44,27 @@
 </div>
 </div>
 
-<div class="ses-info">
-    <div th:if="${#lists.isEmpty(sesList)}"> 
-        <p>此活動目前尚無場次</p> 
+<form th:action="@{/backAct/reviewAct}" method="post">
+    <!-- 隱藏欄位傳 actId -->
+    <input type="hidden" name="actId" th:value="${act.actId}" />
+
+    <!-- 不通過原因輸入，保留輸入值 -->
+    <div style="margin-bottom: 10px;">
+        <label for="remark"><strong>不通過原因：</strong></label><br>
+        <textarea id="remark" name="actRemark" rows="3" cols="50"
+                  placeholder="若不通過請輸入原因"
+                  th:text="${act.actRemark}"></textarea>
+        <!-- 顯示錯誤訊息 -->
+        <div style="color: red;" th:if="${errorMessage}" th:text="${errorMessage}"></div>
     </div>
 
-    <div th:if="${!#lists.isEmpty(sesList)}">
-        <h2 class="ses-title">場次一覽</h2> 
-        <table class="ses-table">
-            <thead>
-                <tr>
-                    <th>場次日期</th>
-                    <th>場次進行時間</th>
-                    <th>報名費用</th>
-                    <th>可參加人數</th>
-                    <th>報名截止日期</th>
-                    <th>進行報名</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="ses : ${sesList}">
-                    <td th:text="${#temporals.format(ses.sesDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${#temporals.format(ses.sesStart, 'HH:mm')} + ' ~ ' + ${#temporals.format(ses.sesEnd, 'HH:mm')}"></td>
-                    <td th:text="${ses.sesFee}" ></td>
-                    <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
-                    <td th:text="${#temporals.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
-                    <td>
-                        <a th:href="@{'#'}" class="btn btn-primary">我要報名</a>  <!-- # 塞報名表單的路徑 -->
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- 通過 / 不通過 / 返回按鈕 -->
+    <div style="margin-top: 10px; display: flex; gap: 10px;">
+        <button type="submit" name="action" value="approve" class="btn">通過</button>
+        <button type="submit" name="action" value="reject" class="btn">不通過</button>
+        <a th:href="@{/backAct/listUnapprovedAct}" class="btn">返回列表</a>
     </div>
-</div>
+</form>
 
     <!-- 分離 JS -->
     <script th:src="@{/js/act/actCarousel.js}"></script>
