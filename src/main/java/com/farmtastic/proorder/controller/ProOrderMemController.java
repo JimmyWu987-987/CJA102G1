@@ -328,8 +328,12 @@ public class ProOrderMemController {
 		switch (proOrderVO.getProOrdPayment()) {
 		case 0: // 信用卡
 			// 先暫時導向首頁
-			session.setAttribute("proOrdIdByPay", newProOrdId);
-			return "redirect:/mem/proorders/dopay";
+			redirectAttributes.addFlashAttribute("errorMessage", "第三方支付忙線中！請重新選擇付款方式。");
+			return "redirect:/mem/proorders/listAllProOrder";
+			
+			// 成功實現信用卡API，導向該API
+//			session.setAttribute("proOrdIdByPay", newProOrdId);
+//			return "redirect:XXXXXX";
 		case 1: // LinePay
 			return "redirect:/mem/proorders/linepayview?proOrdId=" + newProOrdId;
 		default: // 未新增訂單
@@ -395,7 +399,42 @@ public class ProOrderMemController {
 
 		redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
 		return "redirect:/mem/proorders/listAllProOrder";
-
+	}
+	
+	// 功能展示用，重新付款流程
+	// 本專案的業務邏輯，下訂單後一定要先付款，才會有產生訂單資料存回DB
+	@PostMapping("resetpay")
+	String resetPay(Model model,
+			HttpSession session,
+			RedirectAttributes redirectAttributes,
+			@RequestParam("proOrdId") Integer proOrdId,
+			@RequestParam("proPayStatus") Integer proPayStatus,
+			@RequestParam("proOrdPayment") Integer proOrdPayment
+			) {
+		
+		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
+		
+		if(proOrderVO == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "查無此訂單！");
+			return "redirect:/mem/proorders/listAllProOrder";
+			
+		} else if(proOrderVO.getProPayStatus() == 1) {
+			redirectAttributes.addFlashAttribute("errorMessage", "此訂單已經付款！");
+			return "redirect:/mem/proorders/listAllProOrder";
+		} else {
+			switch (proOrdPayment) {
+			case 0:// 信用卡
+				// 先暫時導向首頁
+				redirectAttributes.addFlashAttribute("errorMessage", "第三方支付忙線中！請重新選擇付款方式。");
+				return "redirect:/mem/proorders/listAllProOrder";
+			case 1: // LinePay
+				proOrderVO.setProOrdPayment((byte)1);
+				proOrdSvc.updateProOrder(proOrderVO);
+				return "redirect:/mem/proorders/linepayview?proOrdId=" + proOrderVO.getProOrdId();
+			default:
+				return "redirect:/mem/proorders/listAllProOrder";
+			}
+		}
 	}
 
 	// 修改訂單 (處理點數折抵及折價卷折抵)
@@ -565,7 +604,8 @@ public class ProOrderMemController {
 		// redirectAttributes.addFlashAttribute("successMessage", "未選擇折價卷！");
 		return "/front_end/customer/logined/memProOrders/addProOrder";
 	}
+
 }
 
-	// 功能展示用，重新付款流程
-	// 本專案的業務邏輯，下訂單後一定要先付款，才會有產生訂單資料存回DB
+	
+
