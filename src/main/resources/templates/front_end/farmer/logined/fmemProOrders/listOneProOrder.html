@@ -525,17 +525,19 @@
 						<span>運費:</span><span th:text="${proOrderVO.proOrdShipFee}"></span>
 					</div>
 					<div class="info-item">
-						<span>折價券折抵金額:</span><span th:text="${proOrderVO.proOrdCpndisc}"></span>
+						<span>折價券折抵金額:</span><span th:text="-${proOrderVO.proOrdCpndisc}"></span>
 					</div>
 					<div class="info-item">
 						<span>商品訂單折抵會員點數:</span><span
-							th:text="${proOrderVO.proOrdPointdisc}"></span>
+							th:text="-${proOrderVO.proOrdPointdisc}"></span>
 					</div>
 					<div class="info-item grand-total">
 						<span>實付金額:</span><span th:text="${proOrderVO.proOrdGrandTotal}"></span>
 					</div>
 					<div class="info-item">
-						<span>商品訂單回饋點數:</span><span th:text="${proOrderVO.proOrdPointGet}"></span>
+						<p>
+                        <h5>（ 此筆訂單回饋 :</h5><h5 th:text="${proOrderVO.proOrdPointGet}"></h5><h5>點 ）</h5>
+                    	</p>
 					</div>
 				</div>
 
