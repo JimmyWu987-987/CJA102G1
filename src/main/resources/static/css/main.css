@@ -21,8 +21,8 @@
     margin: 0;
     font-family: 'Tahoma';
     list-style: none;
-    /* outline: 1px solid #f00; */
     box-sizing: border-box;
+/*     outline: 1px solid #f00; */
 }
 html{
     height: 100%; /*for footer貼到底端*/
@@ -58,47 +58,47 @@ body{
 
 
 /* -------通用CSS*/
-    a{
-        display: block;
-        text-decoration: none;
-    }
-    a.link,
-    input.link{
-        display: block;
-        text-decoration: none;
-        padding: 8px 14px;
-        margin-right: 14px;
-    }
+a{
+    display: block;
+    text-decoration: none;
+}
+a.link,
+input.link{
+    display: block;
+    text-decoration: none;
+    padding: 8px 14px;
+    margin-right: 14px;
+}
 
 /* 	********** */
-    a.link.btn-member:last-child{
-/*         margin-right: 0; */
-    }
+a.link.btn-member{
+    margin-right: 0;
+}
 
-    img{
-        max-width: 100%;
-        max-height: 100%;
+img{
+    max-width: 100%;
+    max-height: 100%;
 /*         border-radius: 5px; */
-    }
-    
-    .btn{
-        border-radius: 5px;
-        background-color: var(--btn-color);
-    }
-    .btn:hover{
-        background-color: var(--btn-hover-color);
-        transition: 0.8s;
-        cursor: pointer;
-    }
+}
 
-    .title{
-        width: 100%;
-        text-align: center;
-        font-size: var(--title-font-size);
-        font-weight: bold;
-        color: #555;
-        letter-spacing: 2px;
-    }
+.btn{
+    border-radius: 5px;
+    background-color: var(--btn-color);
+}
+.btn:hover{
+    background-color: var(--btn-hover-color);
+    transition: 0.8s;
+    cursor: pointer;
+}
+
+.title{
+    width: 100%;
+    text-align: center;
+    font-size: var(--title-font-size);
+    font-weight: bold;
+    color: #555;
+    letter-spacing: 2px;
+}
 /* 通用CSS-----------*/
 
 
@@ -121,8 +121,12 @@ body{
 .container-header .header a{
     color: #fff;
 }
+.container-header .header .logo a{
+	margin-right: 0;
+}
 .container-header .logo img{
     max-height: 68px;
+    display: block;
 }
 .container-header .logo img:hover{
     transform: scale(1.1);
@@ -138,12 +142,18 @@ body{
 }
 .container-header .nav li > a{
 	padding: 6px 10px;
+	height: 42px;
+	
+	display: flex;
+	align-items: center;   /* 垂直置中文字與icon */
+	justify-content: center; 
+	line-height: 1;       /* 避免 line-height 影響置中 */
 }
 .container-header .nav ul{
     display: none;
     position: absolute;
     top: 100%;
-    width: 190px;
+    width: 170px;
     border: 1px solid #68a087;
     border-radius: 8px;
     background-color: rgba(255,255,255, .8);
@@ -153,6 +163,7 @@ body{
     border-top: 1px solid #88b3a0;
     font-size: 18px;
     color: var(--second-color);
+    justify-content: left;
 }
 .container-header .nav ul a:hover{
     background-color: #d7d7cdb7;
@@ -186,6 +197,12 @@ body{
 	background-color: #63a954;
 }
 
+.container-header .member form.logout{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
 .container-header .member .btn-logout{
 	display: inline-block;
 	font-size: 18px;
@@ -239,6 +256,7 @@ body{
 
 
 .container-header .member .helloUser{
+	min-width: 70px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -349,4 +367,16 @@ body{
 
   	background-color: #bbb;	
 }
+
+
+
+
+a.test-farmerStore{
+	background-color: #FF8A65;
+}
+.test{
+	margin-left: 14px;
+}
+
+
 

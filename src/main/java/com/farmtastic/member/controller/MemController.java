@@ -455,7 +455,7 @@ public class MemController {
 				session.removeAttribute("redirectAfterLogin");
 				return "redirect:" + redirectUrl;
 			}
-			return "redirect:/";
+			return "redirect:/mem/memArea";
 
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());

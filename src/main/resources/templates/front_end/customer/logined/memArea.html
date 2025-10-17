@@ -10,6 +10,52 @@
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+    
+    <style>
+    	.main-area {
+			flex: 1;
+			max-width: 100%;
+			height: auto;
+			padding: 30px;
+			display: flex;
+		    justify-content: center;
+		}
+		.farmerwaving{
+			margin-top: 40px;
+		  	width:400px;
+		  	height: auto;
+		}
+		  
+		.mwt_border{
+			position: absolute;
+			top: 24%;
+			left: 48%;
+			width: 260px; 
+			min-height: 40px;
+			background: #fff; 
+			border: 1px solid #333;
+			border-radius:20px;
+			box-sizing: border-box; 
+			display:flex; 
+			align-items:center;
+		}
+		
+		.mwt_border .arrow_b_int{
+			position:absolute;
+			width:0;height:0;
+			border-width:15px; border-style:solid;
+			border-color:#333 transparent transparent transparent;
+			bottom:-30px; left:80%; transform:translateX(-50%);
+			z-index:2;
+		}
+		
+		.bubble-text{
+			font-size:20px; 
+			padding:0 20px; 
+			margin:0;
+		}
+		    	
+    </style>
 
 </head>
 <body>
@@ -24,13 +70,18 @@
     </div>
 
     <div class="member-content">
-        <h2>標題title</h2>
-        <p>內容寫這裡</p>
-        <p>內容寫這裡</p>
-        <p>內容寫這裡</p>
-        <p>內容寫這裡</p>
-        <p>內容寫這裡</p>
+    
+        <div class="main-area">
+		    <div class="mwt_border">
+		      	<span class="arrow_b_int"></span>
+		     	<span class="arrow_b_out"></span>
+		      	<p class="bubble-text" id="bubbleText">點擊左側功能列表!</p>
+		    </div>
+		  	<img class="farmerwaving" src="/images/ad/farmerwaving.png" alt="farmerwaving">
+		</div>
+		
     </div>
+    
 </div>
 
 <div th:replace="~{/front_end/index :: footer}"></div>
