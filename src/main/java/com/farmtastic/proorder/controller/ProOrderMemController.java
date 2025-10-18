@@ -339,6 +339,9 @@ public class ProOrderMemController {
 			model.addAttribute("cartToProOrder", proOrderVO);
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
+		
+		// ===================== 清除 該訂單的購物車內容 =====================
+		proOrdSvc.insertOrderCleanCart(proOrderVO);
 
 		// ================= 根據付款不同導向不同頁面 ==================
 		// 取得新增訂單後的 proOrdId
@@ -410,12 +413,6 @@ public class ProOrderMemController {
 		// 清除 Session 相關屬性
 		session.removeAttribute("cartToProOrder");
 		session.removeAttribute("proOrdIdByPay");
-
-		// 清除 該訂單的購物車內容
-		// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
-		// 所以直接找集合內的第一個物件，取出fmemId
-		Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemId().getFmemId();
-		shoppingCartSvc.clearCartByFmemId(fmemId);
 
 		redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
 		return "redirect:/mem/proorders/listAllProOrder";

@@ -17,6 +17,7 @@ import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proorderitem.model.ProOrderItemId;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
+import com.farmtastic.shoppingcart.model.ShoppingCartService;
 
 @Service
 public class ProOrderSevice {
@@ -31,6 +32,8 @@ public class ProOrderSevice {
 	ProService productSvc;
 	@Autowired
 	MemService memSvc;
+	@Autowired
+	ShoppingCartService shoppingCartSvc;
 
 	// 每筆訂單的抽成百分筆
 	private static final double ALLOC_PER = 0.1;
@@ -214,7 +217,14 @@ public class ProOrderSevice {
 		} else {
 			return false;
 		}
-
+		
+	}
+	// 清除來自購物車的該訂單內容
+	public void insertOrderCleanCart(ProOrderVO proOrderVO) {
+		// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
+		// 所以直接找集合內的第一個物件，取出fmemId
+		Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemId().getFmemId();
+		shoppingCartSvc.clearCartByFmemId(fmemId);
 	}
 
 	// ====================================訂單後台使用====================================
