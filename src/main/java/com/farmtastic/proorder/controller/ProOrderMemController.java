@@ -56,6 +56,8 @@ public class ProOrderMemController {
 	@Autowired
 	MemService memSvc;
 	@Autowired
+	FmemService fmemSvc;
+	@Autowired
 	ShoppingCartService shoppingCartSvc;
 	@Autowired
 	MemProCpnServiceImp mpcSvc;
@@ -132,22 +134,38 @@ public class ProOrderMemController {
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
 			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes,
 			HttpSession session) {
+		
+		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
 
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
-		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
+		// 判斷是否要返還點數
+		boolean hasChangePoiont = false;
+		
 
-		switch (proOrdStatus) {
+		switch (proOrderVO.getProOrdStatus()) {
 		// 訂單未出貨，可以直接取消訂單。
 		case 0:
 		case 1:
 			System.out.println("訂單取消！");
 			proOrderVO.setProOrdStatus((byte) 1);
+
 			// 取消訂單返回庫存的邏輯
 			proOrdSvc.cancelOrderAndBackStock(proOrderVO);
 
-			updateStatus = true;
+			// 取消訂單判斷是否要返還點數的邏輯
+			// 業務邏輯是，有付款才會新增點數到 Mem 的 DB
+			// （未付款：不返還）
+			// （已付款：返還）
+			hasChangePoiont = proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
+			
+			Mem updateMemVO = memSvc.getOneByMemId(proOrderVO.getMemVO().getMemId());
+			
+			// 要將更新過的 Mem 資料，存到 session 
+			session.setAttribute("loggedInMember", updateMemVO);
+
 			redirectAttributes.addFlashAttribute("successMessage", "訂單已經取消！");
+			updateStatus = true;
 			break;
 		// 出貨中，通知賣家到貨
 		case 2:
@@ -311,6 +329,7 @@ public class ProOrderMemController {
 		// ================== 新增訂單 =====================
 		try {
 			proOrdSvc.addProOrder(proOrderVO);
+			
 
 		} catch (RuntimeException e) {
 			// 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
@@ -330,15 +349,15 @@ public class ProOrderMemController {
 			// 先暫時導向首頁
 			redirectAttributes.addFlashAttribute("errorMessage", "第三方支付忙線中！請重新選擇付款方式。(其實根本沒有功能哭哭喔)");
 			return "redirect:/mem/proorders/listAllProOrder";
-			
-			// 成功實現信用卡API，導向該API
+
+		// 成功實現信用卡API，導向該API
 //			session.setAttribute("proOrdIdByPay", newProOrdId);
 //			return "redirect:XXXXXX + newProOrdId"; // API需要的資料
 		case 1: // LinePay
 			// 導向 LinePayController.java
 			return "redirect:/mem/proorders/linepayview?proOrdId=" + newProOrdId;
 		default: // 未新增訂單
-			//有其他不明錯誤，直接刪除訂單，重新下單。
+			// 有其他不明錯誤，直接刪除訂單，重新下單。
 			proOrdSvc.deleteProOrder(newProOrdId);
 			return "redirect:/cart/view";
 		}
@@ -401,35 +420,31 @@ public class ProOrderMemController {
 		redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！");
 		return "redirect:/mem/proorders/listAllProOrder";
 	}
-	
+
 	// 功能展示用，重新付款流程
 	// 本專案的業務邏輯，下訂單後一定要先付款，才會有產生訂單資料存回DB
 	@PostMapping("resetpay")
-	String resetPay(Model model,
-			HttpSession session,
-			RedirectAttributes redirectAttributes,
-			@RequestParam("proOrdId") Integer proOrdId,
-			@RequestParam("proPayStatus") Integer proPayStatus,
-			@RequestParam("proOrdPayment") Integer proOrdPayment
-			) {
-		
+	String resetPay(Model model, HttpSession session, RedirectAttributes redirectAttributes,
+			@RequestParam("proOrdId") Integer proOrdId, @RequestParam("proPayStatus") Integer proPayStatus,
+			@RequestParam("proOrdPayment") Integer proOrdPayment) {
+
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
-		
-		if(proOrderVO == null) {
+
+		if (proOrderVO == null) {
 			redirectAttributes.addFlashAttribute("errorMessage", "查無此訂單！");
 			return "redirect:/mem/proorders/listAllProOrder";
-			
-		} else if(proOrderVO.getProPayStatus() == 1) {
+
+		} else if (proOrderVO.getProPayStatus() == 1) {
 			redirectAttributes.addFlashAttribute("errorMessage", "此訂單已經付款！");
 			return "redirect:/mem/proorders/listAllProOrder";
 		} else {
 			switch (proOrdPayment) {
 			case 0:// 信用卡
-				// 先暫時導向首頁
+					// 先暫時導向首頁
 				redirectAttributes.addFlashAttribute("errorMessage", "第三方支付忙線中！請重新選擇付款方式。（其實根本沒有功能哭哭喔）");
 				return "redirect:/mem/proorders/listAllProOrder";
 			case 1: // LinePay
-				proOrderVO.setProOrdPayment((byte)1);
+				proOrderVO.setProOrdPayment((byte) 1);
 				proOrdSvc.updateProOrder(proOrderVO);
 				return "redirect:/mem/proorders/linepayview?proOrdId=" + proOrderVO.getProOrdId();
 			default:
@@ -607,6 +622,3 @@ public class ProOrderMemController {
 	}
 
 }
-
-	
-
