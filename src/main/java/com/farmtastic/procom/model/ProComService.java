@@ -62,7 +62,27 @@ public class ProComService {
 
 		return totalRate;
 	}
-	// 單一小農的總評倫數
+
+	// 計算該小農的總評論數
+	public Integer countProComByFmemId(Integer fmemId) {
+		List<Pro> fmemProList = proSvc.findByFmemId(fmemId);
+
+		int countProCom = 0;
+		
+		if(fmemProList == null || fmemProList.isEmpty()) {
+			return 0;
+		}
+
+		for (Pro proVO : fmemProList) {
+
+			List<ProComVO> proComList = getProComByProVO(proVO);
+
+			if (proComList != null) {
+				countProCom += proComList.size();
+			}
+		}
+		return countProCom;
+	}
 
 	// 計算該小農的總評論數
 	public Integer countProComByFmemId(Integer fmemId) {
