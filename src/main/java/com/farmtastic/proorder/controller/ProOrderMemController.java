@@ -315,7 +315,8 @@ public class ProOrderMemController {
 		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
 
 		// 設定關聯和明細
-		Mem memVO = memSvc.getOneByMemId(loggedInMember.getMemId());
+		Integer memId = proOrderVO.getMemVO().getMemId();
+		Mem memVO = memSvc.getOneByMemId(memId);
 		proOrderVO.setMemVO(memVO);
 		proOrderVO.setProOrderItems(finalItems);
 
