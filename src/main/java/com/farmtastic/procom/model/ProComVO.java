@@ -29,7 +29,7 @@ public class ProComVO implements Serializable{
 	@Id
 	@Column(name="pro_com_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer proComOd;
+	private Integer proComId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="pro_id")
@@ -45,34 +45,32 @@ public class ProComVO implements Serializable{
 	@NotNull(message="評論時間不能為空白！")	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name="pro_com_time")
-	private Date proComtime;
+	private Date proComTime;
 
 	@NotNull(message="請輸入評論分數！")
 	@Size(min=1,max=5,message="商品分數為最低分{min}到最高分{max}！")
 	@Column(name="pro_com_rate")
-	private Byte proComrate;
+	private Byte proComRate;
 
 	public ProComVO() {
 	}
 
-	public ProComVO(Integer proComOd, Pro proVO, Mem memVO, String proComContent,
-			@NotNull(message = "評論時間不能為空白！") Date proComtime,
-			@NotNull(message = "請輸入評論分數！") @Size(min = 1, max = 5, message = "商品分數為最低分{min}到最高分{max}！") Byte proComrate) {
+	public ProComVO(Pro proVO, Mem memVO, String proComContent, @NotNull(message = "評論時間不能為空白！") Date proComTime,
+			@NotNull(message = "請輸入評論分數！") @Size(min = 1, max = 5, message = "商品分數為最低分{min}到最高分{max}！") Byte proComRate) {
 		super();
-		this.proComOd = proComOd;
 		this.proVO = proVO;
 		this.memVO = memVO;
 		this.proComContent = proComContent;
-		this.proComtime = proComtime;
-		this.proComrate = proComrate;
+		this.proComTime = proComTime;
+		this.proComRate = proComRate;
 	}
 
-	public Integer getProComOd() {
-		return proComOd;
+	public Integer getProComId() {
+		return proComId;
 	}
 
-	public void setProComOd(Integer proComOd) {
-		this.proComOd = proComOd;
+	public void setProComId(Integer proComId) {
+		this.proComId = proComId;
 	}
 
 	public Pro getProVO() {
@@ -99,19 +97,21 @@ public class ProComVO implements Serializable{
 		this.proComContent = proComContent;
 	}
 
-	public Date getProComtime() {
-		return proComtime;
+	public Date getProComTime() {
+		return proComTime;
 	}
 
-	public void setProComtime(Date proComtime) {
-		this.proComtime = proComtime;
+	public void setProComTime(Date proComTime) {
+		this.proComTime = proComTime;
 	}
 
-	public Byte getProComrate() {
-		return proComrate;
+	public Byte getProComRate() {
+		return proComRate;
 	}
 
-	public void setProComrate(Byte proComrate) {
-		this.proComrate = proComrate;
+	public void setProComRate(Byte proComRate) {
+		this.proComRate = proComRate;
 	}
+
+	
 }	
