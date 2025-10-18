@@ -49,7 +49,7 @@ public class ProCpnAdminController {
 
 	// 查詢全部折價卷
 	@GetMapping("/list")
-	public String listAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+	public String listAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size,
 			Model model) {
 		Page<ProCpnVO> pageData = proCpnSvc.findPagedProCpn(buildPageable(page, size));
 		model.addAttribute("pageData", pageData);

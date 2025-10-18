@@ -26,6 +26,8 @@ public class SpinServiceImp {
 		return proCpnRepo.findByCpnName(cpnName).orElseThrow(() -> new IllegalStateException("⚠️ 折價券不存在: " + cpnName));
 	}
 
+	// 抽獎後存入REDIS
+	// 之後SpinSyncScheduler排程發卷
 	public Map<String, Object> spinAndGiveCoupon(Integer memId) {
 		Map<String, Object> result = new HashMap<>();
 		String key = "spin:user:" + memId;
@@ -53,8 +55,9 @@ public class SpinServiceImp {
 		// 中獎 → 記錄在 Redis 暫存區（而非立即進 DB）
 		if (coupon != null) {
 			// 新增暫存中獎紀錄 Key-Value spin: memId pending: coupon.getProCpnId()
-			String prizeKey = "spin:pending:" + memId + ":" + coupon.getProCpnId();
-			stringRedisTemplate.opsForValue().set(prizeKey, coupon.getCpnName());
+			// 用QUEUE
+			String queueKey = "spin:pending:queue";
+			stringRedisTemplate.opsForList().rightPush(queueKey, memId + ":" + coupon.getProCpnId());
 		}
 		return result;
 	}
