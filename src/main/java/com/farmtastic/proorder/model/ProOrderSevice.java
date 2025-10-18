@@ -8,14 +8,19 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.member.model.MemService;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
+import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
+import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proorderitem.model.ProOrderItemId;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
+import com.farmtastic.shoppingcart.model.ShoppingCartService;
 
 @Service
 public class ProOrderSevice {
@@ -28,6 +33,12 @@ public class ProOrderSevice {
 	MemProCpnRepository mpcRepository;
 	@Autowired
 	ProService productSvc;
+	@Autowired
+	MemService memSvc;
+	@Autowired
+	ShoppingCartService shoppingCartSvc;
+	@Autowired
+	MemProCpnServiceImp mpcSvc;
 
 	// 每筆訂單的抽成百分筆
 	private static final double ALLOC_PER = 0.1;
@@ -40,29 +51,29 @@ public class ProOrderSevice {
 			for (ProOrderItemVO proOrderItemVO : proOrderVO.getProOrderItems()) {
 				// 1. 商品訂單與訂單明細們的關聯
 				proOrderItemVO.setProOrderVO(proOrderVO);
-				
+
 				// 目前 proOrderItemVO 內的 proVO 為游移狀態
 				// 重新附加 (Re-attach) 游離的 Pro 實體
 				// 用 proId 從資料庫查詢該 proVO，確保 proVO 為 JPA 託管
 				Integer proId = proOrderItemVO.getProductVO().getProId();
 				Pro managerProVO = productSvc.getOnePro(proId);
 				proOrderItemVO.setProductVO(managerProVO);
-				
+
 				// 2. 將訂單明細的複合主鍵 ProOrderItemId 設定給 proId
 				// 確保 proOrderItemId 非空值 (proOrderItemId 為一個物件)
 				ProOrderItemId proOrderItemId = proOrderItemVO.getId();
-				if(proOrderItemId == null) {
+				if (proOrderItemId == null) {
 					proOrderItemId = new ProOrderItemId();
 				}
 				// 3. 從 ProVO 取得 proId, 設定給複合主鍵
-				if(proOrderItemVO.getProductVO() != null) {
+				if (proOrderItemVO.getProductVO() != null) {
 					proOrderItemId.setProId(proOrderItemVO.getProductVO().getProId());
 				}
 				// 4. proOrderItemId 已經有 proId 資訊，存回 item
 				proOrderItemVO.setId(proOrderItemId);
 			}
 		}
-		
+
 		// 儲存訂單, 連帶儲存訂單明細
 		repository.save(proOrderVO);
 	}
@@ -105,15 +116,71 @@ public class ProOrderSevice {
 		return repository.findFmemProOrders(fmemId);
 	}
 
+	// ====================================訂單一般會員前台使用====================================
+	// 確定將訂單加入到DB的邏輯
+	// @PostMapping("insert") 專用
+	@Transactional
+	public void finalCheckOrder(ProOrderVO proOrderVO) {
+		if (proOrderVO.getProOrdCpndisc() == null) {
+			proOrderVO.setProOrdCpndisc(0);
+		}
 
+		if (proOrderVO.getProOrdPointdisc() == null) {
+			proOrderVO.setProOrdPointdisc(0);
+		}
+		if (proOrderVO.getProOrdPointGet() == null) {
+			proOrderVO.setProOrdPointGet(0);
+		}
+
+		// 檢查是否有使用優惠券
+		Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
+		boolean checkUseMcpn = checkUseMcpn(proOrderVO, cpnHolderDetailId);
+		if (checkUseMcpn) {
+			MemProCpnVO uesedMpc = mpcSvc.getOne(cpnHolderDetailId);
+			proOrderVO.setMemProCpnVO(uesedMpc);
+		} else {
+			proOrderVO.setMemProCpnVO(null);
+		}
+
+		// 訂單狀態
+		proOrderVO.setProOrdStatus((byte) 0);
+
+		// 訂單付款狀態
+		proOrderVO.setProPayStatus((byte) 0);
+
+		// 平台撥款狀態，預設為0(未撥款)
+		proOrderVO.setProOrdAllocStatus((byte) 0);
+
+		// 平台抽成金額
+		// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+		Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
+		proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
+
+		// 平台撥款給小農的金額
+		Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
+		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+		
+		// 假設總金額為0, 設定成未付款。
+		// 前台會顯 0元購買
+		if (proOrderVO.getProOrdGrandTotal() == 0) {
+			// 0元購買
+			proOrderVO.setProPayStatus((byte) 2);
+			// 0元購買
+			proOrderVO.setProOrdPayment((byte) 2);
+		}
+
+		// 設定關聯和明細
+		Integer memId = proOrderVO.getMemVO().getMemId();
+		Mem memVO = memSvc.getOneByMemId(memId);
+		proOrderVO.setMemVO(memVO);
+
+	}
 	
-	
-	//	====================================訂單一般會員前台使用====================================
 	// 新增訂單的扣商品庫存的邏輯
 	@Transactional
 	public Pro discProductStock(ProOrderVO proOrderVO) {
 		List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
-		
+
 		for (ProOrderItemVO itemList : finalItems) {
 			// 查詢該產品的庫存
 			Pro proVO = productSvc.getOnePro(itemList.getProductVO().getProId());
@@ -130,14 +197,13 @@ public class ProOrderSevice {
 		}
 		return null;
 	}
-	
+
 	@Transactional
 	// 取消訂單返回庫存的邏輯
 	public void cancelOrderAndBackStock(ProOrderVO proOrderVO) {
-		
+
 		List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
-		
-		
+
 		for (ProOrderItemVO itemList : finalItems) {
 			// 查詢該產品的庫存
 			Pro proVO = productSvc.getOnePro(itemList.getProductVO().getProId());
@@ -150,17 +216,18 @@ public class ProOrderSevice {
 
 		}
 	}
+
 	@Transactional
 	// 檢查是否有使用折價劵
-	public boolean checkUseMcpn(ProOrderVO proOrderVO,Integer cpnHolderDetailId) {
-		
+	public boolean checkUseMcpn(ProOrderVO proOrderVO, Integer cpnHolderDetailId) {
+
 		if (proOrderVO.getMemProCpnVO() != null) {
 
 			// cpnHolderDetailId 不為 null 且不為 0 才表示有使用優惠券
 			if (cpnHolderDetailId != null && cpnHolderDetailId != 0) {
 
-					return true;
-				
+				return true;
+
 			} else {
 				// cpnHolderDetailId 為 0 或 null，表示沒有使用優惠券
 				return false;
@@ -171,15 +238,67 @@ public class ProOrderSevice {
 		}
 	}
 
-	
-	//	====================================訂單後台使用====================================
-	
+	// 取消訂單判斷是否要返還會員點數的邏輯
+	// 業務邏輯是，有付款才會新增點數到 Mem 的 DB
+	// false（未付款：不返還）
+	// true（已付款：返還）
+	@Transactional
+	public boolean cancelOrderAndBackPoint(ProOrderVO proOrderVO) {
+
+		boolean hasBackPoint = false;
+
+		switch (proOrderVO.getProPayStatus()) {
+		case 0: // 該訂單是“未付款”，不需要返還點數
+			break;
+		case 1: // 該訂單是“已付款”，返還點數
+			Integer memId = proOrderVO.getMemVO().getMemId();
+			Mem memVO = memSvc.getOneByMemId(memId);
+
+			Integer originalMemPoiont = memVO.getMemPoint();
+			Integer backMemPoint = proOrderVO.getProOrdPointGet();
+			Integer finalMemPoint = originalMemPoiont - backMemPoint;
+
+			if (originalMemPoiont == 0 || finalMemPoint < 0) {
+				// 如果會員點數已經是“0”，則維持“0點”會員點數。不做修改
+				break;
+			} else if (finalMemPoint > 0) {
+				// 如果會員點數 > “0”，則返還點數，儲存至DB
+				memVO.setMemPoint(finalMemPoint);
+				memSvc.updateMem(memVO);
+
+				hasBackPoint = true;
+			}
+			
+			break;
+			
+		default:
+			System.err.println("訂單編號[ "+proOrderVO.getProOrdId()+" ]的訂單狀態錯誤，沒有取消訂單，請洽系統管理員！");
+			break;
+		}
+
+		if (hasBackPoint) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	// 清除來自購物車的該訂單內容
+	public void insertOrderCleanCart(ProOrderVO proOrderVO) {
+		// 因為確定這份訂單內的產品，都是來自同一個小農fmemId
+		// 所以直接找集合內的第一個物件，取出fmemId
+		Integer fmemId = proOrderVO.getProOrderItems().get(0).getProductVO().getFmemId().getFmemId();
+		shoppingCartSvc.clearCartByFmemId(fmemId);
+	}
+
+	// ====================================訂單後台使用====================================
+
 	// 查詢該小農“已付款“之“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
 	@Transactional
 	public List<FmemOrderSummary> getAllByFmemIdCanAlloc(Integer fmemId) {
 		return repository.findFmemProOrdersCanAlloc(fmemId);
 	}
-	
+
 	// 訂單後台 - 修改訂單為已撥款狀態
 	public void updateAllocStatus(Integer proOrdId) {
 		ProOrderVO proOrderVO = getOneProOrder(proOrdId);
