@@ -62,6 +62,7 @@ public class ProComService {
 		
 		return totalRate;
 	}
+	// 單一小農的總評倫數
 
 	// =============== 基礎功能 ===============
 
