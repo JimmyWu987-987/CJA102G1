@@ -123,7 +123,7 @@ public class FmemActController {
     @GetMapping("/launchAct")
     public String listApprovedForLaunch(HttpSession session, ModelMap model) {
     	
-    	Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
+    	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
         Integer fmemId = fmem.getFmemId();
     	
     	List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
@@ -137,6 +137,45 @@ public class FmemActController {
     	return "front_end/farmer/logined/fmemAct/listApprovedActForFmem";
     }
     
+    
+    
+    // ============ 單一查詢 (for 活動詳細頁面用) ============
+    @GetMapping("/detail/{actId}")
+    public String actDetail(@PathVariable Integer actId, ModelMap model) {
+    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
+    	
+    	// 防呆用
+    	if (optAct.isEmpty()) {
+            // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
+            model.addAttribute("message", "查無此活動");
+            return "front_end/customer/unlogined/act/actMainPageTest"; 		// 做一個 "查無此活動" 頁面 or 導回首頁
+        }
+    	
+    	Act act = optAct.get();
+
+        // 依分類ID排序
+        List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
+        sortedCate.sort(Comparator.comparing(ActCate::getActCateId));
+        model.addAttribute("actCateList", sortedCate);
+
+        // 先依場次日期在依場次時間升冪排序
+        Sort sort = Sort.by(Sort.Direction.ASC, "sesDate")
+        				.and(Sort.by(Sort.Direction.ASC, "sesStart"));
+        
+        List<Ses> allSes = sesSvc.findSesByActId(actId, sort);
+        List<Ses> launchedSes = allSes.stream()
+        							  .filter(s -> s.getSesLaunStat() != null)
+        							  .filter(s -> s.getSesLaunStat().equals(1))
+        							  .toList();
+
+        
+        model.addAttribute("sesList", launchedSes);
+        model.addAttribute("act", act);
+        model.addAttribute("sessionAct", act);
+        
+        return "front_end/farmer/logined/fmemAct/actDetailsForFmem";
+        
+    }
     
 	// =========== 抓圖 ============
 
@@ -226,6 +265,10 @@ public class FmemActController {
     	// 將分類丟給前端使用
     	List<ActCate> allCategories = actCateRepo.findAll();
         model.addAttribute("allCategories", allCategories);
+        
+     // 【強制修正】：確保 actCateId 在 Model 中存在，避免前端 th:checked 崩潰
+        model.addAttribute("actCateId", new ArrayList<Integer>());
+        
         return "front_end/farmer/logined/fmemAct/addAct";
 	}
 	
@@ -238,18 +281,26 @@ public class FmemActController {
 						 BindingResult result,
 						 @RequestParam("actMainImg") MultipartFile actMainImg,
 						 @RequestParam(value = "actImgs", required = false) MultipartFile[] actImgs,
-						 @RequestParam(value = "actCateIds", required = false) List<Integer> actCateIds,
+						 @RequestParam(value = "actCateId", required = false) List<Integer> actCateId,
 						 HttpSession session,
 						 Model model,
 						 RedirectAttributes redirectAttributes) throws IOException {
 		
+		List<ActCate> allCategories = actCateRepo.findAll();
+		model.addAttribute("allCategories", allCategories);
+
 		// 處理空表單用
 		if (result.hasErrors()) {
-			List<ActCate> allCategories = actCateRepo.findAll();
-		    model.addAttribute("allCategories", allCategories);
+			return "front_end/farmer/logined/fmemAct/addAct";
+		}
+
+		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
+
+		if (fmem == null) {
+	    	model.addAttribute("errorMsg", "請先登入小農帳號才能新增活動！");
 	        return "front_end/farmer/logined/fmemAct/addAct";
 	    }
-
+		
 		// 不是空的再進行以下手動驗證
 		// 先確保為sql的格式不是util的...
 		java.sql.Date actStart = (actStartStr == null || actStartStr.isBlank())
@@ -264,11 +315,12 @@ public class FmemActController {
 		act.setActEnd(actEnd);
 		
 		// 不選分類的驗證
-		if (actCateIds == null || actCateIds.isEmpty()) {
+		if (actCateId == null || actCateId.isEmpty()) {
 			result.rejectValue("actCate", null, "請至少選擇一項分類");
 		} else {
+			model.addAttribute("actCateId", actCateId);
 			Set<ActCate> cates = new HashSet<>();
-		    for (Integer id : actCateIds) {
+		    for (Integer id : actCateId) {
 		    	ActCate cate = actCateRepo.findById(id).orElse(null);
 		        if (cate != null) cates.add(cate);
 		    }
@@ -308,9 +360,13 @@ public class FmemActController {
 		}
 
 		// 其他圖片驗證
+		// 要先初始化, 避免沒有放活動圖時報錯
+		if (act.getActImg() == null) {
+	        act.setActImg(new ArrayList<>());
+	    }
 		
 		if (actImgs != null && actImgs.length > 0) {
-            // 手上傳照片時, 先計算數量
+            // 上傳照片時, 先計算數量
             int count = 0;
             for (MultipartFile file : actImgs) {
                 if (!file.isEmpty()) {
@@ -344,25 +400,28 @@ public class FmemActController {
 		
 		// 若驗證又有錯誤就再傳回
 		if (result.hasErrors()) {
-			List<ActCate> allCategories = actCateRepo.findAll();
-		    model.addAttribute("allCategories", allCategories);
-			return "addAct";
+			return "front_end/farmer/logined/fmemAct/addAct";
 	    }
 
 		// 設定狀態&更新時間
 		// (抓登入中的小農)
-		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
+//		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
 		Integer fmemId = fmem.getFmemId();
 		act.setFmemId(fmemId);
 		act.setActStat(1);	// 設為待審核
 		act.setActUpd(new Timestamp(System.currentTimeMillis()));
 
-		if (result.hasErrors()) {
-			List<ActCate> allCategories = actCateRepo.findAll();
-            model.addAttribute("allCategories", allCategories);
-			
-			return "front_end/farmer/logined/fmemAct/addAct";
-		}
+		// 初始化非必填但可能需要預設值的欄位... 測試看看
+        if (act.getActLaunStat() == null) {
+            act.setActLaunStat(0); // 預設為 0 (未上架/預設值)
+        }
+        if (act.getActScore() == null) {
+            act.setActScore(0); // 預設評分為 0
+        }
+        if (act.getActCnt() == null) {
+            act.setActCnt(0); // 預設活動次數/點擊數為 0
+        }
+
 		/*************************** 2.開始新增資料 *****************************************/
 		actSvc.addAct(act);
 		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
