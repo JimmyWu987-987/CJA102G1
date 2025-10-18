@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -118,12 +119,34 @@ public class AdminManagementController {
 
 	// 處理來自新增或修改表單的 POST 請求
     @PostMapping("/save")
-    public String saveAdmin(@ModelAttribute("admin") Admin admin, RedirectAttributes redirectAttributes, HttpSession session) {
-        if (permissionDenied(session, REQUIRED_PERMISSION)) return handleNoPermission(redirectAttributes);
-        adminService.save(admin);
-        redirectAttributes.addFlashAttribute("successMessage", "管理員資料儲存成功！");
-        return "redirect:/admin/list";
-    }
+	public String saveAdmin(@ModelAttribute("admin") Admin admin, RedirectAttributes redirectAttributes,
+			HttpSession session) {
+		if (permissionDenied(session, REQUIRED_PERMISSION))
+			return handleNoPermission(redirectAttributes);
+		// 判斷是「修改」還是「新增」
+		if (admin.getAdminId() != null) { // 修改模式
+			// 從資料庫撈取舊資料
+			Optional<Admin> existingAdminOptional = adminService.findById(admin.getAdminId());
+			if (existingAdminOptional.isPresent()) {
+				Admin existingAdmin = existingAdminOptional.get();
+				// 檢查前端傳來的密碼是否為空
+				if (!StringUtils.hasText(admin.getAdminPwd())) {
+					// 如果是空的，就用舊的密碼覆蓋，避免密碼被清空
+					admin.setAdminPwd(existingAdmin.getAdminPwd());
+				}
+				// 將舊的管理員類型設定回去，因為表單上沒有這個欄位
+				admin.setAdminType(existingAdmin.getAdminType());
+			}
+		} else { // 新增模式
+			// 在實際應用中，這裡應該對新密碼進行加密
+			// 並且應該設定一個預設的管理員類型
+			// 這裡我們暫時不做設定，依賴 Service 層的處理
+		}
+
+		adminService.save(admin);
+		redirectAttributes.addFlashAttribute("successMessage", "管理員資料儲存成功！");
+		return "redirect:/admin/list";
+	}
 
 	// 權限設定頁面
     @GetMapping("/permissions")

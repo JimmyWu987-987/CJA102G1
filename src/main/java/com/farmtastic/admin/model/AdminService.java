@@ -166,9 +166,19 @@ public class AdminService {
 	}
 
 	// 新增：儲存管理員 (可用於新增和修改)
-	public Admin save(Admin admin) {
-		return adminRepository.save(admin);
-	}
+	public void save(Admin admin) {
+	       if (admin.getAdminId() == null) { // 判斷為新增
+	            // 如果管理員類型是空的（因為我們從表單移除了這個欄位）
+	            if (admin.getAdminType() == null) {
+	                // 給定一個預設的管理員類型 ID，例如 3 代表 "低級人員"
+	                // 這裡的 findById 回傳的是 Optional，我們需要處理它
+	                Optional<AdminType> defaultType = adminTypeRepository.findById(3);
+	                // 如果找到了預設類型，就設定給新的 admin 物件
+	                defaultType.ifPresent(admin::setAdminType);
+	            }
+	        }
+	        adminRepository.save(admin);
+	    }
 
 	// 新增：提供查詢所有管理員類型的功能
 	public List<AdminType> findAllAdminTypes() {
