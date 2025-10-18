@@ -85,19 +85,8 @@ public class FmemActController {
     
     
     
-//	// =========== 上下架活動 ============
-    
-    
-    
-//    // =========== 刪除活動 ============
-//    @GetMapping("delete/{actId}")
-//    public String deleteAct(@PathVariable Integer actId, ModelMap model) {
-//        actSvc.deleteAct(actId);
-//        model.addAttribute("success", "活動刪除成功！");
-//        return "redirect:/act/listAll";
-//    }
+    // =========== 上下架活動 ============
 
-    
     // =========== 小農查詢自己的活動 ============
     
     // 查全部
@@ -438,6 +427,41 @@ public class FmemActController {
 		return "redirect:/fmem/act/listAllActForFmem";		// 要傳URL
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =========== 刪除活動 ============
+//@GetMapping("delete/{actId}")
+//public String deleteAct(@PathVariable Integer actId, ModelMap model) {
+//  actSvc.deleteAct(actId);
+//  model.addAttribute("success", "活動刪除成功！");
+//  return "redirect:/act/listAll";
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //↓ 大吳老師的參考
