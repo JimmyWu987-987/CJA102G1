@@ -15,12 +15,12 @@ import jakarta.transaction.Transactional;
 public class FavoProServiceImp {
 	@Autowired
 	FavoProRepository favoRepository;
-
 	@Autowired
-	private MemRepository memRepository;
-	@Autowired // 🌟 注入真正的 Repository 🌟
-	private ProRepository productRepository;
+	MemRepository memRepository;
+	@Autowired
+	ProRepository proRepository;
 
+//Hibernate 用SessionFactory 管理連線與交易
 //private SessionFactory sessionFactory;
 	// 新增收藏
 	public void addFavoPro(Integer memId, Integer proId) {
@@ -31,18 +31,19 @@ public class FavoProServiceImp {
 		}
 		FavoProVO favo = new FavoProVO();
 		favo.setId(favoProId);
+		// setMemVO 放入 Optional<Mem>
 		favo.setMemVO(memRepository.findById(memId).orElseThrow());
-		favo.setProductVO(productRepository.findById(proId).orElseThrow());
+		favo.setProductVO(proRepository.findById(proId).orElseThrow());
 		favoRepository.save(favo);
 	}
 
 	// 取消收藏
 	public void removeFavoPro(Integer memId, Integer proId) {
-		FavoProId id = new FavoProId(memId, proId);
-		if (!favoRepository.existsById(id)) {
-			throw new IllegalArgumentException("收藏紀錄不存在: " + id);
+		FavoProId favoProId = new FavoProId(memId, proId);
+		if (!favoRepository.existsById(favoProId)) {
+			throw new IllegalArgumentException("收藏紀錄不存在: " + favoProId);
 		}
-		favoRepository.deleteById(id);
+		favoRepository.deleteById(favoProId);
 	}
 
 	// 檢查是否已收藏
@@ -50,13 +51,13 @@ public class FavoProServiceImp {
 		return favoRepository.existsById(new FavoProId(memId, proId));
 	}
 
-	public List<FavoProVO> getAll() {
-		return favoRepository.findAll();
-	}
-
-	// 查詢指定會員的所有收藏清單
+	// 前台用：查詢某會員收藏清單
 	public List<FavoProVO> getByMember(Integer memId) {
 		return favoRepository.findByMemVO_MemId(memId);
 	}
 
+	// 後台管理用：查詢所有收藏紀錄(目前沒用到)
+	public List<FavoProVO> getAll() {
+		return favoRepository.findAll();
+	}
 }
