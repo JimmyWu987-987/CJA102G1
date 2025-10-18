@@ -356,7 +356,13 @@ public class FmemActController {
 		} else if (actMainImg.getSize() > 4 * 1024 * 1024) {
 			result.rejectValue("actMainImg", null, "活動主要圖片不得超過 4MB");
 		} else {
-			act.setActMainImg(actMainImg.getBytes());
+//			act.setActMainImg(actMainImg.getBytes());
+			// 關鍵修正：使用 try-catch 包裹 getBytes()
+			try {
+				act.setActMainImg(actMainImg.getBytes());
+			} catch (IOException e) {
+				result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
+			}
 		}
 
 		// 其他圖片驗證
