@@ -134,14 +134,13 @@ public class ProOrderMemController {
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
 			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes,
 			HttpSession session) {
-		
+
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
 
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
 		// 判斷是否要返還點數
 		boolean hasChangePoiont = false;
-		
 
 		switch (proOrderVO.getProOrdStatus()) {
 		// 訂單未出貨，可以直接取消訂單。
@@ -158,10 +157,10 @@ public class ProOrderMemController {
 			// （未付款：不返還）
 			// （已付款：返還）
 			hasChangePoiont = proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
-			
+
 			Mem updateMemVO = memSvc.getOneByMemId(proOrderVO.getMemVO().getMemId());
-			
-			// 要將更新過的 Mem 資料，存到 session 
+
+			// 要將更新過的 Mem 資料，存到 session
 			session.setAttribute("loggedInMember", updateMemVO);
 
 			redirectAttributes.addFlashAttribute("successMessage", "訂單已經取消！");
@@ -270,67 +269,48 @@ public class ProOrderMemController {
 		// proOrderVO.getProOrdGrandTotal() - 已經包含最終計算的實付金額
 		// proOrderVO.getProOrdPointGet() - 已經包含回饋點數
 
-		// 從 session 來的必要資料
-		proOrderVO.setProOrdDate(sessionOrder.getProOrdDate());
-		proOrderVO.setProTotal(sessionOrder.getProTotal());
-		proOrderVO.setProOrdShipFee(sessionOrder.getProOrdShipFee());
+		// 從 session 來的必要資料, 比較安全。
+//		proOrderVO.setProOrdDate(sessionOrder.getProOrdDate());
+//		proOrderVO.setProTotal(sessionOrder.getProTotal());
+//		proOrderVO.setProOrdShipFee(sessionOrder.getProOrdShipFee());
 
-		if (proOrderVO.getProOrdCpndisc() == null) {
-			proOrderVO.setProOrdCpndisc(0);
-		}
-
-		if (proOrderVO.getProOrdPointdisc() == null) {
-			proOrderVO.setProOrdPointdisc(0);
-		}
-		if (proOrderVO.getProOrdPointGet() == null) {
-			proOrderVO.setProOrdPointGet(0);
-		}
-
-		// 檢查是否有使用優惠券
-		Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
-		boolean checkUseMcpn = proOrdSvc.checkUseMcpn(proOrderVO, cpnHolderDetailId);
-		if (checkUseMcpn) {
-			MemProCpnVO uesedMpc = mpcSvc.getOne(cpnHolderDetailId);
-			proOrderVO.setMemProCpnVO(uesedMpc);
+		proOrdSvc.finalCheckOrder(proOrderVO);
+		
+		if(finalItems != null) {
+			proOrderVO.setProOrderItems(finalItems);
 		} else {
-			proOrderVO.setMemProCpnVO(null);
+			System.err.println("新增訂單失敗：讀取不到訂單明細！");
+			model.addAttribute("errorMessage", "新增訂單失敗！請聯絡系統管理員！");
+			model.addAttribute("memVO", loggedInMember);
+			proOrderVO.setProOrderItems(finalItems);
+			model.addAttribute("cartToProOrder", proOrderVO);
+			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
-
-		// 訂單狀態
-		proOrderVO.setProOrdStatus((byte) 0);
-
-		// 訂單付款狀態
-		proOrderVO.setProPayStatus((byte) 0);
-
-		// 平台撥款狀態，預設為0(未撥款)
-		proOrderVO.setProOrdAllocStatus((byte) 0);
-
-		// 平台抽成金額
-		// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
-		Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
-		proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
-
-		// 平台撥款給小農的金額
-		Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
-		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
-
-		// 設定關聯和明細
-		Integer memId = proOrderVO.getMemVO().getMemId();
-		Mem memVO = memSvc.getOneByMemId(memId);
-		proOrderVO.setMemVO(memVO);
-		proOrderVO.setProOrderItems(finalItems);
 
 		// ================== (先預扣)扣商品庫存的邏輯 ======================
-		Pro errorProStock = proOrdSvc.discProductStock(proOrderVO);
-		if (errorProStock != null) {
-			// 返回購物車，修正數量。
-			redirectAttributes.addFlashAttribute("errorMessage", "商品[ " + errorProStock.getProName() + " ]數量不足，無法購買！");
-			return "redirect:/mem/cart/view/";
+		try {
+			Pro errorProStock = proOrdSvc.discProductStock(proOrderVO);
+
+			if (errorProStock != null) {
+				// 返回購物車，修正數量。
+				redirectAttributes.addFlashAttribute("errorMessage",
+						"商品[ " + errorProStock.getProName() + " ]數量不足，無法購買！");
+				return "redirect:/mem/cart/view/";
+			}
+
+		} catch (Exception e) {
+	
+			System.err.println("新增訂單失敗：" + "e.getMessage()");
+			model.addAttribute("errorMessage", "新增訂單失敗！請聯絡系統管理員！" + e.getMessage());
+			model.addAttribute("memVO", loggedInMember);
+			proOrderVO.setProOrderItems(finalItems);
+			model.addAttribute("cartToProOrder", proOrderVO);
+			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
+
 		// ================== 新增訂單 =====================
 		try {
 			proOrdSvc.addProOrder(proOrderVO);
-			
 
 		} catch (RuntimeException e) {
 			// 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
@@ -340,7 +320,7 @@ public class ProOrderMemController {
 			model.addAttribute("cartToProOrder", proOrderVO);
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
-		
+
 		// ===================== 清除 該訂單的購物車內容 =====================
 		proOrdSvc.insertOrderCleanCart(proOrderVO);
 

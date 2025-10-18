@@ -8,10 +8,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
+import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
+import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proorderitem.model.ProOrderItemId;
@@ -34,6 +37,8 @@ public class ProOrderSevice {
 	MemService memSvc;
 	@Autowired
 	ShoppingCartService shoppingCartSvc;
+	@Autowired
+	MemProCpnServiceImp mpcSvc;
 
 	// 每筆訂單的抽成百分筆
 	private static final double ALLOC_PER = 0.1;
@@ -112,6 +117,55 @@ public class ProOrderSevice {
 	}
 
 	// ====================================訂單一般會員前台使用====================================
+	// 確定將訂單加入到DB的邏輯
+	// @PostMapping("insert") 專用
+	public void finalCheckOrder(ProOrderVO proOrderVO) {
+		if (proOrderVO.getProOrdCpndisc() == null) {
+			proOrderVO.setProOrdCpndisc(0);
+		}
+
+		if (proOrderVO.getProOrdPointdisc() == null) {
+			proOrderVO.setProOrdPointdisc(0);
+		}
+		if (proOrderVO.getProOrdPointGet() == null) {
+			proOrderVO.setProOrdPointGet(0);
+		}
+
+		// 檢查是否有使用優惠券
+		Integer cpnHolderDetailId = proOrderVO.getMemProCpnVO().getCpnHolderDetailId();
+		boolean checkUseMcpn = checkUseMcpn(proOrderVO, cpnHolderDetailId);
+		if (checkUseMcpn) {
+			MemProCpnVO uesedMpc = mpcSvc.getOne(cpnHolderDetailId);
+			proOrderVO.setMemProCpnVO(uesedMpc);
+		} else {
+			proOrderVO.setMemProCpnVO(null);
+		}
+
+		// 訂單狀態
+		proOrderVO.setProOrdStatus((byte) 0);
+
+		// 訂單付款狀態
+		proOrderVO.setProPayStatus((byte) 0);
+
+		// 平台撥款狀態，預設為0(未撥款)
+		proOrderVO.setProOrdAllocStatus((byte) 0);
+
+		// 平台抽成金額
+		// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+		Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
+		proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
+
+		// 平台撥款給小農的金額
+		Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
+		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+
+		// 設定關聯和明細
+		Integer memId = proOrderVO.getMemVO().getMemId();
+		Mem memVO = memSvc.getOneByMemId(memId);
+		proOrderVO.setMemVO(memVO);
+
+	}
+	
 	// 新增訂單的扣商品庫存的邏輯
 	@Transactional
 	public Pro discProductStock(ProOrderVO proOrderVO) {
