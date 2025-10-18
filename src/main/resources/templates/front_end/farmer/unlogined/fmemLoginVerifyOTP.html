@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小農會員登入驗證</title>
+    <link rel="icon" th:href="@{/images/logo.png}">
+    
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
+
+    <style>
+		
+		.container-header,
+		.container-footer{
+			background-color: #e0ead5;	
+		}
+		.nav > li > a{
+			background-color: #459463;
+		}
+		.container-header .member .btn-farmer i,
+		.container-header .member .btn-logout i,
+		.container-header .member .bell i{
+			background-color: #57a24d;
+		}
+		.container-header .member .btn-farmer:hover i,
+		.container-header .member .btn-logout:hover i,
+		.container-header .member .bell:hover i{
+			background-color: #37922d;
+		}
+		
+		
+		form.userInfo{
+		    border: 3px solid #8fcabb;
+		}
+		.reg-login-btns .btn-login{
+		    width: 100%;
+		    margin-right: 0;
+		    color: #53453b;
+		    background-color: #8fcabb;
+		    cursor: default;
+		}
+		
+		
+	</style>
+</head>
+<body th:data-success="${success}">
+    
+
+    <div th:replace="~{/front_end/index :: header}"></div>
+
+    <div class="container container-reg-login">
+        <h2 class="reg-login-title">小農會員</h2>
+
+        <div class="reg-login-btns">    
+            <span class="btn-login active-btn" id="btn-login">登 入 驗 證</span>
+        </div>
+        
+        <div class="login" id="login">
+            <form method="post" th:action="@{/fmem/loginVerify}" class="userInfo">
+                <ul>
+                    <li>
+                        <label for="">OTP驗證碼</label>
+                        <input type="text" name="otpCode" class="accLogin" placeholder="請輸入驗證碼(6位數)">                        
+                    </li>
+
+					<input type="submit" value="驗證" class="btn link">
+                </ul>
+            </form>
+        </div>
+        
+        
+    </div>
+
+
+	<div th:replace="~{/front_end/index :: footer}"></div>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!--     <script th:src="@{/js/mem/regLogin.js}"></script> -->
+<!--     <script th:src="@{/js/mem/successUpdatePasswordAlert.js}"></script> -->
+    
+</body>
+</html>

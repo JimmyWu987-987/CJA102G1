@@ -69,6 +69,19 @@ window.addEventListener("load", function(){
  			    htmlContainer: 'custom-swal-content'
  			  }
           });
+ 	} else if(failMsg === "OTP驗證失敗"){
+		Swal.fire({
+        	icon: 'warning',
+        	title: failMsg,
+ 			text: '請重新操作',
+            showConfirmButton: false,
+ 			customClass: {
+ 				icon: 'custom-icon',
+ 			    popup: 'custom-swal',
+ 			    title: 'custom-swal-title',
+ 			    htmlContainer: 'custom-swal-content'
+ 			  }
+          });
   	} 
 	
 	
