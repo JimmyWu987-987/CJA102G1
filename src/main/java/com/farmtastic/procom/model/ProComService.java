@@ -16,16 +16,15 @@ public class ProComService {
 
 	@Autowired
 	ProComRepository repository;
-	
+
 	@Autowired
 	ProService proSvc;
-	
 
 	// 查詢該商品的所有評論
 	public List<ProComVO> getProComByProVO(Pro proVO) {
 		return repository.findByProVO(proVO);
 	}
-	
+
 	// 查詢該會員的所有評論
 	public List<ProComVO> getProComByMemVO(Mem memVO) {
 		return repository.findByMemVO(memVO);
@@ -40,29 +39,50 @@ public class ProComService {
 	public Integer countProComRateByProId(Integer proId) {
 		Pro proVO = proSvc.getOnePro(proId);
 		List<ProComVO> proComList = getProComByProVO(proVO);
-		
+
 		int countRate = 0;
-		
-		for(ProComVO proComVO : proComList) {
+
+		for (ProComVO proComVO : proComList) {
 			countRate += proComVO.getProComRate();
 		}
-		
+
 		return countRate;
 	}
-	// 計算該小農的所有商品總分數
-	public Integer countFmemTotalRate(Integer fmemId) {
+
+	// 計算該小農所有商品評價的總分數
+	public Integer countProComRateByFmemId(Integer fmemId) {
 		List<Pro> ProList = proSvc.findByFmemId(fmemId);
-		
+
 		int totalRate = 0;
-		
-		for(Pro proVo : ProList) {
+
+		for (Pro proVo : ProList) {
 			int proRate = countProComRateByProId(proVo.getProId());
 			totalRate += proRate;
 		}
-		
+
 		return totalRate;
 	}
-	// 單一小農的總評倫數
+
+	// 計算該小農的總評論數
+	public Integer countProComByFmemId(Integer fmemId) {
+		List<Pro> fmemProList = proSvc.findByFmemId(fmemId);
+
+		int countProCom = 0;
+		
+		if(fmemProList == null || fmemProList.isEmpty()) {
+			return 0;
+		}
+
+		for (Pro proVO : fmemProList) {
+
+			List<ProComVO> proComList = getProComByProVO(proVO);
+
+			if (proComList != null) {
+				countProCom += proComList.size();
+			}
+		}
+		return countProCom;
+	}
 
 	// =============== 基礎功能 ===============
 
