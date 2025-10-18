@@ -1,10 +1,16 @@
 package com.farmtastic.procpn.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.common.mapper.ProCpnMapper;
-import com.farmtastic.procpn.dto.DateRangeRequestDTO;
 import com.farmtastic.procpn.dto.ProCpnFormDTO;
 import com.farmtastic.procpn.model.ProCpnService;
 import com.farmtastic.procpn.model.ProCpnVO;
@@ -33,6 +39,23 @@ public class ProCpnAdminController {
 	@Autowired
 	private ProCpnMapper mapper;
 
+	// ✅ 共用模板名稱
+	private static final String VIEW_PATH = "back_end/logined/procpn/listAllProCpn";
+
+	// 統一分頁設定
+	private Pageable buildPageable(int page, int size) {
+		return PageRequest.of(page, size, Sort.by("proCpnId").ascending());
+	}
+
+	// 查詢全部折價卷
+	@GetMapping("/list")
+	public String listAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size,
+			Model model) {
+		Page<ProCpnVO> pageData = proCpnSvc.findPagedProCpn(buildPageable(page, size));
+		model.addAttribute("pageData", pageData);
+		return VIEW_PATH;
+	}
+
 //詳細頁面
 	@GetMapping("/view/{id}")
 	public String viewProCpn(@PathVariable Integer id, Model model) {
@@ -42,7 +65,7 @@ public class ProCpnAdminController {
 			return "redirect:/admin/procpn/list";
 		}
 		model.addAttribute("coupon", optional.get());
-		return "/back_end/logined/procpn/viewProCpn";
+		return "back_end/logined/procpn/viewProCpn";
 	}
 
 	// 顯示新增頁面
@@ -51,7 +74,7 @@ public class ProCpnAdminController {
 		model.addAttribute("mode", "add");
 		model.addAttribute("actionUrl", "/admin/procpn/add");
 		model.addAttribute("proCpnForm", new ProCpnFormDTO());
-		return "/back_end/logined/procpn/proCpnForm";
+		return "back_end/logined/procpn/proCpnForm";
 	}
 
 	// 新增折價卷
@@ -61,70 +84,58 @@ public class ProCpnAdminController {
 		if (result.hasErrors()) {
 			model.addAttribute("mode", "add");
 			model.addAttribute("actionUrl", "/admin/procpn/add");
-			return "/back_end/logined/procpn/proCpnForm";
+			return "back_end/logined/procpn/proCpnForm";
 		}
 		proCpnSvc.addProCpn(mapper.toEntity(form));
 		redirectAttributes.addFlashAttribute("successMessage", "新增折價券成功！");
 		return "redirect:/admin/procpn/list";
 	}
 
-	// 查詢全部折價卷
-	@GetMapping("/list")
-	public String listAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
-			Model model) {
-		Page<ProCpnVO> pageData = proCpnSvc.findPagedProCpn(page, size);
-		model.addAttribute("pageData", pageData);
-		return "/back_end/logined/procpn/listAllProCpn";
-	}
-
 	@GetMapping("/find")
-	public String findOneProCpn(@RequestParam(required = false) Integer id, Model model) {
+	public String findOneProCpn(@RequestParam(required = false) Integer id, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size, Model model) {
 		// 1. 判斷空值
 		if (id == null) {
 			model.addAttribute("error", "請輸入折價券編號！");
-			return "/back_end/logined/procpn/listAllProCpn"; // 返回查詢頁
+			model.addAttribute("pageData", Page.empty()); // 避免 pageData=null
+			return VIEW_PATH;
+
 		}
 
 		// 2. 查資料
 		Optional<ProCpnVO> optional = proCpnSvc.getById(id);
 
 		// 3.處理結果
-		if (optional.isPresent()) {
-			model.addAttribute("coupons", List.of(optional.get()));
-		} else {
-			model.addAttribute("error", "查無此折價券編號：" + id);
-			model.addAttribute("coupons", List.of());
-		}
-
-		return "/back_end/logined/procpn/listAllProCpn";
+		Page<ProCpnVO> pageData = optional.map(cpn -> new PageImpl<>(List.of(cpn), buildPageable(page, size), 1))
+				.orElseGet(() -> {
+					model.addAttribute("error", "查無此折價券編號：" + id);
+					return new PageImpl<>(List.of(), buildPageable(page, size), 0);
+				});
+		model.addAttribute("pageData", pageData);
+		return VIEW_PATH;
 	}
 
 	/** 模糊搜尋折價券名稱（後台） */
 	@GetMapping("/search")
-	public String searchCpns(@RequestParam("keyword") String keyword, Model model) {
-		List<ProCpnVO> cpn = proCpnSvc.searchProCpnByName(keyword);
-		model.addAttribute("coupons", cpn);
+	public String searchCpns(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size, Model model) {
+
+		Page<ProCpnVO> pageData = proCpnSvc.findByKeywordPaged(keyword, buildPageable(page, size));
 		model.addAttribute("keyword", keyword);
-		return "/back_end/logined/procpn/listAllProCpn";
+		model.addAttribute("pageData", pageData);
+		return VIEW_PATH;
 	}
 
-	// 查詢指定日期範圍內的折價券
+	/** 日期篩選 */
 	@GetMapping("/filter")
-	public String searchCpnByDate(@Valid DateRangeRequestDTO request, BindingResult result, Model model) {
-		// 驗證失敗 → 回到畫面 + 顯示紅字
-		if (result.hasErrors()) {
-			model.addAttribute("errors", result.getAllErrors());
-			model.addAttribute("coupons", proCpnSvc.findAll()); // 顯示全部
-			return "/back_end/logined/procpn/listAllProCpn";
-		}
-
-		// 驗證成功 → 查詢區間資料
-		List<ProCpnVO> coupons = proCpnSvc.findProCpnByDateRange(request.getStart(), request.getEnd());
-
-		model.addAttribute("coupons", coupons);
-		model.addAttribute("start", request.getStart());
-		model.addAttribute("end", request.getEnd());
-		return "/back_end/logined/procpn/listAllProCpn";
+	public String filterCpns(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, Model model) {
+		Page<ProCpnVO> pageData = proCpnSvc.filterByDateRange(start, end, buildPageable(page, size));
+		model.addAttribute("start", start);
+		model.addAttribute("end", end);
+		model.addAttribute("pageData", pageData);
+		return VIEW_PATH;
 	}
 
 	@GetMapping("/edit/{id}")
@@ -155,10 +166,11 @@ public class ProCpnAdminController {
 		return "redirect:/admin/procpn/list";
 	}
 
-//刪除
-	@GetMapping("/delete/{id}")
-	public String deleteProCpn(@PathVariable Integer id) {
-		proCpnSvc.deleteProCpn(id);
+//改變狀態
+	@GetMapping("/toggleStatus/{id}/{status}")
+	public String deleteProCpn(@PathVariable Integer id, @PathVariable String status) {
+		IsActive newStatus = "ACTIVE".equalsIgnoreCase(status) ? IsActive.ACTIVE : IsActive.INACTIVE;
+		proCpnSvc.changeProCpnStatus(id, newStatus);
 		return "redirect:/admin/procpn/list";
 	}
 

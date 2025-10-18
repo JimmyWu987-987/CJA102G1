@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.farmtastic.common.enums.IsActive;
 
@@ -15,9 +16,6 @@ public interface ProCpnService {
 	void addProCpn(ProCpnVO vo);
 
 	void updateProCpn(ProCpnVO vo);
-
-	// 刪除折價券
-	void deleteProCpn(Integer id);
 
 //	List<ProCpnVO> getAll();
 	// 給前端展示用（轉成 DTO） // === 業務邏輯 / 前端顯示 ===
@@ -30,10 +28,10 @@ public interface ProCpnService {
 	// Optional<ProCpnAdminDTO> getById(Integer id); // 查單一折價券 (DTO)
 	Optional<ProCpnVO> getById(Integer proCpnId);
 
-	List<ProCpnVO> searchProCpnByName(String keyword);// 名稱模糊搜尋
+	Page<ProCpnVO> findByKeywordPaged(String keyword, Pageable pageable);// 名稱模糊搜尋
 
 	// 查詢指定日期範圍內的折價券
-	List<ProCpnVO> findProCpnByDateRange(java.util.Date start, java.util.Date end);
+	Page<ProCpnVO> filterByDateRange(java.util.Date start, java.util.Date end, Pageable pageable);
 
 	// 停用所有過期折價券（排程）
 	void deactivateExpiredCoupons();
@@ -42,9 +40,11 @@ public interface ProCpnService {
 	List<ProCpnVO> findAvailableForMember();
 
 	// 分頁
-	Page<ProCpnVO> findPagedProCpn(int page, int size);
+	Page<ProCpnVO> findPagedProCpn(Pageable pageable);
 
 	// 計算折扣金額（for 測試 / 套用邏輯）
 	BigDecimal calculateDiscount(ProCpnVO coupon, BigDecimal originalPrice);
+
+	void toggleProCpnStatus(Integer proCpnId);
 
 }

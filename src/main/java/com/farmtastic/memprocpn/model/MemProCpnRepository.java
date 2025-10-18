@@ -45,4 +45,5 @@ public interface MemProCpnRepository extends JpaRepository<MemProCpnVO, Integer>
 	boolean existsByMemVO_MemIdAndProCpnVO_ProCpnId(Integer memId, Integer proCpnId);
 
 	boolean existsByMemVOAndProCpnVO(Mem memVO, ProCpnVO proCpnVO);
+
 }

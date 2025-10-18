@@ -1,0 +1,237 @@
+/* === 主畫面 === */
+.container-main {
+  opacity: 0;
+  transition: opacity 1.2s ease-in;
+}
+.container-main.show {
+  opacity: 1;
+}
+/* === Loading 畫面 === */
+.loading {
+ position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, var(--header-color), var(--bg-color));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.4s ease-out;
+  z-index: 1000;
+  opacity: 1;
+}
+.loading img {
+  width: 200px;
+  height: 200px;
+   animation: scharge 2s ease-in-out infinite alternate;
+}
+
+.loading-text {
+  margin-top: 22px;
+  font-size: 20px;
+  color: var(--second-color);
+  text-shadow: 0 0 8px rgba(17,113,25,0.3);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.loading-text span.ellipsis::after {
+  content: "";
+  animation: dots 0.8s infinite steps(4, end);
+}
+.loading.fade-out {
+  opacity: 0;
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 12px rgba(78,145,115,0.6));
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+@keyframes dots {
+  0%   { content: ""; }
+  25%  { content: "."; }
+  50%  { content: ".."; }
+  75%  { content: "..."; }
+  100% { content: ""; }
+}
+
+/* 白轉綠的「充能動畫」 */
+@keyframes charge {
+  0% {
+    filter: brightness(1.5) sepia(0) hue-rotate(0deg) saturate(0);
+  }
+  100% {
+    filter: brightness(1.2) sepia(1) hue-rotate(90deg) saturate(4);
+  }
+}
+/* 綠光↔橘光交錯的柔光動畫 */
+@keyframes glow {
+  0% {
+    filter: drop-shadow(0 0 8px var(--second-color));
+  }
+  100% {
+    filter: drop-shadow(0 0 16px var(--btn-hover-color));
+  }
+}
+/* === 進度條容器 === */
+.progress-box {
+ width: 300px;
+  height: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  margin-top: 30px; /* ← 與文字保持距離 */
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(79,195,247,0.4);
+}
+
+/* === 進度條 === */
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  border-radius: 10px;
+  transition: width 0.1s linear;
+  animation: glow 1.2s ease-in-out infinite alternate,fadeInBar 0.4s ease-out 0.2s forwards;
+}
+@keyframes fadeInBar {
+  from { opacity: 0; transform: scaleX(0.8); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+/* === 動畫區 === */
+@keyframes fadeGrow {
+  0%   { opacity: 0; transform: scale(0.8); }
+  50%  { opacity: 0.5; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes bloomFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(120px) rotate(30deg);
+  }
+}
+@keyframes seedRise {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}@keyframes soilShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* 給動畫時用的 class */
+.falling {
+  animation: bloomFall 1.2s ease-in forwards;
+}
+.rising {
+  animation: seedRise 1s ease-out forwards;
+}
+.shaking {
+  animation: soilShake 0.4s ease-in-out;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+/*=== ===*/
+h2 {
+  color: var(--second-color);
+  font-weight: 600;
+  margin-top: 40px;
+  font-size: 28px;
+  text-align: center;
+   animation-delay: 2s;   /* 延遲 0.2 秒開始 */
+}
+p {
+  color: var(--bg-color);
+  margin-top: 8px;
+  font-size: 16px;
+  text-align: center;
+  animation-delay: 3s;   /* 延遲 0.6 秒開始 */
+}
+h2, p {
+  text-align: center;  /* 兩個都置中 */
+  animation: fadeGrow 4s ease-out forwards;
+}
+
+/* === 園區外框 === */
+.garden-box {
+  position: relative;
+  width: 300px;
+  height: 400px;    /* ⬆️ 多出空間讓按鈕浮出 */
+  margin: 50px auto;
+}
+.garden {
+  position: relative;
+  width: 100%;
+  height: 300px;    /* 土地部分 */
+  background: url('/images/CpnLottery/soil.png') no-repeat center / cover;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+/* === 種子 / 發芽 / 開花 === */
+.seed, .germ, .bloom {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 1s ease, top 1s ease;
+}
+.seed {
+  width: 40px;
+  top: 120px;
+  transition: all 0.8s ease-in-out;
+}
+.germ {
+  display: none;
+  width: 60px;
+  top: 80px;
+  opacity: 0;
+  transition: opacity 1s ease-in;
+}
+.bloom {
+  display: none;
+  width: 80px;
+  top: 60px;
+  opacity: 0;
+  transition: opacity 1s ease-in;
+}
+/* === 按鈕 === */
+.btn-plant {
+  position: absolute;
+  left: 50%;
+  bottom: -30px;              /* ⚡ 按鈕浮出園區底部 */
+  transform: translateX(-50%);
+  background-color: var(--btn-color);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  width: 200px;
+  text-align: center;
+}
+.btn-plant:hover {
+  transform: translateY(-2px);
+   background-color: var(--btn-hover-color);
+}
+.btn-plant:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.btn-plant:disabled {
+  background: #c0c0c0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+

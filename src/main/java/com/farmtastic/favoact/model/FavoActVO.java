@@ -1,7 +1,7 @@
-package com.farmtastic.favopro.model;
+package com.farmtastic.favoact.model;
 
+import com.farmtastic.act.model.Act;
 import com.farmtastic.member.model.Mem;
-import com.farmtastic.pro.model.Pro;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -12,12 +12,12 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "favo_pro")
-public class FavoProVO implements java.io.Serializable {
+@Table(name = "favo_act")
+public class FavoActVO implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	private FavoProId id;
+	private FavoActId id;
 
 	// 關聯到會員
 	@MapsId("memId")
@@ -25,28 +25,28 @@ public class FavoProVO implements java.io.Serializable {
 	@JoinColumn(name = "mem_id", nullable = false)
 	private Mem memVO;
 
-	// 關聯到商品
-	@MapsId("proId")
+	// 關聯到活動
+	@MapsId("actId")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "pro_id", nullable = false)
-	private Pro productVO;
+	@JoinColumn(name = "act_id", nullable = false)
+	private Act actVO;
 
-	public FavoProVO() {
+	public FavoActVO() {
 		super();
 	}
 
-	public FavoProVO(FavoProId id, Mem memVO, Pro productVO) {
+	public FavoActVO(FavoActId id, Mem memVO, Act actVO) {
 		super();
 		this.id = id;
 		this.memVO = memVO;
-		this.productVO = productVO;
+		this.actVO = actVO;
 	}
 
-	public FavoProId getId() {
+	public FavoActId getId() {
 		return id;
 	}
 
-	public void setId(FavoProId id) {
+	public void setId(FavoActId id) {
 		this.id = id;
 	}
 
@@ -58,12 +58,12 @@ public class FavoProVO implements java.io.Serializable {
 		this.memVO = memVO;
 	}
 
-	public Pro getProductVO() {
-		return productVO;
+	public Act getActVO() {
+		return actVO;
 	}
 
-	public void setProductVO(Pro productVO) {
-		this.productVO = productVO;
+	public void setActVO(Act actVO) {
+		this.actVO = actVO;
 	}
 
 }

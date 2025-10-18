@@ -1,166 +1,44 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>🎡 抽獎轉盤</title>
-<style>
-  body {
-    font-family: "Microsoft JhengHei", sans-serif;
-    background: #fff7f0;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-  h1 {
-    margin-top: 40px;
-    color: #333;
-  }
-  .wheel-container {
-    position: relative;
-    display: inline-block;
-    margin-top: 40px;
-  }
-  canvas {
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
-  /* 指針 */
-  .pointer {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 30px solid #e63946;
-  }
-  .btn-use {
-    background: #e63946;
-    color: #fff;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 18px;
-    margin-top: 20px;
-    transition: 0.3s;
-  }
-  .btn-use:hover { background: #d62839; }
-  .result-box {
-    margin-top: 25px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #333;
-    min-height: 30px;
-  }
-</style>
+<title> 播下希望｜小農抽籤活動</title>
+  <!-- 共用樣式 -->
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<link rel="stylesheet" th:href="@{/css/memcpn/lottery.css}">
 </head>
 <body>
-  <h1>🎯 抽獎轉盤活動</h1>
-
-  <div class="wheel-container">
-    <div class="pointer"></div>
-    <canvas id="wheel" width="300" height="300"></canvas>
+  <!--  Loading 畫面 -->
+  <div class="loading" id="loading">
+    <img th:src="@{/svg/taiwan-with-ids2.svg}" alt="logo" />
+    <div class="loading-text" id="loadingText">
+      <span id="textContent">正在接入折價券伺服器</span><span class="ellipsis"></span>
+    </div>
+    <div class="progress-box">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
   </div>
-
-  <div>
-    <button id="spinBtn" class="btn-use">開始抽獎</button>
+ <!-- 主內容外層要有 container -->
+  <div class="container container-main">
+  <h2>小農成長故事</h2>
+  <p>每一顆種子，都是希望的開始。</p>
+</div>
+<div class="garden-box">
+  <div class="garden">
+    <img th:src="@{/images/CpnLottery/seed.png}" alt="seed" class="seed" id="seed">
+    <img th:src="@{/images/CpnLottery/gram.png}" alt="germ" class="germ" id="germ">
+    <img alt="bloom" class="bloom" id="bloom">
   </div>
-
-  <div class="result-box" id="resultMsg">祝你好運 🍀</div>
-
-  <script>
-    const canvas = document.getElementById("wheel");
-    const ctx = canvas.getContext("2d");
-    const center = { x: 150, y: 150 };
-    const sections = 6;
-    const colors = ["#f4a261", "#e76f51", "#e9c46a", "#2a9d8f", "#264653", "#9d4edd"];
-    const texts = ["謝謝參加", "折100", "折200", "再接再厲", "折50", "中獎！"];
-
-    let currentAngle = 0;
-    let spinning = false;
-
-    // 畫轉盤
-    function drawWheel() {
-      const angleStep = (2 * Math.PI) / sections;
-      for (let i = 0; i < sections; i++) {
-        ctx.beginPath();
-        ctx.moveTo(center.x, center.y);
-        ctx.arc(center.x, center.y, 140, i * angleStep, (i + 1) * angleStep);
-        ctx.fillStyle = colors[i];
-        ctx.fill();
-        ctx.save();
-        ctx.translate(center.x, center.y);
-        ctx.rotate(i * angleStep + angleStep / 2);
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 16px Microsoft JhengHei";
-        ctx.textAlign = "right";
-        ctx.fillText(texts[i], 130, 8);
-        ctx.restore();
-      }
-
-      // 中心圓
-      ctx.beginPath();
-      ctx.arc(center.x, center.y, 40, 0, 2 * Math.PI);
-      ctx.fillStyle = "#fff";
-      ctx.fill();
-      ctx.fillStyle = "#e63946";
-      ctx.font = "bold 18px Microsoft JhengHei";
-      ctx.textAlign = "center";
-      ctx.fillText("GO!", center.x, center.y + 6);
-    }
-
-    drawWheel();
-
-    // 旋轉動畫
-    function spinWheel() {
-      if (spinning) return; // 防止重複點擊
-      spinning = true;
-
-      const spinTime = 2000; // 動畫時間（毫秒）
-      const start = performance.now();
-      const spinSpeed = Math.random() * 5 + 6; // 初始速度
-
-      function animate(now) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / spinTime, 1);
-        currentAngle += spinSpeed * (1 - progress); // 漸慢
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.save();
-        ctx.translate(center.x, center.y);
-        ctx.rotate(currentAngle);
-        ctx.translate(-center.x, -center.y);
-        drawWheel();
-        ctx.restore();
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          callBackend();
-        }
-      }
-      requestAnimationFrame(animate);
-    }
-
-    async function callBackend() {
-      try {
-    	// 向後端發出 HTTP 請求
-        const res = await fetch("/mem/spin/coupons", { method: "POST" });
-        //const texts
-    	const msg = await res.text();
-        document.getElementById("resultMsg").textContent = msg;
-        //轉盤鎖定 狀態解除
-        spinning = false;
-      } catch (e) {
-        document.getElementById("resultMsg").textContent = "⚠️ 伺服器連線失敗";
-        spinning = false;
-      }
-    }
-
-    document.getElementById("spinBtn").addEventListener("click", spinWheel);
-  </script>
+<button class="btn-plant" id="plantBtn">🌾 播種開始</button>
+</div>
+<!--  Footer 區 -->
+<div th:replace="~{/front_end/index :: footer}"></div>
+<!--  SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+  window.BASE_IMG_PATH = /*[[@{/images/CpnLottery/}]]*/ "";
+</script>
+<!--  外部 JS  -->
+<script th:src="@{/js/memcpn/lottery.js}"></script>
 </body>
 </html>

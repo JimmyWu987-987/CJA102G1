@@ -18,8 +18,9 @@ import com.farmtastic.member.model.Mem;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+//收藏商品與活動 寫在這
 @Controller
-@RequestMapping("/mem/favopro")
+@RequestMapping("/mem/favo")
 public class FavoProController {
 	@Autowired
 	FavoProServiceImp favoProSvc;
