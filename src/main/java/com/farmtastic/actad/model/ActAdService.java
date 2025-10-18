@@ -46,14 +46,14 @@ public class ActAdService {
     	if (actAdId == null) return null;
 		Optional<ActAdVO> optional = repository.findById(actAdId);
 //		return optional.get();
-		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
+		return optional.orElse(null);
 	}	
 	
     //管理員審核頁面(審核通過，繳費期限加七天)
     @Transactional
     public void updateStatus(Integer actAdId, Integer revStat, String remark) {
         // 取得該廣告
-        ActAdVO actAdVO = repository.getById(actAdId);
+    	ActAdVO actAdVO = repository.findById(actAdId).orElseThrow();
         actAdVO.setActAdRevStat(revStat);
         actAdVO.setActAdRevRemark(remark);
         actAdVO.setActAdRevUpd(Timestamp.from(java.time.Instant.now()));
@@ -68,7 +68,7 @@ public class ActAdService {
     @Transactional
 	public void updateActAd(Integer actAdId ,byte[] adImg, Integer actAdRevStat, String actAdRemark, Integer actAdLaunStat,
 			Date actAdStart,Date actAdEnd,Integer actAdFee, Date actAdFeeEnd) {
-		ActAdVO actAdVO = repository.getById(actAdId);
+    	ActAdVO actAdVO = repository.findById(actAdId).orElseThrow();
 		actAdVO.setActAdImg(adImg);
 		actAdVO.setActAdRevStat(actAdRevStat);
 		actAdVO.setActAdRevUpd(Timestamp.from(java.time.Instant.now()));

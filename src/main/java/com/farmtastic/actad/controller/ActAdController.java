@@ -20,11 +20,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.act.model.Act;
 import com.farmtastic.actad.model.ActAdService;
 import com.farmtastic.actad.model.ActAdVO;
 import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.proad.model.ProAdVO;
 import com.farmtastic.redis.verification.MailService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,12 +87,48 @@ public class ActAdController {
     @PostMapping("/admin/actAd/reviewActAd")
     public String reviewActAd(@RequestParam Integer actAdId,
                               @RequestParam String remark,
-                              @RequestParam String action) {
+                              @RequestParam String action,
+                              RedirectAttributes redirectAttributes) {
 
         int status = "pass".equals(action) ? 4 : 3; // 4=待繳費, 3=不通過
-
         actAdService.updateStatus(actAdId, status, remark);
+        // ====== 以下為寄信通知 ======
+        try {
+            // 取得小農資料
+            ActAdVO actAd = actAdService.getOneActAd(actAdId);
+            Fmem fmem = actAd.getFmem();
+            if (fmem != null && fmem.getFmemEmail() != null) {
+                String to = fmem.getFmemEmail();
+                String name = (fmem.getFmemName() == null) ? "小農" : fmem.getFmemName();
 
+                String subject;
+                String content;
+
+                if (status == 4) { // 通過
+                    subject = "【Farmtastic】您的活動廣告已審核通過（待繳費）";
+                    content = "親愛的 " + name + " 您好：\n\n"
+                            + "您申請的活動廣告已審核通過，狀態為「待繳費」。\n"
+                            + "審核備註：" + (remark == null ? "（無）" : remark) + "\n"
+                            + "請於期限內完成付款，謝謝您的配合！\n\n"
+                            + "Farmtastic 小農平台 敬上";
+                } else { // 未通過
+                    subject = "【Farmtastic】您的商品廣告未通過審核";
+                    content = "親愛的 " + name + " 您好：\n\n"
+                            + "很抱歉，您申請的商品廣告此次未通過審核。\n"
+                            + "審核備註：" + (remark == null ? "（無）" : remark) + "\n"
+                            + "若需協助或想了解原因，請回覆此信，我們將協助您改善。\n\n"
+                            + "Farmtastic 小農平台 敬上";
+                }
+
+                // 寄出信件（使用你現有的 MailService）
+                mailService.sendMail(to, subject, content);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // 寄信失敗不影響流程
+        }
+        
+        
+        redirectAttributes.addFlashAttribute("success", "審核完成");
         return "redirect:/admin/actAd/list";
     }
     
@@ -112,7 +150,8 @@ public class ActAdController {
     						  @RequestParam Integer actAdFee, 
     						  @RequestParam String actAdStart,
     						  @RequestParam String actAdEnd,
-    						  @RequestParam String actAdFeeEnd
+    						  @RequestParam String actAdFeeEnd,
+    						  RedirectAttributes redirectAttributes
     						  ) throws IOException {
     
     	java.sql.Date Start = (actAdStart == null || actAdStart.isBlank())
@@ -128,7 +167,15 @@ public class ActAdController {
     	        : java.sql.Date.valueOf(actAdFeeEnd); 
     	
     	
-    	byte[] adImg = file.getBytes();
+    	byte[] adImg;
+
+    	if (file != null && !file.isEmpty()) {
+    	    adImg = file.getBytes();
+    	} else {
+    	    adImg = actAdService.getOneActAd(actAdId).getActAdImg();
+    	}
+    	
+    	redirectAttributes.addFlashAttribute("success", "修改完成");
     	actAdService.updateActAd(actAdId, adImg ,actAdRevStat,actAdRevRemark,actAdLaunStat,Start,End,actAdFee,feeEnd);
     	return "redirect:/admin/actAd/list";
     }

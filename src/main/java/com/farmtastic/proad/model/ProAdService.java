@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.farmtastic.actad.model.ActAdVO;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemRepository;
 import com.farmtastic.pro.model.Pro;
@@ -48,7 +49,7 @@ public class ProAdService {
     	if (proAdId == null) return null;
 		Optional<ProAdVO> optional = repository.findById(proAdId);
 //		return optional.get();
-		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
+		return optional.orElse(null); 
 	}
     
     
@@ -70,7 +71,7 @@ public class ProAdService {
     @Transactional
 	public void updateProAd(Integer proAdId ,byte[] adImg, Integer proAdRevStat, String proAdRemark, Integer proAdLaunStat,
 			Date proAdStart,Date proAdEnd,Integer proAdFee, Date proAdFeeEnd) {
-		ProAdVO proAdVO = repository.getById(proAdId);
+		ProAdVO proAdVO = repository.findById(proAdId).orElseThrow();
 		proAdVO.setProAdImg(adImg);
 		proAdVO.setProAdRevStat(proAdRevStat);
 		proAdVO.setProAdRevUpd(Timestamp.from(java.time.Instant.now()));
@@ -114,7 +115,6 @@ public class ProAdService {
 		proAdVO.setProAdLaunStat(1);
 		proAdVO.setProAdLaunUpd(Timestamp.from(java.time.Instant.now()));
 		proAdVO.setProAdFeeEnd(null);
-		
 	}
 	
     
@@ -152,8 +152,8 @@ public class ProAdService {
         return productRepository.getReferenceById(proId);
     }
     
-    @Transactional(readOnly = true)
     // 取得條件符合的商品廣告
+    @Transactional(readOnly = true)
     public List<Integer> getPassProAds() {
     	return repository.findPassedAds();
     }

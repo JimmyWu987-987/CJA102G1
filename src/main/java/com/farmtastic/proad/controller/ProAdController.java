@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.proad.model.ProAdService;
@@ -94,12 +95,49 @@ public class ProAdController {
     @PostMapping("admin/proAd/reviewProAd")
     public String reviewProAd(@RequestParam Integer proAdId,
                               @RequestParam String remark,
-                              @RequestParam String action) {
+                              @RequestParam String action,
+                              RedirectAttributes redirectAttributes) {
 
         int status = "pass".equals(action) ? 4 : 3; // 4=待繳費, 3=不通過
-
         proAdService.updateStatus(proAdId, status, remark);
+        // ====== 以下為寄信通知 ======
+        try {
+            // 取得小農資料
+            ProAdVO proAd = proAdService.getOneProAd(proAdId);
+            Fmem fmem = proAd.getFmem();
+            if (fmem != null && fmem.getFmemEmail() != null) {
+                String to = fmem.getFmemEmail();
+                String name = (fmem.getFmemName() == null) ? "小農" : fmem.getFmemName();
 
+                String subject;
+                String content;
+
+                if (status == 4) { // 通過
+                    subject = "【Farmtastic】您的商品廣告已審核通過（待繳費）";
+                    content = "親愛的 " + name + " 您好：\n\n"
+                            + "您申請的商品廣告已審核通過，狀態為「待繳費」。\n"
+                            + "審核備註：" + (remark == null ? "（無）" : remark) + "\n"
+                            + "請於期限內完成付款，謝謝您的配合！\n\n"
+                            + "Farmtastic 小農平台 敬上";
+                } else { // 未通過
+                    subject = "【Farmtastic】您的商品廣告未通過審核";
+                    content = "親愛的 " + name + " 您好：\n\n"
+                            + "很抱歉，您申請的商品廣告此次未通過審核。\n"
+                            + "審核備註：" + (remark == null ? "（無）" : remark) + "\n"
+                            + "若需協助或想了解原因，請回覆此信，我們將協助您改善。\n\n"
+                            + "Farmtastic 小農平台 敬上";
+                }
+
+                // 寄出信件（使用你現有的 MailService）
+                mailService.sendMail(to, subject, content);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // 寄信失敗不影響流程
+        }
+        
+        
+        
+        redirectAttributes.addFlashAttribute("success", "審核完成");
         return "redirect:/admin/proAd/list";
     }
     
@@ -122,7 +160,8 @@ public class ProAdController {
     						  @RequestParam Integer proAdFee, 
     						  @RequestParam String proAdStart,
     						  @RequestParam String proAdEnd,
-    						  @RequestParam String proAdFeeEnd
+    						  @RequestParam String proAdFeeEnd,
+    						  RedirectAttributes redirectAttributes
     						  ) throws IOException {
     
     	java.sql.Date Start = (proAdStart == null || proAdStart.isBlank())
@@ -137,8 +176,15 @@ public class ProAdController {
     	        ? null
     	        : java.sql.Date.valueOf(proAdFeeEnd); 
     	
-    	
-    	byte[] adImg = file.getBytes();
+
+    	byte[] adImg;
+
+    	if (file != null && !file.isEmpty()) {
+    	    adImg = file.getBytes();
+    	} else {
+    	    adImg = proAdService.getOneProAd(proAdId).getProAdImg();
+    	}
+    	redirectAttributes.addFlashAttribute("success", "修改完成");
     	proAdService.updateProAd(proAdId, adImg ,proAdRevStat,proAdRevRemark,proAdLaunStat,Start,End,proAdFee,feeEnd);
     	return "redirect:/admin/proAd/list";
     }
@@ -300,7 +346,6 @@ public class ProAdController {
                                 @RequestParam Integer proAdId,
                                 Model model) {
     	
-        // TODO: 可在此更新 proAd 狀態 → 已繳費
     	ProAdVO proAdVO = proAdService.getOneProAd(proAdId);
     	model.addAttribute("proAdVO", proAdVO);
     	proAdService.updatePayAd(proAdVO);
