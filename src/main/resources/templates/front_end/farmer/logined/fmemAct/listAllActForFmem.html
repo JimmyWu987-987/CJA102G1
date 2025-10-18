@@ -104,6 +104,7 @@
 				<th>活動狀態</th>
 				<th>活動審核備註</th>
 				<th>活動上下架狀態</th>
+				<th>活動評價</th>
 				<th>操作</th>
             </tr>
 		</thead>
@@ -118,11 +119,14 @@
 				<td th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></td>
 				<td th:text="${act.actFee}"></td>
 				<td th:text="${act.actStatText}"></td>
-				<td th:text="${act.actRemark}"></td>
+				<td th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></td>
 				<td th:text="${act.actLaunStatText}"></td>
+				<td th:text="${act.actCnt != null && act.actCnt > 0 ?
+              #numbers.formatDecimal(act.actScore / act.actCnt, 1, 1) + ' 顆星 (' + act.actCnt + ' 筆評價)' :
+              '尚無評價'}"></td>
 				
 				<td>
-					<a class="btn" th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>
+					<a class="btn" th:href="@{/fmem/act/detail/{id}(id=${act.actId})}">查看活動詳細資訊</a>
 				</td>
 				
 			</tr>

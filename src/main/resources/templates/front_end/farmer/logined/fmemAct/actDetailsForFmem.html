@@ -34,6 +34,11 @@
     </div>
 <div class="act-info">
 <div class="act-details">
+	<p><strong>活動評價：</strong>
+    <span th:if="${act.actCnt != null and act.actCnt > 0}"
+          th:text="${#numbers.formatDecimal(act.actScore / act.actCnt, 1, 1)} + ' 顆星 (' + ${act.actCnt} + ' 筆評價)'"></span>
+    <span th:if="${act.actCnt == null or act.actCnt == 0}">尚無評價</span>
+	</p><br>
     <p><strong>活動日期:</strong> <span th:text="${act.actStart} + ' ~ ' + ${act.actEnd}"></span></p><br>
     <p><strong>活動基本價:</strong> <span th:text="${act.actFee}"></span> 元</p><br>
     <p><strong>分類:</strong>
@@ -59,7 +64,7 @@
                     <th>報名費用</th>
                     <th>可參加人數</th>
                     <th>報名截止日期</th>
-                    <th>進行報名</th>
+                    <th>已報名人數</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,9 +74,7 @@
                     <td th:text="${ses.sesFee}" ></td>
                     <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
                     <td th:text="${#dates.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
-                    <td>
-                        <a th:href="@{'#'}" class="btn btn-primary">我要報名</a>  <!-- # 塞報名表單的路徑 -->
-                    </td>
+                    <td th:text="${#numbers.sum(ses.reg.![regCount])}">0</td>
                 </tr>
             </tbody>
         </table>
