@@ -25,7 +25,6 @@ public class SpinController {
 	// 顯示轉盤頁面
 	@GetMapping
 	public String showSpinPage() {
-		System.out.println("✅ 已進入 showSpinPage()");
 		return "front_end/customer/logined/memcpn/Spin";
 	}
 

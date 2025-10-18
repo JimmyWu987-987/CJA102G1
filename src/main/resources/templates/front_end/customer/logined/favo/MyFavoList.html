@@ -90,9 +90,9 @@
 	           th:classappend="${message.contains('成功') ? 'message success' : 'message error'}"
 	           th:text="${message}">
 	      </div>
-	  <!--  收藏清單卡片 -->
-	      <div class="favo-list" th:if="${!#lists.isEmpty(favorites)}">
-	        <div th:each="favo : ${favorites}" class="favo-card" th:fragment="example">
+	  <!--  商品收藏清單卡片 -->
+	      <div class="favo-list" th:if="${!#lists.isEmpty(favoProList)}">
+	        <div th:each="favo : ${favoProList}" class="favo-card" th:fragment="example">
 	
 	          <!-- 圖片區 -->
 	          <img th:src="@{${favo.productVO.proImage}}" alt="商品圖片" class="favo-img">
@@ -104,9 +104,9 @@
 	
 	            <div class="favo-actions">
 	              <a th:href="@{/mall/product/{id}(id=${favo.productVO.proId})}" class="btn-view">查看商品</a>
-	              <form th:action="@{/mem/favopro/remove}" method="post" style="margin:0;">
+	              <form th:action="@{/mem/favo/removeFavoPro}" method="post" style="margin:0;">
 	                <input type="hidden" name="proId" th:value="${favo.productVO.proId}" />
-	                <button type="submit" class="btn-remove">取消收藏</button>
+	                <button type="submit" class="btn-remove">取消商品收藏</button>
 	              </form>
 	            </div>
 	          </div>
