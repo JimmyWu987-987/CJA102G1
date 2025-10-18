@@ -448,10 +448,7 @@ public class ProOrderMemController {
 			// 如果沒有暫存訂單，直接導回購物車
 			return "redirect:/cart/view";
 		}
-		// ==============會員點數錯誤驗證==============
-		// 將 finalProOrderVO 重新放回 Model，以便在驗證失敗時，其他訂單資訊能被保留
-		// 雖然這個請求最終是 redirect，但為了在發生錯誤時能直接 return 頁面，我們先放
-		model.addAttribute("cartToProOrder", finalProOrderVO);
+		// ==============會員點數錯誤驗證=============
 
 		Integer tempPointdisc = 0; // 用於儲存有效的點數折抵值
 
