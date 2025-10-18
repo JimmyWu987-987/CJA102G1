@@ -363,7 +363,7 @@ public class ProOrderMemController {
 			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！0元購買算你狠！！！");
 			return "redirect:/mem/proorders/listAllProOrder";
 		}
-
+	
 		// 取得新增訂單後的 proOrdId
 		Integer newProOrdId = proOrderVO.getProOrdId();
 
