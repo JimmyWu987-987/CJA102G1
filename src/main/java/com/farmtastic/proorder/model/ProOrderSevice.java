@@ -119,6 +119,7 @@ public class ProOrderSevice {
 	// ====================================訂單一般會員前台使用====================================
 	// 確定將訂單加入到DB的邏輯
 	// @PostMapping("insert") 專用
+	@Transactional
 	public void finalCheckOrder(ProOrderVO proOrderVO) {
 		if (proOrderVO.getProOrdCpndisc() == null) {
 			proOrderVO.setProOrdCpndisc(0);
@@ -158,6 +159,15 @@ public class ProOrderSevice {
 		// 平台撥款給小農的金額
 		Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
 		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+		
+		// 假設總金額為0, 設定成未付款。
+		// 前台會顯 0元購買
+		if (proOrderVO.getProOrdGrandTotal() == 0) {
+			// 0元購買
+			proOrderVO.setProPayStatus((byte) 2);
+			// 0元購買
+			proOrderVO.setProOrdPayment((byte) 2);
+		}
 
 		// 設定關聯和明細
 		Integer memId = proOrderVO.getMemVO().getMemId();

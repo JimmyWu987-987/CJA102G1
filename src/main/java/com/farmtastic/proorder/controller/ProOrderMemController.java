@@ -275,8 +275,8 @@ public class ProOrderMemController {
 //		proOrderVO.setProOrdShipFee(sessionOrder.getProOrdShipFee());
 
 		proOrdSvc.finalCheckOrder(proOrderVO);
-		
-		if(finalItems != null) {
+
+		if (finalItems != null) {
 			proOrderVO.setProOrderItems(finalItems);
 		} else {
 			System.err.println("新增訂單失敗：讀取不到訂單明細！");
@@ -299,7 +299,7 @@ public class ProOrderMemController {
 			}
 
 		} catch (Exception e) {
-	
+
 			System.err.println("新增訂單失敗：" + "e.getMessage()");
 			model.addAttribute("errorMessage", "新增訂單失敗！請聯絡系統管理員！" + e.getMessage());
 			model.addAttribute("memVO", loggedInMember);
@@ -321,10 +321,49 @@ public class ProOrderMemController {
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
 
+		// ================== 會員點數新增修改的邏輯 ======================
+		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
+		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
+		Integer memPointDisc = proOrderVO.getProOrdPointdisc();
+		Integer memPointGet = proOrderVO.getProOrdPointGet();
+		Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
+		loggedInMember.setMemPoint(finalMemPoint);
+
+		// 將最終點數結果，存回DB
+		memSvc.updateMem(loggedInMember);
+		// 更新網頁會員的session的資料
+		session.setAttribute("loggedInMember", loggedInMember);
+
+		// ================== 折價卷修改狀態 ======================
+		if (proOrderVO.getMemProCpnVO() != null) {
+			try {
+				MemProCpnVO updateMpc = mpcSvc.getOne(proOrderVO.getMemProCpnVO().getCpnHolderDetailId());
+				// 設定已經使用該折價券
+				updateMpc.setCpnUseStatus(CpnUseStatus.USED);
+				// 將最終點數結果，存回DB
+				mpcSvc.updateMemProCpn(updateMpc);
+			} catch (Exception e) {
+				// 記錄錯誤但不影響訂單流程
+				System.err.println("更新優惠券狀態失敗: " + e.getMessage());
+			}
+		}
+
 		// ===================== 清除 該訂單的購物車內容 =====================
 		proOrdSvc.insertOrderCleanCart(proOrderVO);
 
 		// ================= 根據付款不同導向不同頁面 ==================
+		
+		// 0元購買，直接新增訂單
+		if (proOrderVO.getProPayStatus() == 2 && proOrderVO.getProOrdPayment() == 2) {
+			
+			// 清除 Session 相關屬性
+			session.removeAttribute("cartToProOrder");
+			session.removeAttribute("proOrdIdByPay");
+			
+			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！0元購買算你狠！！！");
+			return "redirect:/mem/proorders/listAllProOrder";
+		}
+
 		// 取得新增訂單後的 proOrdId
 		Integer newProOrdId = proOrderVO.getProOrdId();
 
@@ -362,34 +401,6 @@ public class ProOrderMemController {
 			proOrderVO.setProPayStatus((byte) 1);
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
-
-		// ================== 會員點數新增修改的邏輯 ======================
-		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
-		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
-		Integer memPointDisc = proOrderVO.getProOrdPointdisc();
-		Integer memPointGet = proOrderVO.getProOrdPointGet();
-		Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
-		loggedInMember.setMemPoint(finalMemPoint);
-
-		// 將最終點數結果，存回DB
-		memSvc.updateMem(loggedInMember);
-
-		// ================== 折價卷修改狀態 ======================
-		if (proOrderVO.getMemProCpnVO() != null) {
-			try {
-				MemProCpnVO updateMpc = mpcSvc.getOne(proOrderVO.getMemProCpnVO().getCpnHolderDetailId());
-				// 設定已經使用該折價券
-				updateMpc.setCpnUseStatus(CpnUseStatus.USED);
-				// 將最終點數結果，存回DB
-				mpcSvc.updateMemProCpn(updateMpc);
-			} catch (Exception e) {
-				// 記錄錯誤但不影響訂單流程
-				System.err.println("更新優惠券狀態失敗: " + e.getMessage());
-			}
-		}
-
-		// 更新網頁會員的session的資料
-		session.setAttribute("loggedInMember", loggedInMember);
 
 		// 清除 Session 相關屬性
 		session.removeAttribute("cartToProOrder");
@@ -521,7 +532,9 @@ public class ProOrderMemController {
 
 		// 3. 處理負數、超過持有/超過最高可折抵金額
 		// 可用來折抵的最高金額 (商品總金額 - 折價券折抵)
-		Integer maxDiscAmount = proTotal - pointCpndisc - finalMpcDisc;
+		Integer tempGrandTotal = finalProOrderVO.getProOrdGrandTotal();
+		Integer maxDiscAmount = tempPointdisc + finalMpcDisc;
+		Integer checkGrandTotal = tempGrandTotal - maxDiscAmount;
 
 		if (tempPointdisc < 0) {
 			model.addAttribute("pointDiscError", "折抵點數不能是負數。");
@@ -529,16 +542,13 @@ public class ProOrderMemController {
 		} else if (tempPointdisc > memPoint) {
 			model.addAttribute("pointDiscError", "您的折抵點數 (" + tempPointdisc + ") 超過您持有的總點數 (" + memPoint + ")。");
 			hasError = true;
-		} else if (tempPointdisc > maxDiscAmount && tempPointdisc != 0) {
-			model.addAttribute("pointDiscError", "折抵點數不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
+		} else if (checkGrandTotal < 0 && tempPointdisc != 0) {
+			model.addAttribute("pointDiscError", "折抵點數不能超過實付金額 ($" + tempGrandTotal + ")。");
 			hasError = true;
 		}
 
-		if (tempMpcDisc < 0) {
-			model.addAttribute("cpnError", "折價劵折抵金額不能是負數。");
-			hasError = true;
-		} else if (tempMpcDisc > maxDiscAmount && tempPointdisc != 0) {
-			model.addAttribute("cpnError", "折價劵折抵金額不能超過\"商品\"實付金額 ($" + maxDiscAmount + ")。");
+		if (finalMpcDisc != 0 && (checkGrandTotal < 0 && tempPointdisc == 0)) {
+			model.addAttribute("cpnError", "折價劵折抵金額不能超過實付金額 ($" + tempGrandTotal + ")。");
 			hasError = true;
 		}
 
