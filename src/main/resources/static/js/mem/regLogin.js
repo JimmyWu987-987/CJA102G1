@@ -107,6 +107,40 @@ function switchInputError(inputElement, displayValue){
 	}
 }
 
+// 登入：欄位有輸入資料時，隱藏錯誤訊息(帳號和密碼的錯誤訊息是合在一起的)
+let inputLoginElements = document.querySelectorAll('#login ul input');
+inputLoginElements.forEach(inputLoginElement => {
+	inputLoginElement.addEventListener('input', function(){
+		if(inputLoginElement.value.trim()){
+			switchInputLoginError(inputLoginElement, 'none');
+		} else {
+			switchInputLoginError(inputLoginElement, 'inline-block');
+		}
+	})
+});
+
+
+function switchInputLoginError(inputElement, displayValue){
+	let errorElement = inputElement.closest('#login').querySelector('.error');
+	if(errorElement){
+		errorElement.style.display = displayValue;
+	}
+	
+	// 因為兩個input欄位(zipcode和addr)放在同一個li底下，要另外寫
+	if(inputElement.classList.contains('zipcode')){
+		let errorZipcodeElement = inputElement.closest('li').querySelector('.error-zipcode');
+		if(errorZipcodeElement){
+			errorZipcodeElement.style.display = displayValue;					
+		}
+	}
+	if(inputElement.classList.contains('addr')){
+		let errorAddrElement = inputElement.closest('li').querySelector('.error-addr');
+		if(errorAddrElement){
+			errorAddrElement.style.display = displayValue;				
+		}
+	}
+}
+
 
 
 // ------------------------切換登入/註冊-----Start-------------------

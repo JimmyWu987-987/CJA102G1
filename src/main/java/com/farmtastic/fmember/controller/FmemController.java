@@ -2,7 +2,10 @@ package com.farmtastic.fmember.controller;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -951,10 +955,15 @@ public class FmemController{
 	
 	
 	@PostMapping("/login")
-	public String login(LoginRequest loginRequest, HttpSession session, ModelMap model) {
+	public String login(
+			LoginRequest loginRequest, 
+			BindingResult result,
+			HttpSession session, 
+			ModelMap model) {
 		
 		String fmemAccLogin = loginRequest.getFmemAccLogin();
 		String fmemPwdLogin = loginRequest.getFmemPwdLogin();
+		model.addAttribute("fmem", new Fmem());
 		
 		// 1.基本欄位驗證 
 		if(fmemAccLogin == null || fmemAccLogin.trim().isEmpty()) {
@@ -975,15 +984,52 @@ public class FmemController{
 		
 		// 2.呼叫service進行登入驗證
 		try {
-			Fmem fmem = fmemSvc.login(fmemAccLogin, fmemPwdLogin);
+			Fmem fmem = fmemSvc.getOneByFmemAcc(fmemAccLogin);
 			
+			// 先檢查帳號是否存在
 			if(fmem == null) {
-				model.addAttribute("loginError", "帳號或密碼錯誤");
+				model.addAttribute("loginError", "帳號或密碼錯誤"); //查無此帳號
 				model.addAttribute("loginRequest", loginRequest);
 				model.addAttribute("fmem", new Fmem());
 				model.addAttribute("activeTab", "login");  //標記目前所在頁籤
+				System.out.println("fmem == null***");
 				return "front_end/farmer/unlogined/fmemRegLogin";
 			}
+			
+			// 如果帳號已被鎖定
+			if(fmem.getLockTime() != null) {
+				long diff = Duration.between(fmem.getLockTime().toInstant(), Instant.now()).toMinutes(); //無條件捨去小數部分
+				if(diff < 10) {
+					model.addAttribute("loginError", "帳號已鎖定，請稍後再試（剩餘 " + (10 - diff) + " 分鐘）");
+					return "front_end/farmer/unlogined/fmemRegLogin";
+				} else { //超過10分鐘 自動解鎖
+					fmem.setLockTime(null);
+					fmem.setFailAttempts(0);
+					fmemSvc.updateFmem(fmem);
+				}
+			}
+			
+			// 檢查密碼是否正確
+			if(!fmem.getFmemPwd().equals(fmemPwdLogin)) {
+				int newAttempts = fmem.getFailAttempts() + 1;
+				fmem.setFailAttempts(newAttempts);
+				
+				if(newAttempts >= 5) {
+					fmem.setLockTime(new Timestamp(System.currentTimeMillis()));
+				}
+				fmemSvc.updateFmem(fmem);
+				
+				model.addAttribute("loginError", "帳號或密碼錯誤");
+				return "front_end/farmer/unlogined/fmemRegLogin";
+			}
+			
+			// 帳號狀態檢查
+			if((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
+				model.addAttribute("loginError", "帳號尚未通過審核或已被停權");
+				return "front_end/farmer/unlogined/fmemRegLogin";
+			}
+			
+			
 			
 			// 3.登入成功，把會員資料存進session
 			model.addAttribute("loggedInFmember", fmem); //@SessionAttributes會自動幫我存進session

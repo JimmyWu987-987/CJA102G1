@@ -75,7 +75,9 @@ CREATE TABLE fmem (
 	act_score int DEFAULT NULL,
 	act_cnt int DEFAULT NULL,
 	rpt_cnt tinyint DEFAULT NULL,
-	prod_fee int DEFAULT NULL
+	prod_fee int DEFAULT NULL,
+    fail_attempts int NOT NULL DEFAULT 0,
+	lock_time datetime DEFAULT NULL
 );
 
 INSERT INTO fmem (f_id, fmem_acc, fmem_pwd, acc_status, acc_desc, fmem_name, fmem_mobile, fmem_tel, fmem_email,

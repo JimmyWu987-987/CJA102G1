@@ -15,27 +15,35 @@ public class FmemService {
 	@Autowired
 	FmemRepository repository;
 	
-	@Autowired
-	private SessionFactory sessionFactory;
+//	@Autowired
+//	private SessionFactory sessionFactory;
 	
-	public Fmem login(String fmemAccLogin, String fmemPwdLogin) {
-		
-		Fmem fmem = repository.findByFmemAcc(fmemAccLogin);
-		
-		if(fmem == null) {
-			return null;
-		}
-		
-		if(!fmem.getFmemPwd().equals(fmemPwdLogin)) {
-			return null;
-		}
-		
-		if((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
-			throw new IllegalStateException("帳號尚未通過審核或已被停權");
-		}
-		
-		return fmem;
-	}
+//	public Fmem login(String fmemAccLogin, String fmemPwdLogin) {
+//		
+//		Fmem fmem = repository.findByFmemAcc(fmemAccLogin);
+//		
+//		if(fmem == null) {
+//			return null;
+//		}
+//		
+//		if(!fmem.getFmemPwd().equals(fmemPwdLogin)) {
+//			int newAttempts = fmem.getFailAttempts() + 1;
+//			fmem.setFailAttempts(newAttempts);
+//			
+//			if(newAttempts >= 5) {
+//				fmem.setLockTime(new Date());
+//			}
+//			repository.save(fmem);
+//			
+//			return null;
+//		}
+//		
+//		if((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
+//			throw new IllegalStateException("帳號尚未通過審核或已被停權");
+//		}
+//		
+//		return fmem;
+//	}
 	
 	
 	public boolean existsByFmemAcc(String fmemAcc) {
