@@ -7,9 +7,9 @@ public interface ProComByFmemIdDTO {
 	Integer getFmemId();
 	Integer getProComId();
 	Integer getProId();
-	Integer getMemoId();
-	Integer getProComContent();
-	Date getProComRime();
+	Integer getMemId();
+	String getProComContent();
+	Date getProComTime();
 	Byte getProComRate();
 	
 }

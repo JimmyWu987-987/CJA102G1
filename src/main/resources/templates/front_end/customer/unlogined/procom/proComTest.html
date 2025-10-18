@@ -6,6 +6,97 @@
 </head>
 <body>
 	<h1>這是一個商品評論功能測試</h1>
+	<form th:action="@{countProRate}" method="get">
+		<input type="submit" value=產品編號的總分數> <input type="hidden"
+			name="proId" value="1">
+	</form>
+	<form th:action="@{countFmemRate}" method="get">
+		<input type="submit" value=小農的總分數> <input type="hidden"
+			name="fmemId" value="1">
+	</form>
+	<h1>產品編號的總分數</h1>
+	<h1 th:text=${countPro}></h1>
+	<h1>小農的總分數</h1>
+	<h1 th:text=${countFmemRate}></h1>
+	<h1>小農的總評論數</h1>
+	<h1 th:text=${countFmemCom}></h1>
+
+	<form th:action="@{getAll}" method="get">
+		<input type="submit" value=查全部評論>
+	</form>
+
+	<form th:action="@{getOneByMemId}" method="get">
+		<input type="submit" value=查詢該一般會員> <input type="hidden"
+			name="memId" value="1">
+	</form>
+
+	<form th:action="@{getOneByFmemId}" method="get">
+		<input type="submit" value=查詢該小農會員> <input type="hidden"
+			name="fmemId" value="1">
+	</form>
+
+	<div th:if="${#lists.isEmpty(proComList)}">
+		<p>目前沒有任何訂單資料。</p>
+	</div>
+
+	<div th:unless="${#lists.isEmpty(proComList)}">
+		<table border="1">
+			<thead>
+				<tr>
+					<th>評論編號</th>
+					<th>商品編號</th>
+					<th>一般會員編號</th>
+					<th>評論內容</th>
+					<th>評論時間</th>
+					<th>商品評分</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="proComVO : ${proComList}">
+					<td th:text="${proComVO.proComId}"></td>
+					<td th:text="${proComVO.proVO.proId}"></td>
+					<td th:text="${proComVO.memVO.memId}"></td>
+					<td
+						th:text="${#dates.format(proComVO.proComTime, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01</td>
+					<td th:text="${proComVO.proComContent}"></td>
+					<td th:text="${proComVO.proComRate}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div th:if="${#lists.isEmpty(proComListFmem)}">
+		<p>目前沒有任何訂單資料。</p>
+	</div>
+
+	<div th:unless="${#lists.isEmpty(proComListFmem)}">
+		<table border="1">
+			<thead>
+				<tr>
+					<th>小農編號</th>
+					<th>評論編號</th>
+					<th>商品編號</th>
+					<th>一般會員編號</th>
+					<th>評論內容</th>
+					<th>評論時間</th>
+					<th>商品評分</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="proComVO : ${proComListFmem}">
+					<td th:text="${proComVO.fmemId}"></td>
+					<td th:text="${proComVO.proComId}"></td>
+					<td th:text="${proComVO.proId}"></td>
+					<td th:text="${proComVO.memId}"></td>
+					<td
+						th:text="${#dates.format(proComVO.proComTime, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01</td>
+					<td th:text="${proComVO.proComContent}"></td>
+					<td th:text="${proComVO.proComRate}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
 
 </body>
 </html>
