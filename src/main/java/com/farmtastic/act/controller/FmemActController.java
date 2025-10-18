@@ -229,8 +229,12 @@ public class FmemActController {
         return "front_end/farmer/logined/fmemAct/addAct";
 	}
 	
+	
+	// 額外資料. 關聯資料. 檔案上傳 → @RequestParam !!!!
 	@PostMapping("insert")
-	public String addAct(@Valid @ModelAttribute("act") Act act,
+	public String addAct(@RequestParam("actStart") String actStartStr,
+						 @RequestParam("actEnd") String actEndStr,
+						 @Valid @ModelAttribute("act") Act act,
 						 BindingResult result,
 						 @RequestParam("actMainImg") MultipartFile actMainImg,
 						 @RequestParam(value = "actImgs", required = false) MultipartFile[] actImgs,
@@ -238,15 +242,26 @@ public class FmemActController {
 						 HttpSession session,
 						 Model model,
 						 RedirectAttributes redirectAttributes) throws IOException {
+		
+		// 處理空表單用
+		if (result.hasErrors()) {
+			List<ActCate> allCategories = actCateRepo.findAll();
+		    model.addAttribute("allCategories", allCategories);
+	        return "front_end/farmer/logined/fmemAct/addAct";
+	    }
 
-		// 抓登入中的小農
-		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
-		Integer fmemId = fmem.getFmemId();
-		act.setFmemId(fmemId);
+		// 不是空的再進行以下手動驗證
+		// 先確保為sql的格式不是util的...
+		java.sql.Date actStart = (actStartStr == null || actStartStr.isBlank())
+		        ? null
+		        : java.sql.Date.valueOf(actStartStr);
 
-		// 設定狀態&更新時間
-		act.setActStat(1);	// 待審核
-		act.setActUpd(new Timestamp(System.currentTimeMillis()));
+		java.sql.Date actEnd = (actEndStr == null || actEndStr.isBlank())
+		        ? null
+		        : java.sql.Date.valueOf(actEndStr);
+
+		act.setActStart(actStart);
+		act.setActEnd(actEnd);
 		
 		// 不選分類的驗證
 		if (actCateIds == null || actCateIds.isEmpty()) {
@@ -260,22 +275,28 @@ public class FmemActController {
 		    act.setActCate(cates);
 		}
 		
+		// 開始日期的其他驗證
+//		java.sql.Date actStart = act.getActStart();
 		
-		// 開始日期驗證
-		java.sql.Date actStart = act.getActStart();
-		java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
-		if (actStart != null && actStart.before(after45)) {
-			result.rejectValue("actStart", null, "考慮到審核作業時間及消費者報名時間, 請選擇 45 天之後的日期。");
+		if (act.getActStart() == null) {
+		    result.rejectValue("actStart", null, "請填入活動開始日期");
+		} else {
+			java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
+			if (actStart != null && actStart.before(after45)) {
+				result.rejectValue("actStart", null, "考慮到審核作業時間及消費者報名時間, 僅能選擇 45 天之後的日期。");
+			}
 		}
 	        
-		// 結束日期驗證
-		java.sql.Date actEnd = act.getActEnd();
-		if (actStart != null && actEnd != null && actEnd.before(actStart)) {
+		// 結束日期的其他驗證
+//		java.sql.Date actEnd = act.getActEnd();
+		if (act.getActEnd() == null) {
+		    result.rejectValue("actEnd", null, "請填入活動結束日期");
+		} else if (actStart != null && actEnd != null && actEnd.before(actStart)) {
 			result.rejectValue("actEnd", null, "結束日期不得早於開始日期。");
 		}
 
 		
-		// 主圖驗證
+		// 主圖驗證驗證
 		if (actMainImg == null || actMainImg.isEmpty()) {
 			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
 		} else if (!actMainImg.getContentType().startsWith("image/")) {
@@ -285,9 +306,11 @@ public class FmemActController {
 		} else {
 			act.setActMainImg(actMainImg.getBytes());
 		}
-				
+
+		// 其他圖片驗證
+		
 		if (actImgs != null && actImgs.length > 0) {
-            // 計算數量
+            // 手上傳照片時, 先計算數量
             int count = 0;
             for (MultipartFile file : actImgs) {
                 if (!file.isEmpty()) {
@@ -318,7 +341,22 @@ public class FmemActController {
                 }
             }
         }
-			
+		
+		// 若驗證又有錯誤就再傳回
+		if (result.hasErrors()) {
+			List<ActCate> allCategories = actCateRepo.findAll();
+		    model.addAttribute("allCategories", allCategories);
+			return "addAct";
+	    }
+
+		// 設定狀態&更新時間
+		// (抓登入中的小農)
+		Fmem fmem = (Fmem) session.getAttribute("sessionFmem"); // 取得登入小農
+		Integer fmemId = fmem.getFmemId();
+		act.setFmemId(fmemId);
+		act.setActStat(1);	// 設為待審核
+		act.setActUpd(new Timestamp(System.currentTimeMillis()));
+
 		if (result.hasErrors()) {
 			List<ActCate> allCategories = actCateRepo.findAll();
             model.addAttribute("allCategories", allCategories);
