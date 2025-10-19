@@ -177,7 +177,7 @@ public class Fmem implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "sty_no")
-	private Sty sty;
+	private Sty sty = new Sty((byte) 1);
 	
 //	@Column(name = "sty_no")
 //	private Byte styNo = 1;

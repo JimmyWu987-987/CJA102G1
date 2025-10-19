@@ -43,7 +43,7 @@
 	                </li>
 	                <li>
 	                    <label for="">小農商店介紹<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span></label>
-	                    <textarea type="text" th:field="*{storeIntro}"></textarea>
+	                    <textarea type="text" th:field="*{storeIntro}" maxlength="100"></textarea>
 	                </li>
 	                <li class="list-sty">
 	                    <label for="">小農商店樣式選擇 & 預覽圖</label>
@@ -98,20 +98,20 @@
 	                
 	                <li class="list-score">
 	                    <label>商品總評價：</label>
-	                    <span th:text = "${loggedInFmember.mktScore != null ? #numbers.formatDecimal(loggedInFmember.mktScore*1.0 / loggedInFmember.mktCnt, 1, 1) : '尚無評分'}"></span>
+	                    <span th:text = "${avgMktScore != null ? avgMktScore : '尚無評分'}"></span>
 	                	
 	                	<span>(共</span>
-	                    <span th:text = "${loggedInFmember.mktCnt != null ? loggedInFmember.mktCnt : '尚無評論'}"></span>
+	                    <span th:text = "${loggedInFmember.mktCnt > 0 ? loggedInFmember.mktCnt : '0'}"></span>
 						<span>則)</span>
 	                </li>
 	                
 	             
 	                <li class="list-score">
 	                    <label>活動總評價：</label>
-	                    <span th:text = "${loggedInFmember.actScore != null ? #numbers.formatDecimal(loggedInFmember.actScore*1.0 / loggedInFmember.actCnt, 1, 1) : '尚無評分'}"></span>
+	                    <span th:text = "${avgActScore != null ? avgActScore : '尚無評分'}"></span>
 	                    
 	                    <span>(共</span>
-	                    <span th:text = "${loggedInFmember.actCnt != null ? loggedInFmember.actCnt : '尚無評論'}"></span>
+	                    <span th:text = "${loggedInFmember.actCnt > 0 ? loggedInFmember.actCnt : '0'}"></span>
 	                    <span>則)</span>
 	                </li>
 	

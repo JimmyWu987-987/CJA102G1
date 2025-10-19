@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -44,6 +43,7 @@ import com.farmtastic.fmember.model.UpdateStoreFmem;
 import com.farmtastic.fmember.model.UpdateSupplementFmem;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
+import com.farmtastic.procom.model.ProComService;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.reg.model.RegService;
@@ -70,6 +70,9 @@ public class FmemController{
 	
 	@Autowired
 	ProService proSvc;
+	
+	@Autowired
+	ProComService proComSvc;
 	
 	@Autowired
 	ActService actSvc;
@@ -397,19 +400,38 @@ public class FmemController{
 		
 		updateStoreFmem.setStyNo(loggedInFmember.getSty().getStyNo()); //sty
 		
+		
+		Integer fmemId = loggedInFmember.getFmemId();
 //		取得小農所有商品總分 + 評論數
-//		proSvc.
+		Integer totalProScore = proComSvc.countProComRateByFmemId(fmemId);
+		Integer totalProCnt = proComSvc.countProComByFmemId(fmemId);
+		
+		if(totalProScore != null && totalProCnt != null) {
+			loggedInFmember.setMktScore(totalProScore);
+			loggedInFmember.setMktCnt(totalProCnt);
+			
+			if(totalProCnt > 0) {
+				double avgMktScore = totalProScore * 1.0 / totalProCnt;
+				model.addAttribute("avgMktScore", avgMktScore);
+			}
+		}
+		
 //		取得小農所有活動總分 + 評論數
-		List<Integer> actScoreList = regSvc.getAllRatesByFmemId(loggedInFmember.getFmemId());
-		if(actScoreList != null) {
+		List<Integer> actScoreList = regSvc.getAllRatesByFmemId(fmemId);
+		if(actScoreList != null && !actScoreList.isEmpty()) {
 			Integer totalActScore = 0;
 			for(Integer actScore : actScoreList) {
 				totalActScore += actScore;
 			}
 			loggedInFmember.setActScore(totalActScore);
 			loggedInFmember.setActCnt(actScoreList.size());
+			
+			if(totalActScore > 0) {
+				double avgActScore = totalActScore * 1.0 / totalActScore;
+				model.addAttribute("avgActScore", avgActScore);
+			}
 		}
-		
+		fmemSvc.updateFmem(loggedInFmember);
 		
 		model.addAttribute("updateStoreFmem", updateStoreFmem);
 		return "/front_end/farmer/logined/fmemProfile/fmemUpdateStore";
@@ -537,8 +559,6 @@ public class FmemController{
 			}
 		}
 		
-//		String fmemCss = loggedInFmember.getSty().getStyCssPath();
-//		session.setAttribute("fmemCss", fmemCss);
 		
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
