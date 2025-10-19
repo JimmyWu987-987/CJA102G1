@@ -1,9 +1,7 @@
 package com.farmtastic.act.controller;
  
-import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
-import java.net.URLConnection;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,12 +13,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -38,10 +34,8 @@ import com.farmtastic.act.model.Act;
 import com.farmtastic.act.model.ActCate;
 import com.farmtastic.act.model.ActCateRepository;
 import com.farmtastic.act.model.ActImg;
-import com.farmtastic.act.model.ActRepository;
 import com.farmtastic.act.model.ActService;
 import com.farmtastic.fmember.model.Fmem;
-import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.ses.model.Ses;
 import com.farmtastic.ses.model.SesRepository;
 import com.farmtastic.ses.model.SesService;
@@ -62,23 +56,18 @@ public class FmemActController {
 	    binder.setDisallowedFields("actStart", "actEnd");
 	}
 
-    @Autowired
-    private ActService actSvc;
+	@Autowired
+	private ActCateRepository actCateRepo;
 
-    @Autowired
-    private FmemService fmemSvc;
+	@Autowired
+    private ActService actSvc;
     
     @Autowired
     private SesService sesSvc;
-    
-    @Autowired
-    private ActRepository actRepo;
 
     @Autowired
     private SesRepository sesRepo;
     
-    @Autowired
-    private ActCateRepository actCateRepo;
 
 //	// =========== 編輯活動 ============
 //	@GetMapping("updateAct/{actId}")
@@ -235,6 +224,25 @@ public class FmemActController {
                 redirectAttributes.addFlashAttribute("errorMessage", "只有已過審核的活動才能進行上下架操作");
                 return "redirect:/fmem/act/detail/{actId}"; 
             }
+            
+            // 若有上架中的場次, 就不能對活動進行上下架
+            if (newLaunStat == 0) { // 僅在執行「下架」操作 (newLaunStat=0) 時才檢查
+                
+                // 查詢活動的所有場次
+                Sort sort = Sort.by(Sort.Direction.ASC, "sesDate")
+                                    .and(Sort.by(Sort.Direction.ASC, "sesStart"));
+                List<Ses> allSes = sesSvc.findSesByActId(actId, sort);
+                
+                // 過濾出 "上架中" 的場次 (假設 SesLaunStat=1 表示上架)
+                boolean hasLaunchedSes = allSes.stream()
+                                               .anyMatch(s -> s.getSesLaunStat() != null && s.getSesLaunStat() == 1);
+                
+                if (hasLaunchedSes) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "此活動尚有上架中的場次，請先將所有場次下架或完成所有場次, 才能下架整個活動");
+                    return "redirect:/fmem/act/detail/" + actId; // 導回詳情頁
+                }
+            }
+            
             
             // set 活動上下架狀態 & 活動上下架狀態更新時間
             act.setActLaunStat(newLaunStat);

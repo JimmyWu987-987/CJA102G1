@@ -22,7 +22,6 @@ public interface SesRepository extends JpaRepository<Ses, Integer> {
 	List<Ses> findBySesLaunStat(Integer sesLaunStat, Sort sort);
 	List<Ses> findByRegStat(Integer regStat, Sort sort);
 
-
 	@Transactional
     @Modifying
     @Query("DELETE FROM Ses a WHERE a.actId = :sesId")
@@ -30,5 +29,9 @@ public interface SesRepository extends JpaRepository<Ses, Integer> {
 	
 	@Query("SELECT SUM(r.regCount) FROM RegVO r WHERE r.sesId = :sesId")
     Integer getHeadCountBySesId(@Param("sesId") Integer sesId);
+	
+	// 用另一個方式
+	@Query("SELECT s FROM Ses s JOIN FETCH s.act a WHERE a.fmem.fmemId = :fmemId")
+	List<Ses> findSesWithActByFmemId(@Param("fmemId") Integer fmemId, Sort sort);
 
 }

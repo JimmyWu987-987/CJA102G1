@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "ses")
@@ -73,6 +74,8 @@ public class Ses {
 	@JoinColumn(name = "act_id")  // 對應資料庫的 act_id 欄位
 	private Act act;
 	
+	@Transient 
+    private Integer headCountCache;
 	
 
 	public Integer getSesId() {
@@ -186,9 +189,10 @@ public class Ses {
 		this.sesLaunUpd = sesLaunUpd;
 	}
 
-	public Integer getHeadCount() {
-		return headCount;
-	}
+    // 讓 Thymeleaf 讀取這個快取值、設定在報名人數中
+    public Integer getHeadCount() { 
+        return headCountCache != null ? headCountCache : 0; 
+    }
 
 	public void setHeadCount(Integer headCount) {
 		this.headCount = headCount;
@@ -211,5 +215,10 @@ public class Ses {
 	public String getLaunStatText() {
 		return LaunStat.getLaunStatDesc(this.sesLaunStat);
 	}
-	
+
+	// 供 SesService 寫入計算結果的 Setter
+	public void setHeadCountCache(Integer headCountCache) {
+		this.headCountCache = headCountCache;
+	}
+
 }
