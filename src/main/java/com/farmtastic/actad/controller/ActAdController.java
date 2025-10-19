@@ -39,51 +39,57 @@ public class ActAdController {
 
     @Autowired
     private ActAdService actAdService;
-    
-    //寄信
+
+    // 寄信
     @Autowired
     private MailService mailService;
-//  ******************************管理員功能**************************************
+
+    // =========================================================================
+    // 管理員功能
+    // =========================================================================
+
+    // 管理員：廣告列表 / 查單一 / 查尚未審核
     @GetMapping("admin/actAd/list")
     public String list(@RequestParam(value = "actAdId", required = false) Integer actAdId,
-    		           @RequestParam(value = "actAdRevStat", required = false) Integer actAdRevStat,
+                       @RequestParam(value = "actAdRevStat", required = false) Integer actAdRevStat,
                        Model model) {
+
         model.addAttribute("listAllActAd", actAdService.getAll());
-        model.addAttribute("actAdId", actAdId);        
+        model.addAttribute("actAdId", actAdId);
         model.addAttribute("selectedType", "actAd");
-        model.addAttribute("showReview", false); 
-        
-        //查單一
+        model.addAttribute("showReview", false);
+
+        // 查單一
         if (actAdId != null) {
-            if (actAdService.exists(actAdId)) {               
-                model.addAttribute("actAdId", actAdId);        
+            if (actAdService.exists(actAdId)) {
+                model.addAttribute("actAdId", actAdId);
                 model.addAttribute("actAdVO", actAdService.getOneActAd(actAdId));
             } else {
-                model.addAttribute("queryError", "查無 " + actAdId+" 號");  
+                model.addAttribute("queryError", "查無 " + actAdId + " 號");
             }
         }
-        
-      //查尚未審核
+
+        // 查尚未審核
         if (actAdRevStat != null) {
             model.addAttribute("actAdRevStat", actAdRevStat);
             model.addAttribute("listAllActAd", actAdService.findByRevStat(actAdRevStat));
         }
-        
-        return "back_end/logined/ad/adminListAllActAd";
-        }
-    
-    //將審核的頁面拉進來
-    @GetMapping("admin/actAd/showReviewActAd")
-    public String listReview(@RequestParam Integer actAdId, Model model){
-        model.addAttribute("listAllActAd", actAdService.getAll());
-        model.addAttribute("actAdId", actAdId);        
-        model.addAttribute("actAdVO", actAdService.getOneActAd(actAdId));
-        model.addAttribute("selectedType", "actAd");
-        model.addAttribute("showReview", true);     
+
         return "back_end/logined/ad/adminListAllActAd";
     }
-    
-  //完成審核
+
+    // 管理員：將審核頁面拉進來
+    @GetMapping("admin/actAd/showReviewActAd")
+    public String listReview(@RequestParam Integer actAdId, Model model) {
+        model.addAttribute("listAllActAd", actAdService.getAll());
+        model.addAttribute("actAdId", actAdId);
+        model.addAttribute("actAdVO", actAdService.getOneActAd(actAdId));
+        model.addAttribute("selectedType", "actAd");
+        model.addAttribute("showReview", true);
+        return "back_end/logined/ad/adminListAllActAd";
+    }
+
+    // 管理員：完成審核
     @PostMapping("/admin/actAd/reviewActAd")
     public String reviewActAd(@RequestParam Integer actAdId,
                               @RequestParam String remark,
@@ -92,9 +98,9 @@ public class ActAdController {
 
         int status = "pass".equals(action) ? 4 : 3; // 4=待繳費, 3=不通過
         actAdService.updateStatus(actAdId, status, remark);
-        // ====== 以下為寄信通知 ======
+
+        // 以下為寄信通知（失敗不影響流程）
         try {
-            // 取得小農資料
             ActAdVO actAd = actAdService.getOneActAd(actAdId);
             Fmem fmem = actAd.getFmem();
             if (fmem != null && fmem.getFmemEmail() != null) {
@@ -120,121 +126,108 @@ public class ActAdController {
                             + "Farmtastic 小農平台 敬上";
                 }
 
-                // 寄出信件（使用你現有的 MailService）
                 mailService.sendMail(to, subject, content);
             }
         } catch (Exception e) {
-            e.printStackTrace(); // 寄信失敗不影響流程
+            e.printStackTrace();
         }
-        
-        
+
         redirectAttributes.addFlashAttribute("success", "審核完成");
         return "redirect:/admin/actAd/list";
     }
-    
- // 進入修改頁面
+
+    // 管理員：進入修改頁面
     @GetMapping("admin/actAd/showUpdateActAd")
-    public String ShowUpdateActAd(@RequestParam Integer actAdId, Model model){
-    	model.addAttribute("actAdVO", actAdService.getOneActAd(actAdId));
-    	model.addAttribute("actAdId", actAdId);  
+    public String ShowUpdateActAd(@RequestParam Integer actAdId, Model model) {
+        model.addAttribute("actAdVO", actAdService.getOneActAd(actAdId));
+        model.addAttribute("actAdId", actAdId);
         return "back_end/logined/ad/adminUpdateActAd";
     }
-    
-    // 修改頁面提交
+
+    // 管理員：修改頁面提交
     @PostMapping("admin/actAd/updateActAd")
     public String updateActAd(@RequestParam Integer actAdId,
-    						  @RequestParam("adImg") MultipartFile file,
-    						  @RequestParam Integer actAdRevStat, 
-    						  @RequestParam String actAdRevRemark, 
-    						  @RequestParam Integer actAdLaunStat,
-    						  @RequestParam Integer actAdFee, 
-    						  @RequestParam String actAdStart,
-    						  @RequestParam String actAdEnd,
-    						  @RequestParam String actAdFeeEnd,
-    						  RedirectAttributes redirectAttributes
-    						  ) throws IOException {
-    
-    	java.sql.Date Start = (actAdStart == null || actAdStart.isBlank())
-    	        ? null
-    	        : java.sql.Date.valueOf(actAdStart); 
-    	
-    	java.sql.Date End = (actAdEnd == null || actAdEnd.isBlank())
-    	        ? null
-    	        : java.sql.Date.valueOf(actAdEnd); 
-    	
-    	java.sql.Date feeEnd = (actAdFeeEnd == null || actAdFeeEnd.isBlank())
-    	        ? null
-    	        : java.sql.Date.valueOf(actAdFeeEnd); 
-    	
-    	
-    	byte[] adImg;
+                              @RequestParam("adImg") MultipartFile file,
+                              @RequestParam Integer actAdRevStat,
+                              @RequestParam String actAdRevRemark,
+                              @RequestParam Integer actAdLaunStat,
+                              @RequestParam Integer actAdFee,
+                              @RequestParam String actAdStart,
+                              @RequestParam String actAdEnd,
+                              @RequestParam String actAdFeeEnd,
+                              RedirectAttributes redirectAttributes) throws IOException {
 
-    	if (file != null && !file.isEmpty()) {
-    	    adImg = file.getBytes();
-    	} else {
-    	    adImg = actAdService.getOneActAd(actAdId).getActAdImg();
-    	}
-    	
-    	redirectAttributes.addFlashAttribute("success", "修改完成");
-    	actAdService.updateActAd(actAdId, adImg ,actAdRevStat,actAdRevRemark,actAdLaunStat,Start,End,actAdFee,feeEnd);
-    	return "redirect:/admin/actAd/list";
+        java.sql.Date Start = (actAdStart == null || actAdStart.isBlank())
+                ? null
+                : java.sql.Date.valueOf(actAdStart);
+
+        java.sql.Date End = (actAdEnd == null || actAdEnd.isBlank())
+                ? null
+                : java.sql.Date.valueOf(actAdEnd);
+
+        java.sql.Date feeEnd = (actAdFeeEnd == null || actAdFeeEnd.isBlank())
+                ? null
+                : java.sql.Date.valueOf(actAdFeeEnd);
+
+        byte[] adImg;
+        if (file != null && !file.isEmpty()) {
+            adImg = file.getBytes();
+        } else {
+            adImg = actAdService.getOneActAd(actAdId).getActAdImg();
+        }
+
+        redirectAttributes.addFlashAttribute("success", "修改完成");
+        actAdService.updateActAd(actAdId, adImg, actAdRevStat, actAdRevRemark, actAdLaunStat, Start, End, actAdFee, feeEnd);
+        return "redirect:/admin/actAd/list";
     }
-    
-//  ******************************小農功能**************************************
-    //小農廣告功能首頁(在商品廣告Controller中)
-    
-    
-    	
-    
- // 小農申請商品廣告頁面顯示
+
+    // =========================================================================
+    // 小農功能
+    // =========================================================================
+
+    // 小農申請活動廣告頁面顯示
     @GetMapping("fmem/actAd/applyAdView")
     public String showActAdList(ModelMap model, HttpSession session) {
         Integer fmemId = (Integer) session.getAttribute("fmemId");
-        // 查出這位小農名下的活動清單
         List<Act> fmemAct = actAdService.findFmemAct(fmemId);
-        
         model.addAttribute("selectedType", "actAd");
         model.addAttribute("actAdVO", new ActAdVO());
-        model.addAttribute("act", fmemAct); 
+        model.addAttribute("act", fmemAct);
         return "front_end/farmer/logined/fmemAd/farmerApplyActAd";
     }
 
- // 小農申請商品廣告送出
+    // 小農申請活動廣告送出
     @PostMapping("fmem/actAd/applyActAd")
-    public String farmerApplyActAd(
-            @ModelAttribute("actAdVO") ActAdVO actAdVO,
-            BindingResult binding,
-            @RequestParam("adImg") MultipartFile file,
-            HttpSession session,
-            ModelMap model
-    ) throws IOException {
-    	
+    public String farmerApplyActAd(@ModelAttribute("actAdVO") ActAdVO actAdVO,
+                                   BindingResult binding,
+                                   @RequestParam("adImg") MultipartFile file,
+                                   HttpSession session,
+                                   ModelMap model) throws IOException {
+
         Integer fmemId = (Integer) session.getAttribute("fmemId");
 
         if (file.isEmpty()) {
             binding.rejectValue("actAdImg", "NotNull", "請選擇圖片!");
         } else {
             actAdVO.setActAdImg(file.getBytes());
-        }    
+        }
 
         if (binding.hasErrors()) {
             model.addAttribute("act", actAdService.findFmemAct(fmemId));
             return "front_end/farmer/logined/fmemAd/farmerApplyActAd";
         }
 
-        // 將取得的小農跟商品ID轉型
         Fmem fmemRef = actAdService.getFmemRef(fmemId);
         Act actRef = actAdService.getActRef(actAdVO.getActId());
-        
-        // 存入商品廣告DB
+
         actAdVO.setFmem(fmemRef);
         actAdVO.setAct(actRef);
         actAdService.addActAd(actAdVO);
-        // ===== 寄信 =====
+
+        // 寄信（失敗不影響流程）
         try {
-            // 收件人
             String farmerMail = (fmemRef.getFmemEmail() != null) ? fmemRef.getFmemEmail() : null;
-            String adminMail  = "testxuan0429@gmail.com"; // 換成管理員信箱
+            String adminMail = "testxuan0429@gmail.com";
 
             String subject = "【系統通知】活動廣告申請已送出";
             String content = """
@@ -247,42 +240,40 @@ public class ActAdController {
                     fmemRef.getFmemName(),
                     actRef.getActName(),
                     new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm")
-                    .format(new java.util.Date())
+                        .format(new java.util.Date())
                 );
 
             if (farmerMail != null) {
                 mailService.sendMail(farmerMail, subject, content);
             }
             mailService.sendMail(adminMail, subject + "（副本）", content);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return "redirect:/fmem/actAd/list";
     }
-    
-    
-  //小農查詢廣告列表
+
+    // 小農查詢廣告列表
     @GetMapping("fmem/actAd/list")
-    public String farmerListActAd(Model model,HttpSession session) {
-    	Integer fmemId = (Integer) session.getAttribute("fmemId");
-    	
-    	model.addAttribute("selectedType", "actAd");
+    public String farmerListActAd(Model model, HttpSession session) {
+        Integer fmemId = (Integer) session.getAttribute("fmemId");
+        model.addAttribute("selectedType", "actAd");
         model.addAttribute("listActAd", actAdService.findByFmemId(fmemId));
         return "front_end/farmer/logined/fmemAd/farmerListActAd";
+    }
 
-	}
-    
-    
- // 小農付款：直接呼叫 LINE Pay Sandbox API
+    // 小農付款：呼叫 LINE Pay Sandbox API
     @GetMapping("fmem/actAd/pay")
-    public String showFarmerPayView(Model model,@RequestParam Integer actAdId,HttpServletRequest request) throws Exception {
-        ActAdVO vo = actAdService.getOneActAd(actAdId);  // 取得廣告資料
-        model.addAttribute("actAdVO",vo);
-        // ===== 1. 組出 LINE Pay 的請求內容 =====
-        String dynamicUrl = request.getScheme() +"://"+request.getServerName()+":"+request.getServerPort();
+    public String showFarmerPayView(Model model,
+                                    @RequestParam Integer actAdId,
+                                    HttpServletRequest request) throws Exception {
 
+        ActAdVO vo = actAdService.getOneActAd(actAdId);
+        model.addAttribute("actAdVO", vo);
+
+        // 1. 組 LINE Pay 請求內容
+        String dynamicUrl = request.getScheme() + ":" + "//" + request.getServerName() + ":" + request.getServerPort();
         String body = """
         {
           "amount": %d,
@@ -301,73 +292,75 @@ public class ActAdController {
         }
         """.formatted(vo.getActAdFee(), actAdId, vo.getActAdFee(), vo.getActAdFee(), dynamicUrl, actAdId, dynamicUrl);
 
-
-        // ===== 2. 簽章 =====
+        // 2. 簽章
         String base = "https://sandbox-api-pay.line.me";
         String path = "/v3/payments/request";
         String nonce = UUID.randomUUID().toString();
-        String secret = "6e21d7668a02ac0e7f457fbf1bddd4e4"; //商家簽章密碼
+        String secret = "6e21d7668a02ac0e7f457fbf1bddd4e4"; // 商家簽章密碼
         String sig = sign(secret + path + body + nonce);
-        String channelId = "2008230869";  //商家ID
+        String channelId = "2008230869";  // 商家ID
 
-        // ===== 3. 呼叫 LINE Pay Request API =====
+        // 3. 呼叫 LINE Pay Request API
         WebClient client = WebClient.create();
         Map<String, Object> r = client.post().uri(base + path)
-        	    .header("X-LINE-ChannelId", channelId)
-        	    .header("X-LINE-Authorization-Nonce", nonce)
-        	    .header("X-LINE-Authorization", sig)
-        	    .contentType(MediaType.APPLICATION_JSON)
-        	    .bodyValue(body)
-        	    .retrieve().bodyToMono(Map.class).block();
-        // ===== 4. 取得付款頁網址並導轉 =====
-        String url = ((Map)((Map)r.get("info")).get("paymentUrl")).get("web").toString();
+                .header("X-LINE-ChannelId", channelId)
+                .header("X-LINE-Authorization-Nonce", nonce)
+                .header("X-LINE-Authorization", sig)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve().bodyToMono(Map.class).block();
+
+        // 4. 取得付款頁網址並導轉
+        String url = ((Map) ((Map) r.get("info")).get("paymentUrl")).get("web").toString();
         return "redirect:" + url;
     }
 
-    // ===== 5. 回呼後更新狀態 =====
+    // 小農付款回呼：更新狀態
     @GetMapping("fmem/actAd/return")
     public String linePayReturn(@RequestParam String transactionId,
                                 @RequestParam String orderId,
                                 @RequestParam Integer actAdId,
                                 Model model) {
-    	
-    	ActAdVO actAdVO = actAdService.getOneActAd(actAdId);
-    	model.addAttribute("actAdVO", actAdVO);
-    	actAdService.updatePayAd(actAdVO);
+
+        ActAdVO actAdVO = actAdService.getOneActAd(actAdId);
+        model.addAttribute("actAdVO", actAdVO);
+        actAdService.updatePayAd(actAdVO);
         return "front_end/farmer/logined/fmemAd/farmerPaySuccess";
     }
 
-    private String sign(String msg) throws Exception {
-        Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec("6e21d7668a02ac0e7f457fbf1bddd4e4".getBytes(), "HmacSHA256"));
-        return Base64.getEncoder().encodeToString(mac.doFinal(msg.getBytes()));
-    }
-    
-    
+    // =========================================================================
+    // 消費者顯示（預計另開 Controller）
+    // =========================================================================
+
     // 原本要做假
-//  @PostMapping("fmem/proAd/pay")
-//  public String farmerPayAdFee(@RequestParam Integer proAdId) {
-//  	
-//  	 ProAdVO proAdVO = proAdService.getOneProAd(proAdId);
-//  	 proAdService.updatePayAd(proAdVO);
-//  	 
-//		return "redirect:/fmem/proAd/list";
-//  }
-  
-  
-//******************************消費者顯示前端功能(預計另開一隻controller)**************************************
-//  @GetMapping("/pro/index")
-//  public String showAdCarousel(Model model) {
-//      model.addAttribute("adIds", proAdService.getPassProAds());
-//      return "front_end/act-index";
-//  }
-    
-    
-    
-    //活動廣告圖片顯示
+    // @PostMapping("fmem/proAd/pay")
+    // public String farmerPayAdFee(@RequestParam Integer proAdId) {
+    //     ProAdVO proAdVO = proAdService.getOneProAd(proAdId);
+    //     proAdService.updatePayAd(proAdVO);
+    //     return "redirect:/fmem/proAd/list";
+    // }
+
+    // @GetMapping("/pro/index")
+    // public String showAdCarousel(Model model) {
+    //     model.addAttribute("adIds", proAdService.getPassProAds());
+    //     return "front_end/act-index";
+    // }
+
+    // =========================================================================
+    // 相關功能
+    // =========================================================================
+
+    // 活動廣告圖片顯示
     @GetMapping(value = "/actAd/img/{id}")
     @ResponseBody
     public byte[] img(@PathVariable Integer id) {
         return actAdService.getImgBytes(id);
+    }
+
+    // 簽章工具
+    private String sign(String msg) throws Exception {
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(new SecretKeySpec("6e21d7668a02ac0e7f457fbf1bddd4e4".getBytes(), "HmacSHA256"));
+        return Base64.getEncoder().encodeToString(mac.doFinal(msg.getBytes()));
     }
 }
