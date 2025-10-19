@@ -12,10 +12,11 @@
 <title>活動報名訂單列表</title>
 <style>
 html body {
-	margin:0;
+	margin: 0;
 	color: #111;
 }
-body{
+
+body {
 	padding: 0 3%;
 }
 
@@ -24,6 +25,7 @@ h1 {
 	margin: 12px 0;
 }
 
+/* 退款、撥款按鈕 */
 input[type="submit"] {
 	padding: 4px 8px;
 	border: 1px solid #d0d5dd;
@@ -38,38 +40,38 @@ input[type="submit"]:hover {
 	background: #f6f8fa;
 }
 
-body table.dataTable {
-    width: 100%;
-/*     box-sizing:border-box; */
-    margin: 10px auto;
-    clear: both;
-    border-collapse: separate;
-    border-spacing: 0;
-/*     paddinrgb(248, 200, 7)x; */
-	border-radius:10px;
-	overflow:hidden;
+.btn-group-center {
+	display: flex; 
+	justify-content: center; 
+	gap: 15px; 
+	margin-top: 15px; 
+	margin-bottom: 25px;
 }
-table.dataTable.no-footer{
-  border: 1px solid #d0d5dd;
-  border-radius: 10px;
-  overflow: hidden;
+
+
+.btn-group-center form {
+	margin: 0;
+}
+
+/* table樣式 */
+body table.dataTable {
+	width: 100%;
+	margin: 10px auto;
+	clear: both;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+table.dataTable.no-footer {
+	border: 1px solid #d0d5dd;
+	border-radius: 10px;
+	overflow: hidden;
 }
 
 table.dataTable thead th, table.dataTable thead td {
-	padding:10px 10px;
-}
-
-.btn-group-center {
-    display: flex;             /* 啟用 Flexbox */
-    justify-content: center;   /* 將所有子元素（form）水平置中 */
-    gap: 15px;                 /* 設定按鈕之間的間距 */
-    margin-top: 15px;          /* 增加與上方標題的間距 */
-    margin-bottom: 25px;       /* 增加與下方表單/資訊的間距 */
-}
-
-/* 確保按鈕本身沒有額外的邊距影響置中 */
-.btn-group-center form {
-    margin: 0;
+	padding: 10px 10px;
 }
 
 
@@ -83,38 +85,169 @@ thead th {
 	font-weight: 600;
 }
 
-tbody td{
-	background-color:#fff7ed; 
+tbody td {
+	background-color: #fff7ed;
 }
 
-tbody tr:nth-child(even) td{
-  background-color:white;
+tbody tr:nth-child(even) td {
+	background-color: white;
 }
 
-table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1 {
-    background-color: #fff7ed;
+table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1
+	{
+	background-color: #fff7ed;
 }
 
-table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1{
-	background-color:white; 
+table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1
+	{
+	background-color: white;
+}
+
+#example.length {
+	margin-bottom: 10px;
+}
+
+.dataTables_filter {
+	margin-bottom: 10px;
+}
+
+tr:hover {
+	background-color: black;
+}
+
+.money {
+	font-variant-numeric: tabular-nums;
+}
+
+.strong {
+	font-weight: 700;
+}
+
+.btn {
+	padding: 4px 8px;
+	border: 1px solid #d0d5dd;
+	background: #fff;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.btn:hover {
+	background: #f6f8fa;
+}
+
+/* 來自商城訂單的css */
+/* ------------------ 小農名片樣式 (fmem-info-card) ------------------ */
+.fmem-info-card {
+	display: flex; /* 讓基本資訊和銀行資訊可以並排或排列 */
+	gap: 20px; /* 區塊間距 */
+	margin-bottom: 20px; /* 名片區塊與下方表格的間距 */
+}
+
+/* 名片區塊的基礎樣式 */
+.card-section {
+	flex: 1; /* 讓兩個區塊平均分配空間 */
+	background-color: #fff; /* 名片背景色 */
+	border: 1px solid #d0d5dd; /* 輕微邊框 */
+	border-radius: 12px; /* 更大的圓角 */
+	padding: 15px 20px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px
+		rgba(0, 0, 0, 0.06); /* 輕微陰影 */
+}
+
+/* 標題樣式 */
+.card-title {
+	font-size: 1.2em;
+	width: 100%;
+	color: #ffa64d; 
+	border-bottom: 2px solid #ffa64d;
+	padding-bottom: 5px;
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-weight: 700;
 }
 
 
-#example.length{
-	margin-bottom:10px;
-	
+/* 資訊項目排版 */
+.basic-info {
+	display: flex;
+	flex-wrap: wrap; /* 允許換行 */
+	align-content: flex-start; /* 確保內容從頂部開始 */
 }
 
-.dataTables_filter{
-	margin-bottom:10px;
+.bank-info {
+	flex: 0 0 300px; /* 銀行資訊區塊固定寬度 */
 }
 
-tr:hover{
- background-color:black;
+.info-item {
+	width: 50%; /* 每個資訊項目佔 50% 寬度，實現兩欄排版 */
+	display: flex;
+	margin-bottom: 8px;
+	align-items:center;
+}
+
+.info-item.full-width {
+	width: 100%; /* 讓地址和信箱佔滿一行 */
+}
+
+.field-label {
+	flex: 0 0 80px; /* 讓標籤固定寬度，保持對齊 */
+	font-weight: 500;
+	color: #555;
+	text-align: right;
+	padding-right: 5px;
+}
+
+.field-value {
+	flex-grow: 1; /* 數值佔據剩餘空間 */
+	font-weight: 600;
+	color: #111;
+}
+
+/* 針對銀行帳號加粗 */
+.bank-info .field-value {
+	font-weight: 700;
+	font-variant-numeric: tabular-nums; /* 讓數字對齊 */
 }
 
 
 
+/* 篩選區塊 */
+.fmem-select-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	padding: 15px 12px;
+	border: 1px solid #d0d5dd;
+	border-radius: 8px;
+	background-color: #ffefcc;
+	margin-bottom: 20px;
+}
+
+.fmem-select-container .inline-form {
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.fmem-select-container .btn {
+	color: #111;
+}
+
+.filterbtn{
+  width:100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 3px auto;
+}
+
+
+
+/* 訂單狀態顏色 */
 .badge-ok {
 	background: #e6f4ea;
 	color: #1e7e34
@@ -140,27 +273,6 @@ tr:hover{
 	color: #555
 }
 
-.money {
-	font-variant-numeric: tabular-nums;
-}
-
-.strong {
-	font-weight: 700;
-}
-
-
-.btn {
-	padding: 4px 8px;
-	border: 1px solid #d0d5dd;
-	background: #fff;
-	border-radius: 8px;
-	cursor: pointer;
-}
-
-.btn:hover {
-	background: #f6f8fa;
-}
-
 
 </style>
 </head>
@@ -175,38 +287,90 @@ tr:hover{
 	</div>
 
 <body th:data-success="${success}">
-	<h1 style="text-align:center; margin:12px 0;">查看活動訂單</h1>
+	<h1 style="text-align:center; margin:12px 0;">活動訂單</h1>
 	
-	<div style="display: flex;gap: 10px;align-items: center; margin-bottom:2px;">
-	<form method="post" th:action="@{/selectFmemReg}">
-	  選擇小農編號：
-	  <select name="fmemId" class="btn" required onchange="this.form.submit()">
-	    <option value="" disabled 
-	            th:selected="${selectedFmemId == null}">— 請選擇 —</option>
-	    <option th:each="f : ${fmemList}"
-	            th:value="${f.fmemId}"
-	            th:text="|[${f.fmemId}] ${f.fmemName}|"
-	            th:selected="${selectedFmemId != null and selectedFmemId == f.fmemId}">
-	    </option>
-	  </select>
-	</form>
-	</div>
-	
-	<div style="display: flex;gap: 10px;align-items: center; margin-bottom:5px;">
-		<form id="regFinish" th:action="@{/admin/cashflow/reg/list}" method="get">
-		  <input type="hidden" name="regRevStat" value="3">
-		  <button type="submit" class="btn">查詢尚未撥款</button>
-		</form>
+	<div class="fmem-select-container">
 
-		<form id="regFinish" th:action="@{/admin/cashflow/reg/list}" method="get">
-		  <input type="hidden" name="regRevStat" value="1">
-		  <button type="submit" class="btn">查詢活動取消</button>
-		</form>
-		
-		<form th:if="${regRevStat == 3 || regRevStat == 1}"id="proNotReview" th:action="@{/admin/cashflow/reg/list}" method="get" >
-		  <button type="submit" class="btn">查全部</button>
-		</form>
-	</div>
+  <form method="post" th:action="@{/selectFmemReg}" class="inline-form">
+    選擇小農姓名：
+    <select name="fmemId" class="btn" required onchange="this.form.submit()">
+      <option value="" disabled th:selected="${selectedFmemId == null}">— 請選擇 —</option>
+      <option th:each="f : ${fmemList}"
+              th:value="${f.fmemId}"
+              th:text="|[${f.fmemId}] ${f.fmemName}|"
+              th:selected="${selectedFmemId != null and selectedFmemId == f.fmemId}">
+      </option>
+    </select>
+    <noscript><button type="submit" class="btn">查詢</button></noscript>
+  </form>
+	
+	<div class="filterbtn">
+  <form th:action="@{/admin/cashflow/reg/list}" method="get" class="inline-form">
+    <input type="hidden" name="regRevStat" value="3">
+    <button type="submit" class="btn">查詢尚未撥款</button>
+  </form>
+
+  <form th:action="@{/admin/cashflow/reg/list}" method="get" class="inline-form">
+    <input type="hidden" name="regRevStat" value="1">
+    <button type="submit" class="btn">查詢活動取消</button>
+  </form>
+
+  <form th:if="${regRevStat == 3 || regRevStat == 1}"
+        th:action="@{/admin/cashflow/reg/list}" method="get" class="inline-form">
+    <button type="submit" class="btn">查全部</button>
+  </form>
+  
+  </div>
+</div>
+	
+	
+<div class="fmem-info-card" th:if="${fmemVO != null}">
+  <div class="card-section basic-info">
+    <h3 class="card-title">小農基本資料</h3>
+    <br>
+    <div class="info-item">
+      <span class="field-label">負責人:</span>
+      <span class="field-value" th:text="${fmemVO.fmemName}">—</span>
+    </div>
+    <div class="info-item">
+      <span class="field-label">農場名稱:</span>
+      <span class="field-value" th:text="${fmemVO.storeName}">—</span>
+    </div>
+    <div class="info-item">
+      <span class="field-label">聯絡手機:</span>
+      <span class="field-value" th:text="${fmemVO.fmemMobile}">—</span>
+    </div>
+    <div class="info-item">
+      <span class="field-label">聯絡市話:</span>
+      <span class="field-value" th:text="${fmemVO.fmemTel}">—</span>
+    </div>
+    <div class="info-item full-width">
+      <span class="field-label">聯絡地址:</span>
+      <span class="field-value"
+            th:text="${fmemVO.fmemZipcode}+${fmemVO.fmemCity}+${fmemVO.fmemDist}+${fmemVO.fmemAddr}">—</span>
+    </div>
+    <div class="info-item full-width">
+      <span class="field-label">聯絡信箱:</span>
+      <span class="field-value" th:text="${fmemVO.fmemEmail}">—</span>
+    </div>
+  </div>
+
+  <div class="card-section bank-info">
+    <h3 class="card-title">撥款帳戶資料</h3>
+    <div class="info-item">
+      <span class="field-label">銀行代碼:</span>
+      <span class="field-value" th:text="${fmemVO.bankCode}">—</span>
+    </div>
+    <div class="info-item">
+      <span class="field-label">銀行帳號:</span>
+      <span class="field-value strong" th:text="${fmemVO.bankAcc}">—</span>
+    </div>
+  </div>
+</div>
+	
+	
+	
+	
 	
 	<table id="example" class="display">
 	  <thead>

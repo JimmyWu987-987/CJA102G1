@@ -50,44 +50,41 @@ public class RegController {
 //  ******************************管理員功能**************************************
 	// 管理員查活動訂單全部
 	@GetMapping("admin/cashflow/reg/list")
-	public String list(Model model,@RequestParam(value = "regRevStat", required = false) Integer regRevStat) {
+	public String list(Model model,
+	                   @RequestParam(required=false) Integer regRevStat,
+	                   @RequestParam(required=false) Integer fmemId) {
 
-		List<RegVO> list = (regRevStat == null) ? regService.getAll() // 沒帶參數：全部
-				: regService.findByRevStat(regRevStat); // 有帶參數：依狀態過濾
-		
-		List<String> names = regService.getFarmerName();
-		model.addAttribute("names", names);
-		
-		model.addAttribute("fmemList", fmemSvc.getAll());
-		model.addAttribute("listReg", list);
-		model.addAttribute("regRevStat", regRevStat);
-		return "back_end/logined/reg/adminListAllReg";
-	}
+	    // 資料列表
+	    List<RegVO> list = (fmemId != null)
+	            ? regService.getByFmemId(fmemId)
+	            : (regRevStat == null ? regService.getAll()
+	                                  : regService.findByRevStat(regRevStat));
+	    model.addAttribute("listReg", list);
+	    model.addAttribute("regRevStat", regRevStat);
+	    model.addAttribute("fmemList", fmemSvc.getAll());
 
-	
-
-	// 管理員切換小農清單
-	@PostMapping("selectFmemReg")
-	public String selectFmemProOrder(@RequestParam("fmemId") Integer fmemId, ModelMap model, HttpSession session) {
-
-		// 找小農
-		Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
-		model.addAttribute("fmemName", fmem.getFmemName());
-		session.setAttribute("fmemId", fmem.getFmemId());
-
-		// 查該小農的訂單
-		List<RegVO> list = regService.getByFmemId(fmemId);
-		model.addAttribute("listReg", list);
-		
-		List<String> names = regService.getFarmerNameByFmemId(fmemId);
+	    // 名稱陣列（照你原本的）
+	    List<String> names = (fmemId != null)
+	            ? regService.getFarmerNameByFmemId(fmemId)
+	            : regService.getFarmerName();
 	    model.addAttribute("names", names);
-		
-		// 下拉選單資料與選中的 fmemId
-		model.addAttribute("fmemList", fmemSvc.getAll());
-		model.addAttribute("selectedFmemId", fmemId);
 
-		return "back_end/logined/reg/adminListAllReg";
+	    // ★ 關鍵：給資訊卡用
+	    if (fmemId != null) {
+	        model.addAttribute("fmemVO", fmemSvc.getOneByFmemId(fmemId));
+	        model.addAttribute("selectedFmemId", fmemId);
+	    }
+	    return "back_end/logined/reg/adminListAllReg";
 	}
+	
+	//小農列表
+	@PostMapping("selectFmemReg")
+	public String selectFmemReg(@RequestParam Integer fmemId, RedirectAttributes ra) {
+	    ra.addAttribute("fmemId", fmemId);
+	    return "redirect:/admin/cashflow/reg/list";
+	}
+	
+	
 	
 	// 撥款成功後
 		@PostMapping("admin/reg/regMoney")
