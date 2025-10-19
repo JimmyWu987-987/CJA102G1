@@ -11,6 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.farmtastic.memactcpn.model.MemActCpnVO;
 
 public interface RegRepository extends JpaRepository<RegVO, Integer>{
+
+    // =========================================================================
+    // 管理員功能
+    // =========================================================================
+
 	// 管理員查詢活動訂單全部
 	List<RegVO> findAllByOrderByRegIdDesc();
 	
@@ -26,7 +31,7 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 			  JOIN fmem f ON f.fmem_id = a.fmem_id
 			  ORDER BY r.reg_id DESC
 			  """, nativeQuery = true)
-			List<String> findAllFarmerNames();
+	List<String> findAllFarmerNames();
 	
 	// 查單一小農的名字（針對 selectFmemReg）
 	@Query(value = """
@@ -39,10 +44,13 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	  ORDER BY r.reg_id DESC
 	  """, nativeQuery = true)
 	List<String> findFarmerNamesByFmemId(@Param("fmemId") Integer fmemId);
-	
+
+    // =========================================================================
+    // 小農功能
+    // =========================================================================
 	
 	//小農查詢活動訂單
-	 @Query(value = """
+	@Query(value = """
 		      select r.*
 		      from reg r
 		      join ses s on s.ses_id = r.ses_id
@@ -51,22 +59,20 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 		      order by r.reg_id desc
 		      """, nativeQuery = true)
 	List<RegVO> findAllByFarmer(@Param("fmemId") Integer fmemId);
-	 
-	// 消費者查詢活動訂單
-	    List<RegVO> findAllByMemIdOrderByRegIdDesc(Integer memId);
-	    
-	 // 更換折價券的寫法
-	// 消費者報名活動時折價卷顯示
-//	    @Query("SELECT m FROM MemActCpnVO m WHERE m.memVO.memId = :memId AND m.usedAt IS NULL AND m.effEnd >= CURRENT_DATE")
-//	    List<MemActCpnVO> findAvailableCouponsByMemId(@Param("memId") Integer memId);
+	
+	//  查詢單一小農的所有活動評分list
+	@Query("""
+    	    select r.actRate
+    	    from RegVO r
+    	      join Ses s on s.sesId = r.sesId
+    	      join Act a on a.actId = s.actId
+    	    where a.fmemId = :fmemId
+    	      and r.actRate is not null
+    	""")
+	List<Integer> findAllRatesByFmemId(@Param("fmemId") Integer fmemId);
 
-	// 消費者報名活動時點數顯示
-	    @Query("SELECT m.memPoint FROM Mem m WHERE m.memId = :memId") 
-	    Integer findPointsByMemId(@Param("memId") Integer memId);
-	    
-	    
 	 // 小農取得活動名稱、場次日期、場次時間
-	    @Query("""
+	@Query("""
 	      select new com.farmtastic.reg.model.RegExtrasDTO(
 	               r.regId,
 	               s.sesDate,
@@ -80,13 +86,26 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	       where a.fmemId = :fmemId
 	       order by r.regId desc
 	    """)
-	    List<RegExtrasDTO> findSesTimeAndActName(@Param("fmemId") Integer fmemId);
+	List<RegExtrasDTO> findSesTimeAndActName(@Param("fmemId") Integer fmemId);
 
+    // =========================================================================
+    // 消費者功能
+    // =========================================================================
+	 
+	// 消費者查詢活動訂單
+	List<RegVO> findAllByMemIdOrderByRegIdDesc(Integer memId);
+	    
+	 // 已更換折價券的寫法
+	// 消費者報名活動時折價卷顯示
+//	    @Query("SELECT m FROM MemActCpnVO m WHERE m.memVO.memId = :memId AND m.usedAt IS NULL AND m.effEnd >= CURRENT_DATE")
+//	    List<MemActCpnVO> findAvailableCouponsByMemId(@Param("memId") Integer memId);
 
+	// 消費者報名活動時點數顯示
+	@Query("SELECT m.memPoint FROM Mem m WHERE m.memId = :memId") 
+	Integer findPointsByMemId(@Param("memId") Integer memId);
 	    
-	    
-	    // 消費者取得活動名稱、場次日期、場次時間
-	    @Query("""
+	// 消費者取得活動名稱、場次日期、場次時間
+	@Query("""
 	            select new com.farmtastic.reg.model.RegExtrasDTO(
 	                r.regId,
 	                s.sesDate,
@@ -100,21 +119,24 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	            where r.memId = :memId
 	            order by r.regId desc
 	        """)
-	        List<RegExtrasDTO> findSesTimeAndActNameByMemId(@Param("memId") Integer memId);
+	List<RegExtrasDTO> findSesTimeAndActNameByMemId(@Param("memId") Integer memId);
+
+    // =========================================================================
+    // 相關功能
+    // =========================================================================
 	    
-	    // 報名頁面拿活動名稱與場次時間
-	    @Query("""
+	// 報名頁面拿活動名稱與場次時間
+	@Query("""
 	      select new com.farmtastic.reg.model.SesInfoDTO(
 	        s.sesId, a.actId,a.actName, s.sesDate, s.sesStart, s.sesEnd, s.sesFee
 	      )
 	      from Ses s join s.act a
 	      where s.sesId = :sesId
 	    """)
-	    SesInfoDTO findSesInfoBySesId(@Param("sesId") Integer sesId);
+	SesInfoDTO findSesInfoBySesId(@Param("sesId") Integer sesId);
 
-	    
 	 // 評價時間 + 消費者評分 + 評論 + 小農回覆
-	    @Query("""
+	@Query("""
 	      select r
 	      from RegVO r
 	        join Ses s on s.sesId = r.sesId
@@ -124,20 +146,5 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	      order by
 	        r.actCommat desc
 	    """)
-	    List<RegVO> findReviewsByActId(@Param("actId") Integer actId);
-
-	    
-	//  查詢單一小農的所有活動評分list
-	    @Query("""
-    	    select r.actRate
-    	    from RegVO r
-    	      join Ses s on s.sesId = r.sesId
-    	      join Act a on a.actId = s.actId
-    	    where a.fmemId = :fmemId
-    	      and r.actRate is not null
-    	""")
-    	List<Integer> findAllRatesByFmemId(@Param("fmemId") Integer fmemId);
-	    
+	List<RegVO> findReviewsByActId(@Param("actId") Integer actId);
 }
-
-
