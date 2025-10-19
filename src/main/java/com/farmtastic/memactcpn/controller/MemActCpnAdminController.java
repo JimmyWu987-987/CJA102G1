@@ -23,6 +23,13 @@ public class MemActCpnAdminController {
 	@Autowired
 	private MemActCpnMapperImp mapper;
 
+	// 列出全部會員折價券
+	@GetMapping("/list")
+	public String listAll(Model model) {
+		List<MemActCpnVO> memCoupons = memActCpnSvc.getAll();
+		model.addAttribute("memCoupons", memCoupons);
+		return "back_end/logined/memactcpn/listAllMemActCpn";
+	}
 //	// 顯示新增頁面
 //	@GetMapping("/addForm")
 //	public String showAddForm(Model model) {
@@ -42,14 +49,6 @@ public class MemActCpnAdminController {
 //		memActCpnSvc.addMemActCpn(vo);
 //		return "redirect:/admin/actcpn/listAllActCpn"; // 新增後回列表
 //	}
-
-	// 列出全部會員折價券
-	@GetMapping("/list")
-	public String listAll(Model model) {
-		List<MemActCpnVO> memCoupons = memActCpnSvc.getAll();
-		model.addAttribute("memCoupons", memCoupons);
-		return "back_end/logined/memactcpn/listAllMemActCpn";
-	}
 
 	@GetMapping("/listValidByMember")
 	// 查「某會員」未使用且有效折價券

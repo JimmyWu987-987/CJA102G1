@@ -31,6 +31,15 @@ public class ActCpnAdminController {
 	@Autowired
 	private ActCpnMapperImp mapper;
 
+	// 查詢全部折價卷
+	@GetMapping("/list")
+	public String listAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+			Model model) {
+		Page<ActCpnVO> pageData = actCpnSvc.findPagedActCpn(page, size);
+		model.addAttribute("pageData", pageData);
+		return "/back_end/logined/actcpn/listAllActCpn";
+	}
+
 	// 詳細頁面
 	@GetMapping("/view/{id}")
 	public String viewProCpn(@PathVariable Integer id, Model model) {
@@ -41,15 +50,6 @@ public class ActCpnAdminController {
 		}
 		model.addAttribute("coupon", optional.get());
 		return "/back_end/logined/actcpn/viewActCpn";
-	}
-
-	// 查詢全部折價卷
-	@GetMapping("/list")
-	public String listAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
-			Model model) {
-		Page<ActCpnVO> pageData = actCpnSvc.findPagedActCpn(page, size);
-		model.addAttribute("pageData", pageData);
-		return "/back_end/logined/actcpn/listAllActCpn";
 	}
 
 	// 顯示新增頁面

@@ -43,6 +43,6 @@ public class MemProCpnFrontendController {
 		model.addAttribute("proCoupons", proCoupons);
 		model.addAttribute("actCoupons", actCoupons);
 
-		return "front_end/customer/logined/memcpn/listAllCoupons"; // 對應 Thymeleaf 頁面
+		return "/front_end/customer/logined/memcpn/listAllCoupons"; // 對應 Thymeleaf 頁面
 	}
 }
