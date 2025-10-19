@@ -140,8 +140,21 @@ public class FmemActController {
     
     // ============ 單一查詢 (for 活動詳細頁面用) ============
     @GetMapping("/detail/{actId}")
-    public String actDetail(@PathVariable Integer actId, ModelMap model) {
-    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
+    public String actDetailsForFmem(HttpSession session,
+    						@PathVariable Integer actId,
+    						ModelMap model) {
+    	
+    	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");			// 取得登入小農
+    	if (fmem == null) {
+            // 沒登入的防呆
+            model.addAttribute("message", "請先登入小農頁面, 謝謝");
+// TODO: 導回登入頁, 看一下post是什麼
+            return "redirect:/login";
+        }
+    	
+    	Integer fmemId = fmem.getFmemId();
+
+    	Optional<Act> optAct = actSvc.getOneActByFmemId(actId, fmemId);		// 取得活動
     	
     	// 防呆用
     	if (optAct.isEmpty()) {
@@ -164,7 +177,6 @@ public class FmemActController {
         List<Ses> allSes = sesSvc.findSesByActId(actId, sort);
         List<Ses> launchedSes = allSes.stream()
         							  .filter(s -> s.getSesLaunStat() != null)
-        							  .filter(s -> s.getSesLaunStat().equals(1))
         							  .toList();
 
         
