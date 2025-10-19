@@ -322,9 +322,6 @@ public class ProOrderMemController {
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
 
-		// ===================== 清除 該訂單的購物車內容 =====================
-		proOrdSvc.insertOrderCleanCart(proOrderVO);
-
 		// ================== 會員點數新增修改的邏輯 ======================
 		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
 		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
@@ -354,6 +351,7 @@ public class ProOrderMemController {
 
 		// ===================== 清除 該訂單的購物車內容 =====================
 		proOrdSvc.insertOrderCleanCart(proOrderVO);
+
 
 		// ================= 根據付款不同導向不同頁面 ==================
 		
