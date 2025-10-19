@@ -14,7 +14,9 @@
 </style>
 </head>
 <body>
-    <h1>活動列表</h1>
+    <h1>活動上下架</h1>
+
+	
 
 	<div th:if="${#lists.isEmpty(actList)}">
     	<p>目前無已過審之活動可進行上下架</p>
@@ -47,7 +49,7 @@
 				<td th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></td>
 				<td th:text="${act.actFee}"></td>
 				<td th:text="${act.actStatText}"></td>
-				<td th:text="${act.actRemark}"></td>
+				<td th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></td>
 				<td th:text="${act.actLaunStatText}"></td>
 				<td>
 					<a th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>

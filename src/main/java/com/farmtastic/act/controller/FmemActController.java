@@ -21,7 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,10 +50,16 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
-@Validated
+//@Validated    //1019
 @RequestMapping("/fmem/act")
 @SessionAttributes({"sessionFmemAct"})
 public class FmemActController {
+
+	
+	@InitBinder("act")
+	public void initBinder(WebDataBinder binder) {
+	    binder.setDisallowedFields("actStart", "actEnd");
+	}
 
     @Autowired
     private ActService actSvc;
@@ -86,8 +94,10 @@ public class FmemActController {
     
     
     // =========== 上下架活動 ============
+    
+    
 
-    // =========== 小農查詢自己的活動 ============
+    // =========== 小農查詢自己的活動 (ok) ============
     
     // 查全部
     @GetMapping("/listAllActForFmem")		// 之後要登入測試喔喔喔喔喔!!!
@@ -115,7 +125,7 @@ public class FmemActController {
     	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
         Integer fmemId = fmem.getFmemId();
     	
-    	List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
+        List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.ASC, "actId"));
 
     	model.addAttribute("actList", actList);
     	
@@ -123,7 +133,7 @@ public class FmemActController {
             model.addAttribute("message", "目前尚無已過審活動可進行上下架");
         }
     	
-    	return "front_end/farmer/logined/fmemAct/listApprovedActForFmem";
+    	return "front_end/farmer/logined/fmemAct/launchAct";
     }
     
     
@@ -268,7 +278,8 @@ public class FmemActController {
 						 @RequestParam("actEnd") String actEndStr,
 						 @Valid @ModelAttribute("act") Act act,
 						 BindingResult result,
-						 @RequestParam("actMainImg") MultipartFile actMainImg,
+						 @RequestParam("actMainImgFile") MultipartFile actMainImgFile,	//1019 追加
+//						 @RequestParam("actMainImg") MultipartFile actMainImg,
 						 @RequestParam(value = "actImgs", required = false) MultipartFile[] actImgs,
 						 @RequestParam(value = "actCateId", required = false) List<Integer> actCateId,
 						 HttpSession session,
@@ -337,22 +348,40 @@ public class FmemActController {
 		}
 
 		
-		// 主圖驗證驗證
-		if (actMainImg == null || actMainImg.isEmpty()) {
-			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
-		} else if (!actMainImg.getContentType().startsWith("image/")) {
-			result.rejectValue("actMainImg", null, "只能上傳圖檔");
-		} else if (actMainImg.getSize() > 4 * 1024 * 1024) {
-			result.rejectValue("actMainImg", null, "活動主要圖片不得超過 4MB");
-		} else {
-//			act.setActMainImg(actMainImg.getBytes());
-			// 關鍵修正：使用 try-catch 包裹 getBytes()
-			try {
-				act.setActMainImg(actMainImg.getBytes());
-			} catch (IOException e) {
-				result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
-			}
+//		// 主圖驗證驗證		// 1019 註解掉
+//		if (actMainImg == null || actMainImg.isEmpty()) {
+//			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+//		} else if (!actMainImg.getContentType().startsWith("image/")) {
+//			result.rejectValue("actMainImg", null, "只能上傳圖檔");
+//		} else if (actMainImg.getSize() > 4 * 1024 * 1024) {
+//			result.rejectValue("actMainImg", null, "活動主要圖片不得超過 4MB");
+//		} else {
+////			act.setActMainImg(actMainImg.getBytes());
+//			// 關鍵修正：使用 try-catch 包裹 getBytes()
+//			try {
+//				act.setActMainImg(actMainImg.getBytes());
+//			} catch (IOException e) {
+//				result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
+//			}
+//		}
+		
+		// 1019 主圖修改
+		if (actMainImgFile == null || actMainImgFile.isEmpty()) {
+		result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+	} else if (!actMainImgFile.getContentType().startsWith("image/")) {
+		result.rejectValue("actMainImg", null, "只能上傳圖檔");
+	} else if (actMainImgFile.getSize() > 4 * 1024 * 1024) {
+		result.rejectValue("actMainImg", null, "圖片不得超過 4MB");
+	} else {
+//		act.setActMainImg(actMainImg.getBytes());
+		// 關鍵修正：使用 try-catch 包裹 getBytes()
+		try {
+			act.setActMainImg(actMainImgFile.getBytes());
+		} catch (IOException e) {
+			result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
 		}
+	}
+		
 
 		// 其他圖片驗證
 		// 要先初始化, 避免沒有放活動圖時報錯
