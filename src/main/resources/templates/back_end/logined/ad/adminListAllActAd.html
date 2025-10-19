@@ -31,7 +31,7 @@ tr.even {
 
 </style>
 </head>
-<body>
+<body th:data-success="${success}">
 
 <h1 class="title">管理員查詢活動廣告審核列表</h1>
 <img class="reviewPerson" id="personImg" th:src="@{/images/ad/review.gif}" alt="reviewPerson" />
@@ -169,6 +169,8 @@ tr.even {
   </div>
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 // 下拉切換
 document.getElementById('adType').addEventListener('change', e=>{
@@ -207,12 +209,11 @@ document.addEventListener('click', (e) => {
 //人物文字顯示
 const quotes = [
     "Java是簡單的。",
-    "400和500都走開哦，拜託。",
-    "人一定會死。程式一定有Bug。",
-    "沒有什麼問題是重開不能解的，不能就關掉吧",
-    "Commit 前覺得完美，Merge 後覺得世界末日。",
-    "昨天還能跑，今天就炸了。",
-    "寫註解的是好人。"
+    "最喜歡看認真的你。",
+    "記得喝水!",
+    "快到發薪日了，加油!",
+    "你今天也要很正面哦!",
+    "我愛我的工作。",
   ];
 
   const personImg = document.getElementById("personImg");
@@ -222,6 +223,50 @@ const quotes = [
     const randomIndex = Math.floor(Math.random() * quotes.length);
     bubbleText.textContent = quotes[randomIndex];
   });
+  
+  //審核完畢特效
+  window.addEventListener("load", function() {
+		const successMsg = document.body.dataset.success;
+		if (successMsg != null) {
+			console.log(successMsg);
+			if (successMsg  === "審核完成") {
+				Swal.fire({
+					icon : 'success',
+					title : successMsg,
+					text : "工作辛苦了!",
+					showConfirmButton : false,
+					customClass : {
+						icon : 'custom-icon',
+						popup : 'custom-swal',
+						title : 'custom-swal-title',
+						htmlContainer : 'custom-swal-content'
+					}
+				});
+
+			}
+			
+			if (successMsg  === "修改完成") {
+				Swal.fire({
+					icon : 'success',
+					title : successMsg,
+					text : "工作辛苦了!",
+					showConfirmButton : false,
+					customClass : {
+						icon : 'custom-icon',
+						popup : 'custom-swal',
+						title : 'custom-swal-title',
+						htmlContainer : 'custom-swal-content'
+					}
+				});
+
+			}
+
+		}
+	});
+  
+  
+  
+  
 </script>
 </body>
 </html>

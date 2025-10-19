@@ -377,7 +377,7 @@ transform:scale(1.1);
 	}
   </style>
 </head>
-<body>
+<body th:attr="data-error=${error}">
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 	<div th:replace="~{/front_end/index :: header}"></div>
 
@@ -489,6 +489,11 @@ transform:scale(1.1);
         </div>
     </div>
 
+
+
+<!-- 引入sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 
 	//貓頭鷹廣告輪播器
@@ -575,6 +580,35 @@ $(function () {
     // 3. 綁定事件監聽
     $cateArea.on('change', 'input', cateFilter);
 });
+
+
+window.addEventListener("load", function() {
+	const successMsg = document.body.dataset.error;
+	if (successMsg != null) {
+		console.log(successMsg);	
+		if (successMsg === "此活動尚未上架") {
+		    // 可直接用字串判斷或只要有值就跳
+		    Swal.fire({
+		      icon: 'error',
+		      title: successMsg,                 
+		      text: '活動尚未上架呦!有問題可向小農提出疑問，謝謝。',
+		      showConfirmButton: false,             
+		      customClass: {
+		        popup: 'custom-swal',
+		        title: 'custom-swal-title',
+		        htmlContainer: 'custom-swal-content'
+		      }
+		    });
+		  }
+		
+	}
+});
+
+
+
+
+
+
 </script>
 
 
