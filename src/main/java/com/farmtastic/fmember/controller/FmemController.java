@@ -2,7 +2,10 @@ package com.farmtastic.fmember.controller;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -40,10 +43,13 @@ import com.farmtastic.fmember.model.UpdateStoreFmem;
 import com.farmtastic.fmember.model.UpdateSupplementFmem;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
+import com.farmtastic.procom.model.ProComService;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
+import com.farmtastic.reg.model.RegService;
 import com.farmtastic.style.model.Sty;
 import com.farmtastic.style.model.StyService;
+import com.farmtastic.util.OTPGenerator;
 import com.farmtastic.validator.RegistrationValidation;
 import com.farmtastic.validator.UpdatePasswordValidation;
 
@@ -66,7 +72,13 @@ public class FmemController{
 	ProService proSvc;
 	
 	@Autowired
+	ProComService proComSvc;
+	
+	@Autowired
 	ActService actSvc;
+	
+	@Autowired
+	RegService regSvc;
 	
 	@Autowired
 	RedisService redisSvc;
@@ -389,6 +401,38 @@ public class FmemController{
 		updateStoreFmem.setStyNo(loggedInFmember.getSty().getStyNo()); //sty
 		
 		
+		Integer fmemId = loggedInFmember.getFmemId();
+//		取得小農所有商品總分 + 評論數
+		Integer totalProScore = proComSvc.countProComRateByFmemId(fmemId);
+		Integer totalProCnt = proComSvc.countProComByFmemId(fmemId);
+		
+		if(totalProScore != null && totalProCnt != null) {
+			loggedInFmember.setMktScore(totalProScore);
+			loggedInFmember.setMktCnt(totalProCnt);
+			
+			if(totalProCnt > 0) {
+				double avgMktScore = totalProScore * 1.0 / totalProCnt;
+				model.addAttribute("avgMktScore", avgMktScore);
+			}
+		}
+		
+//		取得小農所有活動總分 + 評論數
+		List<Integer> actScoreList = regSvc.getAllRatesByFmemId(fmemId);
+		if(actScoreList != null && !actScoreList.isEmpty()) {
+			Integer totalActScore = 0;
+			for(Integer actScore : actScoreList) {
+				totalActScore += actScore;
+			}
+			loggedInFmember.setActScore(totalActScore);
+			loggedInFmember.setActCnt(actScoreList.size());
+			
+			if(totalActScore > 0) {
+				double avgActScore = totalActScore * 1.0 / totalActScore;
+				model.addAttribute("avgActScore", avgActScore);
+			}
+		}
+		fmemSvc.updateFmem(loggedInFmember);
+		
 		model.addAttribute("updateStoreFmem", updateStoreFmem);
 		return "/front_end/farmer/logined/fmemProfile/fmemUpdateStore";
 	}
@@ -515,8 +559,6 @@ public class FmemController{
 			}
 		}
 		
-//		String fmemCss = loggedInFmember.getSty().getStyCssPath();
-//		session.setAttribute("fmemCss", fmemCss);
 		
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
@@ -932,12 +974,16 @@ public class FmemController{
 	
 	
 	
-	
 	@PostMapping("/login")
-	public String login(LoginRequest loginRequest, HttpSession session, ModelMap model) {
+	public String login(
+			LoginRequest loginRequest, 
+			BindingResult result,
+			HttpSession session, 
+			ModelMap model) {
 		
 		String fmemAccLogin = loginRequest.getFmemAccLogin();
 		String fmemPwdLogin = loginRequest.getFmemPwdLogin();
+		model.addAttribute("fmem", new Fmem());
 		
 		// 1.基本欄位驗證 
 		if(fmemAccLogin == null || fmemAccLogin.trim().isEmpty()) {
@@ -958,35 +1004,72 @@ public class FmemController{
 		
 		// 2.呼叫service進行登入驗證
 		try {
-			Fmem fmem = fmemSvc.login(fmemAccLogin, fmemPwdLogin);
+			Fmem fmem = fmemSvc.getOneByFmemAcc(fmemAccLogin);
 			
+			// 先檢查帳號是否存在
 			if(fmem == null) {
-				model.addAttribute("loginError", "帳號或密碼錯誤");
+				model.addAttribute("loginError", "帳號或密碼錯誤"); //查無此帳號
 				model.addAttribute("loginRequest", loginRequest);
 				model.addAttribute("fmem", new Fmem());
 				model.addAttribute("activeTab", "login");  //標記目前所在頁籤
+				System.out.println("fmem == null***");
 				return "front_end/farmer/unlogined/fmemRegLogin";
 			}
 			
+			// 如果帳號已被鎖定
+			if(fmem.getLockTime() != null) {
+				long diff = Duration.between(fmem.getLockTime().toInstant(), Instant.now()).toMinutes(); //無條件捨去小數部分
+				if(diff < 10) {
+					model.addAttribute("loginError", "帳號已鎖定，請稍後再試（剩餘 " + (10 - diff) + " 分鐘）");
+					return "front_end/farmer/unlogined/fmemRegLogin";
+				} else { //超過10分鐘 自動解鎖
+					fmem.setLockTime(null);
+					fmem.setFailAttempts(0);
+					fmemSvc.updateFmem(fmem);
+				}
+			}
+			
+			// 檢查密碼是否正確
+			if(!fmem.getFmemPwd().equals(fmemPwdLogin)) {
+				int newAttempts = fmem.getFailAttempts() + 1;
+				fmem.setFailAttempts(newAttempts);
+				
+				if(newAttempts >= 5) {
+					fmem.setLockTime(new Timestamp(System.currentTimeMillis()));
+				}
+				fmemSvc.updateFmem(fmem);
+				
+				model.addAttribute("loginError", "帳號或密碼錯誤");
+				return "front_end/farmer/unlogined/fmemRegLogin";
+			}
+			
+			// 帳號狀態檢查
+			if((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
+				model.addAttribute("loginError", "帳號尚未通過審核或已被停權");
+				return "front_end/farmer/unlogined/fmemRegLogin";
+			}
+			
+			
+			
 			// 3.登入成功，把會員資料存進session
-			model.addAttribute("loggedInFmember", fmem); //@SessionAttributes
-			
+			model.addAttribute("loggedInFmember", fmem); //@SessionAttributes會自動幫我存進session
 			model.addAttribute("fmemId", fmem.getFmemId());
-//			model.addAttribute("fmemName", fmem.getFmemName());
 			session.setAttribute("fmemId", fmem.getFmemId());
-//			session.setAttribute("fmemName", fmem.getFmemName());
 			
-
-//			String fmemCss = fmem.getSty().getStyCssPath();
-//			session.setAttribute("fmemCss", fmemCss);
+			// 發送OTP驗證碼
+			String verificationCode = OTPGenerator.generateOTP();
+			long timeoutMinutes = 5; //設定有效時間(分鐘)
+			redisSvc.setVerificationCode(verificationCode, fmem.getFmemAcc(), timeoutMinutes);
 			
-			// 4.登入成功後 重導至原本頁面或會員中心
-//			String redirectUrl  = (String) session.getAttribute("redirectAfterLogin");
-//			if ( redirectUrl  != null) {
-//				session.removeAttribute("redirectAfterLogin");
-//				return "redirect:" + redirectUrl ;
-//			}
+			String mailTitle = "農作物與它們的產地：小農會員-登入驗證碼";
+			String mailContent = "以下是您的登入驗證碼：" + verificationCode + "\n"
+			        		   + "此驗證碼" + timeoutMinutes +"分鐘內有效，逾時請重新操作。";
+//			mailSvc.sendMail(fmem.getFmemEmail(), mailTitle, mailContent);
+						
+			
+			// 4.登入成功後 重導至OTP驗證***
 			return "redirect:/fmem/home";
+//			return "redirect:/fmem/loginVerifyPage";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);
@@ -995,6 +1078,27 @@ public class FmemController{
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
 	}
+	
+	
+	@GetMapping("/loginVerifyPage")
+	public String loginVerifyPage(ModelMap model) {
+		return "front_end/farmer/unlogined/fmemLoginVerifyOTP";
+	}
+	
+	@PostMapping("/loginVerify")
+	public String loginVerify(
+			@RequestParam("otpCode") String otpCode, 
+			ModelMap model,
+			RedirectAttributes redirectAttrs) {
+		
+		String fmemAcc = redisSvc.getMemAccByCode(otpCode);
+		if (fmemAcc == null) {
+			redirectAttrs.addFlashAttribute("fail", "OTP驗證失敗");
+			return "redirect:/fmem/showFmemRegLoginForm"; //驗證失敗回去登入頁
+		}
+		return "redirect:/fmem/home";
+	}	
+	
 	
 	
 	@PostMapping("/logout")
@@ -1008,6 +1112,5 @@ public class FmemController{
 		return "redirect:/fmem/showFmemRegLoginForm";
 	}
 
-	
 	
 }

@@ -137,6 +137,7 @@ public class ProOrderMemController {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
 
+
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
 		// 判斷是否要返還點數
@@ -350,6 +351,7 @@ public class ProOrderMemController {
 
 		// ===================== 清除 該訂單的購物車內容 =====================
 		proOrdSvc.insertOrderCleanCart(proOrderVO);
+
 
 		// ================= 根據付款不同導向不同頁面 ==================
 		

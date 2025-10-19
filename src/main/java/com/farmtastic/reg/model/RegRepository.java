@@ -125,7 +125,18 @@ public interface RegRepository extends JpaRepository<RegVO, Integer>{
 	        r.actCommat desc
 	    """)
 	    List<RegVO> findReviewsByActId(@Param("actId") Integer actId);
+
 	    
+	//  查詢單一小農的所有活動評分list
+	    @Query("""
+    	    select r.actRate
+    	    from RegVO r
+    	      join Ses s on s.sesId = r.sesId
+    	      join Act a on a.actId = s.actId
+    	    where a.fmemId = :fmemId
+    	      and r.actRate is not null
+    	""")
+    	List<Integer> findAllRatesByFmemId(@Param("fmemId") Integer fmemId);
 	    
 }
 

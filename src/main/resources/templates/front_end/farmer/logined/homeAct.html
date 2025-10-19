@@ -13,73 +13,7 @@
 </head>
 <body>
 
-<!-- 引用header: 複製下面這行 -->
-<!-- 	<div th:replace="~{/front_end/home :: header}"></div> -->
-
-    <div class="container container-header" th:fragment="header">
-        <div class="header">
-            <div class="logo">
-                <a th:href="@{/fmem/home}" class="link">
-                    <img th:src="@{/images/logo-t.png}" alt="">
-                </a>
-            </div>
-            <ul class="nav">
-                <li>
-                    <a th:href="@{/fmem/proAd}" class="link btn">廣告</a>
-                    <ul>
-                    	<li><a th:href="@{/fmem/proAd/applyAdView}">申請廣告</a></li>
-  						<li><a th:href="@{/fmem/proAd/list}">查看廣告</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" class="link btn">商城</a>
-                    <ul>
-                        <li><a href="#">上架商品</a></li>
-                        <li><a th:href="@{/pro/fmem/myPro}">商品管理</a></li>
-  						<li><a href="#">商城商店佈置</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" class="link btn">活動</a>
-                    <ul>
-                        <li><a href="#">上架活動</a></li>
-                        <li><a href="#">上架場次</a></li>
-                        <li><a href="#">活動管理</a></li>
-                        <li><a href="#">場次管理</a></li>
-  						<li><a href="#">活動商店佈置</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" class="link btn">訂單</a>
-                    <ul>
-                        <li><a th:href="@{/fmem/reg/list}">查看活動訂單</a></li>
-                        <li><a th:href="@{/fmem/proorders/listAllProOrder}">查看客戶商品訂單</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a th:href="@{/fmem/fmemArea}" class="link btn">會員中心</a>
-                    <ul th:fragment="fmemAreaLink">
-                        <li><a th:href="@{/fmem/fmemArea/updateProfilePage}">管理個人資料</a></li>
-                        <li><a th:href="@{/fmem/fmemArea/updatePasswordPage}">修改密碼</a></li>
-                        <li><a th:href="@{/fmem/fmemArea/updateStorePage}">管理商店資料</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="member">
-                <a th:if="${session.loggedInFmember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user-tie"></i></a>
-                <a th:if="${session.loggedInFmember} == null" th:href="@{/mem/showMemRegLoginForm}" class="member-logo link btn"><i class="fa-solid fa-user"></i></a>
-                <div class="helloUser" th:if="${session.loggedInFmember} != null">
-                	<div th:text="${session.loggedInFmember.fmemName} + '，'"></div>
-                	<div>您好</div>
-                </div>
-                <a th:if="${session.loggedInFmember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a>
-
-            	<form th:action="@{/fmem/logout}" th:if="${session.loggedInFmember} != null" method="post" class="logout">
-            		<button type="submit" class="btn-logout"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
-            	</form>
-            </div>
-        </div>
-    </div>
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
 <!-- --------------------------------------------------------------------- -->
     
@@ -133,11 +67,6 @@
 
     
 <!-- --------------------------------------------------------------------- -->
-  
-	
-	
-	
-	
 	
 	
 	<div th:replace="~{/front_end/index :: footer}"></div>

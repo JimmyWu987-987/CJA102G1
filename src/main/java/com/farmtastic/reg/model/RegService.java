@@ -115,7 +115,10 @@ public class RegService {
 	        repository.save(regVO);
 		}
 		
-
+		//小農的所有活動評分
+		public List<Integer> getAllRatesByFmemId(Integer fmemId) {
+			return repository.findAllRatesByFmemId(fmemId);
+		}
 
 		
 		

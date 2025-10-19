@@ -177,7 +177,7 @@ public class Fmem implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "sty_no")
-	private Sty sty;
+	private Sty sty = new Sty((byte) 1);
 	
 //	@Column(name = "sty_no")
 //	private Byte styNo = 1;
@@ -200,6 +200,12 @@ public class Fmem implements Serializable {
 	
 	@Column(name = "prod_fee", insertable = false)
 	private Integer prodFee;
+	
+	@Column(name = "fail_attempts")
+	private Integer failAttempts = 0;
+	
+	@Column(name = "lock_time", insertable = false)
+	private Timestamp lockTime;
 	
 	
 	public Fmem() {
@@ -462,5 +468,21 @@ public class Fmem implements Serializable {
 	public void setProdFee(Integer prodFee) {
 		this.prodFee = prodFee;
 	}
+
+
+	public Integer getFailAttempts() {
+		return failAttempts;
+	}
+	public void setFailAttempts(Integer failAttempts) {
+		this.failAttempts = failAttempts;
+	}
+
+	public Timestamp getLockTime() {
+		return lockTime;
+	}
+	public void setLockTime(Timestamp lockTime) {
+		this.lockTime = lockTime;
+	}
+	
 
 }

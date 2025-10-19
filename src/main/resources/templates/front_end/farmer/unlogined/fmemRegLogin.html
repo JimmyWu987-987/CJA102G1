@@ -48,7 +48,7 @@
 		
 	</style>
 </head>
-<body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
+<body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}" th:data-fail="${fail}">
     
 
     <div th:replace="~{/front_end/index :: header}"></div>

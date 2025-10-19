@@ -37,6 +37,10 @@ public class Sty implements Serializable{
 	
 	public Sty() {}
 
+	public Sty(Byte styNo) {
+		this.styNo = styNo;
+	}
+	
 	public Byte getStyNo() {
 		return styNo;
 	}
