@@ -23,7 +23,7 @@
       text-align: center;
       margin-bottom: 24px;
     }
-    /* ✅ 訊息樣式 */
+    /*  訊息樣式 */
     .message {
       padding: 10px 16px;
       border-radius: 6px;
@@ -43,15 +43,32 @@
       border: 1px solid #f5c2c7;
     }
 
-    /* ✅ 無收藏時提示 */
+    /*  無收藏時提示 */
     .empty {
       text-align: center;
       color: #777;
       font-size: 1rem;
       margin-top: 40px;
     }
-
-    /* ✅ 返回連結 */
+    .empty-img {
+  width: 180px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.empty-img:hover {
+  transform: scale(1.05);
+}
+.empty-link {
+  display: inline-block;
+  text-decoration: none;
+  color: #00ffb7;
+  transition: all 0.3s ease;
+}
+.empty p {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+    /*  返回連結 */
     .back-link {
       text-align: center;
       margin-top: 30px;
@@ -90,9 +107,9 @@
 	           th:classappend="${message.contains('成功') ? 'message success' : 'message error'}"
 	           th:text="${message}">
 	      </div>
-	  <!--  收藏清單卡片 -->
-	      <div class="favo-list" th:if="${!#lists.isEmpty(favorites)}">
-	        <div th:each="favo : ${favorites}" class="favo-card" th:fragment="example">
+	  <!--  商品收藏清單卡片 -->
+	      <div class="favo-list" th:if="${!#lists.isEmpty(favoProList)}">
+	        <div th:each="favo : ${favoProList}" class="favo-card" th:fragment="example">
 	
 	          <!-- 圖片區 -->
 	          <img th:src="@{${favo.productVO.proImage}}" alt="商品圖片" class="favo-img">
@@ -104,28 +121,27 @@
 	
 	            <div class="favo-actions">
 	              <a th:href="@{/mall/product/{id}(id=${favo.productVO.proId})}" class="btn-view">查看商品</a>
-	              <form th:action="@{/mem/favopro/remove}" method="post" style="margin:0;">
+	              <form th:action="@{/mem/favo/removeFavoPro}" method="post" style="margin:0;">
 	                <input type="hidden" name="proId" th:value="${favo.productVO.proId}" />
-	                <button type="submit" class="btn-remove">取消收藏</button>
+	                <button type="submit" class="btn-remove">取消商品收藏</button>
 	              </form>
 	            </div>
 	          </div>
 	        </div>
 	        
 <!-- 	        <div th:replace="~{/front_end/customer/logined/favo/MyFavoList :: example}"></div> -->
-<!-- 	        <div th:replace="~{/front_end/customer/logined/favo/MyFavoList :: example}"></div> -->
-<!-- 	        <div th:replace="~{/front_end/customer/logined/favo/MyFavoList :: example}"></div> -->
-	        
-	        
 	      </div>
 	
 	      <!--  若沒有任何收藏 -->
-	      <div class="empty" th:if="${#lists.isEmpty(favorites)}">
-	        <p>目前尚無收藏商品。</p>
+	      <div class="empty" th:if="${#lists.isEmpty(favoProList)}">
+	       <a th:href="@{/mall/products}"  class="empty-link">
+	       <img src="/images/favo/empty-farmer.png" alt="空狀態" class="empty-img">
+	       </a>
+	        <p>目前尚無收藏商品，去逛逛吧！</p>
 	      </div>
 	
 	      <!--  返回商品列表 -->
-	      <div class="back-link">
+	      <div class="back-link" th:unless="${#lists.isEmpty(favoProList)}">
 	        <a th:href="@{/mall/products}">↩ 返回商品清單</a>
 	      </div>
 	    </div>

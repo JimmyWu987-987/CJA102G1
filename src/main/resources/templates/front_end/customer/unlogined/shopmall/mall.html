@@ -382,9 +382,13 @@
                                         <i class="fas fa-cart-plus"></i>
                                     </button>
                                 </form>
-                                <button class="btn btn-theme btn-sm btn-icon" th:attr="onclick=|addToFavorites(${pro.proId})|">
+                                <!-- 2. 加入收藏：使用 form 提交 -->
+                                <form th:action="@{/mem/favo/addFavoPro}" method="post" style="display: inline-block;">
+                                    <input type="hidden" name="proId" th:value="${pro.proId}" />
+                                <button type="submit" class="btn btn-theme btn-sm btn-icon" title="加入收藏">
                                     <i class="fas fa-heart"></i>
                                 </button>
+                                </form>
                             </div>
                         </div>
                     </div>

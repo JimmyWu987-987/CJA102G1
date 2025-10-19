@@ -44,6 +44,14 @@ public class MemActCpnServiceImp {
 		return memActCpnRepository.findAll();
 	}
 
+	// 名稱模糊搜尋
+	public List<MemActCpnVO> searchByKeyword(String keyword) {
+		if (keyword == null || keyword.trim().isEmpty()) {
+			return memActCpnRepository.findAll(); // 沒輸入關鍵字 → 全部
+		}
+		return memActCpnRepository.searchByKeyword(keyword.trim());
+	}
+
 	// 查某張券的「已使用」清單
 	public List<MemActCpnVO> getUsedRecords(Integer cpnId) {
 		return memActCpnRepository.findUsedRecords(cpnId, CpnUseStatus.USED);

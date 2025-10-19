@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.farmtastic.common.mapper.MemProCpnMapperImp;
 import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
@@ -27,13 +26,20 @@ public class MemProCpnAdminController {
 	@Autowired
 	private SpinSyncScheduler spinSyncScheduler;
 
-	@GetMapping("/syncNow")
-	@ResponseBody
-	public String triggerSyncNow() {
-		spinSyncScheduler.syncPendingCoupons();
-		return "✅ 已手動同步 Redis 暫存折價券至資料庫！";
-	}
+//	@GetMapping("/syncNow")
+//	@ResponseBody
+//	public String triggerSyncNow() {
+//		spinSyncScheduler.syncPendingCoupons();
+//		return "已手動同步 Redis 暫存折價券至資料庫！";
+//	}
 
+	// 列出全部會員折價券
+	@GetMapping("/list")
+	public String listAll(Model model) {
+		List<MemProCpnVO> memCoupons = memProCpnSvc.getAll();
+		model.addAttribute("memCoupons", memCoupons);
+		return "/back_end/logined/memprocpn/listAllMemProCpn";
+	}
 //	// 顯示新增頁面
 //	@GetMapping("/addForm")
 //	public String showAddForm(Model model) {
@@ -53,14 +59,6 @@ public class MemProCpnAdminController {
 //		memProCpnSvc.addMemProCpn(vo);
 //		return "redirect:/admin/procpn/listAllProCpn"; // 新增後回列表
 //	}
-
-	// 列出全部會員折價券
-	@GetMapping("/list")
-	public String listAll(Model model) {
-		List<MemProCpnVO> memCoupons = memProCpnSvc.getAll();
-		model.addAttribute("memCoupons", memCoupons);
-		return "/back_end/logined/memprocpn/listAllMemProCpn";
-	}
 
 	@GetMapping("/listValidByMember")
 	// 查「某會員」未使用且有效折價券
