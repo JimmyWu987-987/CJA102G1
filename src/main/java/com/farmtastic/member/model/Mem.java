@@ -1,6 +1,8 @@
 package com.farmtastic.member.model;
 
 import java.io.Serializable;
+//import java.security.AuthProvider;
+import com.farmtastic.member.erum.AuthProvider;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -13,6 +15,8 @@ import com.farmtastic.validator.UpdatePasswordValidation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -111,6 +115,21 @@ public class Mem implements Serializable {
 
 	@Column(name = "mem_point")
 	private Integer memPoint = 0; // default=0
+	
+	// 新增：登入類型（LOCAL 或 GOOGLE）
+	@Enumerated(EnumType.STRING)
+	@Column(name = "auth_provider")
+	private AuthProvider authProvider = AuthProvider.LOCAL;
+	
+	// 新增：Google 使用者唯一 ID（用於 Google 登入）
+	@Column(name = "provider_id")
+	private String providerId;
+	
+	// 新增：大頭照（Google 會提供）
+//	@Column(name = "profile_picture")
+//	private String profilePicture;
+	
+	
 
 	public Mem() {
 		super();
@@ -253,6 +272,24 @@ public class Mem implements Serializable {
 
 	public void setMemPoint(Integer memPoint) {
 		this.memPoint = memPoint;
+	}
+	
+	
+
+	public AuthProvider getAuthProvider() {
+		return authProvider;
+	}
+
+	public void setAuthProvider(AuthProvider authProvider) {
+		this.authProvider = authProvider;
+	}
+
+	public String getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
 	}
 
 	@Override

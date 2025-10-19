@@ -33,6 +33,18 @@ window.addEventListener("load", function(){
 				     htmlContainer: 'custom-swal-content'
 				 }
 	         });
+	 	} else if(successMsg === "生日填寫完成"){
+	 		Swal.fire({
+	             icon: 'success',
+	             title: successMsg,
+	             showConfirmButton: false,
+				 customClass: {
+					 icon: 'custom-icon',
+				     popup: 'custom-swal',
+				     title: 'custom-swal-title',
+				     htmlContainer: 'custom-swal-content'
+				 }
+	         });
  		}
 	
 	

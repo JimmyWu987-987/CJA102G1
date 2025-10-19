@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.farmtastic.member.erum.AuthProvider;
 import com.farmtastic.fmember.model.Fmem;
 
 @Service("memService")
@@ -17,10 +19,30 @@ public class MemService {
 	MemRepository repository;
 	
 	@Autowired
-	private SessionFactory sessionFactory;
+	private PasswordEncoder passwordEncoder;
 	
 	
 	
+//	public Mem login(String memAccLogin, String memPwdLogin) {
+//		
+//		// 1.先檢查帳號是否存在
+//		Mem mem = repository.findByMemAcc(memAccLogin);
+//		if(mem == null) {
+//			return null; //帳號不存在
+//		}
+//		
+//		// 2.檢查密碼是否正確
+//		if(!mem.getMemPwd().equals(memPwdLogin)) {
+//			return null; //密碼錯誤
+//		}
+//		
+//		// 3.檢查帳號狀態
+//		if(mem.getAccStatus() != 1) {
+//			throw new IllegalStateException("帳號尚未開通或已被停權");
+//		}
+//		
+//		return mem; //登入成功
+//	}
 	public Mem login(String memAccLogin, String memPwdLogin) {
 		
 		// 1.先檢查帳號是否存在
@@ -28,16 +50,20 @@ public class MemService {
 		if(mem == null) {
 			return null; //帳號不存在
 		}
-		
-		// 2.檢查密碼是否正確
-		if(!mem.getMemPwd().equals(memPwdLogin)) {
-			return null; //密碼錯誤
-		}
-		
-		// 3.檢查帳號狀態
-		if(mem.getAccStatus() != 1) {
-			throw new IllegalStateException("帳號尚未開通或已被停權");
-		}
+		// 檢查是否為 Google 註冊
+	    if (mem.getAuthProvider() == AuthProvider.GOOGLE) {
+	        throw new IllegalStateException("此帳號使用 Google 登入，請點擊 Google 登入按鈕");
+	    }
+
+	    // 檢查帳號狀態
+	    if (mem.getAccStatus() != 1) {
+	        throw new IllegalStateException("帳號尚未開通，請至信箱收取驗證信");
+	    }
+
+	    // 驗證密碼（使用 BCrypt）
+	    if (!passwordEncoder.matches(memPwdLogin, mem.getMemPwd())) {
+	        throw new IllegalStateException("密碼錯誤");
+	    }
 		
 		return mem; //登入成功
 	}
@@ -48,6 +74,10 @@ public class MemService {
 
 	public boolean existsByMemMobile(String memMobile) {
 		return repository.findByMemMobile(memMobile) != null;
+	}
+	
+	public boolean existsByMemEmail(String memEmail) {
+		return repository.findByMemEmail(memEmail) != null;
 	}
 	
 	
@@ -71,6 +101,9 @@ public class MemService {
 	
 	
 	public void addMem(Mem mem) {
+		if(mem.getMemPwd() != null && !mem.getMemPwd().isEmpty()) {
+			mem.setMemPwd(passwordEncoder.encode(mem.getMemPwd()));
+		}
 		repository.save(mem);
 	}
 	

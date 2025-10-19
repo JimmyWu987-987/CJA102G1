@@ -44,6 +44,7 @@
 					<a class="forget-pwd-btn" th:href="@{/mem/forgetPasswordPage}">忘記密碼？</a>
 
 					<input type="submit" value="登入" class="btn link">
+					<a href="/oauth2/authorization/google" class="btn link btn-google"><i class="fa-brands fa-google"></i> 使用 Google 帳號登入</a>
                 </ul>
             </form>
         </div>
@@ -76,7 +77,7 @@
                     </li>
                     <li>
                         <label for="">生日</label>
-                        <input type="date" th:field="*{memBirthday}">
+                        <input type="date" th:field="*{memBirthday}" max="2013-10-19">
                         <span th:if="${#fields.hasErrors('memBirthday')}" th:errors="*{memBirthday}" class="error"></span>
                     </li>
                     <li>
@@ -125,10 +126,10 @@
     <script th:src="@{/js/mem/successRegAlert.js}"></script>
     <script th:src="@{/js/mem/successUpdatePasswordAlert.js}"></script>
     
-	<!-- 中文語系 -->
-	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
-	<!-- flatpickr JS -->
+    <!-- 加載 flatpickr 核心庫 -->
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh-tw.js"></script> 繁體中文
+	
 	<script th:src="@{/js/mem/dateSelector.js}"></script>
 	
 	<!-- 消費者按下活動報名未登入時跳回登入頁面 -->
