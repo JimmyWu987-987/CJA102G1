@@ -25,9 +25,17 @@ public class MemActCpnAdminController {
 
 	// 列出全部會員折價券
 	@GetMapping("/list")
-	public String listAll(Model model) {
-		List<MemActCpnVO> memCoupons = memActCpnSvc.getAll();
+	public String listAll(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+		List<MemActCpnVO> memCoupons;
+
+		if (keyword != null && !keyword.trim().isEmpty()) {
+			memCoupons = memActCpnSvc.searchByKeyword(keyword); // 模糊搜尋
+		} else {
+			memCoupons = memActCpnSvc.getAll();
+		}
+
 		model.addAttribute("memCoupons", memCoupons);
+		model.addAttribute("keyword", keyword); // 保留搜尋字串
 		return "back_end/logined/memactcpn/listAllMemActCpn";
 	}
 //	// 顯示新增頁面

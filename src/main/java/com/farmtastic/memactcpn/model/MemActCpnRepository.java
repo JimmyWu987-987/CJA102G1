@@ -50,4 +50,14 @@ public interface MemActCpnRepository extends JpaRepository<MemActCpnVO, Integer>
 	// 查某張券「已使用」的紀錄
 	@Query("SELECT m FROM MemActCpnVO m WHERE m.actCpnVO.actCpnId = :cpnId AND m.cpnUseStatus = :status")
 	List<MemActCpnVO> findUsedRecords(@Param("cpnId") Integer couponId, @Param("status") CpnUseStatus status);
+
+	@Query("""
+			SELECT mac FROM MemActCpnVO mac
+			JOIN mac.memVO mem
+			JOIN mac.actCpnVO cpn
+			WHERE LOWER(mem.memAcc) LIKE LOWER(CONCAT('%', :keyword, '%'))
+			   OR LOWER(cpn.cpnName) LIKE LOWER(CONCAT('%', :keyword, '%'))
+			ORDER BY mac.rcvAt DESC
+			""")
+	List<MemActCpnVO> searchByKeyword(@Param("keyword") String keyword);
 }

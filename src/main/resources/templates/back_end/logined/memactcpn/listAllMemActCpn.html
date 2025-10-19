@@ -21,14 +21,12 @@
 </style>
 </head>
 <body class="min-h-screen bg-gray-50 p-6">
-
  <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-    <h2>活動折價券清單</h2>
-
+    <h2>活動折價券明細清單</h2>
     <!-- 搜尋與篩選 -->
     <form th:action="@{/admin/memactcpn/list}" method="get" class="flex justify-center gap-3 mb-6 flex-wrap">
 <input type="text" name="keyword"
-                   placeholder="輸入會員帳號或折價券名稱..."
+                   placeholder="輸入會員帳號或活動折價券名稱..."
                    th:value="${keyword}"
                    class="border border-gray-300 rounded-lg px-4 py-2 w-72 focus:outline-none focus:ring-2 focus:ring-blue-400">
             <button type="submit"
@@ -40,51 +38,57 @@
     <!-- 無資料提示 -->
       <div th:if="${#lists.isEmpty(memCoupons)}"
              class="text-center bg-yellow-100 text-yellow-800 py-3 rounded-lg font-medium">
-            目前無會員折價券資料。
+            目前無活動折價券資料。
         </div>
 
     <!--  清單表格 -->
      <div th:if="${!#lists.isEmpty(memCoupons)}" class="overflow-x-auto">
-            <table id="memActCpnTable"
-                   class="min-w-full text-sm text-center text-gray-700 border border-gray-200 rounded-lg">
-                <thead class="bg-gray-100 text-gray-800 font-semibold">
-                    <tr>
-                        <th class="px-4 py-2">序號</th>
-                        <th class="px-4 py-2">會員帳號</th>
-                        <th class="px-4 py-2">折價券名稱</th>
-                        <th class="px-4 py-2">使用狀態</th>
-                        <th class="px-4 py-2">領取日期</th>
-                        <th class="px-4 py-2">起始日</th>
-                        <th class="px-4 py-2">到期日</th>
-                        <th class="px-4 py-2">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="mc, iterStat : ${memCoupons}" class="border-t hover:bg-gray-50">
-                        <td th:text="${iterStat.index + 1}" class="py-2"></td>
-                        <td th:text="${mc.memVO.memAcc}" class="py-2"></td>
-                        <td th:text="${mc.actCpnVO.cpnName}" class="py-2"></td>
-                        <td class="py-2">
-                            <span th:switch="${mc.cpnUseStatus}">
-                                <span th:case="0" class="status-unused">未使用</span>
-                                <span th:case="1" class="status-used">已使用</span>
-                                <span th:case="2" class="status-expired">已過期</span>
-                                <span th:case="*">未知</span>
-                            </span>
-                        </td>
-                        <td th:text="${#temporals.format(mc.rcvAt, 'yyyy-MM-dd HH:mm')}" class="py-2"></td>
-                        <td th:text="${mc.effStart}" class="py-2"></td>
-                        <td th:text="${mc.effEnd}" class="py-2"></td>
-                        <td class="py-2">
-                            <a th:href="@{'/admin/memactcpn/view/' + ${mc.cpnHolderDetailId}}"
-                               class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 text-xs">查看</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  <table id="memActCpnTable"
+         class="w-full text-sm text-center text-gray-200 border border-gray-700 rounded-lg border-collapse">
+    <thead class="bg-gray-800 text-gray-100 font-semibold">
+      <tr>
+        <th class="px-4 py-3 w-20 border-b border-gray-700">序號</th>
+        <th class="px-4 py-3 w-40 border-b border-gray-700">會員帳號</th>
+        <th class="px-4 py-3 w-56 border-b border-gray-700">折價券名稱</th>
+        <th class="px-4 py-3 w-28 border-b border-gray-700">使用狀態</th>
+        <th class="px-4 py-3 w-40 border-b border-gray-700">領取日期</th>
+        <th class="px-4 py-3 w-32 border-b border-gray-700">起始日</th>
+        <th class="px-4 py-3 w-32 border-b border-gray-700">到期日</th>
+        <th class="px-4 py-3 w-28 border-b border-gray-700">操作</th>
+      </tr>
+    </thead>
 
-    <!-- 📊 總筆數 -->
+    <tbody>
+      <tr th:each="mc, iterStat : ${memCoupons}" 
+          class="border-t border-gray-700 hover:bg-gray-700 transition">
+        <td th:text="${iterStat.index + 1}" class="py-3 px-2"></td>
+        <td th:text="${mc.memVO.memAcc}" class="py-3 px-2"></td>
+        <td th:text="${mc.actCpnVO.cpnName}" class="py-3 px-2"></td>
+
+        <td class="py-3 px-2">
+          <span th:switch="${mc.cpnUseStatus}">
+            <span th:case="0" class="text-green-400 font-semibold">未使用</span>
+            <span th:case="1" class="text-blue-400 font-semibold">已使用</span>
+            <span th:case="2" class="text-red-400 font-semibold">已過期</span>
+            <span th:case="*">未知</span>
+          </span>
+        </td>
+
+        <td th:text="${#temporals.format(mc.rcvAt, 'yyyy-MM-dd HH:mm')}" class="py-3 px-2"></td>
+        <td th:text="${mc.effStart}" class="py-3 px-2"></td>
+        <td th:text="${mc.effEnd}" class="py-3 px-2"></td>
+        <td class="py-3 px-2">
+          <a th:href="@{'/admin/memactcpn/view/' + ${mc.cpnHolderDetailId}}"
+             class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-xs">
+            查看
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+    <!--  總筆數 -->
      <div class="text-right text-gray-500 text-sm mt-3"
              th:text="'共 ' + ${#lists.size(memCoupons)} + ' 筆資料'"></div>
     </div>
