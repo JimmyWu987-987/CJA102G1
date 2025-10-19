@@ -577,7 +577,10 @@ VALUES
 ('新客專屬抵100', 0, 100, NULL, NULL, 14, '新會員註冊後14天內可使用，全館適用', 1, 0),
 -- 2️生日會員：生日當月 85 折券（30天內有效）
 ('生日85折券', 1, 0.85, NULL, NULL, 30, '生日當月發放，全館適用，30天內有效', 1, 0),
-('生日折200', 0,200, NULL, NULL, 30, '生日當月發放，全館適用，30天內有效', 1, 0);
+('生日折200', 0,200, NULL, NULL, 30, '生日當月發放，全館適用，30天內有效', 1, 0),
+-- 3轉盤：轉盤折扣券（30天內有效）
+('轉盤折200', 0,200, NULL, NULL, 30, '轉盤折200，全館適用，30天內有效', 1, 0),
+('轉盤折100', 0,100, NULL, NULL, 30, '轉盤折100，全館適用，30天內有效', 1, 0);
 
 -- 刪除/建立 商品折價卷持有者明細
 DROP TABLE IF EXISTS mem_pro_cpn;
@@ -602,22 +605,21 @@ VALUES
 (1, 1, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
 (3, 1, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NULL),
 (4, 1, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
--- 1️⃣ 新註冊會員：未使用中（有效期內）
+-- 1️.新註冊會員：未使用中（有效期內）
 (1, 11, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
 
--- 2️⃣ 生日會員：未使用（今天生日當月）
+-- 2️.生日會員：未使用（今天生日當月）
 (2, 4, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NULL),
 (1, 4, NULL, 0, NOW(), DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 11 DAY), NULL),
 
--- 3️⃣ 生日會員：已使用
+-- 3️.生日會員：已使用
 (2, 2, 1, 1, '2025-09-01 10:00:00', '2025-09-01', '2025-09-30', '2025-09-15 13:00:00'),
 
--- 4️⃣ 測試過期狀況
+-- 4️.測試過期狀況
 (1, 3, NULL, 2, '2025-06-01 09:00:00', '2025-06-01', '2025-06-15', NULL),
 
--- 5️⃣ 新註冊會員：剛領取，未使用
+-- 5️.新註冊會員：剛領取，未使用
 (1, 12, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY), NULL);
-
 
 -- 刪除/建立 商城訂單
 DROP TABLE IF EXISTS pro_order;
@@ -1155,7 +1157,12 @@ INSERT INTO favo_pro (mem_id, pro_id) VALUES
 
 -- 刪除/建立 活動收藏清單
 
-
+DROP TABLE IF EXISTS favo_act;
+CREATE TABLE favo_act (
+    mem_id INT,  -- PK,FK
+    act_id INT,  -- PK,FK
+    CONSTRAINT favo_act_pk PRIMARY KEY (mem_id, act_id)
+) ENGINE=InnoDB;
 
 
 
@@ -1338,6 +1345,9 @@ ADD CONSTRAINT favo_pro_mem_fk FOREIGN KEY (mem_id) REFERENCES mem(mem_id) ON DE
 ADD CONSTRAINT favo_pro_pro_fk FOREIGN KEY (pro_id) REFERENCES product(pro_id) ON DELETE CASCADE;
 
 -- 活動收藏清單（FK一般會員編號）（FK活動編號）
+ALTER TABLE favo_act  -- 家慶
+ADD CONSTRAINT favo_act_mem_fk FOREIGN KEY (mem_id) REFERENCES mem(mem_id) ON DELETE CASCADE,
+ADD CONSTRAINT favo_act_act_fk FOREIGN KEY (act_id) REFERENCES act(act_id) ON DELETE CASCADE;
 
 
 -- (3-2) 管理員職稱表 -> 
