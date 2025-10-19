@@ -288,6 +288,30 @@ public class ProOrderMemController {
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
 
+		// 訂單狀態
+		proOrderVO.setProOrdStatus((byte) 0);
+
+		// 訂單付款狀態
+		proOrderVO.setProPayStatus((byte) 0);
+
+		// 平台撥款狀態，預設為0(未撥款)
+		proOrderVO.setProOrdAllocStatus((byte) 0);
+
+		// 平台抽成金額
+		// 依照訂單的商品總金額（不含運不含折扣），計算平台抽成的金額。
+		Integer ProOrdAllocTotal = (int) (proOrderVO.getProTotal() * ALLOC_PER);
+		proOrderVO.setProOrdAllocTotal(ProOrdAllocTotal);
+
+		// 平台撥款給小農的金額
+		Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
+		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
+
+		// 設定關聯和明細
+		Integer memId = proOrderVO.getMemVO().getMemId();
+		Mem memVO = memSvc.getOneByMemId(memId);
+		proOrderVO.setMemVO(memVO);
+		proOrderVO.setProOrderItems(finalItems);
+
 		// ================== (先預扣)扣商品庫存的邏輯 ======================
 		try {
 			Pro errorProStock = proOrdSvc.discProductStock(proOrderVO);
