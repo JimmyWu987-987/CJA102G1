@@ -573,6 +573,21 @@ window.addEventListener("load", function() {
 			});
 
 		}
+		if (successMsg === "回覆成功") {
+			Swal.fire({
+				icon : 'success',
+				title : successMsg,
+				text : "辦活動不簡單，辛苦了!",
+				showConfirmButton : false,
+				customClass : {
+					icon : 'custom-icon',
+					popup : 'custom-swal',
+					title : 'custom-swal-title',
+					htmlContainer : 'custom-swal-content'
+				}
+			});
+
+		}
 	}
 });
 

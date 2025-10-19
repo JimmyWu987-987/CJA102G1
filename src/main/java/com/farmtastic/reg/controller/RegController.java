@@ -130,8 +130,9 @@ public class RegController {
 
 	// 小農給予評價回覆
 	@PostMapping("fmem/act/comm/reply")
-	public String replyActComment(@RequestParam Integer regId, @RequestParam String actCommReply) {
+	public String replyActComment(@RequestParam Integer regId, @RequestParam String actCommReply,RedirectAttributes redirectAttributes) {
 		regService.addActCommReply(regId, actCommReply);
+		redirectAttributes.addFlashAttribute("success", "回覆成功");
 		return "redirect:/fmem/reg/list";
 	}
 	
@@ -197,15 +198,16 @@ public class RegController {
 //        model.addAttribute("extras", regService.getActAndSesByMemId(mem.getMemId()));
 
 		if (success == 1)
-			model.addAttribute("successMsg", "報名成功！");
+			model.addAttribute("success", "報名成功");
 		return "front_end/customer/logined/reg/memListReg";
 	}
 
 	// 消費者給予評價
 	@PostMapping("mem/act/comm/rate")
 	public String rateActComment(@RequestParam Integer regId, @RequestParam Integer actRate,
-			@RequestParam String actComm) {
+			@RequestParam String actComm,RedirectAttributes redirectAttributes) {
 		regService.addActRate(regId, actRate, actComm);
+		redirectAttributes.addFlashAttribute("success", "評論成功");
 		return "redirect:/mem/reg/list";
 	}
 

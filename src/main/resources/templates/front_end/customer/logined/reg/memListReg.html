@@ -497,23 +497,44 @@ document.addEventListener('click', function(e){
 
 	
 
-window.addEventListener("load", function () {
-  const msg = document.body.dataset.success;     
-  if (msg) {
-    // 可直接用字串判斷或只要有值就跳
-    Swal.fire({
-      icon: 'success',
-      title: msg,                 
-      text: '我們已收到您的訂單',
-      showConfirmButton: false,             
-      customClass: {
-        popup: 'custom-swal',
-        title: 'custom-swal-title',
-        htmlContainer: 'custom-swal-content'
-      }
-    });
-  }
+window.addEventListener("load", function() {
+	const successMsg = document.body.dataset.success;
+	if (successMsg != null) {
+		console.log(successMsg);	
+		if (successMsg === "報名成功") {
+		    // 可直接用字串判斷或只要有值就跳
+		    Swal.fire({
+		      icon: 'success',
+		      title: successMsg,                 
+		      text: '我們已收到您的訂單',
+		      showConfirmButton: false,             
+		      customClass: {
+		        popup: 'custom-swal',
+		        title: 'custom-swal-title',
+		        htmlContainer: 'custom-swal-content'
+		      }
+		    });
+		  }
+		
+		if (successMsg === "評論成功") {
+			Swal.fire({
+				icon : 'success',
+				title : successMsg,
+				text : "恭喜您活動順利完成!",
+				showConfirmButton : false,
+				customClass : {
+					icon : 'custom-icon',
+					popup : 'custom-swal',
+					title : 'custom-swal-title',
+					htmlContainer : 'custom-swal-content'
+				}
+			});
+
+		}
+		
+	}
 });
+
 
 
 //畫面鑲嵌在iframe問題
