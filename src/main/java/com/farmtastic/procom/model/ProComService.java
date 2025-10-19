@@ -62,6 +62,7 @@ public class ProComService {
 
 		return totalRate;
 	}
+	// 單一小農的總評倫數
 
 	// 計算該小農的總評論數
 	public Integer countProComByFmemId(Integer fmemId) {
