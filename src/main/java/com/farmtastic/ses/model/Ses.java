@@ -206,11 +206,6 @@ public class Ses {
 		this.actId = actId;
 	}
 	
-	// 拿報名狀態文字
-	public String getRegStatText() {
-		return RegStat.getRegStatDesc(this.regStat);
-	}
-	
 	// 拿上下架狀態文字
 	public String getLaunStatText() {
 		return LaunStat.getLaunStatDesc(this.sesLaunStat);
@@ -223,6 +218,28 @@ public class Ses {
 	
 	public Act getAct() { // 如果您沒有Lombok, 需手動加入
 	    return act;
+	}
+	
+	// 取得報名狀態
+	//TODO: 需修改假資料, 不做編輯場次了, default要改成5
+	@Transient
+	public String getRegStatText() {
+	    switch (this.regStat) {
+	        case 0:
+	            return "報名中";
+	        case 1:
+	            return "已成團";
+	        case 2:
+	            return "不成團，取消";
+	        case 3:
+	            return "已完成";
+	        case 4:
+	            return "已取消";
+	        case 5:
+	            return "未開始報名";
+	        default:
+	            return "未知狀態";
+	    }
 	}
 
 }

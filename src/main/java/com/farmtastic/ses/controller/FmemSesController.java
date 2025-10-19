@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.ses.model.Ses;
@@ -48,6 +48,11 @@ public class FmemSesController {
     	// 塞自己的FmemId、依日期排序
         List<Ses> sesList = sesSvc.findSesWithActByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "sesDate"));
         
+        for (Ses ses : sesList) {
+            Integer headCount = sesSvc.getHeadCount(ses.getSesId());
+            ses.setHeadCountCache(headCount); 
+        }
+        
         model.addAttribute("sesList", sesList);
         
         if (sesList.isEmpty()) {
@@ -63,12 +68,10 @@ public class FmemSesController {
     @PostMapping("/toggleLaunchStat")
     public String toggleLaunchStat(@RequestParam("sesId") Integer sesId, 
                                    @RequestParam("targetStat") Integer targetStat, // 1:上架, 0:下架
-                                   HttpSession session, 
-                                   ModelMap model) {
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
         
          Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); 
-         
-         // 登入檢查 (避免 500 錯誤)
          if (fmem == null) {
              return "redirect:/showFmemRegLoginForm";
          }
@@ -79,31 +82,42 @@ public class FmemSesController {
          if (sesOpt.isPresent()) {
              Ses ses = sesOpt.get();
              
-             // 權限檢查
+             // 防呆權限檢查
              if (ses.getAct() == null || !ses.getAct().getFmem().getFmemId().equals(fmemId)) {
-                 model.addAttribute("errorMessage", "無權限操作此場次");
+            	 redirectAttributes.addFlashAttribute("errorMessage", "您無權操作此場次");
                  return "redirect:/fmem/ses/listAllSesForFmem"; 
              }
              
-             // 執行上下架操作：將 sesLaunStat 設為目標狀態
+             Integer currentHeadCount = sesSvc.getHeadCount(sesId);
+             
+             
+             // 進行上下架
              ses.setSesLaunStat(targetStat); 
              ses.setSesLaunUpd(new Timestamp(System.currentTimeMillis()));
              
              String message;
-             if (targetStat == 0) {
-                 ses.setRegStat(0); 
+             if (targetStat.equals(0)) {
+            	 if (!currentHeadCount.equals(0)) {
+            		 redirectAttributes.addFlashAttribute("errorMessage", 
+            				 							  "場次 ID " + sesId + " 已有 " + currentHeadCount + // 顯示正確人數
+            				 							  " 人報名，無法執行「下架」操作。若需中止場次，請點擊「取消場次」。");
+            		 return "redirect:/fmem/ses/listAllSesForFmem";
+                     
+            	 }
+            	 // 報名狀態為 改為 5 (未開始報名)
+                 ses.setRegStat(5); 
                  message = "場次 ID " + sesId + " 已完成下架";
              } else {
-                 // 1 (上架)：同時設定報名狀態為 1 (報名中)
-                 ses.setRegStat(1);
+                 // 1 (上架), 同時設定報名狀態為 0 (報名中)
+                 ses.setRegStat(0);
                  message = "場次 ID " + sesId + " 已完成上架";
              }
              
              sesSvc.updateSes(ses, fmemId); 
-             model.addAttribute("successMessage", message);
+             redirectAttributes.addFlashAttribute("successMessage", message);
                 
          } else {
-             model.addAttribute("errorMessage", "找不到該場次 ID: " + sesId);
+        	 redirectAttributes.addFlashAttribute("errorMessage", "找不到該場次 ID: " + sesId);
          }
         
          return "redirect:/fmem/ses/listAllSesForFmem"; 

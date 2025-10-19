@@ -106,6 +106,7 @@
             <th>場次日期</th>
             <th>可報名人數上限</th>
             <th>已報名人數 (總計)</th>
+            <th>報名狀態</th>
             <th>是否成團</th>
             <th>場次狀態</th>
             <th>操作</th>
@@ -132,9 +133,9 @@
             <td th:text="${ses.maxPpl}"></td>
             
             <td th:text="${ses.headCount}"></td>
-
+			<td th:text="${ses.regStatText}"></td>
             <td>
-                <span th:if="${ses.headCount >= ses.minPpl}" class="success-text">已成團</span>
+                <span th:if="${ses.headCount >= ses.minPpl}" class="success-text">已可成團</span>
                 <span th:if="${ses.headCount < ses.minPpl}" class="pending-text">未成團 (最低人數: [[${ses.minPpl}]])</span>
                 <span th:if="${ses.headCount >= ses.maxPpl}" class="full-text">已額滿!</span>
             </td>
@@ -142,7 +143,8 @@
             <td th:text="${ses.launStatText}"></td>
             
 <td>
-	<div th:if="${ses.regStat != 4}">
+				<div th:if="${ses.regStat != 4}">
+					
 					<form th:action="@{/fmem/ses/toggleLaunchStat}" method="post" style="display:inline; margin-right: 5px;">
 						
 						<input type="hidden" name="sesId" th:value="${ses.sesId}" />
@@ -150,16 +152,14 @@
 						
 						<span th:if="${ses.sesLaunStat == 1}">
 							<input type="hidden" name="targetStat" value="0" /> 
-							<button type="submit" class="btn btn-warning" 
-									onclick="return confirm('確定要下架場次 ' + [[${ses.sesId}]] + ' 嗎？')">
+							<button type="submit" class="btn btn-warning">
 								下架場次
 							</button>
 						</span>
 
 						<span th:if="${ses.sesLaunStat == 0}">
 							<input type="hidden" name="targetStat" value="1" /> 
-							<button type="submit" class="btn btn-success" 
-									onclick="return confirm('確定要重新上架場次 ' + [[${ses.sesId}]] + ' 嗎？')">
+							<button type="submit" class="btn btn-success">
 								上架場次
 							</button>
 						</span>
@@ -171,7 +171,7 @@
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}" />
 						
 						<button type="submit" class="btn btn-danger" 
-								onclick="return confirm('警告：確定要取消場次 ' + [[${ses.sesId}]] + ' 嗎？取消後會下架且不可復原上下架狀態！')">
+								onclick="return confirm('警告：確定要永久取消場次 ' + [[${ses.sesId}]] + ' 嗎？此操作不可逆！')">
 							取消場次
 						</button>
 					</form>
@@ -190,6 +190,25 @@
 </div>
 </div>
 <div th:replace="~{/front_end/index :: footer}"></div>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // 檢查是否有成功訊息
+    const successMessage = /*[[${successMessage}]]*/ null;
+    if (successMessage) {
+        alert(successMessage);
+    }
+
+    // 檢查是否有錯誤訊息
+    const errorMessage = /*[[${errorMessage}]]*/ null;
+    if (errorMessage) {
+        alert("操作失敗: " + errorMessage);
+    }
+
+    /*]]>*/
+</script>
+
 
 </body>
 </html>
