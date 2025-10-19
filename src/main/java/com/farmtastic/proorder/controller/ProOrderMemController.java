@@ -134,8 +134,9 @@ public class ProOrderMemController {
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
 			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes,
 			HttpSession session) {
-
+		
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
+
 
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
@@ -311,6 +312,7 @@ public class ProOrderMemController {
 		// ================== 新增訂單 =====================
 		try {
 			proOrdSvc.addProOrder(proOrderVO);
+			
 
 		} catch (RuntimeException e) {
 			// 捕捉 Service 拋出的商品 ID 缺失或其他錯誤
