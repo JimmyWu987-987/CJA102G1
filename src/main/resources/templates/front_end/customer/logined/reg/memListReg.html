@@ -299,9 +299,10 @@ white-space: nowrap;
     </div>
 
     <!-- 消費者「尚未評價」才可填-->
-    <form th:if="${r.actRate == null and #strings.isEmpty(r.actComm)}"
-          th:action="@{/mem/act/comm/rate}" method="post" style="margin-top:8px;"
-          onsubmit="return confirm('送出後將無法更改，確定提交嗎？');">
+    <form th:if="${(r.actRate == null or r.actRate == 0) 
+              and #strings.isEmpty(#strings.trim(r.actComm))}"
+      th:action="@{/mem/act/comm/rate}" method="post"
+      onsubmit="return confirm('送出後將無法更改，確定提交嗎？');">
       <input type="hidden" name="regId" th:value="${r.regId}">
 
       <label><b>評分：</b></label>
