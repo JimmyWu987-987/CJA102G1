@@ -29,7 +29,7 @@ public class FmemSesController {
 	@Autowired
 	private SesService sesSvc;
 	
-	
+	// TODO: 新增場次
 	
 	// ========== 查小農自己的全部場次 ==========
 	// 查全部
@@ -59,13 +59,55 @@ public class FmemSesController {
     }
 
 
-	//	================= 取得單一場次 >> Act 有了, 改一下即可 ==================
-
-
-
-	//	================= 新增場次 ==================
-	//	================= 編輯場次 ==================
-    
+	//	================= 上下架場次 ==================
+    @PostMapping("/toggleLaunchStat")
+    public String toggleLaunchStat(@RequestParam("sesId") Integer sesId, 
+                                   @RequestParam("targetStat") Integer targetStat, // 1:上架, 0:下架
+                                   HttpSession session, 
+                                   ModelMap model) {
+        
+         Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); 
+         
+         // 登入檢查 (避免 500 錯誤)
+         if (fmem == null) {
+             return "redirect:/showFmemRegLoginForm";
+         }
+         Integer fmemId = fmem.getFmemId();
+        
+         Optional<Ses> sesOpt = sesSvc.getOneSes(sesId);
+        
+         if (sesOpt.isPresent()) {
+             Ses ses = sesOpt.get();
+             
+             // 權限檢查
+             if (ses.getAct() == null || !ses.getAct().getFmem().getFmemId().equals(fmemId)) {
+                 model.addAttribute("errorMessage", "無權限操作此場次");
+                 return "redirect:/fmem/ses/listAllSesForFmem"; 
+             }
+             
+             // 執行上下架操作：將 sesLaunStat 設為目標狀態
+             ses.setSesLaunStat(targetStat); 
+             ses.setSesLaunUpd(new Timestamp(System.currentTimeMillis()));
+             
+             String message;
+             if (targetStat == 0) {
+                 ses.setRegStat(0); 
+                 message = "場次 ID " + sesId + " 已完成下架";
+             } else {
+                 // 1 (上架)：同時設定報名狀態為 1 (報名中)
+                 ses.setRegStat(1);
+                 message = "場次 ID " + sesId + " 已完成上架";
+             }
+             
+             sesSvc.updateSes(ses, fmemId); 
+             model.addAttribute("successMessage", message);
+                
+         } else {
+             model.addAttribute("errorMessage", "找不到該場次 ID: " + sesId);
+         }
+        
+         return "redirect:/fmem/ses/listAllSesForFmem"; 
+    }    
     
 	//	================= 取消場次 (= 編輯報名狀態+下架) ==================
     @PostMapping("/cancelSes")

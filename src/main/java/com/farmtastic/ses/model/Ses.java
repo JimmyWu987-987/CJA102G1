@@ -220,5 +220,9 @@ public class Ses {
 	public void setHeadCountCache(Integer headCountCache) {
 		this.headCountCache = headCountCache;
 	}
+	
+	public Act getAct() { // 如果您沒有Lombok, 需手動加入
+	    return act;
+	}
 
 }
