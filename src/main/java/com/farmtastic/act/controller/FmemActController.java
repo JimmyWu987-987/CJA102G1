@@ -43,6 +43,7 @@ import com.farmtastic.act.model.ActService;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.ses.model.Ses;
+import com.farmtastic.ses.model.SesRepository;
 import com.farmtastic.ses.model.SesService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -72,6 +73,9 @@ public class FmemActController {
     
     @Autowired
     private ActRepository actRepo;
+
+    @Autowired
+    private SesRepository sesRepo;
     
     @Autowired
     private ActCateRepository actCateRepo;
@@ -90,12 +94,7 @@ public class FmemActController {
 //		model.addAttribute("success", "活動修改成功！");
 //		return "redirect:/act/listAll";
 //	}
-    
-    
-    
-    // =========== 上下架活動 ============
-    
-    
+
 
     // =========== 小農查詢自己的活動 (ok) ============
     
@@ -148,8 +147,8 @@ public class FmemActController {
     	if (fmem == null) {
             // 沒登入的防呆
             model.addAttribute("message", "請先登入小農頁面, 謝謝");
-// TODO: 導回登入頁, 看一下post是什麼
-            return "redirect:/login";
+            // 導回小農登入頁
+            return "redirect:/showFmemRegLoginForm";
         }
     	
     	Integer fmemId = fmem.getFmemId();
@@ -164,6 +163,11 @@ public class FmemActController {
         }
     	
     	Act act = optAct.get();
+    	
+    	if (act.getActImg() != null) {
+            act.getActImg().size();
+        }
+    	
 
         // 依分類ID排序
         List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
@@ -178,7 +182,17 @@ public class FmemActController {
         List<Ses> launchedSes = allSes.stream()
         							  .filter(s -> s.getSesLaunStat() != null)
         							  .toList();
-
+        
+        
+        for (Ses ses : launchedSes) {
+            // 呼叫 SesService 取得報名人數
+            Integer count = sesRepo.getHeadCountBySesId(ses.getSesId());
+            
+            // 將計算結果設定到 Ses 物件中。
+            // 注意：您需要在 Ses.java 中新增 setActualRegCount() 方法
+            sesSvc.getHeadCount(count); 
+        }
+        
         
         model.addAttribute("sesList", launchedSes);
         model.addAttribute("act", act);
@@ -187,6 +201,60 @@ public class FmemActController {
         return "front_end/farmer/logined/fmemAct/actDetailsForFmem";
         
     }
+    
+    
+    // =========== 上下架活動 ============
+	@PostMapping("/updateLaunchStatus/{actId}")
+	public String updateLaunchStatus(@PathVariable Integer actId, 
+									 @RequestParam("newLaunStat") Integer newLaunStat,
+									 HttpSession session,
+									 RedirectAttributes redirectAttributes) {
+
+		// 防呆, 一樣先取小農&單一活動
+        Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); 
+        
+        if (fmem == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "請先登入小農頁面, 謝謝");
+            return "redirect:/showFmemRegLoginForm";
+        }
+        
+        Integer fmemId = fmem.getFmemId();
+        
+        try {
+            Optional<Act> optAct = actSvc.getOneActByFmemId(actId, fmemId); 
+            
+            if (optAct.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "查無此活動");
+                return "redirect:/fmem/act/launchActList"; 
+            }
+
+            Act act = optAct.get();
+            
+            //	僅能對已審核通過的進行上下架
+            if (act.getActStat() != 2) { 
+                redirectAttributes.addFlashAttribute("errorMessage", "只有已過審核的活動才能進行上下架操作");
+                return "redirect:/fmem/act/detail/{actId}"; 
+            }
+            
+            // set 活動上下架狀態 & 活動上下架狀態更新時間
+            act.setActLaunStat(newLaunStat);
+            act.setActLaunUpd(new Timestamp(System.currentTimeMillis()));
+            
+            // 進行更新
+            actSvc.updateAct(act, fmemId); 
+
+            String action = (newLaunStat == 1) ? "上架" : "下架";		// 上架是1
+            redirectAttributes.addFlashAttribute("successMessage", "活動 ID: " + actId + " 已成功 " + action);
+
+        	} catch (Exception e) {
+        		redirectAttributes.addFlashAttribute("errorMessage", "更新上下架狀態時發生系統錯誤。");
+        	}
+
+        return "redirect:/fmem/act/detail/{actId}"; 
+    }
+    
+    
+    
     
 	// =========== 抓圖 ============
 
@@ -245,19 +313,27 @@ public class FmemActController {
         writeImageToResponse(img.getActImg(), response);
 	}
 
-	private void writeImageToResponse(byte[] imgBytes, HttpServletResponse response) {
-		try {
-			String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(imgBytes));
-			if (contentType == null) contentType = "image/jpeg"; // 預設 jpeg
-
-			response.setContentType(contentType);
-			response.getOutputStream().write(imgBytes);
-			response.getOutputStream().flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-			response.setStatus(HttpServletResponse.SC_OK);
-		}
-	}
+    private void writeImageToResponse(byte[] imgBytes, HttpServletResponse response) {
+        
+        // 檢查圖片位元組資料是否為空
+        if (imgBytes == null || imgBytes.length == 0) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204
+            return;
+        }
+        
+        try {
+            // 🚨 最終修正：移除不可靠的猜測。設定為通用的二進制數據流。
+            // 這會讓瀏覽器根據數據流的內容（檔案簽名）來自行判斷圖片類型（JPEG, PNG, GIF）。
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE); 
+            
+            response.getOutputStream().write(imgBytes);
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // 修正錯誤狀態碼：寫入流時發生錯誤，應該返回 500
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
+        }
+    }
 	
     
     // ============ 輪播器圖片 ============

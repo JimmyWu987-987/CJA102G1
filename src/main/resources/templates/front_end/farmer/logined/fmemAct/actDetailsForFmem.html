@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/main.css}">
     
     <!-- 活動詳情專用 CSS -->
-    <link rel="stylesheet" th:href="@{/css/act/actDetails.css}">
+    <link rel="stylesheet" th:href="@{/css/act/actDetailsForFmem.css}">
 </head>
 <body>
     <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
@@ -19,11 +19,11 @@
         <div class="carousel-track">
             <!-- 主圖 -->
             <div class="carousel-item">
-                <img th:src="@{/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
+                <img th:src="@{/fmem/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
             </div>
             <!-- 活動多圖 -->
             <div class="carousel-item" th:each="img : ${act.actImg}">
-                <img th:src="@{/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
+                <img th:src="@{/fmem/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
             </div>
         </div>
         <button class="carousel-btn prev">&#10094;</button>
@@ -32,22 +32,53 @@
             <span class="dot" th:each="img, iterStat : ${act.actImg}" th:data-index="${iterStat.index}"></span>
         </div>
     </div>
-<div class="act-info">
-<div class="act-details">
-	<p><strong>活動評價：</strong>
-    <span th:if="${act.actCnt != null and act.actCnt > 0}"
-          th:text="${#numbers.formatDecimal(act.actScore / act.actCnt, 1, 1)} + ' 顆星 (' + ${act.actCnt} + ' 筆評價)'"></span>
-    <span th:if="${act.actCnt == null or act.actCnt == 0}">尚無評價</span>
-	</p><br>
-    <p><strong>活動日期:</strong> <span th:text="${act.actStart} + ' ~ ' + ${act.actEnd}"></span></p><br>
-    <p><strong>活動基本價:</strong> <span th:text="${act.actFee}"></span> 元</p><br>
-    <p><strong>分類:</strong>
-        <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
-    </p><br>
-    <p><strong>活動說明:</strong></p>
-    <p th:text="${act.actDes}"></p>
-</div>
-</div>
+<div class="act-info" th:object="${act}">
+
+    <div class="act-details">
+        <p><strong>活動評價：</strong>
+        <span th:if="*{actCnt != null and actCnt > 0}"
+            th:text="${#numbers.formatDecimal(act.actScore / act.actCnt, 1, 1)} + ' 顆星 (' + *{actCnt} + ' 筆評價)'"></span>
+        <span th:if="*{actCnt == null or actCnt == 0}">尚無評價</span>
+        </p>
+        <p><strong>活動日期:</strong> <span th:text="*{actStart} + ' ~ ' + *{actEnd}"></span></p>
+        <p><strong>活動基本價:</strong> <span th:text="*{actFee}"></span> 元</p>
+        <p><strong>分類:</strong>
+            <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
+        </p>
+        <p><strong>活動說明:</strong></p>
+        <p th:text="*{actDes}"></p>
+    </div>
+
+
+    <div class="launch-control-box">
+        <h1 class="launch-status-title">活動上下架狀態:</h1>
+        <div class="status-display" 
+             th:classappend="*{actLaunStat == 1 ? 'status-launched' : 'status-delisted'}">
+            <span th:text="*{actLaunStat == 1 ? '上架中' : '未上架'}"></span> 
+        </div>
+
+        <div th:if="*{actStat == 2}">
+            
+            <button th:if="*{actLaunStat == 0}" 
+                    class="btn launch-btn btn-success" 
+                    onclick="confirmLaunch(1)">
+                <i class="fas fa-arrow-up"></i> 立即上架
+            </button>
+            
+            <button th:if="*{actLaunStat == 1}" 
+                    class="btn launch-btn btn-danger" 
+                    onclick="confirmDelist(0)">
+                <i class="fas fa-arrow-down"></i> 立即下架
+            </button>
+        </div>
+        
+        <div th:unless="*{actStat == 2}" class="alert alert-warning mt-3">
+            待審核通過後才能操作上下架。
+        </div>
+    </div>
+</div> <form id="launchForm" th:action="@{/fmem/act/updateLaunchStatus/{actId}(actId=*{actId})}" method="post" style="display:none;">
+    <input type="hidden" id="launchStatInput" name="newLaunStat" value="">
+</form>
 
 <div class="ses-info">
     <div th:if="${#lists.isEmpty(sesList)}"> 
@@ -74,12 +105,39 @@
                     <td th:text="${ses.sesFee}" ></td>
                     <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
                     <td th:text="${#dates.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${#numbers.sum(ses.reg.![regCount])}">0</td>
+                    <td th:text="${ses.headCount}">0</td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+
+
+
+	<!-- for 上下架按鈕 -->
+	<script>
+    const actId = '[[${act.actId}]]';
+    // 檢查 sesList 是否為空 (已上架場次列表)
+    const hasLaunchedSes = '[[${!#lists.isEmpty(sesList)}]]' === 'true'; 
+    
+    // ... (confirmLaunch 和 confirmDelist 函數保持不變) ...
+
+    // 下架 (從 1 -> 0)
+    function confirmDelist(newStat) {
+        if (hasLaunchedSes) {
+            alert("此活動尚有已上架的場次，請先將所有場次下架或完成所有場次, 才能下架整個活動");
+            return;
+        }
+        
+        if (confirm("確認要下架此活動嗎？")) {
+            document.getElementById('launchForm').action = '/fmem/act/updateLaunchStatus/' + actId;
+            document.getElementById('launchStatInput').value = newStat;
+            document.getElementById('launchForm').submit();
+        }
+    }
+</script>
+
 
     <!-- 分離 JS -->
     <script th:src="@{/js/act/actCarousel.js}"></script>

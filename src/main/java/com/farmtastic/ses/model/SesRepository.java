@@ -27,4 +27,8 @@ public interface SesRepository extends JpaRepository<Ses, Integer> {
     @Modifying
     @Query("DELETE FROM Ses a WHERE a.actId = :sesId")
     void deleteBySesId(@Param("sesId") Integer sesId);
+	
+	@Query("SELECT SUM(r.regCount) FROM RegVO r WHERE r.sesId = :sesId")
+    Integer getHeadCountBySesId(@Param("sesId") Integer sesId);
+
 }

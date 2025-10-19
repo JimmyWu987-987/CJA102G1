@@ -27,6 +27,18 @@ public class SesService {
 	}
 	
 	
+	// ========== 取得報名人數 ==========
+	@Transactional(readOnly = true)
+	public Integer getHeadCount(Integer sesId) {
+	    Integer count = sesRepository.getHeadCountBySesId(sesId);
+	    
+	    // 若為空值即為0
+	    return count != null ? count : 0; 
+	}
+	
+	
+	
+	
 	
 // 查詢
 
