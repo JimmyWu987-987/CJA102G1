@@ -73,6 +73,9 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
     
     @Query("SELECT a FROM Act a LEFT JOIN FETCH a.actImg WHERE a.actId = :actId")
     Optional<Act> findByActIdWithImgs(@Param("actId") Integer actId);
+    
+    @Query("SELECT a FROM Act a WHERE a.actId = :actId AND a.fmemId = :fmemId")
+    Optional<Act> getOneActByFmemId(Integer actId, Integer fmemId);
 
     @Transactional
     @Modifying

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+ 
+<meta charset="UTF-8">
+<title>小農場次專區 - 場次一覽</title>
+
+<link rel="icon" href="./images/logo.png">
+    
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+<style>
+	.container-header,
+	.container-footer{
+		background-color: #dce2ef;	
+	}
+	.nav > li > a{
+		background-color: #4F9D9D;
+	}
+
+
+	table {
+		width: 100%;
+		border-collapse: separate; /* 保持圓角 */
+		border-spacing: 0;
+		font-size: 1rem;
+		border-radius: 12px; /* 整體圓角 */
+		overflow: hidden; /* 防止表格內容超出圓角 */
+		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+		margin: 20px 0;
+	}
+	
+	table thead th {
+		border: none;
+	    padding: 12px 15px;
+	    background-color: #C7B896;
+	    color: #3E5C2A;
+	    text-align: center;
+	}
+	
+	table thead th:first-child {
+	    border-top-left-radius: 12px;
+	}
+	table thead th:last-child {
+	    border-top-right-radius: 12px;
+	}
+	
+	table tbody td {
+	    padding: 12px 15px;
+	    text-align: center;
+	    border: none;
+	}
+	
+	table tbody tr:nth-child(odd) {
+	    background-color: #F7F4E9; 
+	}
+	table tbody tr:nth-child(even) {
+	    background-color: #FFFFFF; 
+	}
+
+
+	.mainImg { max-width: 100px; max-height: 80px; }
+	.btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
+	
+	/* 紅色按鈕用於取消 */
+	.btn-danger { background-color: #F44336; } 
+	
+	h1{ text-align: center;}
+	
+	.list {
+		padding: 20px 40px;
+		background-color: #FFFDF5;
+		border-radius: 8px;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+		margin: 30px; /* 與下方區塊距離 */
+	}
+	
+	.success-text { color: green; font-weight: bold; }
+	.pending-text { color: orange; }
+	.full-text { color: blue; font-weight: bold; }
+	
+</style>
+</head>
+<body>
+
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+
+<div class="container">
+<div class="list">
+	<h1>我的活動場次列表</h1>
+
+	<div th:if="${#lists.isEmpty(sesList)}">
+		<p th:text="${message}">目前尚無場次</p>
+		<p>目前尚無場次，您可以前往活動頁面新增活動與場次！</p>
+	</div>
+
+<div th:unless="${#lists.isEmpty(sesList)}">
+    <table border="1">
+    <thead>
+        <tr>
+            <th>場次ID</th>
+            <th>活動名稱</th>
+            <th>活動主照片</th>
+            <th>場次日期</th>
+            <th>可報名人數上限</th>
+            <th>已報名人數 (總計)</th>
+            <th>報名狀態</th>
+            <th>是否成團</th>
+            <th>場次狀態</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="ses : ${sesList}">
+            <td th:text="${ses.sesId}"></td>
+            
+            <td th:text="${ses.act != null ? ses.act.actName : '查無活動資料'}"></td>
+            
+            <td>
+                <div th:if="${ses.act != null}">
+                    <img class="mainImg" 
+                         th:if="${ses.act.actMainImg != null}" 
+                         th:src="@{'/fmem/act/mainImg/' + ${ses.act.actId}}" 
+                         alt="活動主照片"/>
+                    <span th:if="${ses.act.actMainImg == null}">無照片</span>
+                </div>
+                <span th:if="${ses.act == null}">活動資料遺失</span>
+            </td>
+
+            <td th:text="${#dates.format(ses.sesDate, 'yyyy/MM/dd')}"></td>
+            <td th:text="${ses.maxPpl}"></td>
+            
+            <td th:text="${ses.headCount}"></td>
+			<td th:text="${ses.regStatText}"></td>
+            <td>
+                <span th:if="${ses.headCount >= ses.minPpl}" class="success-text">已可成團</span>
+                <span th:if="${ses.headCount < ses.minPpl}" class="pending-text">未成團 (最低人數: [[${ses.minPpl}]])</span>
+                <span th:if="${ses.headCount >= ses.maxPpl}" class="full-text">已額滿!</span>
+            </td>
+            
+            <td th:text="${ses.launStatText}"></td>
+            
+<td>
+				<div th:if="${ses.regStat != 4}">
+					
+					<form th:action="@{/fmem/ses/toggleLaunchStat}" method="post" style="display:inline; margin-right: 5px;">
+						
+						<input type="hidden" name="sesId" th:value="${ses.sesId}" />
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}" />
+						
+						<span th:if="${ses.sesLaunStat == 1}">
+							<input type="hidden" name="targetStat" value="0" /> 
+							<button type="submit" class="btn btn-warning">
+								下架場次
+							</button>
+						</span>
+
+						<span th:if="${ses.sesLaunStat == 0}">
+							<input type="hidden" name="targetStat" value="1" /> 
+							<button type="submit" class="btn btn-success">
+								上架場次
+							</button>
+						</span>
+					</form>
+
+					<form th:action="@{/fmem/ses/cancelSes}" method="post" style="display:inline;">
+						
+						<input type="hidden" name="sesId" th:value="${ses.sesId}" />
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}" />
+						
+						<button type="submit" class="btn btn-danger" 
+								onclick="return confirm('警告：確定要永久取消場次 ' + [[${ses.sesId}]] + ' 嗎？此操作不可逆！')">
+							取消場次
+						</button>
+					</form>
+				</div>
+                <div th:unless="${ses.regStat != 4}">
+                    <span class="full-text">已永久取消</span>
+                </div>
+			</td>
+			
+			
+
+        </tr>
+    </tbody>
+    </table>
+</div>
+</div>
+</div>
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // 檢查是否有成功訊息
+    const successMessage = /*[[${successMessage}]]*/ null;
+    if (successMessage) {
+        alert(successMessage);
+    }
+
+    // 檢查是否有錯誤訊息
+    const errorMessage = /*[[${errorMessage}]]*/ null;
+    if (errorMessage) {
+        alert("操作失敗: " + errorMessage);
+    }
+
+    /*]]>*/
+</script>
+
+
+</body>
+</html>

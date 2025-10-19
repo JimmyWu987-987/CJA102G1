@@ -15,17 +15,25 @@ public class SesService {
 	@Autowired
 	private SesRepository sesRepository;
 	
-	
 	// ========== 新增場次 ==========
 	public void addSes(Ses ses) {
 		sesRepository.save(ses);
 	}
 
 	// ========== 修改場次 (編輯. 上下架) ==========
-	public void updateSes(Ses ses) {
+	public void updateSes(Ses ses, Integer fmem) {
 		sesRepository.save(ses);
 	}
 	
+	
+	// ========== 取得報名人數 ==========
+	@Transactional(readOnly = true)
+	public Integer getHeadCount(Integer sesId) {
+	    Integer count = sesRepository.getHeadCountBySesId(sesId);
+	    
+	    // 若為空值即為0
+	    return count != null ? count : 0; 
+	}
 	
 	
 // 查詢
@@ -34,6 +42,13 @@ public class SesService {
 	public List<Ses> findSesByFmemId(Integer fmemId, Sort sort) {
 		return sesRepository.findByAct_Fmem_FmemId(fmemId, sort);
 	}
+	
+	
+	// ========== 查小農自己的全部場次 (for場次一覽用) ==========
+	public List<Ses> findSesWithActByFmemId(Integer fmemId, Sort sort) {
+		return sesRepository.findSesWithActByFmemId(fmemId, sort);
+	}
+	
 	
 	// ========== 依活動ID查詢 ==========
 	public List<Ses> findSesByActId(Integer actId, Sort sort) {
@@ -58,9 +73,15 @@ public class SesService {
 	
 	
 	
-	// ========== 查全部場次 (好像不會用到...) ==========
+	// ========== 查全部場次 ==========
 		public List<Ses> getAllSes(Sort sort) {
 			return sesRepository.findAll(sort);
+	}
+		
+		
+	// ========== 查小農自己的全部場次 ==========
+		public List<Ses> getAllSesForFmem(Integer fmemId, Sort sort) {
+			return sesRepository.findByAct_Fmem_FmemId(fmemId, sort);
 	}
 	
 	

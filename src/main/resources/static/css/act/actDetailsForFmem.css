@@ -190,12 +190,107 @@ table.ses-table tbody tr:nth-child(even) {
 
 /* ======================== 活動說明段落 ======================== */
 /* 活動資訊區卡片 */
+/* 啟用 Flexbox 排版 */
 .act-info {
     padding: 30px 40px;
     background-color: #FFFDF5;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    
+    display: flex;             /* 啟用 Flexbox */
+    justify-content: space-between; 
+    align-items: stretch;      /* 讓高度由最高的子元素決定 */
+    gap: 40px;
 }
+
+/* 活動詳情區塊 (左側) */
+.act-details {
+    flex: 1; /* 佔用 1 份寬度 */
+}
+
+/* 上下架控制區塊 (右側) */
+.launch-control-box {
+    flex: 1; /* 佔用 1 份寬度 (與左側等寬) */
+    
+    /* 高度調整：固定為外部區塊的 70%，並垂直居中 */
+    height: 70%; 
+    margin: auto 0; 
+    
+    /* 可愛/卡片風格調整 */
+    padding: 30px 20px; /* 增加內邊距 */
+    border: 3px solid #C7B896; /* 邊框加粗，使用品牌色 */
+    border-radius: 15px; /* 更大的圓角 */
+    background-color: #F7F4E9; /* 使用淺色背景，協調表格底色 */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(62, 92, 42, 0.1); /* 輕微陰影 */
+}
+
+.launch-status-title {
+    font-size: 2rem;
+    color: #3E5C2A;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border-bottom: 2px solid #C7B896;
+    padding-bottom: 5px;
+}
+
+
+.status-display {
+    font-size: 3rem; /* 字體放大 */
+    font-weight: 900;
+    padding: 15px 0;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* 內嵌陰影增加層次感 */
+}
+
+/* 狀態顏色調整 */
+.status-launched {
+    color: #3E5C2A; /* 上架使用品牌色 */
+    background-color: #E6F0E0; /* 淺綠色背景 */
+}
+
+.status-delisted {
+    color: #dc3545; /* 下架使用警告色 */
+    background-color: #FFE6E6; /* 淺紅色背景 */
+}
+
+/* 上下架按鈕 */
+.launch-btn {
+    width: 90%; /* 寬度佔滿 */
+    padding: 15px 10px; /* 增加按鈕高度 */
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 30px; /* 圓角膠囊形狀 */
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    border: none;
+    margin-bottom: 15px; /* 增加底部間距 */
+}
+
+/* 確保上架按鈕使用品牌色 */
+.launch-btn.btn-success {
+    background-color: #3E5C2A; 
+    color: white;
+}
+
+.launch-btn.btn-success:hover {
+    background-color: #55783C;
+    transform: translateY(-2px);
+}
+
+/* 確保下架按鈕使用警告色 */
+.launch-btn.btn-danger {
+    background-color: #dc3545; 
+    color: white;
+}
+
+.launch-btn.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+
 
 /* 段落間距緊湊 */
 .act-info p {

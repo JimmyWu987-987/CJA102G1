@@ -47,6 +47,11 @@ public class ActService {
 		return actRepository.findActByCQForFmem(fmemId, actStat, actLaunStat, actCateId, keyword, sort);
 	}
 	
+	// ========== 單一查詢自己的活動 ==========
+	public Optional<Act> getOneActByFmemId(Integer actId, Integer fmem) {
+	    return actRepository.getOneActByFmemId(actId, fmem);
+	}
+	
 	// ========== 刪除活動 ==========
 	public void deleteAct(Integer actId) {
 		if (actRepository.existsById(actId)) {

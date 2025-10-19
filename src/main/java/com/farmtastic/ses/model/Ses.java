@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "ses")
@@ -73,6 +74,8 @@ public class Ses {
 	@JoinColumn(name = "act_id")  // 對應資料庫的 act_id 欄位
 	private Act act;
 	
+	@Transient 
+    private Integer headCountCache;
 	
 
 	public Integer getSesId() {
@@ -186,9 +189,10 @@ public class Ses {
 		this.sesLaunUpd = sesLaunUpd;
 	}
 
-	public Integer getHeadCount() {
-		return headCount;
-	}
+    // 讓 Thymeleaf 讀取這個快取值、設定在報名人數中
+    public Integer getHeadCount() { 
+        return headCountCache != null ? headCountCache : 0; 
+    }
 
 	public void setHeadCount(Integer headCount) {
 		this.headCount = headCount;
@@ -202,14 +206,40 @@ public class Ses {
 		this.actId = actId;
 	}
 	
-	// 拿報名狀態文字
-	public String getRegStatText() {
-		return RegStat.getRegStatDesc(this.regStat);
-	}
-	
 	// 拿上下架狀態文字
 	public String getLaunStatText() {
 		return LaunStat.getLaunStatDesc(this.sesLaunStat);
 	}
+
+	// 供 SesService 寫入計算結果的 Setter
+	public void setHeadCountCache(Integer headCountCache) {
+		this.headCountCache = headCountCache;
+	}
 	
+	public Act getAct() { // 如果您沒有Lombok, 需手動加入
+	    return act;
+	}
+	
+	// 取得報名狀態
+	//TODO: 需修改假資料, 不做編輯場次了, default要改成5
+	@Transient
+	public String getRegStatText() {
+	    switch (this.regStat) {
+	        case 0:
+	            return "報名中";
+	        case 1:
+	            return "已成團";
+	        case 2:
+	            return "不成團，取消";
+	        case 3:
+	            return "已完成";
+	        case 4:
+	            return "已取消";
+	        case 5:
+	            return "未開始報名";
+	        default:
+	            return "未知狀態";
+	    }
+	}
+
 }

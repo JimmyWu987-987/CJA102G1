@@ -1,9 +1,7 @@
 package com.farmtastic.act.controller;
  
-import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
-import java.net.URLConnection;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,13 +13,13 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,11 +34,10 @@ import com.farmtastic.act.model.Act;
 import com.farmtastic.act.model.ActCate;
 import com.farmtastic.act.model.ActCateRepository;
 import com.farmtastic.act.model.ActImg;
-import com.farmtastic.act.model.ActRepository;
 import com.farmtastic.act.model.ActService;
 import com.farmtastic.fmember.model.Fmem;
-import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.ses.model.Ses;
+import com.farmtastic.ses.model.SesRepository;
 import com.farmtastic.ses.model.SesService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,25 +45,29 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
-@Validated
+//@Validated    //1019
 @RequestMapping("/fmem/act")
 @SessionAttributes({"sessionFmemAct"})
 public class FmemActController {
 
-    @Autowired
-    private ActService actSvc;
+	
+	@InitBinder("act")
+	public void initBinder(WebDataBinder binder) {
+	    binder.setDisallowedFields("actStart", "actEnd");
+	}
 
-    @Autowired
-    private FmemService fmemSvc;
+	@Autowired
+	private ActCateRepository actCateRepo;
+
+	@Autowired
+    private ActService actSvc;
     
     @Autowired
     private SesService sesSvc;
-    
+
     @Autowired
-    private ActRepository actRepo;
+    private SesRepository sesRepo;
     
-    @Autowired
-    private ActCateRepository actCateRepo;
 
 //	// =========== 編輯活動 ============
 //	@GetMapping("updateAct/{actId}")
@@ -82,23 +83,9 @@ public class FmemActController {
 //		model.addAttribute("success", "活動修改成功！");
 //		return "redirect:/act/listAll";
 //	}
-    
-    
-    
-//	// =========== 上下架活動 ============
-    
-    
-    
-//    // =========== 刪除活動 ============
-//    @GetMapping("delete/{actId}")
-//    public String deleteAct(@PathVariable Integer actId, ModelMap model) {
-//        actSvc.deleteAct(actId);
-//        model.addAttribute("success", "活動刪除成功！");
-//        return "redirect:/act/listAll";
-//    }
 
-    
-    // =========== 小農查詢自己的活動 ============
+
+    // =========== 小農查詢自己的活動 (ok) ============
     
     // 查全部
     @GetMapping("/listAllActForFmem")		// 之後要登入測試喔喔喔喔喔!!!
@@ -126,7 +113,7 @@ public class FmemActController {
     	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
         Integer fmemId = fmem.getFmemId();
     	
-    	List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
+        List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.ASC, "actId"));
 
     	model.addAttribute("actList", actList);
     	
@@ -134,15 +121,28 @@ public class FmemActController {
             model.addAttribute("message", "目前尚無已過審活動可進行上下架");
         }
     	
-    	return "front_end/farmer/logined/fmemAct/listApprovedActForFmem";
+    	return "front_end/farmer/logined/fmemAct/launchAct";
     }
     
     
     
     // ============ 單一查詢 (for 活動詳細頁面用) ============
     @GetMapping("/detail/{actId}")
-    public String actDetail(@PathVariable Integer actId, ModelMap model) {
-    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
+    public String actDetailsForFmem(HttpSession session,
+    						@PathVariable Integer actId,
+    						ModelMap model) {
+    	
+    	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");			// 取得登入小農
+    	if (fmem == null) {
+            // 沒登入的防呆
+            model.addAttribute("message", "請先登入小農頁面, 謝謝");
+            // 導回小農登入頁
+            return "redirect:/showFmemRegLoginForm";
+        }
+    	
+    	Integer fmemId = fmem.getFmemId();
+
+    	Optional<Act> optAct = actSvc.getOneActByFmemId(actId, fmemId);		// 取得活動
     	
     	// 防呆用
     	if (optAct.isEmpty()) {
@@ -152,6 +152,11 @@ public class FmemActController {
         }
     	
     	Act act = optAct.get();
+    	
+    	if (act.getActImg() != null) {
+            act.getActImg().size();
+        }
+    	
 
         // 依分類ID排序
         List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
@@ -165,9 +170,18 @@ public class FmemActController {
         List<Ses> allSes = sesSvc.findSesByActId(actId, sort);
         List<Ses> launchedSes = allSes.stream()
         							  .filter(s -> s.getSesLaunStat() != null)
-        							  .filter(s -> s.getSesLaunStat().equals(1))
         							  .toList();
-
+        
+        
+        for (Ses ses : launchedSes) {
+            // 呼叫 SesService 取得報名人數
+            Integer count = sesRepo.getHeadCountBySesId(ses.getSesId());
+            
+            // 將計算結果設定到 Ses 物件中。
+            // 注意：您需要在 Ses.java 中新增 setActualRegCount() 方法
+            sesSvc.getHeadCount(count); 
+        }
+        
         
         model.addAttribute("sesList", launchedSes);
         model.addAttribute("act", act);
@@ -176,6 +190,79 @@ public class FmemActController {
         return "front_end/farmer/logined/fmemAct/actDetailsForFmem";
         
     }
+    
+    
+    // =========== 上下架活動 ============
+	@PostMapping("/updateLaunchStatus/{actId}")
+	public String updateLaunchStatus(@PathVariable Integer actId, 
+									 @RequestParam("newLaunStat") Integer newLaunStat,
+									 HttpSession session,
+									 RedirectAttributes redirectAttributes) {
+
+		// 防呆, 一樣先取小農&單一活動
+        Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); 
+        
+        if (fmem == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "請先登入小農頁面, 謝謝");
+            return "redirect:/showFmemRegLoginForm";
+        }
+        
+        Integer fmemId = fmem.getFmemId();
+        
+        try {
+            Optional<Act> optAct = actSvc.getOneActByFmemId(actId, fmemId); 
+            
+            if (optAct.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "查無此活動");
+                return "redirect:/fmem/act/launchActList"; 
+            }
+
+            Act act = optAct.get();
+            
+            //	僅能對已審核通過的進行上下架
+            if (act.getActStat() != 2) { 
+                redirectAttributes.addFlashAttribute("errorMessage", "只有已過審核的活動才能進行上下架操作");
+                return "redirect:/fmem/act/detail/{actId}"; 
+            }
+            
+            // 若有上架中的場次, 就不能對活動進行上下架
+            if (newLaunStat == 0) { // 僅在執行「下架」操作 (newLaunStat=0) 時才檢查
+                
+                // 查詢活動的所有場次
+                Sort sort = Sort.by(Sort.Direction.ASC, "sesDate")
+                                    .and(Sort.by(Sort.Direction.ASC, "sesStart"));
+                List<Ses> allSes = sesSvc.findSesByActId(actId, sort);
+                
+                // 過濾出 "上架中" 的場次 (假設 SesLaunStat=1 表示上架)
+                boolean hasLaunchedSes = allSes.stream()
+                                               .anyMatch(s -> s.getSesLaunStat() != null && s.getSesLaunStat() == 1);
+                
+                if (hasLaunchedSes) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "此活動尚有上架中的場次，請先將所有場次下架或完成所有場次, 才能下架整個活動");
+                    return "redirect:/fmem/act/detail/" + actId; // 導回詳情頁
+                }
+            }
+            
+            
+            // set 活動上下架狀態 & 活動上下架狀態更新時間
+            act.setActLaunStat(newLaunStat);
+            act.setActLaunUpd(new Timestamp(System.currentTimeMillis()));
+            
+            // 進行更新
+            actSvc.updateAct(act, fmemId); 
+
+            String action = (newLaunStat == 1) ? "上架" : "下架";		// 上架是1
+            redirectAttributes.addFlashAttribute("successMessage", "活動 ID: " + actId + " 已成功 " + action);
+
+        	} catch (Exception e) {
+        		redirectAttributes.addFlashAttribute("errorMessage", "更新上下架狀態時發生系統錯誤。");
+        	}
+
+        return "redirect:/fmem/act/detail/{actId}"; 
+    }
+    
+    
+    
     
 	// =========== 抓圖 ============
 
@@ -234,19 +321,27 @@ public class FmemActController {
         writeImageToResponse(img.getActImg(), response);
 	}
 
-	private void writeImageToResponse(byte[] imgBytes, HttpServletResponse response) {
-		try {
-			String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(imgBytes));
-			if (contentType == null) contentType = "image/jpeg"; // 預設 jpeg
-
-			response.setContentType(contentType);
-			response.getOutputStream().write(imgBytes);
-			response.getOutputStream().flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-			response.setStatus(HttpServletResponse.SC_OK);
-		}
-	}
+    private void writeImageToResponse(byte[] imgBytes, HttpServletResponse response) {
+        
+        // 檢查圖片位元組資料是否為空
+        if (imgBytes == null || imgBytes.length == 0) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204
+            return;
+        }
+        
+        try {
+            // 🚨 最終修正：移除不可靠的猜測。設定為通用的二進制數據流。
+            // 這會讓瀏覽器根據數據流的內容（檔案簽名）來自行判斷圖片類型（JPEG, PNG, GIF）。
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE); 
+            
+            response.getOutputStream().write(imgBytes);
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // 修正錯誤狀態碼：寫入流時發生錯誤，應該返回 500
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
+        }
+    }
 	
     
     // ============ 輪播器圖片 ============
@@ -279,7 +374,8 @@ public class FmemActController {
 						 @RequestParam("actEnd") String actEndStr,
 						 @Valid @ModelAttribute("act") Act act,
 						 BindingResult result,
-						 @RequestParam("actMainImg") MultipartFile actMainImg,
+						 @RequestParam("actMainImgFile") MultipartFile actMainImgFile,	//1019 追加
+//						 @RequestParam("actMainImg") MultipartFile actMainImg,
 						 @RequestParam(value = "actImgs", required = false) MultipartFile[] actImgs,
 						 @RequestParam(value = "actCateId", required = false) List<Integer> actCateId,
 						 HttpSession session,
@@ -348,22 +444,40 @@ public class FmemActController {
 		}
 
 		
-		// 主圖驗證驗證
-		if (actMainImg == null || actMainImg.isEmpty()) {
-			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
-		} else if (!actMainImg.getContentType().startsWith("image/")) {
-			result.rejectValue("actMainImg", null, "只能上傳圖檔");
-		} else if (actMainImg.getSize() > 4 * 1024 * 1024) {
-			result.rejectValue("actMainImg", null, "活動主要圖片不得超過 4MB");
-		} else {
-//			act.setActMainImg(actMainImg.getBytes());
-			// 關鍵修正：使用 try-catch 包裹 getBytes()
-			try {
-				act.setActMainImg(actMainImg.getBytes());
-			} catch (IOException e) {
-				result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
-			}
+//		// 主圖驗證驗證		// 1019 註解掉
+//		if (actMainImg == null || actMainImg.isEmpty()) {
+//			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+//		} else if (!actMainImg.getContentType().startsWith("image/")) {
+//			result.rejectValue("actMainImg", null, "只能上傳圖檔");
+//		} else if (actMainImg.getSize() > 4 * 1024 * 1024) {
+//			result.rejectValue("actMainImg", null, "活動主要圖片不得超過 4MB");
+//		} else {
+////			act.setActMainImg(actMainImg.getBytes());
+//			// 關鍵修正：使用 try-catch 包裹 getBytes()
+//			try {
+//				act.setActMainImg(actMainImg.getBytes());
+//			} catch (IOException e) {
+//				result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
+//			}
+//		}
+		
+		// 1019 主圖修改
+		if (actMainImgFile == null || actMainImgFile.isEmpty()) {
+		result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+	} else if (!actMainImgFile.getContentType().startsWith("image/")) {
+		result.rejectValue("actMainImg", null, "只能上傳圖檔");
+	} else if (actMainImgFile.getSize() > 4 * 1024 * 1024) {
+		result.rejectValue("actMainImg", null, "圖片不得超過 4MB");
+	} else {
+//		act.setActMainImg(actMainImg.getBytes());
+		// 關鍵修正：使用 try-catch 包裹 getBytes()
+		try {
+			act.setActMainImg(actMainImgFile.getBytes());
+		} catch (IOException e) {
+			result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
 		}
+	}
+		
 
 		// 其他圖片驗證
 		// 要先初始化, 避免沒有放活動圖時報錯
@@ -438,6 +552,41 @@ public class FmemActController {
 		return "redirect:/fmem/act/listAllActForFmem";		// 要傳URL
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =========== 刪除活動 ============
+//@GetMapping("delete/{actId}")
+//public String deleteAct(@PathVariable Integer actId, ModelMap model) {
+//  actSvc.deleteAct(actId);
+//  model.addAttribute("success", "活動刪除成功！");
+//  return "redirect:/act/listAll";
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //↓ 大吳老師的參考
