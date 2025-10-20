@@ -17,9 +17,9 @@ public class RedisService {
 		redisTemplate.opsForValue().set(code, username, timeoutMinutes, TimeUnit.MINUTES);
 	}
 	
-//	public String getMemAccByCode(String code) {
-//		return redisTemplate.opsForValue().get(code);
-//	}
+	public String getMemAccByCode(String code) {
+		return redisTemplate.opsForValue().get(code);
+	}
 	
 	public String getMemEmailByCode(String code) {
 		return redisTemplate.opsForValue().get(code);
