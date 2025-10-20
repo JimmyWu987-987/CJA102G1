@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.farmtastic.fmember.model.Fmem;
+
 @Service
 @Transactional
 public class ActService {
@@ -27,7 +29,7 @@ public class ActService {
 	}
 	
 	// ========== 修改活動 (編輯. 上下架) ==========
-	public void updateAct(Act act, Integer fmem) {
+	public void updateAct(Act act, Integer fmemId) {
 		actRepository.save(act);
 	}
 	

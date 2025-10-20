@@ -1,91 +1,112 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>小農活動專區 - 編輯活動</title>
-
-<!-- 原本引用的 CSS -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="stylesheet" th:href="@{/css/main.css}">
-
-<!-- ToDo 新增活動用的 CSS -->
 <link rel="stylesheet" th:href="@{/css/act/addAct.css}">
+<style>
+.error-message { color: red; font-size: 14px; margin-top: 5px; display: block; }
+.form-group { margin-bottom: 15px; }
+label { display: block; font-weight: bold; margin-bottom: 5px; }
+input[type="text"], input[type="number"], input[type="date"], textarea {
+    width: 300px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+</style>
 </head>
 
 <body>
-	<h1 class="act-title">建立活動</h1>
 
-	<div class="act-info">
-		<div class="act-add-details">
-
-			<label for="actName">活動名稱<span style="color: red;">*</span></label><br>
-			<input type="text" id="actName" name="actName" required>
-			
-			<label for="actCate">活動類別<span style="color: red;">*</span></label><br>
-				<input type="checkbox" id="cate1" name="actCate" value="體驗">
-				<label for="cate1">農事體驗</label>
-				
-				<input type="checkbox" id="cate2" name="actCate" value="親子">
-				<label for="cate2">食農教育</label>
-				
-				<input type="checkbox" id="cate3" name="actCate" value="農業">
-				<label for="cate3">親子同樂</label>
-				
-				<input type="checkbox" id="cate4" name="actCate" value="農業">
-				<label for="cate3">動物互動</label>
-				
-				<input type="checkbox" id="cate5" name="actCate" value="農業">
-				<label for="cate3">手作工藝</label>
-				
-				<input type="checkbox" id="cate6" name="actCate" value="農業">
-				<label for="cate3">戶外體驗</label>
-				
-				<input type="checkbox" id="cate7" name="actCate" value="農業">
-				<label for="cate3">導覽活動</label>
-				
-				<input type="checkbox" id="cate8" name="actCate" value="農業">
-				<label for="cate3">季節限定</label>
-				
-				<input type="checkbox" id="cateOther" name="actCate" value="其他">
-				<label for="cateOther">其他</label>
-				<input type="text" id="otherText" name="otherText" placeholder="請填寫其他類別" style="display:none;">
-
-			<br>
-			
-				<strong>活動基本價格</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動開始日期</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動結束日期</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動介紹</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動主要圖片</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動圖片</strong> <span style="color: grey;">(選填)</span>
-			</p>
-			<br>
-		</div>
-	</div>
+<div class="act-add-container">
+    <h1>編輯活動</h1>
 
 
-	<div class="button"></div>
+    <div th:if="${errorMsg}" class="error-message general-error" th:text="${errorMsg}"></div>
 
+    <form th:action="@{/fmem/act/update}" th:object="${act}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{actId}" />
+        <div class="form-group">
+            <label for="actName">活動名稱 <span style="color: red;">*</span></label>
+            <input type="text" id="actName" th:field="*{actName}" placeholder="請輸入活動名稱" required>
+            <span class="error-message" th:if="${#fields.hasErrors('actName')}" th:errors="*{actName}"></span>
+        </div>
+<!-- 更改區 -->
+        <div class="form-group">
+            <label for="actStart">活動開始日期 <span style="color: red;">*</span><span style="color: grey;">(考慮到審核作業時間及消費者報名時間, 僅能選擇自送審日算起 45 天之後的日期)</span></label>
+           <input type="date" th:field="*{actStart}"
+		       th:attr="min=${#temporals.format(#temporals.createNow().plusDays(45),'yyyy-MM-dd')}" required>
+			<span class="error-message" th:if="${#fields.hasErrors('actStart')}" th:errors="*{actStart}"></span>
+        </div>
 
+        <div class="form-group">
+            <label for="actEnd">活動結束日期 <span style="color: red;">*</span></label>
+            <input type="date" th:field="*{actEnd}"
+			       th:attr="min=${act.actStart != null ? #dates.format(act.actStart,'yyyy-MM-dd') : ''}" required>
+			<span class="error-message" th:if="${#fields.hasErrors('actEnd')}" th:errors="*{actEnd}"></span>
+        </div>
+        
+<!-- /更改區 -->
+        <div class="form-group">
+            <label for="actFee">活動費用 <span style="color: red;">*</span></label>
+            <input type="number" id="actFee" th:field="*{actFee}" placeholder="請輸入活動費用 (每人)" required>
+            <span class="error-message" th:if="${#fields.hasErrors('actFee')}" th:errors="*{actFee}"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="actDes">活動描述</label>
+            <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述, 請務必要填入聯絡資訊及舉辦地點等資訊" required></textarea>
+            <span class="error-message" th:if="${#fields.hasErrors('actDes')}" th:errors="*{actDes}"></span>
+        </div>
+        
+        <div class="form-group">
+            <label>活動類別 <span style="color: red;">*</span></label>
+            <div th:each="actCate : ${allCategories}">
+                <label>
+                    <input type="checkbox" name="actCateId" th:value="${actCate.actCateId}"
+                           th:checked="${#lists.contains(actCateId ?: {}, actCate.actCateId)}"/>
+                    <span th:text="${actCate.actCateName}">分類名稱</span>
+                </label>
+            </div>
+            <span class="error-message" th:if="${#fields.hasErrors('actCate')}" th:errors="*{actCate}"></span>
+        </div>
+<!-- 更改區 -->
+        <div class="form-group">
+            <label for="actMainImg">活動主要圖片 <span style="color: red;">*</span></label>
+            <input type="file" id="actMainImg" name="actMainImgFile" accept="image/*" required>
+			<span class="error-message"
+			      th:if="${#fields.hasErrors('actMainImg')}"
+			      th:errors="*{actMainImg}"></span>
+        </div>
+<!-- /更改區 -->
+        <div class="form-group">
+            <label for="actImgs">活動圖片</label>
+            <input type="file" id="actImgs" name="actImgs" accept="image/*" multiple>
+        </div>
 
+        <button type="submit">提交審核</button>
 
-	<!-- 分離 ToDoJS -->
-	<script th:src="@{/js/act/addAct.js}"></script>
+    </form>
+</div>
+
+<script>
+// JavaScript 邏輯 (保留)
+const actStart = document.getElementById('actStart');
+const actEnd = document.getElementById('actEnd');
+
+actStart.addEventListener('change', function() {
+    if(actStart.value) {
+        actEnd.min = actStart.value;
+        if (actEnd.value && actEnd.value < actStart.value) {
+            actEnd.value = '';
+        }
+    } else {
+        actEnd.removeAttribute('min');
+    }
+});
+</script>
+
 </body>
 </html>
