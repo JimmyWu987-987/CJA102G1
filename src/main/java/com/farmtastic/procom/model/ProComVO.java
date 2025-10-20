@@ -17,6 +17,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -48,7 +50,8 @@ public class ProComVO implements Serializable{
 	private Date proComTime;
 
 	@NotNull(message="請輸入評論分數！")
-	@Size(min=1,max=5,message="商品分數為最低分{min}到最高分{max}！")
+	@Min(value = 1, message = "商品分數最低為{value}！") // 限制最小值為 1
+	@Max(value = 5, message = "商品分數最高為{value}！") // 限制最大值為 5
 	@Column(name="pro_com_rate")
 	private Byte proComRate;
 

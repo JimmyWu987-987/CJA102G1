@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.proorder.model.FmemOrderSummary;
-import com.farmtastic.proorder.model.ProOrderSevice;
+import com.farmtastic.proorder.model.ProOrderService;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpSession;
 public class ProOrderFmemController {
 
 	@Autowired
-	ProOrderSevice proOrdSvc;
+	ProOrderService proOrdSvc;
 	@Autowired
 	ProOrderItemService ProOrderItemSvc;
 
