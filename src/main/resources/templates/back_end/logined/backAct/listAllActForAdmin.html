@@ -103,7 +103,6 @@
 				<th>費用</th>
 				<th>活動狀態</th>
 				<th>活動審核備註</th>
-				<th>活動上下架狀態</th>
 				<th>操作</th>
             </tr>
 		</thead>
@@ -119,10 +118,9 @@
 				<td th:text="${act.actFee}"></td>
 				<td th:text="${act.actStatText}"></td>
 				<td th:text="${act.actRemark}"></td>
-				<td th:text="${act.actLaunStatText}"></td>
 				
 				<td>
-					<a class="btn" th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>
+					<a th:href="@{/admin/act/detail/{actId}(actId=${act.actId})}" class="btn">查看活動詳細資訊</a>
 				</td>
 				
 			</tr>

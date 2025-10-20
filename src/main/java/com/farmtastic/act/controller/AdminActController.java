@@ -156,12 +156,7 @@ public class AdminActController {
         redirectAttributes.addFlashAttribute("successMessage", "已完成審核");
         return "redirect:/admin/act/listUnapprovedAct";
     }
-    
-    
-    
-    
-    
-    
+
     
      
  // =========== 查詢活動 ==============
@@ -201,6 +196,34 @@ public class AdminActController {
         }
         
         return "back_end/logined/backAct/selectPage";		// 導到查詢結果頁
+    }
+    
+    
+    // ================ 查看活動詳情 (僅看詳情) ==============
+    @GetMapping("/detail/{actId}")
+    public String actDetailForAdminConfirmOnly(@PathVariable Integer actId, ModelMap model) {
+    	
+    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
+    	
+    	// 防呆用
+    	if (optAct.isEmpty()) {
+            // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
+            model.addAttribute("message", "查無此活動");
+            return "redirect:/admin/act/listAllAct"; 		// 導回一覽頁
+        }
+    	
+    	Act act = optAct.get();    	
+
+        // 依分類ID排序
+        List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
+        sortedCate.sort(Comparator.comparing(ActCate::getActCateId));
+        model.addAttribute("actCateList", sortedCate);
+
+        model.addAttribute("act", act);
+        model.addAttribute("sessionAct", act);
+        
+        return "back_end/logined/backAct/actDetailForAdmin";
+        
     }
     
     
