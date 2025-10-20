@@ -1,67 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>商品評論</title>
 </head>
 <body>
-	<h1>這是一個新增商品評論的網頁</h1>
+	<h1>這是一個新增商品評論的網頁 - 訂單商品列表</h1>
 		
-			<div th:if="${successMessage}" class="success-message">
-				<p th:text="${successMessage}"></p>
-			</div>
-			<div th:if="${errorMessage}" class="error-message">
-				<p th:text="${errorMessage}"></p>
-			</div>
+    <div th:if="${successMessage}" class="success-message">
+		<p th:text="${successMessage}"></p>
+	</div>
+	<div th:if="${errorMessage}" class="error-message">
+		<p th:text="${errorMessage}"></p>
+	</div>
 		
+    <th:block th:each="itemVO, itemStat : ${proOrdItemList}">
+		<h2>評論商品: <span th:text="${itemVO.productVO.proName}">商品名稱</span></h2>
 		
-		
-		<form th:action="@{insert}" method="post" th:object="${proComVO}">
+        <form th:action="@{insert}" method="post">
 			
 			<input type="hidden" name="proOrdId" th:value="${proOrdId}"/>
-			
-			<div>
-			<label>評論時間:</label>
-			<input type="text" th:field="*{proComTime}" onclick="hideContent('proComTime.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('proComTime')}" th:errors="*{proComTime}" class="error" id="proComTime.errors"></span>
-			</div>
-			
-			<div>
-			<label>商品編號:</label>
- 			<select th:field="*{proVO.proId}">
-				<option th:each="itemVO : ${proOrdItemList}" th:value="${itemVO.productVO.proId}" th:text="${itemVO.productVO.proName}" />
-			</select>
-       <!-- <span th:if="${#fields.hasErrors('deptVO.deptno')}" th:errors="*{deptVO.deptno}" class="error" id="deptVO.deptno.errors"></span> -->
-			</div>
+			<input type="hidden" name="proId" th:value="${itemVO.productVO.proId}"/>
+
+<!--             <div>
+                <label>商品編號/名稱:</label>
+                <span th:text="${itemVO.productVO.proId}">1</span> / 
+ 			    <span th:text="${itemVO.productVO.proName}">商品名稱</span>
+			</div> -->
 		
 			<div>
-			<label>商品評分:</label>
+			<label>商品評分(最高為5分):</label>
 			
-			 <select th:field="*{proComRate}">
+             <select name="proComRate" required>
+                <option value="">請選擇評分</option>
 				<option value="5">5</option>
 				<option value="4">4</option>
 				<option value="3">3</option>
 				<option value="2">2</option>
 				<option value="1">1</option>
 			</select>
-			<span  th:if="${#fields.hasErrors('proComRate')}" th:errors="*{proComRate}" class="proComRate" id="proComRate.errors"></span>
 			</div>
 			
 			<div>
 			<label>評論內容:</label>
-			<textarea th:field="*{proComContent}"/><br/>
-			<span  th:if="${#fields.hasErrors('proComContent')}" th:errors="*{proComContent}" class="error" id="proComContent.errors"></span>
+            <textarea name="proComContent" required></textarea><br/>
 			</div>
-			
-
 			
 
 			<div>
 				<div></div>
-				<div><button type="submit" id="submit"> 送出新增 </button></div>
+				<div><button type="submit" id="submit" th:text="|送出 ${itemVO.productVO.proName} 的評論|"> 送出新增 </button></div>
 				<div></div>
 			</div>		
 		</form>
+        <hr th:if="${!itemStat.last}" /> </th:block>
 	
 </body>
 </html>
