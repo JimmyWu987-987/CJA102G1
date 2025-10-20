@@ -129,12 +129,13 @@ public class ProOrderMemController {
 	 */
 	@PostMapping("updatestatus")
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
-			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes,
+			@RequestParam("proOrdStatus") Integer proOrdStatus,
+			@RequestParam("proOrdComm") String proOrdComm,
+			ModelMap model, RedirectAttributes redirectAttributes,
 			HttpSession session) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
-
-
+		
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
 
@@ -172,9 +173,19 @@ public class ProOrderMemController {
 		case 3:
 			System.out.println("買家提出退貨申請！");
 			proOrderVO.setProOrdStatus((byte) 4);
-			updateStatus = true;
-			redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
-			break;
+			
+			if(proOrdComm == null || proOrdComm.isEmpty()) {
+				redirectAttributes.addFlashAttribute("errorMessage", "請輸入退貨原因！");
+				break;
+			} else {
+				String originalComm = proOrderVO.getProOrdComm();
+				String finalComm = originalComm+"退貨原因[ "+proOrdComm+" ]。";
+				
+				proOrderVO.setProOrdComm(finalComm);
+				redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
+				updateStatus = true;
+				break;
+			}
 		// 訂單已經是退貨流程，直接返回。
 		case 4:
 			System.out.println("已通知賣家退貨！");
