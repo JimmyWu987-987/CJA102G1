@@ -10,11 +10,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.IsActive;
 
 import jakarta.transaction.Transactional;
 
 public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
+//查詢折價券用途
+	Optional<ProCpnVO> findByCpnSource(CpnSource cpnSource);
+
+	Optional<ProCpnVO> findFirstByCpnSourceAndIsActiveOrderByCrtAtDesc(CpnSource source, IsActive isActive);
+
+	// 查詢全部折價券用途
+	List<ProCpnVO> findAllByCpnSource(CpnSource cpnSource);
 
 	// 查詢全部啟用或停用的折價券
 	List<ProCpnVO> findByIsActive(IsActive isActive);
@@ -22,11 +30,14 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 	// 查詢指定名稱單張券
 	Optional<ProCpnVO> findByCpnName(String cpnName);
 
+	// 查詢指定ID單張券
+	Optional<ProCpnVO> findById(Integer proCpnId);
+
 	// 查詢指定名稱 + 狀態的單張券
 	Optional<ProCpnVO> findByCpnNameAndIsActive(String cpnName, IsActive isActive);
 
 	// 名稱模糊查詢
-	Page<ProCpnVO> findByCpnNameContaining(String keyword, Pageable pageable);
+	List<ProCpnVO> findByCpnNameContaining(String keyword);
 
 	// 折扣類型查詢
 //	List<ProCpnVO> findByDiscType(DiscountType discType);

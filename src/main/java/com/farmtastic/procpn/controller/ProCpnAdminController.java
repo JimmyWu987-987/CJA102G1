@@ -49,10 +49,9 @@ public class ProCpnAdminController {
 
 	// 查詢全部折價卷
 	@GetMapping("/list")
-	public String listAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size,
-			Model model) {
-		Page<ProCpnVO> pageData = proCpnSvc.findPagedProCpn(buildPageable(page, size));
-		model.addAttribute("pageData", pageData);
+	public String listAll(Model model) {
+		List<ProCpnVO> coupons = proCpnSvc.getAll();
+		model.addAttribute("coupons", coupons);
 		return VIEW_PATH;
 	}
 
@@ -120,9 +119,9 @@ public class ProCpnAdminController {
 	public String searchCpns(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "5") int size, Model model) {
 
-		Page<ProCpnVO> pageData = proCpnSvc.findByKeywordPaged(keyword, buildPageable(page, size));
+		List<ProCpnVO> resultList = proCpnSvc.findByKeyword(keyword);
+		model.addAttribute("coupons", resultList);
 		model.addAttribute("keyword", keyword);
-		model.addAttribute("pageData", pageData);
 		return VIEW_PATH;
 	}
 

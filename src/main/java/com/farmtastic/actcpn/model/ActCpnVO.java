@@ -3,7 +3,10 @@ package com.farmtastic.actcpn.model;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.farmtastic.common.converter.EnumConverters;
 import com.farmtastic.common.enums.DiscountType;
@@ -178,5 +181,41 @@ public class ActCpnVO implements java.io.Serializable {
 		// 把 Date 轉成 LocalDate 加天數後再轉回 Date
 		LocalDate exp = startDate.toLocalDate().plusDays(validDays);
 		return java.sql.Date.valueOf(exp);
+	}
+
+	@Transient
+	public String getFormattedCrtAt() {
+		if (crtAt == null) {
+			return "-";
+		}
+
+		LocalDateTime time = crtAt.toLocalDateTime(); // 轉成 LocalDateTime
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		return time.format(formatter);
+	}
+
+	@Transient
+	private String formattedDiscValue; // 顯示用折扣值
+
+	@Transient
+	public String getFormattedDiscValue() {
+		if (discType == null || discValue == null) {
+			return "-";
+		}
+
+		DecimalFormat df = new DecimalFormat("#"); // 無小數點
+		switch (discType) {
+		case PERCENTAGE:
+			// 百分比，轉成 85 → 85%
+			BigDecimal percentage = discValue.multiply(BigDecimal.valueOf(100));
+			return df.format(percentage) + "%";
+
+		case FULL_REDUCTION:
+			// 滿額折抵，顯示「滿額折XXX」
+			return "折" + df.format(discValue);
+
+		default:
+			return "-";
+		}
 	}
 }

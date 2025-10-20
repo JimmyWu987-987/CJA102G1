@@ -555,6 +555,7 @@ MODIFY COLUMN mem_acc VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 DROP TABLE IF EXISTS  pro_cpn;
 CREATE TABLE pro_cpn(
     pro_cpn_id INT NOT NULL AUTO_INCREMENT,
+    cpn_source VARCHAR(20) NOT NULL DEFAULT 'COMMON'  COMMENT '折價券用途',
     cpn_name VARCHAR(50) NOT NULL,
     disc_type TINYINT NOT NULL COMMENT '0:滿額折抵,1: 百分比',
     disc_value DECIMAL(10,2) NOT NULL,
@@ -974,6 +975,7 @@ INSERT INTO pro_com (pro_id, mem_id, pro_com_content, pro_com_time, pro_com_rate
 DROP TABLE IF EXISTS act_cpn;
 CREATE TABLE act_cpn (
     act_cpn_id INT NOT NULL AUTO_INCREMENT,
+	cpn_source VARCHAR(20) NOT NULL DEFAULT 'COMMON'  COMMENT '折價券用途',
     cpn_name VARCHAR(50) NOT NULL,
     disc_type TINYINT NOT NULL COMMENT '0:滿額折抵,1: 百分比',
     disc_value DECIMAL(10,2) NOT NULL,

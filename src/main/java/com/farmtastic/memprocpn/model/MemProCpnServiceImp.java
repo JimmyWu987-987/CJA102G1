@@ -87,12 +87,12 @@ public class MemProCpnServiceImp {
 		Mem mem = memRepository.findById(memId).orElseThrow(() -> new RuntimeException("找不到該會員：" + memId));
 
 		// 防重發
-		if (memProCpnRepository.existsByMemVOAndProCpnVO(mem, proCpnVO)) {
-			System.out.printf("⚠️ 會員 %d 已領取過【%s】，跳過%n", memId, proCpnVO.getCpnName());
-			return;
-		}
+//		if (memProCpnRepository.existsByMemVOAndProCpnVO(mem, proCpnVO)) {
+//			System.out.printf("⚠️ 會員 %d 已領取過【%s】，跳過%n", memId, proCpnVO.getCpnName());
+//			return;
+//		}
 
-		// ✅ 建立會員折價券關聯紀錄
+		// 建立會員折價券關聯紀錄
 		MemProCpnVO memProCpn = new MemProCpnVO();
 		memProCpn.setMemVO(mem);
 		memProCpn.setProCpnVO(proCpnVO);
@@ -108,7 +108,7 @@ public class MemProCpnServiceImp {
 			memProCpn.setEffEnd(LocalDate.now().plusDays(30)); // 沒設定就給預設30天
 		}
 
-		// ✅ 儲存
+		// 儲存
 		memProCpnRepository.save(memProCpn);
 	}
 }

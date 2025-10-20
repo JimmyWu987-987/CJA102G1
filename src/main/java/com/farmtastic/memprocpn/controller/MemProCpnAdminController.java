@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.farmtastic.common.mapper.MemProCpnMapperImp;
 import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
 import com.farmtastic.memprocpn.model.MemProCpnVO;
-import com.farmtastic.memprocpn.model.SpinSyncScheduler;
 
 @Controller
 @RequestMapping("/admin/memprocpn")
@@ -23,8 +22,8 @@ public class MemProCpnAdminController {
 	@Autowired
 	private MemProCpnMapperImp mapper;
 
-	@Autowired
-	private SpinSyncScheduler spinSyncScheduler;
+//	@Autowired
+//	private SpinSyncScheduler spinSyncScheduler;
 
 //	@GetMapping("/syncNow")
 //	@ResponseBody
