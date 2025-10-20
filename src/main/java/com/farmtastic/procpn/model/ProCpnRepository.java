@@ -26,7 +26,7 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 	Optional<ProCpnVO> findByCpnNameAndIsActive(String cpnName, IsActive isActive);
 
 	// 名稱模糊查詢
-	Page<ProCpnVO> findByCpnNameContaining(String keyword, Pageable pageable);
+	List<ProCpnVO> findByCpnNameContaining(String keyword);
 
 	// 折扣類型查詢
 //	List<ProCpnVO> findByDiscType(DiscountType discType);
