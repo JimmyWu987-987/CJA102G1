@@ -269,8 +269,9 @@ div.dataTables_wrapper {
 
 								<div th:if="${proOrderVO.proOrdStatus == 3}">
 									<form method="post"
-										th:action="@{/mem/proorders/listOneProOrder}">
+										th:action="@{/mem/proorders/procom/add}">
 										<input type="submit" value="評論">
+										<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
 									</form>
 								</div>
 
@@ -299,10 +300,12 @@ div.dataTables_wrapper {
 								<div
 									th:if="${proOrderVO.proOrdStatus >=2 && proOrderVO.proOrdStatus <= 3}">
 									<form method="post" th:action="@{/mem/proorders/updatestatus}">
-										<input type="submit" value="退貨"> <input type="hidden"
-											name="proOrdId" th:value="${proOrderVO.proOrdId}"> <input
-											type="hidden" name="proOrdStatus"
-											th:value="${proOrderVO.proOrdStatus}">
+										<input type="submit" value="退貨"> 
+										<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}"> 
+										<input type="hidden" name="proOrdStatus" th:value="${proOrderVO.proOrdStatus}">
+										<p>請輸入退貨原因：
+										<p>
+										<input type="text" name=proOrdComm value="">
 									</form>
 								</div>
 

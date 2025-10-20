@@ -46,9 +46,6 @@ public class ProOrderMemController {
 	// 計算消費商品的總金額(金額不含運費)
 	private final static double POINTS_PER = 0.01;
 
-	// 計算單筆訂單的抽成百分筆
-	private static final double ALLOC_PER = 0.1;
-
 	@Autowired
 	ProOrderSevice proOrdSvc;
 	@Autowired
@@ -86,7 +83,7 @@ public class ProOrderMemController {
 
 	// 查詢單筆訂單
 	@PostMapping("listOneProOrder")
-	public String listOneProOrder(@RequestParam("proOrdId") String proOrdId, ModelMap model) {
+	public String listOneProOrder(@RequestParam("proOrdId") String proOrdId, Model model) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(Integer.valueOf(proOrdId));
 		List<ProOrderItemVO> items = proOrderItemSvc.getProOrderItems(proOrderVO);
@@ -132,16 +129,15 @@ public class ProOrderMemController {
 	 */
 	@PostMapping("updatestatus")
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
-			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes,
+			@RequestParam("proOrdStatus") Integer proOrdStatus,
+			@RequestParam("proOrdComm") String proOrdComm,
+			ModelMap model, RedirectAttributes redirectAttributes,
 			HttpSession session) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
-
-
+		
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
-		// 判斷是否要返還點數
-		boolean hasChangePoiont = false;
 
 		switch (proOrderVO.getProOrdStatus()) {
 		// 訂單未出貨，可以直接取消訂單。
@@ -155,12 +151,11 @@ public class ProOrderMemController {
 
 			// 取消訂單判斷是否要返還點數的邏輯
 			// 業務邏輯是，有付款才會新增點數到 Mem 的 DB
-			// （未付款：不返還）
-			// （已付款：返還）
-			hasChangePoiont = proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
+			proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
 
 			Mem updateMemVO = memSvc.getOneByMemId(proOrderVO.getMemVO().getMemId());
-
+			
+			
 			// 要將更新過的 Mem 資料，存到 session
 			session.setAttribute("loggedInMember", updateMemVO);
 
@@ -178,9 +173,19 @@ public class ProOrderMemController {
 		case 3:
 			System.out.println("買家提出退貨申請！");
 			proOrderVO.setProOrdStatus((byte) 4);
-			updateStatus = true;
-			redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
-			break;
+			
+			if(proOrdComm == null || proOrdComm.isEmpty()) {
+				redirectAttributes.addFlashAttribute("errorMessage", "請輸入退貨原因！");
+				break;
+			} else {
+				String originalComm = proOrderVO.getProOrdComm();
+				String finalComm = originalComm+"退貨原因[ "+proOrdComm+" ]。";
+				
+				proOrderVO.setProOrdComm(finalComm);
+				redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
+				updateStatus = true;
+				break;
+			}
 		// 訂單已經是退貨流程，直接返回。
 		case 4:
 			System.out.println("已通知賣家退貨！");
@@ -198,7 +203,7 @@ public class ProOrderMemController {
 		default:
 			break;
 		}
-
+		
 		if (updateStatus) {
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
