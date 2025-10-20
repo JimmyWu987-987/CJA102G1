@@ -19,5 +19,10 @@ public interface FmemRepository extends JpaRepository<Fmem, Integer>{
 //    Fmem findByFid(@Param("fId") String fId);
 	
 	//台灣地圖需要
+	@Query("select f from Fmem f where f.fmemCity  = :fmemCity and accStatus=2")
 	List<Fmem> findByFmemCity(String fmemCity);
+	
+	@Query("select f from Fmem f where f.fId  = :fId")
+	Fmem findByStatus(@Param("fId") Integer fId);
+	
 }

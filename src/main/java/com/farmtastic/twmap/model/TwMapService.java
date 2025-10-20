@@ -22,7 +22,7 @@ public class TwMapService {
 	}
 
 	public Fmem findOne(Integer id) {
-		return fmemRepository.findById(id).orElse(null);
+		return fmemRepository.findByStatus(id);
 	}
 
 }
