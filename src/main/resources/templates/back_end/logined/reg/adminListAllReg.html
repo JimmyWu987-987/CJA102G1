@@ -284,6 +284,9 @@ tr:hover {
 		<form method="get" th:action="@{/admin/cashflow/reg/list}">
 			<input type="submit" value="活動訂單金流明細">
 		</form>
+		<a th:href="@{/managepage}" class="btn" style="text-decoration: none; color: inherit;">
+		  回到管理員首頁
+		</a>
 	</div>
 
 <body th:data-success="${success}">
@@ -320,6 +323,7 @@ tr:hover {
     <button type="submit" class="btn">查全部</button>
   </form>
   
+ 
   </div>
 </div>
 	

@@ -47,7 +47,14 @@ public class RegController {
 	@Autowired
 	private MailService mailService;
 
-//  ******************************管理員功能**************************************
+	// 活動折價券使用
+	@Autowired
+	private MemActCpnServiceImp memActCpnService;
+
+    // =========================================================================
+    // 管理員功能
+    // =========================================================================
+
 	// 管理員查活動訂單全部
 	@GetMapping("admin/cashflow/reg/list")
 	public String list(Model model,
@@ -84,33 +91,32 @@ public class RegController {
 	    return "redirect:/admin/cashflow/reg/list";
 	}
 	
-	
-	
 	// 撥款成功後
-		@PostMapping("admin/reg/regMoney")
-		public String giveMonetToFmem(@RequestParam("regId") Integer regId, @RequestParam("regStat") Integer regStat,
-				RedirectAttributes redirectAttributes) {
+	@PostMapping("admin/reg/regMoney")
+	public String giveMonetToFmem(@RequestParam("regId") Integer regId, @RequestParam("regStat") Integer regStat,
+			RedirectAttributes redirectAttributes) {
 
-			regService.updateRegStat(regId, regStat);
-			redirectAttributes.addFlashAttribute("success", "撥款成功");
-			return "redirect:/admin/cashflow/reg/list";
-		}
+		regService.updateRegStat(regId, regStat);
+		redirectAttributes.addFlashAttribute("success", "撥款成功");
+		return "redirect:/admin/cashflow/reg/list";
+	}
 	
-		// 管理員退款給消費者
-		@PostMapping("admin/reg/changeState")
-		public String changeStateByAdmin(@RequestParam Integer regId,
-		                        @RequestParam Integer regStat,
-		                        HttpSession session,
-		                        RedirectAttributes redirectAttributes) {
+	// 管理員退款給消費者
+	@PostMapping("admin/reg/changeState")
+	public String changeStateByAdmin(@RequestParam Integer regId,
+	                        @RequestParam Integer regStat,
+	                        HttpSession session,
+	                        RedirectAttributes redirectAttributes) {
 
-		    regService.updateRegStat(regId, regStat); 
-		    redirectAttributes.addFlashAttribute("success", "退款成功");
-		    return "redirect:/admin/cashflow/reg/list";
-		}
-	
-	
+	    regService.updateRegStat(regId, regStat); 
+	    redirectAttributes.addFlashAttribute("success", "退款成功");
+	    return "redirect:/admin/cashflow/reg/list";
+	}
 
-//  ******************************小農功能**************************************
+    // =========================================================================
+    // 小農功能
+    // =========================================================================
+
 	// 小農查詢廣告列表
 	@GetMapping("fmem/reg/list")
 	public String farmerListReg(Model model, HttpSession session) {
@@ -132,7 +138,6 @@ public class RegController {
 		redirectAttributes.addFlashAttribute("success", "回覆成功");
 		return "redirect:/fmem/reg/list";
 	}
-	
 	
 	// 小農改變訂單狀態(取消訂單)
 	@PostMapping("fmem/reg/cancel")
@@ -157,11 +162,11 @@ public class RegController {
 	    redirectAttributes.addFlashAttribute("success", "結案成功");
 	    return "redirect:/fmem/reg/list";
 	}
-	
-	
-	
 
-//  ******************************消費者功能**************************************
+    // =========================================================================
+    // 消費者功能
+    // =========================================================================
+
 	// 消費者查詢廣告列表
 	@GetMapping("mem/reg/list")
 	public String memListReg(Model model, HttpSession session, @RequestParam(required = false) Integer memId,
@@ -336,10 +341,6 @@ public class RegController {
 		return "redirect:" + url;
 	}
 
-	// 活動折價券使用
-	@Autowired
-	private MemActCpnServiceImp memActCpnService;
-
 	// 付款成功後更新狀態
 	@GetMapping("mem/reg/return")
 	public String linePayReturn(@RequestParam String transactionId, @RequestParam String orderId,
@@ -409,6 +410,21 @@ public class RegController {
 		return "redirect:/mem/reg/list";
 	}
 
+	// 消費者取消報名
+	@PostMapping("mem/reg/cancel")
+	public String cancelReg(@RequestParam Integer regId,
+	                        @RequestParam Integer regStat, 
+	                        HttpSession session,
+	                        RedirectAttributes ra) {
+	    regService.updateRegStat(regId, regStat); // 將狀態改為 1(待退款)
+	    ra.addFlashAttribute("success", "已取消，待退款。");
+	    return "redirect:/mem/reg/list";
+	}
+
+    // =========================================================================
+    // 相關功能
+    // =========================================================================
+
 	// 簽章組成
 	private String sign(String msg) throws Exception {
 		javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
@@ -422,24 +438,4 @@ public class RegController {
 		model.addAttribute("reviews", regService.getReviewsByActId(actId));
 		return "front_end/customer/unlogined/act/actReview";
 	}
-	
-	// 消費者取消報名
-	@PostMapping("mem/reg/cancel")
-	public String cancelReg(@RequestParam Integer regId,
-	                        @RequestParam Integer regStat, 
-	                        HttpSession session,
-	                        RedirectAttributes ra) {
-	    regService.updateRegStat(regId, regStat); // 將狀態改為 1(待退款)
-	    ra.addFlashAttribute("success", "已取消，待退款。");
-	    return "redirect:/mem/reg/list";
-	}
-	
-	
-	
-	
-	
-	
-	
-
 }
-

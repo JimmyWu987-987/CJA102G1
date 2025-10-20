@@ -197,7 +197,9 @@ body{
       <div class="fmem-name" th:text="${f.storeName}"></div>
       <div class="fmem-desc" th:text="${f.storeIntro}"></div>
     </div>
-    <a class="fmem-link" href="#">前往賣場</a>
+    <a class="fmem-link"
+   th:href="@{/mem/farmerStoreProd(fmemId=${f.fmemId})}"
+   target="_top">前往賣場</a>
   </div>
 </div>
 </div>
