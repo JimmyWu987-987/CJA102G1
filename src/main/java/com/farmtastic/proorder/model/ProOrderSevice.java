@@ -2,13 +2,13 @@
 
 package com.farmtastic.proorder.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
@@ -159,7 +159,7 @@ public class ProOrderSevice {
 		// 平台撥款給小農的金額
 		Integer proOrdAllocSendFmem = proOrderVO.getProTotal() - proOrderVO.getProOrdAllocTotal();
 		proOrderVO.setProOrdAllocSendFmem(proOrdAllocSendFmem);
-		
+
 		// 假設總金額為0, 設定成未付款。
 		// 前台會顯 0元購買
 		if (proOrderVO.getProOrdGrandTotal() == 0) {
@@ -175,26 +175,37 @@ public class ProOrderSevice {
 		proOrderVO.setMemVO(memVO);
 
 	}
-	
+
 	// 新增訂單的扣商品庫存的邏輯
 	@Transactional
 	public Pro discProductStock(ProOrderVO proOrderVO) {
 		List<ProOrderItemVO> finalItems = proOrderVO.getProOrderItems();
+		List<Pro> discProList = new ArrayList<Pro>();
 
 		for (ProOrderItemVO itemList : finalItems) {
 			// 查詢該產品的庫存
-			Pro proVO = productSvc.getOnePro(itemList.getProductVO().getProId());
-			Integer originalStock = proVO.getProStock();
+			Pro tempProVO = productSvc.getOnePro(itemList.getProductVO().getProId());
+			Integer originalStock = tempProVO.getProStock();
 			Integer discStock = itemList.getProAmount();
 			Integer finalStock = originalStock - discStock;
 
 			if (finalStock < 0) {
-				return proVO;
+				return tempProVO;
 			} else {
-				proVO.setProStock(finalStock);
-				productSvc.updatePro(proVO);
+				tempProVO.setProStock(finalStock);
+				discProList.add(tempProVO);
 			}
 		}
+		
+		// 確認該訂單明細都沒有庫存的問題，才存入資料庫
+		if (discProList != null || !discProList.isEmpty()) {
+			for (Pro finalProVO : discProList) {
+				productSvc.updatePro(finalProVO);
+			}
+		}
+
+		// 返回空值，代表不用給controller抓取無法扣庫存的商品。
+		// 代表成功扣除庫存
 		return null;
 	}
 
@@ -268,11 +279,11 @@ public class ProOrderSevice {
 
 				hasBackPoint = true;
 			}
-			
+
 			break;
-			
+
 		default:
-			System.err.println("訂單編號[ "+proOrderVO.getProOrdId()+" ]的訂單狀態錯誤，沒有取消訂單，請洽系統管理員！");
+			System.err.println("訂單編號[ " + proOrderVO.getProOrdId() + " ]的訂單狀態錯誤，沒有取消訂單，請洽系統管理員！");
 			break;
 		}
 
@@ -281,8 +292,9 @@ public class ProOrderSevice {
 		} else {
 			return false;
 		}
-		
+
 	}
+
 	// 清除來自購物車的該訂單內容
 	public void insertOrderCleanCart(ProOrderVO proOrderVO) {
 		// 因為確定這份訂單內的產品，都是來自同一個小農fmemId

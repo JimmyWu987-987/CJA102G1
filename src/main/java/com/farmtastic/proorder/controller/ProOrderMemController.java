@@ -46,9 +46,6 @@ public class ProOrderMemController {
 	// 計算消費商品的總金額(金額不含運費)
 	private final static double POINTS_PER = 0.01;
 
-	// 計算單筆訂單的抽成百分筆
-	private static final double ALLOC_PER = 0.1;
-
 	@Autowired
 	ProOrderSevice proOrdSvc;
 	@Autowired
@@ -86,7 +83,7 @@ public class ProOrderMemController {
 
 	// 查詢單筆訂單
 	@PostMapping("listOneProOrder")
-	public String listOneProOrder(@RequestParam("proOrdId") String proOrdId, ModelMap model) {
+	public String listOneProOrder(@RequestParam("proOrdId") String proOrdId, Model model) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(Integer.valueOf(proOrdId));
 		List<ProOrderItemVO> items = proOrderItemSvc.getProOrderItems(proOrderVO);
@@ -155,8 +152,8 @@ public class ProOrderMemController {
 
 			// 取消訂單判斷是否要返還點數的邏輯
 			// 業務邏輯是，有付款才會新增點數到 Mem 的 DB
-			// （未付款：不返還）
-			// （已付款：返還）
+			// （未付款：不返還）false
+			// （已付款：返還）true
 			hasChangePoiont = proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
 
 			Mem updateMemVO = memSvc.getOneByMemId(proOrderVO.getMemVO().getMemId());
@@ -198,7 +195,12 @@ public class ProOrderMemController {
 		default:
 			break;
 		}
-
+		
+		if(hasChangePoiont) {
+			
+		}
+		
+		
 		if (updateStatus) {
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
