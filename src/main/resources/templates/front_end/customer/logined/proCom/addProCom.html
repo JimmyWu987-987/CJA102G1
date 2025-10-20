@@ -5,54 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="./images/logo.png">
     
-<!--     引入main.css, iconfonts -->
-    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
       <style>
-    	.main-area {
-			flex: 1;
-			max-width: 100%;
-			height: auto;
-			padding: 30px;
-			display: flex;
-		    justify-content: center;
-		}
-		.farmerwaving{
-			margin-top: 40px;
-		  	width:400px;
-		  	height: auto;
-		}
-		  
-		.mwt_border{
-			position: absolute;
-			top: 24%;
-			left: 48%;
-			width: 260px; 
-			min-height: 40px;
-			background: #fff; 
-			border: 1px solid #333;
-			border-radius:20px;
-			box-sizing: border-box; 
-			display:flex; 
-			align-items:center;
+    	/* ----------------------------------- */
+		/* 間距極簡化與兩欄並排版本 */
+		
+		/* 評論表單容器 - 設置 Grid 佈局 */
+		.review-form-container {
+			display: grid;
+			/* 響應式佈局: 最小寬度 300px, 最多兩欄 */
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 30px; /* 設置表單之間的間距 */
 		}
 		
-		.mwt_border .arrow_b_int{
-			position:absolute;
-			width:0;height:0;
-			border-width:15px; border-style:solid;
-			border-color:#333 transparent transparent transparent;
-			bottom:-30px; left:80%; transform:translateX(-50%);
-			z-index:2;
+		/* 單個評論區塊卡片 */
+		.review-item-card {
+			/* 讓每個卡片看起來更像一個獨立的區塊 */
+			background-color: #fcfcfc; 
+			border: 1px solid #e0e0e0;
+			border-radius: 8px;
+			padding: 20px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+			height: fit-content; /* 高度隨內容調整 */
+		}
+
+		/* 標題樣式調整 */
+		.review-item-card h2 {
+			font-size: 22px; /* 稍微縮小標題，適應卡片空間 */
+			color: var(--second-color); /* 使用主色系 */
+			border-bottom: 2px solid var(--header-color); /* 使用主題色底線 */
+			padding-bottom: 8px; 
+			margin-bottom: 20px; 
+			letter-spacing: 1px;
+		}
+		.review-item-card h2 span {
+			color: var(--btn-hover-color);
+			font-weight: bold;
 		}
 		
-		.bubble-text{
-			font-size:20px; 
-			padding:0 20px; 
-			margin:0;
+		/* 表單樣式 - 移除不必要的邊界和間距 */
+		.review-item-card form {
+			max-width: none; /* 讓表單內容填滿卡片寬度 */
+			padding: 0;
+			margin-bottom: 0;
+			border: none;
 		}
-		    	
+		
+		/* 表單欄位間距 */
+		.review-item-card form > div {
+			margin-bottom: 12px;
+		}
+		
+		.review-item-card label {
+			display: block;
+			font-size: 16px; 
+			color: #333;
+			margin-bottom: 4px;
+			font-weight: bold;
+		}
+		
+		.review-item-card select,
+		.review-item-card textarea {
+			width: 100%;
+			padding: 6px 9px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 16px; 
+			box-sizing: border-box;
+			transition: border-color 0.3s;
+		}
+		
+		.review-item-card select:focus,
+		.review-item-card textarea:focus {
+			border-color: var(--btn-color);
+			outline: none;
+		}
+		
+		.review-item-card textarea {
+			min-height: 70px; 
+			resize: vertical;
+		}
+		
+		.review-item-card button[type="submit"] {
+			display: block;
+			width: 100%;
+			max-width: none; /* 讓按鈕填滿卡片寬度 */
+			padding: 8px 15px; /* 稍微增加按鈕高度 */
+			font-size: 16px; 
+			color: #fff;
+			background-color: var(--btn-color);
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s;
+			letter-spacing: 1px;
+			margin-top: 15px; /* 稍微增加按鈕上間距 */
+			margin-left: 0;
+		}
+		
+		.review-item-card button[type="submit"]:hover {
+			background-color: var(--btn-hover-color);
+		}
+		
+		/* 移除多餘的分隔線 */
+		.member-content hr {
+			display: none;
+		}
+		
+		/* 成功/錯誤訊息樣式 */
+		/* 將訊息放在網格佈局之外，讓它佔滿一整行 */
+		.success-message, .error-message {
+			/* ... 保持原有樣式 ... */
+			padding: 8px;
+			margin-bottom: 12px;
+			border-radius: 6px;
+			font-size: 16px; 
+			font-weight: bold;
+		}
+		.success-message {
+			background-color: #e6f7e9;
+			color: var(--second-color);
+			border: 1px solid var(--second-color);
+		}
+		.error-message {
+			background-color: #ffeaea;
+			color: #e74c3c;
+			border: 1px solid #e74c3c;
+		}
+		
     </style>
 <title>商品評論</title>
 
@@ -64,8 +146,7 @@
 <div class="container container-member">
     <div class="member-sidebar">
         <h3>會員專區</h3>
-<!--         = index.html的會員中心架構 -->
-        <ul th:replace="~{/front_end/index :: memAreaLink}"></ul>
+<ul th:replace="~{/front_end/index :: memAreaLink}"></ul>
     </div>
 
     <div class="member-content">
@@ -76,48 +157,43 @@
 	<div th:if="${errorMessage}" class="error-message">
 		<p th:text="${errorMessage}"></p>
 	</div>
-		
-    <th:block th:each="itemVO, itemStat : ${proOrdItemList}">
-		<h2>評論商品: <span th:text="${itemVO.productVO.proName}">商品名稱</span></h2>
-		
-        <form th:action="@{insert}" method="post">
-			
-			<input type="hidden" name="proOrdId" th:value="${proOrdId}"/>
-			<input type="hidden" name="proId" th:value="${itemVO.productVO.proId}"/>
-
-<!--             <div>
-                <label>商品編號/名稱:</label>
-                <span th:text="${itemVO.productVO.proId}">1</span> / 
- 			    <span th:text="${itemVO.productVO.proName}">商品名稱</span>
-			</div> -->
-		
-			<div>
-			<label>商品評分(最高為5分):</label>
-			
-             <select name="proComRate" required>
-                <option value="">請選擇評分</option>
-				<option value="5">5</option>
-				<option value="4">4</option>
-				<option value="3">3</option>
-				<option value="2">2</option>
-				<option value="1">1</option>
-			</select>
-			</div>
-			
-			<div>
-			<label>評論內容:</label>
-            <textarea name="proComContent" required></textarea><br/>
-			</div>
-			
-
-			<div>
-				<div></div>
-				<div><button type="submit" id="submit" th:text="|送出 ${itemVO.productVO.proName} 的評論|"> 送出新增 </button></div>
-				<div></div>
-			</div>		
-		</form>
-        <hr th:if="${!itemStat.last}" /> </th:block>
 	
+	<div class="review-form-container">
+    <th:block th:each="itemVO, itemStat : ${proOrdItemList}">
+        <div class="review-item-card">
+			<h2>評論商品: <span th:text="${itemVO.productVO.proName}">商品名稱</span></h2>
+			
+			<form th:action="@{insert}" method="post">
+				
+				<input type="hidden" name="proOrdId" th:value="${proOrdId}"/>
+				<input type="hidden" name="proId" th:value="${itemVO.productVO.proId}"/>
+			
+				<div>
+				<label for="proComRate[[${itemStat.index}]]">商品評分(最高為5分):</label>
+				
+				 <select name="proComRate" th:id="|proComRate${itemStat.index}|" required>
+					<option value="">請選擇評分</option>
+					<option value="5">5</option>
+					<option value="4">4</option>
+					<option value="3">3</option>
+					<option value="2">2</option>
+					<option value="1">1</option>
+				</select>
+				</div>
+				
+				<div>
+				<label for="proComContent[[${itemStat.index}]]">評論內容:</label>
+				<textarea name="proComContent" th:id="|proComContent${itemStat.index}|" required></textarea>
+				</div>
+				
+
+				<div>
+					<button type="submit" id="submit" th:text="|送出 ${itemVO.productVO.proName} 的評論|"> 送出新增 </button>
+				</div>		
+			</form>
+		</div>
+        </th:block>
+	</div>
  </div>
     
 </div>
