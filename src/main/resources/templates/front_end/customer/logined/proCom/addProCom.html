@@ -6,33 +6,54 @@
 </head>
 <body>
 	<h1>這是一個新增商品評論的網頁</h1>
-	
-		<form th:action="@{add}" method="post" th:object="${empVO}">
+		
+			<div th:if="${successMessage}" class="success-message">
+				<p th:text="${successMessage}"></p>
+			</div>
+			<div th:if="${errorMessage}" class="error-message">
+				<p th:text="${errorMessage}"></p>
+			</div>
+		
+		
+		
+		<form th:action="@{insert}" method="post" th:object="${proComVO}">
 			
-
+			<input type="hidden" name="proOrdId" th:value="${proOrdId}"/>
+			
+			<div>
+			<label>評論時間:</label>
+			<input type="text" th:field="*{proComTime}" onclick="hideContent('proComTime.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('proComTime')}" th:errors="*{proComTime}" class="error" id="proComTime.errors"></span>
+			</div>
+			
 			<div>
 			<label>商品編號:</label>
-			<input type="text" th:field="*{ename}"/><br/>
-			<span  th:if="${#fields.hasErrors('ename')}" th:errors="*{ename}" class="error" id="ename.errors"></span>
+ 			<select th:field="*{proVO.proId}">
+				<option th:each="itemVO : ${proOrdItemList}" th:value="${itemVO.productVO.proId}" th:text="${itemVO.productVO.proName}" />
+			</select>
+       <!-- <span th:if="${#fields.hasErrors('deptVO.deptno')}" th:errors="*{deptVO.deptno}" class="error" id="deptVO.deptno.errors"></span> -->
+			</div>
+		
+			<div>
+			<label>商品評分:</label>
+			
+			 <select th:field="*{proComRate}">
+				<option value="5">5</option>
+				<option value="4">4</option>
+				<option value="3">3</option>
+				<option value="2">2</option>
+				<option value="1">1</option>
+			</select>
+			<span  th:if="${#fields.hasErrors('proComRate')}" th:errors="*{proComRate}" class="proComRate" id="proComRate.errors"></span>
 			</div>
 			
 			<div>
 			<label>評論內容:</label>
-			<input type="text" th:field="*{job}"/><br/>
-			<span  th:if="${#fields.hasErrors('job')}" th:errors="*{job}" class="error" id="job.errors"></span>
+			<textarea th:field="*{proComContent}"/><br/>
+			<span  th:if="${#fields.hasErrors('proComContent')}" th:errors="*{proComContent}" class="error" id="proComContent.errors"></span>
 			</div>
 			
-			<div>
-			<label>評論時間:</label>
-			<input type="date" th:field="*{hiredate}" onclick="hideContent('hiredate.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('hiredate')}" th:errors="*{hiredate}" class="error" id="hiredate.errors"></span>
-			</div>
 
-			<div>
-			<label>商品評分:</label>
-			<input type="text" th:field="*{sal}" onclick="hideContent('sal.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('sal')}" th:errors="*{sal}" class="error" id="sal.errors"></span>
-			</div>
 			
 
 			<div>

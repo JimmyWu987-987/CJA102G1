@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.farmtastic.proorder.model.ProOrderSevice;
+import com.farmtastic.proorder.model.ProOrderService;
 import com.farmtastic.proorder.model.ProOrderVO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpSession;
 public class LinePayController {
 
 	@Autowired
-	ProOrderSevice proOrdSvc;
+	ProOrderService proOrdSvc;
 
 	@GetMapping("linepayview")
 	public String showLinePayView(Model model, HttpServletRequest request, @RequestParam Integer proOrdId)

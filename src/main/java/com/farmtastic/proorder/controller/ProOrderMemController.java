@@ -28,7 +28,7 @@ import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.procpn.model.ProCpnService;
-import com.farmtastic.proorder.model.ProOrderSevice;
+import com.farmtastic.proorder.model.ProOrderService;
 import com.farmtastic.proorder.model.ProOrderVO;
 import com.farmtastic.proorderitem.model.ProOrderItemId;
 import com.farmtastic.proorderitem.model.ProOrderItemService;
@@ -47,7 +47,7 @@ public class ProOrderMemController {
 	private final static double POINTS_PER = 0.01;
 
 	@Autowired
-	ProOrderSevice proOrdSvc;
+	ProOrderService proOrdSvc;
 	@Autowired
 	ProOrderItemService proOrderItemSvc;
 	@Autowired

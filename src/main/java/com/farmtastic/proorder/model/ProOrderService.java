@@ -23,7 +23,7 @@ import com.farmtastic.proorderitem.model.ProOrderItemVO;
 import com.farmtastic.shoppingcart.model.ShoppingCartService;
 
 @Service
-public class ProOrderSevice {
+public class ProOrderService {
 
 	@Autowired
 	ProOrderRepository repository;
