@@ -44,27 +44,10 @@
 </div>
 </div>
 
-<form th:action="@{/admin/act/reviewAct}" method="post">
-    <!-- 隱藏欄位傳 actId -->
-    <input type="hidden" name="actId" th:value="${act.actId}" />
-
-    <!-- 不通過原因輸入，保留輸入值 -->
-    <div style="margin-bottom: 10px;">
-        <label for="remark"><strong>不通過原因：</strong></label><br>
-        <textarea id="remark" name="actRemark" rows="3" cols="50"
-                  placeholder="若不通過請輸入原因"
-                  th:text="${act.actRemark}"></textarea>
-        <!-- 顯示錯誤訊息 -->
-        <div style="color: red;" th:if="${errorMessage}" th:text="${errorMessage}"></div>
-    </div>
-
-    <!-- 通過 / 不通過 / 返回按鈕 -->
     <div style="margin-top: 10px; display: flex; gap: 10px;">
-        <button type="submit" name="action" value="approve" class="btn">通過</button>
-        <button type="submit" name="action" value="reject" class="btn">不通過</button>
-        <a th:href="@{/admin/act/listUnapprovedAct}" class="btn">返回列表</a>
+        <a th:href="@{/admin/act/listAllAct}" class="btn btn-secondary">返回列表</a>
     </div>
-</form>
+
 
     <!-- 分離 JS -->
     <script th:src="@{/js/act/actCarousel.js}"></script>

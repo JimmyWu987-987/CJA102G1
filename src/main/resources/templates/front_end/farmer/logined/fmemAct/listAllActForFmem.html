@@ -105,7 +105,7 @@
 				<th>活動審核備註</th>
 				<th>活動上下架狀態</th>
 				<th>活動評價</th>
-				<th>操作</th>
+				<th>操作</th> 
             </tr>
 		</thead>
 		<tbody>
@@ -126,7 +126,20 @@
               '尚無評價'}"></td>
 				
 				<td>
-					<a class="btn" th:href="@{/fmem/act/detail/{id}(id=${act.actId})}">查看活動詳細資訊</a>
+					<a class="btn" th:href="@{/fmem/act/detail/{id}(id=${act.actId})}" 
+					   style="background-color: #4CAF50; margin-bottom: 5px; display: block;">查看活動詳細資訊</a>
+					
+					<th:block th:if="${act.actStat == 2}"> <span style="color: grey; font-size: 0.8rem; display: block; padding: 4px 8px; border-radius: 4px; background-color: #f0f0f0; border: 1px solid #ccc;">
+					        無法編輯已過審的活動
+					    </span>
+					</th:block>
+					<th:block th:unless="${act.actStat == 2}">
+					    <a th:href="@{/fmem/act/updateAct/{actId}(actId=${act.actId})}" 
+					       class="btn" 
+					       style="background-color: #3498db; display: block;">
+					       編輯並重新送審
+					    </a>
+					</th:block>
 				</td>
 				
 			</tr>

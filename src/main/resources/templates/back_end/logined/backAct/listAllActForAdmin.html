@@ -86,6 +86,13 @@
 <div class="container">
 <div class="list">
 	<h1>活動列表</h1>
+	
+	<div style="margin-bottom: 20px; text-align: right;">
+        <a th:href="@{/admin/act/listUnapprovedAct}" class="btn" 
+           style="background-color: #E68A00; padding: 10px 15px; font-size: 1rem;">
+            確認待審核活動
+        </a>
+    </div>
 
 	<div th:if="${#lists.isEmpty(actList)}">
 		<p>目前尚無活動</p>
@@ -103,7 +110,6 @@
 				<th>費用</th>
 				<th>活動狀態</th>
 				<th>活動審核備註</th>
-				<th>活動上下架狀態</th>
 				<th>操作</th>
             </tr>
 		</thead>
@@ -119,10 +125,9 @@
 				<td th:text="${act.actFee}"></td>
 				<td th:text="${act.actStatText}"></td>
 				<td th:text="${act.actRemark}"></td>
-				<td th:text="${act.actLaunStatText}"></td>
 				
 				<td>
-					<a class="btn" th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>
+					<a th:href="@{/admin/act/detail/{actId}(actId=${act.actId})}" class="btn">查看活動詳細資訊</a>
 				</td>
 				
 			</tr>
