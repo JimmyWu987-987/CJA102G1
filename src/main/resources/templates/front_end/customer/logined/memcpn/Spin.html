@@ -36,21 +36,24 @@
     </div>
   </div>
  <!-- 主內容外層要有 container -->
-  <div class="container container-main">
+ <div class="container container-main text-center">
   <h2>小農成長故事</h2>
   <p>每一顆種子，都是希望的開始。</p>
-</div>
-<div class="garden-box">
-  <div class="garden">
-    <img th:src="@{/images/CpnLottery/seed.png}" alt="seed" class="seed" id="seed">
-    <img th:src="@{/images/CpnLottery/gram.png}" alt="germ" class="germ" id="germ">
-    <img alt="bloom" class="bloom" id="bloom">
+
+  <div class="garden-box">
+    <div class="garden">
+      <img th:src="@{/images/CpnLottery/seed.png}" alt="seed" class="seed" id="seed">
+      <img th:src="@{/images/CpnLottery/gram.png}" alt="germ" class="germ" id="germ">
+      <img alt="bloom" class="bloom" id="bloom">
+    </div>
+
+    <button class="btn-plant" id="plantBtn">🌾 播種開始</button>
+    
+    <!-- 返回 -->
+    <div class="text-center mt-5">
+      <a th:href="@{/mem/memcpn/list}" class="btn-use">⬅ 返回折價卷頁面</a>
+    </div>
   </div>
-<button class="btn-plant" id="plantBtn">🌾 播種開始</button>
-<!-- 返回 -->
-      <div class="text-center mt-5">
-        <a th:href="@{/mem/memcpn/list}" class="btn-use">⬅ 返回折價卷頁面</a>
-      </div>
 </div>
 <!--  Footer 區 -->
 <div th:replace="~{/front_end/index :: footer}"></div>

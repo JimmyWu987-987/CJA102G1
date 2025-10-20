@@ -17,7 +17,12 @@ import jakarta.transaction.Transactional;
 
 public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 //查詢折價券用途
-	Optional<ProCpnVO> findCpnSource(CpnSource cpnSource);
+	Optional<ProCpnVO> findByCpnSource(CpnSource cpnSource);
+
+	Optional<ProCpnVO> findFirstByCpnSourceAndIsActiveOrderByCrtAtDesc(CpnSource source, IsActive isActive);
+
+	// 查詢全部折價券用途
+	List<ProCpnVO> findAllByCpnSource(CpnSource cpnSource);
 
 	// 查詢全部啟用或停用的折價券
 	List<ProCpnVO> findByIsActive(IsActive isActive);

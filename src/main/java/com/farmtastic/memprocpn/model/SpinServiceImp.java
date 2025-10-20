@@ -1,7 +1,10 @@
 package com.farmtastic.memprocpn.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.procpn.model.ProCpnRepository;
 import com.farmtastic.procpn.model.ProCpnVO;
 
@@ -19,6 +23,7 @@ public class SpinServiceImp {
 
 	private final StringRedisTemplate stringRedisTemplate;
 	private final ProCpnRepository proCpnRepo;
+	private List<ProCpnVO> lotteryCoupons = new ArrayList<>();
 	private Random random = new Random();
 
 	@Autowired
@@ -75,28 +80,61 @@ public class SpinServiceImp {
 	}
 
 	/**
+	 * 更新抽獎池 — 從資料庫撈出所有 cpn_source = LOTTERY 的折價券
+	 */
+	public void refreshLotteryPool() {
+		lotteryCoupons = proCpnRepo.findAllByCpnSource(CpnSource.LOTTERY);
+		System.out.println(" 已更新抽獎池，共 " + lotteryCoupons.size() + " 張券");
+	}
+
+	public List<ProCpnVO> getLotteryCoupons() {
+		if (lotteryCoupons == null || lotteryCoupons.isEmpty()) {
+			refreshLotteryPool();
+		}
+		return lotteryCoupons;
+	}
+
+	/**
 	 * 抽獎邏輯：決定是否中獎、中什麼獎
 	 */
 	private Map<String, Object> drawCoupon() {
 		Map<String, Object> result = new HashMap<>();
-		int roll = random.nextInt(100);
-		ProCpnVO coupon = null;
+		// 如果 pool 未初始化，立即刷新
+		if (lotteryCoupons == null || lotteryCoupons.isEmpty()) {
+			refreshLotteryPool();
+		}
+		if (lotteryCoupons == null || lotteryCoupons.isEmpty()) {
+			result.put("status", "ERROR");
+			result.put("message", "目前沒有可抽的折價券！");
+			return result;
+		}
+		int roll = random.nextInt(100); // 0~99
+		ProCpnVO selected = null;
 
-		if (roll < 99) {
-			coupon = findCouponOrThrow("轉盤折200");
+		System.out.println("抽獎 roll = " + roll);
+		for (ProCpnVO coupon : lotteryCoupons) {
+			BigDecimal value = coupon.getDiscValue();
+
+			if (value.intValue() <= 100 && roll < 99) {
+				selected = coupon;
+				break;
+			} else if (value.intValue() <= 200 && roll < 20) {
+				selected = coupon;
+				break;
+			} else if (value.intValue() <= 300 && roll < 5) {
+				selected = coupon;
+				break;
+			}
+		}
+		if (selected != null) {
 			result.put("status", "WIN");
-			result.put("coupon", coupon);
-			result.put("result", coupon.getCpnName());
-		} else if (roll < 1) {
-			coupon = findCouponOrThrow("轉盤折100");
-			result.put("status", "WIN");
-			result.put("coupon", coupon);
-			result.put("result", coupon.getCpnName());
+			result.put("coupon", selected);
+			result.put("result", "🎉 恭喜中獎！獲得「" + selected.getCpnName() + "」");
 		} else {
 			result.put("status", "LOSE");
-			result.put("message", "沒中獎，再接再厲！");
+			result.put("message", "💨 沒中獎，再接再厲！");
 		}
-
+		System.out.println("順序 = " + result);
 		return result;
 	}
 

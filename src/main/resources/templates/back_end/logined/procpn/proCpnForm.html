@@ -17,82 +17,140 @@
 
     <form th:action="${actionUrl}" th:object="${proCpnForm}" method="post" class="space-y-5">
 
-      <!-- 折價券編號（僅編輯時顯示） -->
-      <div th:if="${#strings.equals(mode, 'edit')}">
-        <label class="block text-sm font-medium">折價券編號</label>
-        <input type="text" th:field="*{proCpnId}" class="form-input bg-gray-100 cursor-not-allowed" readonly>
-      </div>
+      <!-- 折價券表單 -->
+<div class="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8">
+  <h2 class="text-2xl font-bold text-center mb-6 text-gray-700"
+      th:text="${#strings.equals(mode, 'edit') ? '編輯商品折價券' : '新增商品折價券'}">
+    新增商品折價券
+  </h2>
 
-      <!-- 名稱 -->
-      <div>
-        <label class="block text-sm font-medium">折價券名稱</label>
-        <input type="text" th:field="*{cpnName}" class="form-input">
-        <p class="form-error" th:errors="*{cpnName}"></p>
-      </div>
+  <form th:action="${actionUrl}" th:object="${proCpnForm}" method="post">
 
-      <!-- 折扣類型 -->
-      <div>
-        <label class="block text-sm font-medium">折扣類型</label>
-        <select th:field="*{discType}" class="form-select">
-          <option value="">請選擇折扣類型</option>
-          <option th:value="FULL_REDUCTION">滿額折抵</option>
-          <option th:value="PERCENTAGE">百分比折扣</option>
-        </select>
-        <p class="form-error" th:errors="*{discType}"></p>
-      </div>
+    <table class="w-full border border-gray-300 rounded-lg text-sm text-gray-700">
+      <thead class="bg-gray-100 font-semibold text-gray-800">
+        <tr>
+          <th class="w-1/4 py-2 px-4 text-left">欄位名稱</th>
+          <th class="py-2 px-4 text-left">輸入內容</th>
+        </tr>
+      </thead>
 
-      <!-- 折扣值 -->
-      <div>
-        <label class="block text-sm font-medium">折扣值</label>
-        <input type="number" step="0.01" th:field="*{discValue}" class="form-input">
-        <p class="form-error" th:errors="*{discValue}"></p>
-      </div>
+      <tbody class="divide-y divide-gray-200">
 
-      <!-- 最低消費金額 -->
-      <div>
-        <label class="block text-sm font-medium">最低消費金額</label>
-        <input type="number" th:field="*{minSpend}" class="form-input">
-        <p class="form-error" th:errors="*{minSpend}"></p>
-      </div>
+        <!-- 折價券編號（僅編輯時顯示） -->
+        <tr th:if="${#strings.equals(mode, 'edit')}">
+          <td class="py-3 px-4 font-medium">折價券編號</td>
+          <td class="py-3 px-4">
+            <input type="text" th:field="*{proCpnId}" class="form-input bg-gray-100 cursor-not-allowed w-full" readonly>
+          </td>
+        </tr>
 
-      <!-- 適用範圍 -->
-      <div>
-        <label class="block text-sm font-medium">適用範圍</label>
-        <select th:field="*{applScope}" class="form-select">
-          <option value="ALL">全館</option>
-          <option value="FARMER">指定小農</option>
-          <option value="PRODUCT">指定商品</option>
-        </select>
-      </div>
+        <!-- 折價券名稱（自動生成，不可改） -->
+<tr>
+  <td class="py-3 px-4 font-medium">折價券名稱</td>
+  <td class="py-3 px-4">
+    <input type="text" th:field="*{cpnName}" 
+           class="form-input w-full bg-gray-100 cursor-not-allowed" readonly>
+    <p class="form-error text-red-500 text-xs mt-1" th:errors="*{cpnName}"></p>
+  </td>
+</tr>
+<!-- 折價券來源 -->
+<tr>
+  <td class="py-3 px-4 font-medium">折價券來源</td>
+  <td class="py-3 px-4">
+    <select th:field="*{cpnSource}" class="form-select w-full">
+      <option value="">請選擇折價券來源</option>
+      <option th:value="REGISTRATION">註冊券</option>
+      <option th:value="LOTTERY">抽獎券</option>
+      <option th:value="BIRTHDAY">生日券</option>
+      <option th:value="EVENT">活動券</option>
+      <option th:value="COMMON">一般券</option>
+    </select>
+    <p class="form-error text-red-500 text-xs mt-1" th:errors="*{cpnSource}"></p>
+  </td>
+</tr>
+        <!-- 折扣類型 -->
+        <tr>
+          <td class="py-3 px-4 font-medium">折扣類型</td>
+          <td class="py-3 px-4">
+            <select th:field="*{discType}" class="form-select w-full">
+              <option value="">請選擇折扣類型</option>
+              <option th:value="FULL_REDUCTION">滿額折抵</option>
+              <option th:value="PERCENTAGE">百分比折扣</option>
+            </select>
+            <p class="form-error text-red-500 text-xs mt-1" th:errors="*{discType}"></p>
+          </td>
+        </tr>
 
-      <!-- 開始日期 -->
-      <div>
-        <label class="block text-sm font-medium">開始日期</label>
-        <input type="date" th:field="*{startDate}" class="form-input">
-        <p class="form-error" th:errors="*{startDate}"></p>
-      </div>
+       <!-- 折扣值 -->
+<tr>
+  <td class="py-3 px-4 font-medium">折扣值</td>
+  <td class="py-3 px-4">
+    <input id="discValue" type="number" step="0.01" min="1" max="99999"
+           th:field="*{discValue}" class="form-input w-full">
+    <p class="text-xs text-gray-400 mt-1" id="discHint">請輸入折扣金額（例如：100）</p>
+  </td>
+</tr>
 
-      <!-- 有效天數 -->
-      <div>
-        <label class="block text-sm font-medium">有效天數</label>
-        <input type="number" th:field="*{validDays}" class="form-input">
-        <p class="form-error" th:errors="*{validDays}"></p>
-      </div>
+        <!-- 最低消費金額 -->
+        <tr>
+          <td class="py-3 px-4 font-medium">最低消費金額</td>
+          <td class="py-3 px-4">
+            <input type="number" th:field="*{minSpend}" class="form-input w-full">
+            <p class="form-error text-red-500 text-xs mt-1" th:errors="*{minSpend}"></p>
+          </td>
+        </tr>
 
-      <!-- 描述 -->
-      <div>
-        <label class="block text-sm font-medium">折價券描述</label>
-        <textarea th:field="*{cpnDesc}" rows="3" class="form-input resize-none"></textarea>
-      </div>
+        <!-- 適用範圍 -->
+        <tr>
+          <td class="py-3 px-4 font-medium">適用範圍</td>
+          <td class="py-3 px-4">
+            <select th:field="*{applScope}" class="form-select w-full">
+              <option value="ALL">全館</option>
+              <option value="FARMER">指定小農</option>
+              <option value="PRODUCT">指定商品</option>
+            </select>
+          </td>
+        </tr>
 
-      <!-- 狀態 -->
-      <div>
-        <label class="block text-sm font-medium">狀態</label>
-        <select th:field="*{isActive}" class="form-select">
-          <option th:value="ACTIVE">啟用中</option>
-          <option th:value="INACTIVE">未啟用</option>
-        </select>
-      </div>
+        <!-- 開始日期 -->
+        <tr>
+          <td class="py-3 px-4 font-medium">開始日期</td>
+          <td class="py-3 px-4">
+            <input  id="startDate" type="date" th:field="*{startDate}" class="form-input w-full" >
+            <p class="form-error text-red-500 text-xs mt-1" th:errors="*{startDate}"></p>
+          </td>
+        </tr>
+
+        <!-- 有效天數 -->
+        <tr>
+          <td class="py-3 px-4 font-medium">有效天數</td>
+          <td class="py-3 px-4">
+            <input type="number" th:field="*{validDays}" class="form-input w-full" min="1">
+            <p class="form-error text-red-500 text-xs mt-1" th:errors="*{validDays}"></p>
+          </td>
+        </tr>
+
+        <!-- 描述 -->
+        <tr>
+          <td class="py-3 px-4 font-medium">折價券描述</td>
+          <td class="py-3 px-4">
+            <textarea th:field="*{cpnDesc}" rows="3" class="form-input w-full resize-none"></textarea>
+          </td>
+        </tr>
+
+        <!-- 狀態 -->
+        <tr>
+          <td class="py-3 px-4 font-medium">狀態</td>
+          <td class="py-3 px-4">
+            <select th:field="*{isActive}" class="form-select w-full">
+              <option th:value="ACTIVE">啟用中</option>
+              <option th:value="INACTIVE">未啟用</option>
+            </select>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
 
       <!-- 按鈕 -->
       <div class="flex justify-center space-x-4 pt-4">
@@ -100,10 +158,73 @@
                 class="btn-primary"
                 th:text="${#strings.equals(mode, 'edit') ? '更新折價券' : '新增折價券'}">
         </button>
-        <a th:href="@{/admin/procpn/list}" class="btn-secondary">返回列表</a>
+        <a th:href="@{/admin/procpn/list}" class="btn-secondary">
+        返回列表</a>
       </div>
     </form>
   </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // === 元素取得 ===
+  const cpnSourceSelect = document.querySelector("[name='cpnSource']");
+  const discTypeSelect = document.querySelector("[name='discType']");
+  const discValueInput = document.querySelector("[name='discValue']");
+  const cpnNameInput = document.querySelector("[name='cpnName']");
+  const hint = document.getElementById("discHint");
+  const startDateInput = document.getElementById("startDate");
 
+  // === 限制開始日期不能早於今天 ===
+  const today = new Date().toISOString().split("T")[0];
+  if (startDateInput) {
+    startDateInput.min = today;
+  }
+
+  // === 更新提示與範圍 ===
+  function updateDiscValueRules() {
+    if (discTypeSelect.value === "PERCENTAGE") {
+      discValueInput.min = 1;
+      discValueInput.max = 99;
+      discValueInput.step = 1;
+      if (hint) hint.textContent = "請輸入折扣比例（1~99，表示 1折~99折）";
+    } else {
+      discValueInput.min = 1;
+      discValueInput.max = 99999;
+      discValueInput.step = 1;
+      if (hint) hint.textContent = "請輸入折抵金額（例如：100、200）";
+    }
+  }
+
+  // === 自動更新折價券名稱 ===
+  function updateCpnName() {
+    const sourceText = cpnSourceSelect.options[cpnSourceSelect.selectedIndex]?.text.trim() || "";
+    const discValue = discValueInput.value.trim();
+
+    if (sourceText && discValue) {
+      if (discTypeSelect.value === "PERCENTAGE") {
+        // 百分比折扣 → 顯示「註冊券85折」
+        cpnNameInput.value = `${sourceText}${discValue}折`;
+      } else {
+        // 金額折抵 → 顯示「活動券折200」
+        cpnNameInput.value = `${sourceText}折${discValue}`;
+      }
+    } else {
+      cpnNameInput.value = "";
+    }
+  }
+
+  // === 綁定事件 ===
+  discTypeSelect.addEventListener("change", () => {
+    updateDiscValueRules();
+    updateCpnName();
+  });
+
+  cpnSourceSelect.addEventListener("change", updateCpnName);
+  discValueInput.addEventListener("input", updateCpnName);
+
+  // === 頁面載入時執行一次（初始化） ===
+  updateDiscValueRules();
+  updateCpnName();
+});
+</script>
 </body>
 </html>

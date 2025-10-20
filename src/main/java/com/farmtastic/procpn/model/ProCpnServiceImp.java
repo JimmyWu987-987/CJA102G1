@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.farmtastic.common.enums.CpnSource;
+import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.common.mapper.ProCpnMapper;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
@@ -38,13 +38,54 @@ public class ProCpnServiceImp implements ProCpnService {
 
 //新增
 	@Override
-	public void addProCpn(ProCpnVO procpnVO) {
-		ProCpnVO saved = proCpnRepo.save(procpnVO);
-		// ✅ 若新增的是抽獎用折價券
-		if (saved.getCpnSource().equals(CpnSource.LOTTERY)) {
-			spinServiceImp.drawCoupon(saved);
+	public void addProCpn(ProCpnVO proCpnVO) {
+		// 1. 自動命名邏輯
+		if (proCpnVO.getCpnName() == null || proCpnVO.getCpnName().isBlank()) {
+			String cpnName;
+
+			if (proCpnVO.getDiscType() == DiscountType.PERCENTAGE) {
+				// 百分比折扣 → 顯示成「85折」
+				int discount = proCpnVO.getDiscValue().intValue();
+				cpnName = proCpnVO.getCpnSource().getText() + discount + "折";
+			} else {
+				// 滿額折抵 → 顯示成「折100元」
+				cpnName = proCpnVO.getCpnSource().getText() + "折" + proCpnVO.getDiscValue().intValue();
+			}
+
+			proCpnVO.setCpnName(cpnName);
 		}
-		proCpnRepo.save(procpnVO);
+		// 2.儲存折價券
+		ProCpnVO saved = proCpnRepo.save(proCpnVO);
+		// 3.根據折價券用途決定行為
+		switch (proCpnVO.getCpnSource()) {
+		case LOTTERY -> {
+			// 🔸 抽獎券 → 更新抽獎池
+			spinServiceImp.refreshLotteryPool();
+			System.out.println("新增抽獎券 → 已同步至抽獎池：" + saved.getCpnName());
+		}
+
+		case REGISTRATION -> {
+			// 🔸 註冊券 → 通知會員服務（未來自動發送）
+			System.out.println("新增註冊券 → 系統將於會員註冊時自動發送");
+			// 可選：註冊時會自動發放，不需立即處理
+		}
+
+		case BIRTHDAY -> {
+			// 🔸 生日券 → 交由排程發放
+			System.out.println("新增生日券 → 由排程自動發放");
+			// 可選：不需立即動作
+		}
+
+		case EVENT -> {
+			// 🔸 活動券 → 由活動模組掛載
+			System.out.println("新增活動券 → 活動模組可引用此券ID：" + saved.getProCpnId());
+		}
+
+		default -> {
+			// 🔸 一般券 → 不需觸發任何自動邏輯
+			System.out.println("新增一般券 → " + saved.getCpnName());
+		}
+		}
 	}
 
 //更新

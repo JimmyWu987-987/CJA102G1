@@ -23,6 +23,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -65,6 +66,8 @@ public class ProCpnVO implements java.io.Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "start_date")
 	@NotNull(message = "必須填入日期")
+	@NotNull(message = "請選擇開始日期")
+	@FutureOrPresent(message = "開始日期不能早於今天")
 	private LocalDate startDate; // 開始日期
 
 	@Column(name = "valid_days")

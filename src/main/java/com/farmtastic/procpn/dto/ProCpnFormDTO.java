@@ -3,11 +3,18 @@ package com.farmtastic.procpn.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.farmtastic.common.converter.EnumConverters;
 import com.farmtastic.common.enums.ApplScope;
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,6 +24,9 @@ public class ProCpnFormDTO {
 	private Integer proCpnId; // ✅ 編輯時會需要
 	@NotBlank(message = "折價券名稱不可空白")
 	private String cpnName;
+	@Convert(converter = EnumConverters.CpnSourceConverter.class)
+	@Column(name = "cpn_source", nullable = false, length = 20)
+	private CpnSource cpnSource;
 	@NotNull(message = "折扣類型必填")
 	private DiscountType discType;
 	@NotNull(message = "折扣值不得為空")
@@ -24,7 +34,11 @@ public class ProCpnFormDTO {
 	private BigDecimal discValue;
 	@PositiveOrZero(message = "最低消費金額不可為負")
 	private Integer minSpend;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Column(name = "start_date")
+	@NotNull(message = "必須填入日期")
 	@NotNull(message = "請選擇開始日期")
+	@FutureOrPresent(message = "開始日期不能早於今天")
 	private LocalDate startDate;
 	@NotNull(message = "有效天數必填")
 	@Positive(message = "有效天數需為正整數")
@@ -33,6 +47,14 @@ public class ProCpnFormDTO {
 	@NotNull
 	private IsActive isActive = IsActive.ACTIVE;
 	private ApplScope applScope;
+
+	public CpnSource getCpnSource() {
+		return cpnSource;
+	}
+
+	public void setCpnSource(CpnSource cpnSource) {
+		this.cpnSource = cpnSource;
+	}
 
 	public Integer getProCpnId() {
 		return proCpnId;

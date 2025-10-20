@@ -23,8 +23,9 @@ public class ProCpnMapperImp implements ProCpnMapper {
 
 		ProCpnFormDTO dto = new ProCpnFormDTO();
 
-		// 1️基本欄位直接轉
+		// 1️.基本欄位直接轉
 		dto.setProCpnId(vo.getProCpnId());
+		dto.setCpnSource(vo.getCpnSource());
 		dto.setCpnName(vo.getCpnName());
 		dto.setDiscType(vo.getDiscType());
 		dto.setDiscValue(vo.getDiscValue());
@@ -129,6 +130,7 @@ public class ProCpnMapperImp implements ProCpnMapper {
 
 		ProCpnVO vo = new ProCpnVO();
 		vo.setProCpnId(dto.getProCpnId());
+		vo.setCpnSource(dto.getCpnSource());
 		vo.setCpnName(dto.getCpnName());
 		vo.setDiscType(dto.getDiscType());
 		vo.setDiscValue(dto.getDiscValue());
