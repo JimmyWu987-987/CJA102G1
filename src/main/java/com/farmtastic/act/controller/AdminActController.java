@@ -76,6 +76,44 @@ public class AdminActController {
         return "back_end/logined/backAct/reviewPage";		// 回審核首頁
     }
     
+    
+    
+//    =============== 抓單一活動 ============
+    @GetMapping("/reviewDetail/{actId}")
+    public String actDetailForAdmin(@PathVariable Integer actId, ModelMap model) {
+    	
+    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
+    	
+    	// 防呆用
+    	if (optAct.isEmpty()) {
+            // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
+            model.addAttribute("message", "查無此活動");
+            return "redirect:/act"; 		// 導回首頁
+        }
+    	
+    	Act act = optAct.get();
+    	
+    	if (act.getActLaunStat() == null) {
+            // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
+            model.addAttribute("message", "查無此活動");
+            return "back_end/logined/backAct/reviewPage"; 		// 導回審核頁面
+        }
+    	
+
+        // 依分類ID排序
+        List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
+        sortedCate.sort(Comparator.comparing(ActCate::getActCateId));
+        model.addAttribute("actCateList", sortedCate);
+
+        model.addAttribute("act", act);
+        model.addAttribute("sessionAct", act);
+        
+        return "back_end/logined/backAct/reviewDetail";
+        
+    }
+    
+    
+    
     // 進行審核
     @PostMapping("reviewAct")
     public String reviewAct(@RequestParam("actId") Integer actId,
@@ -118,6 +156,13 @@ public class AdminActController {
         redirectAttributes.addFlashAttribute("successMessage", "已完成審核");
         return "redirect:/admin/act/listUnapprovedAct";
     }
+    
+    
+    
+    
+    
+    
+    
      
  // =========== 查詢活動 ==============
     // 所有活動
@@ -238,31 +283,36 @@ public class AdminActController {
 		return imgs.toArray(new byte[0][]);
 	}
     
-    // ============ 活動詳細頁 (for 後台) ============
-    @GetMapping("/reviewDetail/{actId}")
-    public String actDetail(@PathVariable Integer actId, ModelMap model) {
-    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
-    	
-    	// 防呆用
-    	if (optAct.isEmpty()) {
-            // 查無活動 > 跑去"查無此活動"頁面
-            model.addAttribute("message", "查無此活動");
-            return "back_end/logined/noAct"; 		// 做一個 "查無此活動"頁面
-        }
-    	
-    	Act act = optAct.get();
-    	
-
-        // 依分類ID排序
-        List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
-        sortedCate.sort(Comparator.comparing(ActCate::getActCateId));
-        model.addAttribute("actCateList", sortedCate);
-
-        model.addAttribute("act", act);
-        model.addAttribute("sessionAct", act);
-        
-        return "back_end/logined/backAct/reviewDetails";
-        
-    }
+	
+	
+	
+	
+	
+//    // ============ !!!這是舊的!!! 活動詳細頁 (for 後台) ============
+//    @GetMapping("/reviewDetail/{actId}")
+//    public String actDetail(@PathVariable Integer actId, ModelMap model) {
+//    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
+//    	
+//    	// 防呆用
+//    	if (optAct.isEmpty()) {
+//            // 查無活動 > 跑去"查無此活動"頁面
+//            model.addAttribute("message", "查無此活動");
+//            return "back_end/logined/noAct"; 		// 做一個 "查無此活動"頁面
+//        }
+//    	
+//    	Act act = optAct.get();
+//    	
+//
+//        // 依分類ID排序
+//        List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
+//        sortedCate.sort(Comparator.comparing(ActCate::getActCateId));
+//        model.addAttribute("actCateList", sortedCate);
+//
+//        model.addAttribute("act", act);
+//        model.addAttribute("sessionAct", act);
+//        
+//        return "back_end/logined/backAct/reviewDetail";
+//        
+//    }
 
 }
