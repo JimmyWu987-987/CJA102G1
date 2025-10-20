@@ -113,6 +113,7 @@ public class FmemActController {
     	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
         Integer fmemId = fmem.getFmemId();
     	
+        // 找自己的+已過審的
         List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.ASC, "actId"));
 
     	model.addAttribute("actList", actList);
