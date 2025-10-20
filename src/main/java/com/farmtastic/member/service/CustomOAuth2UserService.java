@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +29,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oauth2User = super.loadUser(userRequest);
 		
-        // 處理 Google 登入
-//        OAuth2User result = processOAuth2User(oauth2User);
-        
         return processOAuth2User(oauth2User);
-//		return result;
 	}
 
 	private OAuth2User processOAuth2User(OAuth2User oauth2User) {
@@ -47,28 +44,35 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		Mem mem = memRepository.findByMemEmail(email);
 		boolean isNewUser = (mem == null);
 		
-		System.out.println("是否為新使用者: " + isNewUser);
-
 		if (!isNewUser) {
 			// 使用者已存在
-
 			// 檢查是否為傳統方式註冊
 			if (mem.getAuthProvider() == AuthProvider.LOCAL) {
+//				System.out.println("此 Email 已使用傳統帳密註冊");
 				throw new OAuth2AuthenticationException(
-					"此 Email 已使用傳統帳密註冊，請使用帳號密碼登入"
+					new OAuth2Error(
+			            "email_already_used",  // errorCode
+			            "此 Email 已註冊，請使用帳號密碼登入",
+			            null  // errorUri
+			        )
 				);
 			}
-
+			
+			if (mem.getAccStatus() == 2) {
+				throw new OAuth2AuthenticationException(
+					new OAuth2Error(
+			            "email_already_suspended",  // errorCode
+			            "帳號已被停權，相關資訊請洽詢平台人員",
+			            null  // errorUri
+			        )
+				);
+			}
+			
 			// 更新 Google 使用者資訊
 			mem.setMemName(name);
 			mem.setProviderId(googleId);
-			
 		} else {
 			// 首次登入 - 自動註冊
-			
-			System.out.println("建立新使用者");
-			
-			
 			mem = new Mem();
 			mem.setMemEmail(email);
 			mem.setMemName(name);

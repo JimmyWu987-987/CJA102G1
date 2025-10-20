@@ -38,9 +38,17 @@
                         <label for="">密碼</label>
                         <input type="password" th:field="*{memPwdLogin}" class="pwdLogin" placeholder="mem測試密碼:1234">
                     </li>
+                    
+                    <!-- 顯示傳統登入錯誤 -->
 					<div th:if="${loginError}">
 						<span th:text="${loginError}" class="error error-login"></span>
 					</div>
+					
+					<!-- 顯示 Google 登入錯誤 -->
+					<div th:if="${googleError}">
+						<span th:text="${googleError}" class="error error-login"></span>
+					</div>
+					
 					<a class="forget-pwd-btn" th:href="@{/mem/forgetPasswordPage}">忘記密碼？</a>
 
 					<input type="submit" value="登入" class="btn link">

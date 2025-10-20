@@ -20,6 +20,9 @@ public class SecurityConfig {
 
 	@Autowired
 	private OAuth2AuthenticationSuccessHandler oauth2SuccessHandler;
+	
+	@Autowired
+	private OAuth2AuthenticationFailureHandler oauth2FailureHandler;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,7 +47,7 @@ public class SecurityConfig {
 					.userService(customOAuth2UserService)
 				)
 				.successHandler(oauth2SuccessHandler)
-				.failureUrl("/mem/showMemRegLoginForm?error=true")
+				.failureHandler(oauth2FailureHandler)
 				.permitAll()
 			)
 			.logout(logout -> logout

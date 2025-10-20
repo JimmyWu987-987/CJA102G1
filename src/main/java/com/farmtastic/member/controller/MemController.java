@@ -36,6 +36,7 @@ import com.farmtastic.act.model.ActService;
 import com.farmtastic.common.constants.CpnConstants;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
+import com.farmtastic.member.erum.AuthProvider;
 import com.farmtastic.member.model.ForgetPwdRequest;
 import com.farmtastic.member.model.LoginRequest;
 import com.farmtastic.member.model.Mem;
@@ -102,9 +103,19 @@ public class MemController {
 
 //	註冊頁面"超連結"
 	@GetMapping("/showMemRegLoginForm")
-	public String showMemRegLoginForm(ModelMap model) {
+	public String showMemRegLoginForm(
+			// from OAuth2AuthenticationFailureHandler
+			// String redirectUrl = "/mem/showMemRegLoginForm?googleError=" + encodedError;
+			@RequestParam(value = "googleError", required = false) String googleError,
+			ModelMap model) {
 		model.addAttribute("mem", new Mem());
 		model.addAttribute("loginRequest", new LoginRequest());
+		
+		if(googleError != null && !googleError.isEmpty()) {
+			// 對應到前端顯示
+			model.addAttribute("googleError", googleError);
+		}
+		
 		return "front_end/customer/unlogined/memRegLogin";
 	}
 
@@ -116,20 +127,7 @@ public class MemController {
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
 
 		List<Pro> proList = proSvc.findByFmemId(fmemIdInteger);
-//		for(Pro pro : proList) {
-//			if(pro.getProImage() != null) {
-//				String tempImgBase64 = Base64.getEncoder().encodeToString(pro.getProImage().getProImg());
-//				pro.getProImage().setProImgBase64(tempImgBase64);
-//			}else {
-//				ProImage defaultImg = new ProImage();
-////				defaultImg.setProImgBase64("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
-////				defaultImg.setProImgBase64("R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=");
-//				pro.setProImage(defaultImg);
-//			}
-//		}
 		model.addAttribute("proList", proList);
-		
-		
 		
 		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
@@ -312,8 +310,12 @@ public class MemController {
 		String memAcc = mem.getMemAcc();
 		String memMobile = mem.getMemMobile();
 		String memEmail = mem.getMemEmail();
+		
 		if (memSvc.existsByMemAcc(memAcc)) {
-			result.rejectValue("memAcc", null, "此帳號已有人註冊過");
+			Mem memUsed = memSvc.getOneByMemAcc(memAcc); 
+			if (memUsed.getAuthProvider() == AuthProvider.LOCAL) { //如果local沒註冊過，可以用(把google和local註冊帳號分開)
+				result.rejectValue("memAcc", null, "此帳號已有人註冊過");
+			}
 		}
 		if (memSvc.existsByMemMobile(memMobile)) {
 			result.rejectValue("memMobile", null, "此手機已有人註冊過");
@@ -510,24 +512,14 @@ public class MemController {
 			}
 			
 			
-			System.out.println("========== 登入成功 ==========");
-	        System.out.println("會員ID: " + mem.getMemId());
-	        System.out.println("會員帳號: " + mem.getMemAcc());
-
 			// 3.登入成功，把會員資料存進session
-
 			model.addAttribute("loggedInMember", mem);
 //			session.setAttribute("loggedInMember", mem); //??
-			
 			model.addAttribute("memId", mem.getMemId());
-//			model.addAttribute("memName", mem.getMemName());
-
 			session.setAttribute("memId", mem.getMemId());
-//			session.setAttribute("memName", mem.getMemName());
-
 			
 			
-			// ✅ 關鍵：設定 Spring Security 的 SecurityContext
+			// **設定 Spring Security 的 SecurityContext
 	        UsernamePasswordAuthenticationToken authentication = 
 	            new UsernamePasswordAuthenticationToken(
 	                mem, 
@@ -536,20 +528,20 @@ public class MemController {
 	            );
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 			
-	        System.out.println("SecurityContext 已設定");
-	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
-	        System.out.println("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//	        System.out.println("SecurityContext 已設定");
+//	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
+//	        System.out.println("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
 			
 	        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 	        securityContext.setAuthentication(authentication);
 	        SecurityContextHolder.setContext(securityContext);
 	        
-	        // ✅ 關鍵：將 SecurityContext 儲存到 Session
+	        // **將 SecurityContext 儲存到 Session
 	        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
 	        
-	        System.out.println("SecurityContext 已設定並儲存到 Session");
-	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
+//	        System.out.println("SecurityContext 已設定並儲存到 Session");
+//	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
 
 			
 			// 4.登入成功後 重導至原本頁面
@@ -560,17 +552,12 @@ public class MemController {
 				session.removeAttribute("redirectAfterLogin");
 				return "redirect:" + redirectUrl;
 			}
-			
-			
-			System.out.println("重導到會員專區");
-			
-			
 			return "redirect:/mem/memArea";
 
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);
-			model.addAttribute("mem", new Mem()); // ???
+			model.addAttribute("mem", new Mem());
 			model.addAttribute("activeTab", "login"); // 標記目前所在頁籤
 			return "front_end/customer/unlogined/memRegLogin";
 		}
