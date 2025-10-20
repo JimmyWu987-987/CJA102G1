@@ -110,13 +110,8 @@
             <img th:src="@{/images/banner-txt.png}" alt="banner">
 
             <div class="animate-box">
-                <svg class="car" id="car" width="115" height="80" viewBox="0 0 115 80" xmlns="http://www.w3.org/2000/svg">     
-                    <rect x="55" y="10" width="30" height="20" rx="3" fill="#ff7b42" />  <!-- 駕駛艙 -->
-                    <rect x="10" y="38" width="30" height="14" rx="3" fill="#e65c2d" />  <!-- 收割頭 -->
-                    <rect x="35" y="25" width="70" height="35" rx="5" fill="#e65c2d" />  <!-- 車身 -->
-                    <circle cx="50" cy="60" r="10" fill="rgb(95, 67, 26)" />  <!-- 輪胎 -->
-                    <circle cx="90" cy="60" r="10" fill="rgb(95, 67, 26)" />
-                </svg>
+               	<img th:src="@{/images/actIndex/banner-farmer3.png}" id="car" class="car">	
+                <img th:src="@{/images/apple.png}" alt="apple" id="apple-small" class="apple-small" style="max-width: 45px; max-height: 45px;"  >
             </div>
             
 <!--             <div class="text"> -->
@@ -158,11 +153,11 @@
                 <p>我們的目標是建立一個雙向互動的社群，消費者不再只是購買者，更是支持在地永續農業的一份子，小農不只是生產者，更是生活與文化的傳遞者。</p>
                 <p>透過科技與真誠的連結，我們希望這個平台能成為都市與鄉村之間的一座橋樑，讓好的農產品不被埋沒，讓有故事的人與物被看見，進而打造一個更有溫度、更具人情味的食農新經濟。</p>
                 <div class="btn-to-shops">
-                    <a href="#" class="btn-to-shop btn">
+                    <a th:href="@{/mall/products}" class="btn-to-shop btn">
                         <i class="fa-solid fa-carrot"></i>
                         逛逛商店
                     </a>
-                    <a href="#" class="btn-to-shop btn">
+                    <a th:href="@{/act}" class="btn-to-shop btn">
                         <i class="fa-solid fa-leaf"></i>
                         逛逛活動
                     </a>
@@ -230,14 +225,14 @@
         <div class="shops-title title">來逛逛我們的商店</div>
         <div class="shops">
             <div class="shop">
-                <a href="#" class="link">
+                <a th:href="@{/mall/products}" class="link">
                     <div class="shop-name">小農商城</div>
                     <div class="shop-desc">新鮮蔬果採買</div>
                 </a>  
             </div>
           
             <div class="shop">
-                <a href="#" class="link">
+                <a th:href="@{/act}" class="link">
                     <div class="shop-name">體驗活動</div>
                     <div class="shop-desc">農田生活體驗</div>
                 </a>  
@@ -245,17 +240,16 @@
         </div>
     </div>
 
-    
 
     <div class="container container-footer" th:fragment="footer">
         <div class="footer" th:fragment="footer-inner">
             <div class="quick-link">
-                <a href="#">關於我們</a>
-                <a href="#">最新消息</a>
-                <a href="#">常見問題</a>
-                <a href="#">聯絡我們</a>
-                <a href="#">退貨說明</a>
-                <a href="#">訂單查詢</a>
+<!--                 <a href="#">關於我們</a> -->
+                <a th:href="@{/forcusnews}">最新消息</a>
+                <a th:href="@{/qa/view}">常見問題</a>
+<!--                 <a href="#">聯絡我們</a> -->
+<!--                 <a href="#">退貨說明</a> -->
+                <a th:href="@{/mem/proorders/listAllProOrder}">訂單查詢</a>
                 <a href="#">聯絡我們</a>
             </div>
             <div class="info">
