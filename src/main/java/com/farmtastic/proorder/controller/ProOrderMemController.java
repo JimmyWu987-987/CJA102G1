@@ -137,8 +137,6 @@ public class ProOrderMemController {
 
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
-		// 判斷是否要返還點數
-		boolean hasChangePoiont = false;
 
 		switch (proOrderVO.getProOrdStatus()) {
 		// 訂單未出貨，可以直接取消訂單。
@@ -152,12 +150,11 @@ public class ProOrderMemController {
 
 			// 取消訂單判斷是否要返還點數的邏輯
 			// 業務邏輯是，有付款才會新增點數到 Mem 的 DB
-			// （未付款：不返還）false
-			// （已付款：返還）true
-			hasChangePoiont = proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
+			proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
 
 			Mem updateMemVO = memSvc.getOneByMemId(proOrderVO.getMemVO().getMemId());
-
+			
+			
 			// 要將更新過的 Mem 資料，存到 session
 			session.setAttribute("loggedInMember", updateMemVO);
 
@@ -195,11 +192,6 @@ public class ProOrderMemController {
 		default:
 			break;
 		}
-		
-		if(hasChangePoiont) {
-			
-		}
-		
 		
 		if (updateStatus) {
 			proOrdSvc.updateProOrder(proOrderVO);

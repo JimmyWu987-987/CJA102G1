@@ -254,9 +254,7 @@ public class ProOrderSevice {
 	// false（未付款：不返還）
 	// true（已付款：返還）
 	@Transactional
-	public boolean cancelOrderAndBackPoint(ProOrderVO proOrderVO) {
-
-		boolean hasBackPoint = false;
+	public void cancelOrderAndBackPoint(ProOrderVO proOrderVO) {
 
 		switch (proOrderVO.getProPayStatus()) {
 		case 0: // 該訂單是“未付款”，不需要返還點數
@@ -276,8 +274,6 @@ public class ProOrderSevice {
 				// 如果會員點數 > “0”，則返還點數，儲存至DB
 				memVO.setMemPoint(finalMemPoint);
 				memSvc.updateMem(memVO);
-
-				hasBackPoint = true;
 			}
 
 			break;
@@ -285,12 +281,6 @@ public class ProOrderSevice {
 		default:
 			System.err.println("訂單編號[ " + proOrderVO.getProOrdId() + " ]的訂單狀態錯誤，沒有取消訂單，請洽系統管理員！");
 			break;
-		}
-
-		if (hasBackPoint) {
-			return true;
-		} else {
-			return false;
 		}
 
 	}
