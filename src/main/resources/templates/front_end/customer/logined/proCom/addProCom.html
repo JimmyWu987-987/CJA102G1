@@ -1,11 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="./images/logo.png">
+    
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+      <style>
+    	.main-area {
+			flex: 1;
+			max-width: 100%;
+			height: auto;
+			padding: 30px;
+			display: flex;
+		    justify-content: center;
+		}
+		.farmerwaving{
+			margin-top: 40px;
+		  	width:400px;
+		  	height: auto;
+		}
+		  
+		.mwt_border{
+			position: absolute;
+			top: 24%;
+			left: 48%;
+			width: 260px; 
+			min-height: 40px;
+			background: #fff; 
+			border: 1px solid #333;
+			border-radius:20px;
+			box-sizing: border-box; 
+			display:flex; 
+			align-items:center;
+		}
+		
+		.mwt_border .arrow_b_int{
+			position:absolute;
+			width:0;height:0;
+			border-width:15px; border-style:solid;
+			border-color:#333 transparent transparent transparent;
+			bottom:-30px; left:80%; transform:translateX(-50%);
+			z-index:2;
+		}
+		
+		.bubble-text{
+			font-size:20px; 
+			padding:0 20px; 
+			margin:0;
+		}
+		    	
+    </style>
 <title>商品評論</title>
+
 </head>
-<body>
-	<h1>這是一個新增商品評論的網頁 - 訂單商品列表</h1>
+<body th:data-success="${success}">
+
+<div th:replace="~{/front_end/index :: header}"></div>
+
+<div class="container container-member">
+    <div class="member-sidebar">
+        <h3>會員專區</h3>
+<!--         = index.html的會員中心架構 -->
+        <ul th:replace="~{/front_end/index :: memAreaLink}"></ul>
+    </div>
+
+    <div class="member-content">
 		
     <div th:if="${successMessage}" class="success-message">
 		<p th:text="${successMessage}"></p>
@@ -55,5 +118,14 @@
 		</form>
         <hr th:if="${!itemStat.last}" /> </th:block>
 	
+ </div>
+    
+</div>
+
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/mem/successUpdateProfileAlert.js}"></script>
+
 </body>
 </html>
