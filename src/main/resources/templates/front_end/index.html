@@ -171,7 +171,7 @@
         <div class="concepts-title title">選擇我們的理由</div>
         <div class="concepts">
             <div class="concept">
-                <a href="#" class="link">
+                <a th:href="@{/mall/products}" class="link">
                     <div class="fruit-pic apple" id="apple">
                         <img th:src="@{/images/apple.png}" alt="apple" style="max-width: 100px; max-height: 100px;" >
                     </div>
@@ -183,7 +183,7 @@
             <div class="concept-gap"></div>
             
             <div class="concept">
-                <a href="#" class="link">
+                <a th:href="@{/mall/products}" class="link">
                     <div class="fruit-pic orange" id="orange">
                         <img th:src="@{/images/orange.png}" alt="orange" style="max-width: 100px; max-height: 100px;"  >
                     </div>
@@ -194,7 +194,7 @@
 
             <div class="concept-gap"></div>
             <div class="concept">
-                <a href="#" class="link">
+                <a th:href="@{/mall/products}" class="link">
                     <div class="fruit-pic lemon" id="lemon">
                         <img th:src="@{/images/lemon.png}" alt="lemon" style="max-width: 105px; max-height: 100px;" >
                     </div>
@@ -248,9 +248,8 @@
                 <a th:href="@{/forcusnews}">最新消息</a>
                 <a th:href="@{/qa/view}">常見問題</a>
 <!--                 <a href="#">聯絡我們</a> -->
-<!--                 <a href="#">退貨說明</a> -->
                 <a th:href="@{/mem/proorders/listAllProOrder}">訂單查詢</a>
-                <a href="#">聯絡我們</a>
+                <a th:href="@{/}">回到首頁</a>
             </div>
             <div class="info">
                 <div class="copyright">Copyright © 2025 農作物與它們的產地</div>
