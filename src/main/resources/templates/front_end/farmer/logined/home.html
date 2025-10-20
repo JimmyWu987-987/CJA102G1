@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>home-fmem</title>
+	<title>小農預覽個人首頁-商品頁</title>
 	<link rel="icon" th:href="@{/images/logo.png}">
 	
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
@@ -21,7 +21,7 @@
 <!-- <div th:replace="~{/front_end/farmer/logined/home :: header}"></div> -->
 
     <div class="container container-header" th:fragment="header">
-        <div class="header">
+        <div class="header" th:fragment="header-inner">
             <div class="logo">
                 <a th:href="@{/fmem/home}" class="link">
                     <img th:src="@{/images/logo-t.png}" alt="">
@@ -36,9 +36,8 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="link btn">商城</a>
+                    <a th:href="@{/pro/fmem/myPro}" class="link btn">商城</a>
                     <ul>
-                        <li><a href="#">上架商品</a></li>
                         <li><a th:href="@{/pro/fmem/myPro}">商品管理</a></li>
                     </ul>
                 </li>
@@ -52,10 +51,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="link btn">訂單</a>
+                    <a th:href="@{/fmem/proorders/listAllProOrder}" class="link btn">訂單</a>
                     <ul>
+                        <li><a th:href="@{/fmem/proorders/listAllProOrder}">查看商品訂單</a></li>
                         <li><a th:href="@{/fmem/reg/list}">查看活動訂單</a></li>
-                        <li><a th:href="@{/fmem/proorders/listAllProOrder}">查看客戶商品訂單</a></li>
                     </ul>
                 </li>
                 <li>

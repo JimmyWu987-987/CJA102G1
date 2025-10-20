@@ -10,30 +10,24 @@
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-
-<!--     @{/css} + "/sty/storeSty2.css" -->
+	
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <style>
 .container-content {
 	font-family: 'Noto Sans TC', sans-serif;
 	padding: 2rem;
-	background-color: #f4f6f9;
+/* 	background-color: #f4f6f9; */
 }
 
-/* .container {
-	max-width: 1400px;
-	margin: 0 auto;
-	background-color: #fff;
-	padding: 2rem;
-	border-radius: 12px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
- */
+
 table {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 1.5rem;
+	background-color: #f4f6f9;
+	border-radius: 10px;
+	overflow: hidden;
 }
 
 th, td {
@@ -57,12 +51,9 @@ th {
 	display: inline-block;
 }
 
-/* .header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 2rem;
-} */
+select {
+	background-color: #f8f9fa;
+}
 
 h2 {
 	color: #343a40;
@@ -73,9 +64,6 @@ a {
 	text-decoration: none;
 }
 
-a:hover {
-	text-decoration: underline;
-}
 
 .add-btn {
 	width:110px;
@@ -100,18 +88,12 @@ a:hover {
 	border-radius: 8px;
 }
 
-/* .container-header, .container-footer {
-	background-color: #dce2ef;
-} */
 
-.nav>li>a {
-	background-color: #4F9D9D;
-}
 </style>
 </head>
 <body>
 
-		<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 		
 	<div class="container container-content">
 		

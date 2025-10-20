@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 public class ImageUploader {
     
     // 修改成你的資料庫密碼
-    private static final String PASSWORD = "YuKiGeSQ7";
+    private static final String PASSWORD = "pleomax0";
     
     public static void main(String[] args) {
         System.out.println("開始上傳圖片...\n");
