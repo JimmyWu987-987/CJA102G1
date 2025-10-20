@@ -6,5 +6,41 @@
 </head>
 <body>
 	<h1>這是一個新增商品評論的網頁</h1>
+	
+		<form th:action="@{add}" method="post" th:object="${empVO}">
+			
+
+			<div>
+			<label>商品編號:</label>
+			<input type="text" th:field="*{ename}"/><br/>
+			<span  th:if="${#fields.hasErrors('ename')}" th:errors="*{ename}" class="error" id="ename.errors"></span>
+			</div>
+			
+			<div>
+			<label>評論內容:</label>
+			<input type="text" th:field="*{job}"/><br/>
+			<span  th:if="${#fields.hasErrors('job')}" th:errors="*{job}" class="error" id="job.errors"></span>
+			</div>
+			
+			<div>
+			<label>評論時間:</label>
+			<input type="date" th:field="*{hiredate}" onclick="hideContent('hiredate.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('hiredate')}" th:errors="*{hiredate}" class="error" id="hiredate.errors"></span>
+			</div>
+
+			<div>
+			<label>商品評分:</label>
+			<input type="text" th:field="*{sal}" onclick="hideContent('sal.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('sal')}" th:errors="*{sal}" class="error" id="sal.errors"></span>
+			</div>
+			
+
+			<div>
+				<div></div>
+				<div><button type="submit" id="submit"> 送出新增 </button></div>
+				<div></div>
+			</div>		
+		</form>
+	
 </body>
 </html>
