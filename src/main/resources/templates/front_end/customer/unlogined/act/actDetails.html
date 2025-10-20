@@ -40,7 +40,9 @@
         <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
     </p><br>
     <p><strong>活動說明:</strong></p>
-    <p th:text="${act.actDes}"></p>
+<p th:utext="${#strings.replace(act.actDes, '\n', '<br/>')}"></p>
+
+    
 </div>
 </div>
 
