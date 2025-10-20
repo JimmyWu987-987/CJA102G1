@@ -472,34 +472,34 @@
 					
 					<div class="input-group">
 						<label for="proOrdName">收件人姓名 <span style="color: red;">*</span></label> 
-						<input id="proOrdName" type="text" th:field="*{proOrdName}"
+						<input id="proOrdName" type="text" th:field="*{proOrdName}" onclick="hideContent('proOrdName.errors');" 
 							th:classappend="${#fields.hasErrors('proOrdName')} ? 'error-input' : ''"
 							placeholder="請輸入收件人姓名" /> 
-						<span th:if="${#fields.hasErrors('proOrdName')}" th:errors="*{proOrdName}" class="error-message-text"></span>
+						<span th:if="${#fields.hasErrors('proOrdName')}" th:errors="*{proOrdName}" class="error-message-text" id="proOrdName.errors"></span>
 					</div>
 		
 					<div class="input-group">
 						<label for="proOrdMobile">收件人電話 <span style="color: red;">*</span></label> 
-						<input id="proOrdMobile" type="text" th:field="*{proOrdMobile}"
+						<input id="proOrdMobile" type="text" th:field="*{proOrdMobile}" onclick="hideContent('proOrdMobile.errors');" 
 							th:classappend="${#fields.hasErrors('proOrdMobile')} ? 'error-input' : ''"
 							placeholder="範例: 0912-123456" /> 
-						<span th:if="${#fields.hasErrors('proOrdMobile')}" th:errors="*{proOrdMobile}" class="error-message-text"></span>
+						<span th:if="${#fields.hasErrors('proOrdMobile')}" th:errors="*{proOrdMobile}" class="error-message-text" id="proOrdMobile.errors"></span>
 					</div>
 		
 					<div class="input-group">
 						<label for="proOrdEmail">收件人電子郵件 <span style="color: red;">*</span></label> 
-						<input id="proOrdEmail" type="email" th:field="*{proOrdEmail}"
+						<input id="proOrdEmail" type="email" th:field="*{proOrdEmail}" onclick="hideContent('proOrdEmail.errors');" 
 							th:classappend="${#fields.hasErrors('proOrdEmail')} ? 'error-input' : ''"
 							placeholder="請輸入電子郵件" /> 
-						<span th:if="${#fields.hasErrors('proOrdEmail')}" th:errors="*{proOrdEmail}" class="error-message-text"></span>
+						<span th:if="${#fields.hasErrors('proOrdEmail')}" th:errors="*{proOrdEmail}" class="error-message-text" id="proOrdEmail.errors"></span>
 					</div>
 		
 					<div class="input-group">
 						<label for="proOrdAddr">收件人地址 <span style="color: red;">*</span></label> 
-						<input id="proOrdAddr" type="text" th:field="*{proOrdAddr}"
+						<input id="proOrdAddr" type="text" th:field="*{proOrdAddr}" onclick="hideContent('proOrdAddr.errors');" 
 							th:classappend="${#fields.hasErrors('proOrdAddr')} ? 'error-input' : ''"
 							placeholder="請輸入收件地址" /> 
-						<span th:if="${#fields.hasErrors('proOrdAddr')}" th:errors="*{proOrdAddr}" class="error-message-text"></span>
+						<span th:if="${#fields.hasErrors('proOrdAddr')}" th:errors="*{proOrdAddr}" class="error-message-text" id="proOrdAddr.errors"></span>
 					</div>
 					
 					<div class="input-group">
@@ -552,5 +552,13 @@
 
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
+
+
+<script>
+//清除提示信息
+function hideContent(d) {
+     document.getElementById(d).style.display = "none";
+}
+</script>
 </body>
 </html>
