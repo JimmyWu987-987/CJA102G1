@@ -21,15 +21,17 @@
         <hr>
 
         <a th:href="@{/newnewsform}" class="btn btn-primary btn-sm mb-3">新增消息</a>
+        <a th:href="@{/showSendMessageForm}" class="btn btn-info btn-sm mb-3 ms-2">發送訊息給小農</a>
 
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th style="width: 20%;">標題</th>
-                    <th style="width: 35%;">內容</th>
-                    <th style="width: 10%;">發布對象</th>
-                    <th style="width: 20%;">發布時間</th>
-                    <th style="width: 15%;">操作</th>
+                    <th>標題</th>
+                    <th>內容</th>
+                    <th>狀態</th>
+                    <th>發送對象</th>
+                    <th>發布時間</th>
+                    <th>操作</th>
                 </tr>
             </thead>
              <tbody>
@@ -38,12 +40,19 @@
                     <td th:text="${#strings.abbreviate(news.newsContent, 50)}"></td>
                     <td>
                         <span th:if="${news.newsStatus == 0}" class="badge bg-success">小農</span>
-                        <span th:if="${news.newsStatus == 1}" class="badge bg-info">消費者</span>
+                        <span th:if="${news.newsStatus == 1}" class="badge bg-primary">消費者</span>
+                    </td>
+                    <td>
+                        <!-- 如果 news.fmem (關聯的小農物件) 不為空，則顯示小農的名字 -->
+                        <span th:if="${news.fmem != null}" th:text="${news.fmem.fmemName}"></span>
+                        <!-- 否則，根據狀態顯示對應的群體 -->
+                        <span th:if="${news.fmem == null and news.newsStatus == 0}" class="text-muted">全體小農</span>
+                        <span th:if="${news.fmem == null and news.newsStatus == 1}" class="text-muted">全體消費者</span>
                     </td>
                     <td th:text="${#temporals.format(news.newsAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td>
                         <a th:href="@{/editnews/{id}(id=${news.id})}" class="btn btn-success btn-sm">修改</a>
-                        <a th:href="@{/deleteNews/{id}(id=${news.id})}" class="btn btn-danger btn-sm" onclick="return confirm('您確定要刪除這則消息嗎？')">刪除</a>
+                        <a th:href="@{/deletenews/{id}(id=${news.id})}" class="btn btn-danger btn-sm" onclick="return confirm('您確定要刪除這則消息嗎？')">刪除</a>
                     </td>
                 </tr>
             </tbody>

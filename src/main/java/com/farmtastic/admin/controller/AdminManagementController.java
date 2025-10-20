@@ -195,4 +195,11 @@ public class AdminManagementController {
         
         return "redirect:/admin/permissions";
     }
+    
+    //後台會員管理
+    @GetMapping("/mem-management")
+    public String showMemManagementPage(HttpSession session, RedirectAttributes redirectAttributes) {
+		if (permissionDenied(session, REQUIRED_PERMISSION)) return handleNoPermission(redirectAttributes);
+        return "back_end/logined/admin/mem/mem_management";
+    }
 }
