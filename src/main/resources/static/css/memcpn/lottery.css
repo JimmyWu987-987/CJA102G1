@@ -202,10 +202,9 @@ h2, p {
 }
 /* === 按鈕 === */
 .btn-plant {
-  position: absolute;
-  left: 50%;
-  bottom: -30px;              /* ⚡ 按鈕浮出園區底部 */
-  transform: translateX(-50%);
+  position: static; 
+  display: block;
+  margin: 30px auto;
   background-color: var(--btn-color);
   color: #fff;
   border: none;
@@ -221,9 +220,10 @@ h2, p {
   text-align: center;
 }
 .btn-plant:hover {
-  transform: translateY(-2px);
-   background-color: var(--btn-hover-color);
+  transform: translate(-50%, -2px);
+  background-color: var(--btn-hover-color);
 }
+
 .btn-plant:active {
   transform: translateY(1px);
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);

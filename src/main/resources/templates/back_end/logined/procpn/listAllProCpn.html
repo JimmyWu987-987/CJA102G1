@@ -12,7 +12,7 @@
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <!--  你自己的 CSS（可放自訂樣式） -->
 <!--<link rel="stylesheet" th:href="@{/css/memcpn/listAllMemCpn.css}">-->
-
+     <link rel="stylesheet" th:href="@{/css/memcpn/couponManage.css}">
 <style>
  body { background-color: #f8fafc; font-family: 'Noto Sans TC', sans-serif; }
     h2 { text-align: center; color: #1e293b; font-weight: 700; margin: 2rem 0; font-size: 1.75rem; }
@@ -22,8 +22,11 @@
     table.dataTable tbody tr:hover { background-color: #f1f5f9; }
 </style>
 </head>
-<body class="min-h-screen bg-gray-50 p-6">
+<body>
+<!-- 白底卡片內容 -->
  <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">  
+    <div th:replace="~{/back_end/logined/coupon/couponManagePage :: header}"></div>
+
     <h2>商品折價券清單</h2>
 
      <!--  提示訊息 -->
@@ -126,7 +129,7 @@
             <td th:text="${c.validDays != null ? c.validDays + ' 天' : '-'}"></td>
             <td th:text="${c.expDate != null ? c.expDate : '-'}"></td>
             <!--  狀態中文 -->
-            <td th:text="${c.isActive != null ? c.isActive.text : '-'}"></td>
+            <td th:text="${c.activeFlag}"></td>
             
             <td th:text="${c.formattedCrtAt}"></td>
 

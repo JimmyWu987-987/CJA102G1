@@ -32,13 +32,15 @@ public class SpinServiceImp {
 	public Map<String, Object> spinAndGiveCoupon(Integer memId) {
 		Map<String, Object> result = new HashMap<>();
 		// 建立今日唯一 Redis key
-		String key = buildRedisKey(memId);
+		// String key = buildRedisKey(memId);
+
 		// 檢查是否已抽過
-		if (hasSpunToday(key)) {
-			return failResult("您今天已抽過，請明天再來！");
-		}
+//		if (hasSpunToday(key)) {
+//			return failResult("您今天已抽過，請明天再來！");
+		// }
 		// 設定抽獎記錄 + 一天後過期
-		markUserAsSpun(key);
+		// markUserAsSpun(key);
+
 		// 抽獎結果（呼叫分離的邏輯）
 		Map<String, Object> drawResult = drawCoupon();
 		// 中獎 → 記錄在 Redis 暫存區（而非立即進 DB）
@@ -47,7 +49,8 @@ public class SpinServiceImp {
 			// 用QUEUE
 			queuePendingReward(memId, (ProCpnVO) drawResult.get("coupon"));
 		}
-		return result;
+		System.out.println("中獎紀錄" + drawResult);
+		return drawResult;
 	}
 
 	/**
@@ -79,12 +82,12 @@ public class SpinServiceImp {
 		int roll = random.nextInt(100);
 		ProCpnVO coupon = null;
 
-		if (roll < 10) {
+		if (roll < 99) {
 			coupon = findCouponOrThrow("轉盤折200");
 			result.put("status", "WIN");
 			result.put("coupon", coupon);
 			result.put("result", coupon.getCpnName());
-		} else if (roll < 25) {
+		} else if (roll < 1) {
 			coupon = findCouponOrThrow("轉盤折100");
 			result.put("status", "WIN");
 			result.put("coupon", coupon);
@@ -112,6 +115,10 @@ public class SpinServiceImp {
 	 */
 	private ProCpnVO findCouponOrThrow(String cpnName) {
 		return proCpnRepo.findByCpnName(cpnName).orElseThrow(() -> new IllegalStateException("⚠️ 折價券不存在: " + cpnName));
+	}
+
+	private ProCpnVO findCouponOrThrow(Integer proCpnId) {
+		return proCpnRepo.findById(proCpnId).orElseThrow(() -> new IllegalStateException("⚠️ 折價券不存在: " + proCpnId));
 	}
 
 	/**

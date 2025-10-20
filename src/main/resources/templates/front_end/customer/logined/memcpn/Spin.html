@@ -6,6 +6,23 @@
   <!-- 共用樣式 -->
 <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 <link rel="stylesheet" th:href="@{/css/memcpn/lottery.css}">
+<style>
+.btn-use {
+	display: inline-block;
+    background: #f47640;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+    .btn-use:hover {
+      background: #c82333;
+    }
+
+</style>
 </head>
 <body>
   <!--  Loading 畫面 -->
@@ -30,6 +47,10 @@
     <img alt="bloom" class="bloom" id="bloom">
   </div>
 <button class="btn-plant" id="plantBtn">🌾 播種開始</button>
+<!-- 返回 -->
+      <div class="text-center mt-5">
+        <a th:href="@{/mem/memcpn/list}" class="btn-use">⬅ 返回折價卷頁面</a>
+      </div>
 </div>
 <!--  Footer 區 -->
 <div th:replace="~{/front_end/index :: footer}"></div>

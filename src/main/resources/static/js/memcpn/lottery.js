@@ -48,10 +48,41 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	// === 花圖對照表 ===
 	const flowerMap = {
-	  "轉盤折200": { img: "apple.png"},
-	  "轉盤折100": { img: "orange.png"},
-	  "沒中獎": { img: "wilt.png"},
-	  "已抽過": { img: "lemon.png"},
+	  "轉盤折200": {
+	    img: "apple.png",
+	    couponName: "轉盤折200",
+	    icon: "success",
+	    title: "🍎 恭喜中獎！獲得轉盤折200！",
+	    color: "#d35400"
+	  },
+	  "轉盤折100": {
+	    img: "orange.png",
+	    couponName: "轉盤折100",
+	    icon: "success",
+	    title: "🍊 恭喜中獎！獲得轉盤折100！",
+	    color: "#e67e22"
+	  },
+	  "沒中獎": {
+	    img: "wilt.png",
+	    couponName: "沒中獎",
+	    icon: "info",
+	    title: "😅 再接再厲！",
+	    color: "#7f8c8d"
+	  },
+	  "已抽過": {
+	    img: "lemon.png",
+	    couponName: "已抽過",
+	    icon: "warning",
+	    title: "⚠️ 今日已抽過！",
+	    color: "#9a7b00"
+	  },
+	  "default": {
+	    img: "seed.png",
+	    couponName: "系統錯誤",
+	    icon: "error",
+	    title: "❌ 系統忙碌中，請稍後再試！",
+	    color: "#c0392b"
+	  }
 	};
 	// === 重置到種子狀態 ===
 	  function resetToSeed() {
@@ -89,23 +120,20 @@ document.addEventListener("DOMContentLoaded", () => {
 		const text = data.result || data.couponName || data.message || "沒中獎";
 		//  從對照表選出設定
 		const key = Object.keys(flowerMap).find(k => text.includes(k)) || "default";
-		const flowerCfg = flowerMap[key];
+		const cfg = flowerMap[key];
 		// 自動設定圖片與顏色
-		bloom.src = window.BASE_IMG_PATH + flowerCfg.img;
-		bloom.style.filter = `drop-shadow(0 0 10px ${flowerCfg.color})`;
-		bloom.classList.add(flowerCfg.animation);
+		bloom.src = window.BASE_IMG_PATH + cfg.img;
+		 bloom.style.filter = `drop-shadow(0 0 10px ${cfg.color})`;
 
         Swal.fire({
           toast: true,
           position: 'bottom-end',
-          icon: text.includes('沒中獎') ? 'info' : 'success',
-          title: text.includes('沒中獎') ? '再接再厲！' : '🎉 恭喜中獎！',
-          text: text,
+		  icon: cfg.icon,
+		  title: cfg.title,
+          text: cfg.couponName,
           showConfirmButton: false,
-          timer: 1500,
           background: '#fefcfc',
           color: '#2c3e50',
-          timerProgressBar: true
         });
 
         // 若沒中獎 → 土壤震動 + 花掉落 + 種子重新長出
@@ -130,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch {
         Swal.fire({
           icon: 'error',
+		  position: 'bottom-end',
           title: '系統忙碌中',
           text: '請稍後再試一次！',
           confirmButtonText: '了解'

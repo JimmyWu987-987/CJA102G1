@@ -13,9 +13,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.IsActive;
 import com.farmtastic.common.mapper.ProCpnMapper;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
+import com.farmtastic.memprocpn.model.SpinServiceImp;
 
 @Service("proCpnService")
 public class ProCpnServiceImp implements ProCpnService {
@@ -23,17 +25,25 @@ public class ProCpnServiceImp implements ProCpnService {
 	private final ProCpnRepository proCpnRepo;
 	private final MemProCpnRepository memProCpnRepo;
 	private final ProCpnMapper proCpnMapper;
+	private final SpinServiceImp spinServiceImp;
 
 	@Autowired
-	public ProCpnServiceImp(ProCpnRepository proCpnRepo, MemProCpnRepository memProCpnRepo, ProCpnMapper proCpnMapper) {
+	public ProCpnServiceImp(ProCpnRepository proCpnRepo, MemProCpnRepository memProCpnRepo, ProCpnMapper proCpnMapper,
+			SpinServiceImp spinServiceImp) {
 		this.proCpnRepo = proCpnRepo;
 		this.memProCpnRepo = memProCpnRepo;
 		this.proCpnMapper = proCpnMapper;
+		this.spinServiceImp = spinServiceImp;
 	}
 
 //新增
 	@Override
 	public void addProCpn(ProCpnVO procpnVO) {
+		ProCpnVO saved = proCpnRepo.save(procpnVO);
+		// ✅ 若新增的是抽獎用折價券
+		if (saved.getCpnSource().equals(CpnSource.LOTTERY)) {
+			spinServiceImp.drawCoupon(saved);
+		}
 		proCpnRepo.save(procpnVO);
 	}
 

@@ -51,9 +51,9 @@ public class ActCpnMapperImp {
 
 		// 日期與有效期
 		if (vo.getStartDate() != null) {
-			dto.setStartDate(vo.getStartDate().toLocalDate());
+			dto.setStartDate(vo.getStartDate());
 			if (vo.getValidDays() != null)
-				dto.setExpDate(vo.getStartDate().toLocalDate().plusDays(vo.getValidDays()));
+				dto.setExpDate(vo.getStartDate().plusDays(vo.getValidDays()));
 		}
 
 		dto.setValidDays(vo.getValidDays());

@@ -10,7 +10,7 @@
 <!-- DataTables 的 CSS + JS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-
+     <link rel="stylesheet" th:href="@{/css/memcpn/couponManage.css}">
 <style>
       body { background-color: #f8fafc; font-family: 'Noto Sans TC', sans-serif; }
     h2 { text-align: center; color: #1e293b; font-weight: 700; margin: 2rem 0; font-size: 1.75rem; }
@@ -20,8 +20,10 @@
     table.dataTable tbody tr:hover { background-color: #f1f5f9; }
 </style>
 </head>
-<body class="min-h-screen bg-gray-50 p-6">
+<body>
+<!-- 白底卡片內容 -->
  <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+ <div th:replace="~{/back_end/logined/coupon/couponManagePage :: header}"></div>
     <h2>活動折價券明細清單</h2>
     <!-- 搜尋與篩選 -->
     <form th:action="@{/admin/memactcpn/list}" method="get" class="flex justify-center gap-3 mb-6 flex-wrap">

@@ -23,7 +23,7 @@ public class ProCpnMapperImp implements ProCpnMapper {
 
 		ProCpnFormDTO dto = new ProCpnFormDTO();
 
-		// 1️⃣ 基本欄位直接轉
+		// 1️基本欄位直接轉
 		dto.setProCpnId(vo.getProCpnId());
 		dto.setCpnName(vo.getCpnName());
 		dto.setDiscType(vo.getDiscType());
@@ -33,7 +33,7 @@ public class ProCpnMapperImp implements ProCpnMapper {
 		dto.setValidDays(vo.getValidDays());
 		dto.setCpnDesc(vo.getCpnDesc());
 
-		// 2️⃣ 枚舉欄位（直接轉即可，因為是 Enum）
+		// 2️枚舉欄位（直接轉即可，因為是 Enum）
 		dto.setApplScope(vo.getApplScope());
 		dto.setIsActive(vo.getIsActive());
 
@@ -83,9 +83,9 @@ public class ProCpnMapperImp implements ProCpnMapper {
 
 		// 日期與有效期
 		if (vo.getStartDate() != null) {
-			dto.setStartDate(vo.getStartDate().toLocalDate());
+			dto.setStartDate(vo.getStartDate());
 			if (vo.getValidDays() != null)
-				dto.setExpDate(vo.getStartDate().toLocalDate().plusDays(vo.getValidDays()));
+				dto.setExpDate(vo.getStartDate().plusDays(vo.getValidDays()));
 		}
 
 		dto.setValidDays(vo.getValidDays());
@@ -138,7 +138,7 @@ public class ProCpnMapperImp implements ProCpnMapper {
 			vo.setStartDate((dto.getStartDate()));
 		} else {
 			// 若表單未填，給預設今天
-			vo.setStartDate(new java.sql.Date(System.currentTimeMillis()));
+			vo.setStartDate(LocalDate.now());
 		}
 		vo.setValidDays(dto.getValidDays());
 		vo.setCpnDesc(dto.getCpnDesc());

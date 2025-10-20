@@ -1,15 +1,17 @@
 package com.farmtastic.procpn.model;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.farmtastic.common.converter.EnumConverters;
 import com.farmtastic.common.enums.ApplScope;
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
 
@@ -37,6 +39,10 @@ public class ProCpnVO implements java.io.Serializable {
 	@Column(name = "pro_cpn_id")
 	private Integer proCpnId; // PK
 
+	@Convert(converter = EnumConverters.CpnSourceConverter.class)
+	@Column(name = "cpn_source", nullable = false, length = 20)
+	private CpnSource cpnSource; // 折價券用途：REGISTRATION, LOTTERY, BIRTHDAY, EVENT, OTHER
+
 	@Column(name = "cpn_name", nullable = false, length = 50)
 	@NotBlank(message = "折價券名稱不可空白")
 	private String cpnName; // 折價券名稱
@@ -56,8 +62,10 @@ public class ProCpnVO implements java.io.Serializable {
 	@PositiveOrZero(message = "最低消費金額不可為負")
 	private Integer minSpend; // 消費門檻金額
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "start_date")
-	private Date startDate; // 開始日期
+	@NotNull(message = "必須填入日期")
+	private LocalDate startDate; // 開始日期
 
 	@Column(name = "valid_days")
 	@NotNull(message = "有效天數必填")
@@ -119,11 +127,11 @@ public class ProCpnVO implements java.io.Serializable {
 		this.minSpend = minSpend;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
@@ -167,15 +175,15 @@ public class ProCpnVO implements java.io.Serializable {
 		this.applScope = applScope;
 	}
 
-	public ProCpnVO() {
-		super();
-	}
-
-	public ProCpnVO(Integer proCpnId, String cpnName, DiscountType discType, BigDecimal discValue, Integer minSpend,
-			Date startDate, Integer validDays, String cpnDesc, IsActive isActive, Timestamp crtAt,
-			ApplScope applScope) {
+	public ProCpnVO(Integer proCpnId, CpnSource cpnSource, @NotBlank(message = "折價券名稱不可空白") String cpnName,
+			@NotNull(message = "折扣類型必填") DiscountType discType,
+			@NotNull(message = "折扣值不得為空") @Positive(message = "折扣值必須大於 0") BigDecimal discValue,
+			@PositiveOrZero(message = "最低消費金額不可為負") Integer minSpend, @NotNull(message = "必須填入日期") LocalDate startDate,
+			@NotNull(message = "有效天數必填") @Positive(message = "有效天數需為正整數") Integer validDays, String cpnDesc,
+			@NotNull IsActive isActive, Timestamp crtAt, ApplScope applScope) {
 		super();
 		this.proCpnId = proCpnId;
+		this.cpnSource = cpnSource;
 		this.cpnName = cpnName;
 		this.discType = discType;
 		this.discValue = discValue;
@@ -188,12 +196,16 @@ public class ProCpnVO implements java.io.Serializable {
 		this.applScope = applScope;
 	}
 
-	@Override
-	public String toString() {
-		return "ProCpnVO [proCpnId=" + proCpnId + ", cpnName=" + cpnName + ", discType=" + discType + ", discValue="
-				+ discValue + ", minSpend=" + minSpend + ", startDate=" + startDate + ", validDays=" + validDays
-				+ ", cpnDesc=" + cpnDesc + ", isActive=" + isActive + ", crtAt=" + crtAt + ", applScope=" + applScope
-				+ "]";
+	public CpnSource getCpnSource() {
+		return cpnSource;
+	}
+
+	public void setCpnSource(CpnSource cpnSource) {
+		this.cpnSource = cpnSource;
+	}
+
+	public ProCpnVO() {
+		super();
 	}
 
 	@Transient
@@ -202,7 +214,7 @@ public class ProCpnVO implements java.io.Serializable {
 			return null;
 
 		// 把 Date 轉成 LocalDate 加天數後再轉回 Date
-		LocalDate exp = startDate.toLocalDate().plusDays(validDays);
+		LocalDate exp = startDate.plusDays(validDays);
 		return java.sql.Date.valueOf(exp);
 	}
 
@@ -239,6 +251,22 @@ public class ProCpnVO implements java.io.Serializable {
 
 		default:
 			return "-";
+		}
+	}
+
+	@Transient
+	public String getActiveFlag() {
+		// 防止 nullPointer
+		if (isActive == null)
+			return "未設定";
+
+		switch (isActive) {
+		case ACTIVE:
+			return "啟用中";
+		case INACTIVE:
+			return "停用中";
+		default:
+			return "未知狀態";
 		}
 	}
 }

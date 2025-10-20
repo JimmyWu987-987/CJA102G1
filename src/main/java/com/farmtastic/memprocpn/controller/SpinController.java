@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.memprocpn.model.SpinServiceImp;
@@ -30,6 +31,7 @@ public class SpinController {
 
 	// 抽獎發券 API
 	@PostMapping("/coupons")
+	@ResponseBody
 	// Spring 的 HTTP 回應包裝器，泛型代表回傳內容型別是字串
 	public ResponseEntity<Map<String, Object>> spinCoupon(HttpSession session) {
 		// 這登入時放的會員物件， Session

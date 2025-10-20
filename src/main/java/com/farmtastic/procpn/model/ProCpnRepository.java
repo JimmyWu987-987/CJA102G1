@@ -10,17 +10,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.IsActive;
 
 import jakarta.transaction.Transactional;
 
 public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
+//查詢折價券用途
+	Optional<ProCpnVO> findCpnSource(CpnSource cpnSource);
 
 	// 查詢全部啟用或停用的折價券
 	List<ProCpnVO> findByIsActive(IsActive isActive);
 
 	// 查詢指定名稱單張券
 	Optional<ProCpnVO> findByCpnName(String cpnName);
+
+	// 查詢指定ID單張券
+	Optional<ProCpnVO> findById(Integer proCpnId);
 
 	// 查詢指定名稱 + 狀態的單張券
 	Optional<ProCpnVO> findByCpnNameAndIsActive(String cpnName, IsActive isActive);

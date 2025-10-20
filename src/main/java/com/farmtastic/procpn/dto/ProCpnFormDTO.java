@@ -1,7 +1,6 @@
 package com.farmtastic.procpn.dto;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 
 import com.farmtastic.common.enums.ApplScope;
@@ -26,7 +25,7 @@ public class ProCpnFormDTO {
 	@PositiveOrZero(message = "最低消費金額不可為負")
 	private Integer minSpend;
 	@NotNull(message = "請選擇開始日期")
-	private Date startDate;
+	private LocalDate startDate;
 	@NotNull(message = "有效天數必填")
 	@Positive(message = "有效天數需為正整數")
 	private Integer validDays;
@@ -99,11 +98,11 @@ public class ProCpnFormDTO {
 		this.applScope = applScope;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
@@ -135,7 +134,7 @@ public class ProCpnFormDTO {
 	@AssertTrue(message = "有效日期設定錯誤")
 	public boolean isValidDate() {
 		if (startDate != null && validDays != null) {
-			LocalDate start = startDate.toLocalDate(); // ✅ java.sql.Date 專屬安全轉法
+			LocalDate start = startDate;
 			LocalDate exp = start.plusDays(validDays);
 			return !exp.isBefore(start);
 		}

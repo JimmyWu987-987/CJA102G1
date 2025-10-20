@@ -1,24 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>後台｜折價券詳細資料</title>
-<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <meta charset="UTF-8">
+  <title>後台｜折價券詳細資料</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" th:href="@{/css/memcpn/addCpnADmin.css}">
 </head>
-<body class="bg-light">
-<div class="container mt-4">
-    <h2>折價券詳細資料</h2>
-    <table class="table table-bordered bg-white">
-        <tr><th>會員帳號</th><td th:text="${memProCpn.memVO.memAcc}"></td></tr>
-        <tr><th>折價券名稱</th><td th:text="${memProCpn.proCpnVO.cpnName}"></td></tr>
-        <tr><th>使用狀態</th><td th:text="${memProCpn.cpnUseStatus}"></td></tr>
-        <tr><th>領取日期</th><td th:text="${#temporals.format(memProCpn.rcvAt,'yyyy-MM-dd HH:mm')}"></td></tr>
-        <tr><th>起始日</th><td th:text="${memProCpn.effStart}"></td></tr>
-        <tr><th>到期日</th><td th:text="${memProCpn.effEnd}"></td></tr>
-        <tr><th>使用訂單</th><td th:text="${memProCpn.proOrdVO != null ? memProCpn.proOrdVO.proOrdId : '-'}"></td></tr>
-    </table>
 
-    <a th:href="@{/admin/memprocpn/list}" class="btn btn-secondary">返回清單</a>
-</div>
+<body>
+<!-- 橘色按鈕列 -->
+<div th:replace="~{/back_end/logined/coupon/couponManagePage :: header}"></div>
+<!-- 白底卡片內容 -->
+  <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8">
+    <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">折價券詳細資料</h2>
+
+    <div class="divide-y divide-gray-200">
+      <div class="py-3 flex justify-between">
+        <span class="font-semibold text-gray-600">會員帳號</span>
+        <span th:text="${memProCpn.memVO.memAcc}">testuser</span>
+      </div>
+
+      <div class="py-3 flex justify-between">
+        <span class="font-semibold text-gray-600">折價券名稱</span>
+        <span th:text="${memProCpn.proCpnVO.cpnName}">新客9折券</span>
+      </div>
+
+      <div class="py-3 flex justify-between">
+        <span class="font-semibold text-gray-600">使用狀態</span>
+        <span th:text="${memProCpn.cpnUseStatus.getUseStatus()}">未使用</span>
+      </div>
+
+      <div class="py-3 flex justify-between">
+        <span class="font-semibold text-gray-600">領取日期</span>
+        <span th:text="${#temporals.format(memProCpn.rcvAt,'yyyy-MM-dd HH:mm')}">2025-10-20 10:00</span>
+      </div>
+
+      <div class="py-3 flex justify-between">
+        <span class="font-semibold text-gray-600">起始日</span>
+        <span th:text="${memProCpn.effStart}">2025-10-01</span>
+      </div>
+
+      <div class="py-3 flex justify-between">
+        <span class="font-semibold text-gray-600">到期日</span>
+        <span th:text="${memProCpn.effEnd}">2025-10-30</span>
+      </div>
+
+      <div class="py-3 flex justify-between">
+        <span class="font-semibold text-gray-600">使用訂單</span>
+        <span th:text="${memProCpn.proOrdVO != null ? memProCpn.proOrdVO.proOrdId : '-'}">-</span>
+      </div>
+    </div>
+
+    <div class="flex justify-center space-x-4 pt-6">
+      <a th:href="@{/admin/memprocpn/list}" 
+         class="btn-secondary">返回清單</a>
+    </div>
+  </div>
+
 </body>
 </html>

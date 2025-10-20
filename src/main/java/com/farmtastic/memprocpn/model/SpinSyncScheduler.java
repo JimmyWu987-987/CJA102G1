@@ -35,7 +35,7 @@ public class SpinSyncScheduler {
 			// 寫入 MySQL
 			memProCpnService.giveCoupon(memId, proCpnId);
 			// 成功後刪除（pop 自動移除）
-			System.out.println("✅ 已發券: memId=" + memId + ", cpnId=" + proCpnId);
+			System.out.println(" 已發券: memId=" + memId + ", cpnId=" + proCpnId);
 		}
 	}
 }
