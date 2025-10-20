@@ -57,7 +57,7 @@ public class PageController {
         managementButtons.put("商城管理",   new String[]{"/pro/listAllPro",    "商城管理"});
         managementButtons.put("活動管理",   new String[]{"#",                 "活動管理"}); 
         managementButtons.put("廣告管理",    new String[]{"/admin/proAd/list","廣告管理"}); 
-        managementButtons.put("金流管理",   new String[]{"#",                 "金流管理"}); 
+        managementButtons.put("金流管理",   new String[]{"/admin/cashflow/",     "金流管理"}); 
         managementButtons.put("會員管理",   new String[]{"/admin/mem-management","會員管理"}); 
         managementButtons.put("折價券管理", new String[]{"/admin/coupon/manage","折價券管理"});
         managementButtons.put("最新消息管理",    new String[]{"/news",          "最新消息管理"});
