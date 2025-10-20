@@ -143,6 +143,19 @@ a.supplementary-info-btn:hover{
 	text-decoration: underline;
 }
 
+.btn-google{
+	width: 100%;
+	margin-top: 12px;
+	color: #fff;
+	background-color: #e0644e;	
+	text-align: center;
+	font-size: 18px;
+}
+.btn-google:hover{
+	background-color: #ca5042;	
+}
+
+
 
 .error,
 .error-reg,

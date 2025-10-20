@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一般會員修改密碼</title>
+    <link rel="icon" th:href="@{/images/logo.png}">
+    
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
+    <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+	<style>
+		.member-content{
+			width: 60%;
+			flex-grow: 0;
+			margin-left: auto;
+			margin-right: auto;
+			color: #333;
+		}
+		.notice div{
+			font-size: 18px;
+		}
+		.notice p{
+		}
+		.error{
+			margin-top: 2px;
+		}
+		.note{
+			color: #f00;
+		}
+	</style>
+
+
+</head>
+<body>
+
+<div th:replace="~{/front_end/index :: header}"></div>
+
+<div class="container container-member">
+
+    <div class="member-content center">
+        <form method="post" th:action="@{/mem/memArea/completeProfile}" class="userInfo">
+            <h3>填寫會員資料</h3>
+            <div class="notice">
+	            <div><i class="fa-solid fa-bullhorn"></i> 歡迎加入！</div>
+	            <p>為了提供您更好的服務（如生日優惠券），請補充以下必要資料。</p>
+	            <p class="note">* 生日資料填寫後將無法修改</p>
+	        </div>
+            <ul>
+                <li>
+                    <label for="">生日</label>
+                    <input type="date" id="memBirthday" name="memBirthday"  max="2013-10-19" required>
+                    <span th:if="${error}" th:text="*{error}" class="error"></span>
+                </li>
+               
+                <input type="submit" value="儲存" class="btn link" id="btn-submitReg">
+            </ul>
+        </form>
+    </div>
+</div>
+    
+
+
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+
+</body>
+</html>

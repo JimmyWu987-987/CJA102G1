@@ -12,11 +12,14 @@ public class MemLoginConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new MemLoginInterceptor()).addPathPatterns("/mem/memArea/**", "/mem/proorders/**",
-				"/mem/favo/**", "/mem/memcpn/**", "/cart/checkoutByFmemId");
-//				.excludePathPatterns(
-//						"/mem/showMemRegLoginForm",
-//						"/mem/forgetPasswordPage",
-//						"/mem/resetPasswordPage");
+				"/mem/favo/**", "/mem/memcpn/**", "/cart/checkoutByFmemId")
+				.excludePathPatterns(
+						"/mem/showMemRegLoginForm",
+						"/mem/forgetPasswordPage",
+						"/mem/resetPasswordPage",
+						"/mem/register", 
+						"/mem/login", 
+						"/mem/verifyEmail");
 	}
 }
 

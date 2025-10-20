@@ -46,6 +46,7 @@ public class AdminMemController {
 	@PostMapping("/updateMemAccStatus")
 	public String updateMemAccStatus(
 			Model model, 
+			HttpServletRequest request,
 			@RequestParam("memId") Integer memId,
 			@RequestParam("accStatus") Byte accStatus,
 			RedirectAttributes redirectAttrs) {
@@ -54,6 +55,32 @@ public class AdminMemController {
 		
 		List<Mem> listMem = memSvc.getAll();
 		model.addAttribute("listMem", listMem);
+		
+		String mailTitle = null;
+		String mailContent = null;
+		String baseUrl = request.getScheme() + "://" + request.getServerName() + 
+						 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
+		
+		Integer accStatusInteger = Integer.valueOf(accStatus);
+		switch(accStatusInteger) {
+			case 1:
+				mailTitle = "農作物與它們的產地：會員帳號-復權通知";
+				mailContent = "您的帳號已恢復，可以重新開始使用：\n"
+						+ baseUrl + "/mem/showMemRegLoginForm\n"
+						+ "可由此連結登入網頁。";
+				break;
+			
+			case 2:
+				mailTitle = "農作物與它們的產地：會員帳號-停權通知";
+				mailContent = "帳號已被停權：\n"
+							  + "若有任何問題，請與平台聯繫，謝謝。\n";
+				break;
+		}
+		
+		if (accStatusInteger == 1 || accStatusInteger == 2) {
+			Mem mem = memSvc.getOneByMemId(memId);
+			mailSvc.sendMail(mem.getMemEmail(), mailTitle, mailContent);			
+		}
 		
 		redirectAttrs.addFlashAttribute("lastEditMemId", memId);
 		return "redirect:/admin/listAllMems";

@@ -10,6 +10,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -30,6 +36,7 @@ import com.farmtastic.act.model.ActService;
 import com.farmtastic.common.constants.CpnConstants;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.fmember.model.FmemService;
+import com.farmtastic.member.erum.AuthProvider;
 import com.farmtastic.member.model.ForgetPwdRequest;
 import com.farmtastic.member.model.LoginRequest;
 import com.farmtastic.member.model.Mem;
@@ -72,6 +79,9 @@ public class MemController {
 
 	@Autowired
 	MailService mailSvc;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@Autowired
 	MemProCpnServiceImp memProCpnSvc;
@@ -93,9 +103,19 @@ public class MemController {
 
 //	註冊頁面"超連結"
 	@GetMapping("/showMemRegLoginForm")
-	public String showMemRegLoginForm(ModelMap model) {
+	public String showMemRegLoginForm(
+			// from OAuth2AuthenticationFailureHandler
+			// String redirectUrl = "/mem/showMemRegLoginForm?googleError=" + encodedError;
+			@RequestParam(value = "googleError", required = false) String googleError,
+			ModelMap model) {
 		model.addAttribute("mem", new Mem());
 		model.addAttribute("loginRequest", new LoginRequest());
+		
+		if(googleError != null && !googleError.isEmpty()) {
+			// 對應到前端顯示
+			model.addAttribute("googleError", googleError);
+		}
+		
 		return "front_end/customer/unlogined/memRegLogin";
 	}
 
@@ -107,20 +127,7 @@ public class MemController {
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
 
 		List<Pro> proList = proSvc.findByFmemId(fmemIdInteger);
-//		for(Pro pro : proList) {
-//			if(pro.getProImage() != null) {
-//				String tempImgBase64 = Base64.getEncoder().encodeToString(pro.getProImage().getProImg());
-//				pro.getProImage().setProImgBase64(tempImgBase64);
-//			}else {
-//				ProImage defaultImg = new ProImage();
-////				defaultImg.setProImgBase64("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
-////				defaultImg.setProImgBase64("R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=");
-//				pro.setProImage(defaultImg);
-//			}
-//		}
 		model.addAttribute("proList", proList);
-		
-		
 		
 		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
@@ -164,8 +171,61 @@ public class MemController {
 //	登入後才能看的: 會員專區
 	@GetMapping("/memArea")
 	public String memArea() {
+		System.out.println("memArea重導");
 		return "/front_end/customer/logined/memArea";
 	}
+	
+	
+	@GetMapping("/memArea/completeProfilePage")
+	public String completeProfilePage(
+			@ModelAttribute("loggedInMember") Mem loggedInMember,
+	        ModelMap model,
+	        HttpSession session) {
+		
+		if(loggedInMember.getMemBirthday() != null) {
+			return "redirect:/mem/memArea";
+		}
+		model.addAttribute("loggedInMember", loggedInMember);
+		return "front_end/customer/logined/memProfile/memCompleteProfile";
+	}
+	
+	@PostMapping("/memArea/completeProfile")
+	public String completeProfile(
+	        @RequestParam("memBirthday") Date memBirthday,
+	        @ModelAttribute("loggedInMember") Mem loggedInMember,
+	        HttpSession session,
+	        ModelMap model,
+	        RedirectAttributes redirectAttrs) {
+	    
+	    // 驗證生日
+	    if (memBirthday == null) {
+	        model.addAttribute("error", "請填寫生日");
+	        model.addAttribute("loggedInMember", loggedInMember);
+	        return "front_end/customer/logined/memProfile/memCompleteProfile";
+	    }
+	    
+	    // 檢查年齡（至少12歲）
+	    long ageInMillis = System.currentTimeMillis() - memBirthday.getTime();
+	    int age = (int) (ageInMillis / (365.25 * 24 * 60 * 60 * 1000));
+	    if (age < 12) {
+	        model.addAttribute("error", "您必須年滿 12 歲");
+	        model.addAttribute("loggedInMember", loggedInMember);
+	        return "front_end/customer/logined/memProfile/memCompleteProfile";
+	    }
+	    
+	    // 更新資料
+	    loggedInMember.setMemBirthday(memBirthday);
+	    memSvc.updateMem(loggedInMember);
+	    
+	    // 更新 Session
+	    session.setAttribute("loggedInMember", loggedInMember);
+	    redirectAttrs.addFlashAttribute("success", "生日填寫完成");
+	    return "redirect:/mem/memArea";
+	}
+	
+	
+	
+	
 
 //	怎麼分辨是「表單送來的」還是「Session 裡的」？
 //	Spring 的處理順序大致是這樣：
@@ -173,12 +233,15 @@ public class MemController {
 //	2. 如果你沒有送這個物件（或是 GET 請求），那麼 Spring 就會從 @SessionAttributes 管理的 session model 中取出 loggedInMember 填給你
 //	登入後才能看的: 會員專區/修改個人資料頁面
 	@GetMapping("/memArea/updateProfilePage")
-	public String updateProfilePage(HttpSession session, @ModelAttribute("loggedInMember") Mem loggedInMember,
+	public String updateProfilePage(
+			HttpSession session, 
+			@ModelAttribute("loggedInMember") Mem loggedInMember,
 			ModelMap model) {
 
 		UpdateProfileMem updateProfileMem = new UpdateProfileMem();
 		BeanUtils.copyProperties(loggedInMember, updateProfileMem);
 		model.addAttribute("updateProfileMem", updateProfileMem);
+		
 		return "/front_end/customer/logined/memProfile/memUpdateProfile";
 	}
 
@@ -230,7 +293,7 @@ public class MemController {
 			return "redirect:/mem/showMemRegLoginForm";
 		}
 
-		loggedInMember.setMemPwd(updatePasswordMem.getMemPwd());
+		loggedInMember.setMemPwd(passwordEncoder.encode(updatePasswordMem.getMemPwd()));
 //		BeanUtils.copyProperties(updatePasswordMem, loggedInMember);
 		memSvc.updateMem(loggedInMember);
 		redirectAttrs.addFlashAttribute("success", "修改密碼成功");
@@ -246,11 +309,19 @@ public class MemController {
 		// 驗證帳號、手機不能跟別人重複
 		String memAcc = mem.getMemAcc();
 		String memMobile = mem.getMemMobile();
+		String memEmail = mem.getMemEmail();
+		
 		if (memSvc.existsByMemAcc(memAcc)) {
-			result.rejectValue("memAcc", null, "此帳號已有人註冊過");
+			Mem memUsed = memSvc.getOneByMemAcc(memAcc); 
+			if (memUsed.getAuthProvider() == AuthProvider.LOCAL) { //如果local沒註冊過，可以用(把google和local註冊帳號分開)
+				result.rejectValue("memAcc", null, "此帳號已有人註冊過");
+			}
 		}
 		if (memSvc.existsByMemMobile(memMobile)) {
 			result.rejectValue("memMobile", null, "此手機已有人註冊過");
+		}
+		if (memSvc.existsByMemEmail(memEmail)) {
+			result.rejectValue("memEmail", null, "此信箱已有人註冊過");
 		}
 
 		if (result.hasErrors()) {
@@ -273,20 +344,21 @@ public class MemController {
 		// 註冊成功後立即發券
 		memProCpnSvc.giveCoupon(mem.getMemId(), CpnConstants.REGISTER_DISCOUNT_ID);
 		memProCpnSvc.giveCoupon(mem.getMemId(), CpnConstants.REGISTER_CASHBACK_ID);
-		redirectAttrs.addFlashAttribute("success", "註冊成功，已自動發送新客專屬折價券！");
+//		redirectAttrs.addFlashAttribute("success", "註冊成功，已自動發送新客專屬折價券！");
+		redirectAttrs.addFlashAttribute("success", "註冊成功");
 		return "redirect:/"; // 註冊(新增)成功後重導至index.html
 	}
 
 	@GetMapping("/verifyEmail")
 	public String verifyEmail(@RequestParam("code") String code, ModelMap model, RedirectAttributes redirectAttrs) {
 
-		String memAcc = redisSvc.getMemAccByCode(code);
+		String memAcc = redisSvc.getMemEmailByCode(code);
 		if (memAcc == null) {
 			model.addAttribute("fail", "驗證碼失效或不存在");
 			return "redirect:/";
 		}
 
-		Mem mem = memSvc.getOneByMemAcc(memAcc);
+		Mem mem = memSvc.getOneByMemAccAndAuthProvider(memAcc, AuthProvider.LOCAL);
 		if (mem != null) {
 			mem.setAccStatus((byte) 1);
 			memSvc.updateMem(mem);
@@ -364,13 +436,13 @@ public class MemController {
 	public String resetPasswordPage(@RequestParam("code") String code, ModelMap model, RedirectAttributes redirectAttrs,
 			HttpSession session) {
 
-		String memAcc = redisSvc.getMemAccByCode(code);
+		String memAcc = redisSvc.getMemEmailByCode(code);
 		if (memAcc == null) {
 			redirectAttrs.addFlashAttribute("fail", "驗證碼失效或不存在");
 			return "redirect:/mem/forgetPasswordPage";
 		}
 
-		Mem memForResetPwd = memSvc.getOneByMemAcc(memAcc);
+		Mem memForResetPwd = memSvc.getOneByMemAccAndAuthProvider(memAcc, AuthProvider.LOCAL);
 		if (memForResetPwd != null) {
 			model.addAttribute("memForResetPwd", memForResetPwd);
 			model.addAttribute("updatePasswordMem", new UpdatePasswordMem());
@@ -397,7 +469,7 @@ public class MemController {
 			return "/front_end/customer/unlogined/memResetPassword";
 		}
 
-		memForResetPwd.setMemPwd(resetPasswordMem.getMemPwd());
+		memForResetPwd.setMemPwd(passwordEncoder.encode(resetPasswordMem.getMemPwd()));
 		memSvc.updateMem(memForResetPwd);
 		redirectAttrs.addFlashAttribute("success", "重設密碼成功");
 
@@ -438,19 +510,44 @@ public class MemController {
 				model.addAttribute("activeTab", "login"); // 標記目前所在頁籤
 				return "front_end/customer/unlogined/memRegLogin";
 			}
-
+			
+			
 			// 3.登入成功，把會員資料存進session
-
 			model.addAttribute("loggedInMember", mem);
-
+//			session.setAttribute("loggedInMember", mem); //??
 			model.addAttribute("memId", mem.getMemId());
-//			model.addAttribute("memName", mem.getMemName());
-
 			session.setAttribute("memId", mem.getMemId());
-//			session.setAttribute("memName", mem.getMemName());
+			
+			
+			// **設定 Spring Security 的 SecurityContext
+	        UsernamePasswordAuthenticationToken authentication = 
+	            new UsernamePasswordAuthenticationToken(
+	                mem, 
+	                null, 
+	                AuthorityUtils.createAuthorityList("ROLE_USER")
+	            );
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+			
+//	        System.out.println("SecurityContext 已設定");
+//	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
+//	        System.out.println("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
+			
+	        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	        securityContext.setAuthentication(authentication);
+	        SecurityContextHolder.setContext(securityContext);
+	        
+	        // **將 SecurityContext 儲存到 Session
+	        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+	        
+//	        System.out.println("SecurityContext 已設定並儲存到 Session");
+//	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
+
+			
 			// 4.登入成功後 重導至原本頁面
 			String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
+			
+			System.out.println("redirectUrl-"+redirectUrl);
 			if (redirectUrl != null) {
 				session.removeAttribute("redirectAfterLogin");
 				return "redirect:" + redirectUrl;
@@ -460,7 +557,7 @@ public class MemController {
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);
-			model.addAttribute("mem", new Mem()); // ???
+			model.addAttribute("mem", new Mem());
 			model.addAttribute("activeTab", "login"); // 標記目前所在頁籤
 			return "front_end/customer/unlogined/memRegLogin";
 		}

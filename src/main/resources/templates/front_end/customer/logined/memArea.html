@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>header footer 模板</title>
+    <title>一般會員-會員中心</title>
     <link rel="icon" href="./images/logo.png">
     
 <!--     引入main.css, iconfonts -->
@@ -58,7 +58,7 @@
     </style>
 
 </head>
-<body>
+<body th:data-success="${success}">
 
 <div th:replace="~{/front_end/index :: header}"></div>
 
@@ -85,6 +85,9 @@
 </div>
 
 <div th:replace="~{/front_end/index :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/mem/successUpdateProfileAlert.js}"></script>
 
 </body>
 </html>
