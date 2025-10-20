@@ -113,6 +113,7 @@ public class FmemActController {
     	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
         Integer fmemId = fmem.getFmemId();
     	
+        // 找自己的+已過審的
         List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.ASC, "actId"));
 
     	model.addAttribute("actList", actList);
@@ -239,7 +240,7 @@ public class FmemActController {
                 
                 if (hasLaunchedSes) {
                     redirectAttributes.addFlashAttribute("errorMessage", "此活動尚有上架中的場次，請先將所有場次下架或完成所有場次, 才能下架整個活動");
-                    return "redirect:/fmem/act/detail/" + actId; // 導回詳情頁
+                    return "redirect:/fmem/act/detail/{actId}"; // 導回詳情頁
                 }
             }
             
@@ -258,7 +259,7 @@ public class FmemActController {
         		redirectAttributes.addFlashAttribute("errorMessage", "更新上下架狀態時發生系統錯誤。");
         	}
 
-        return "redirect:/fmem/act/detail/{actId}"; 
+        	return "redirect:/fmem/act/detail/" + actId;
     }
     
     

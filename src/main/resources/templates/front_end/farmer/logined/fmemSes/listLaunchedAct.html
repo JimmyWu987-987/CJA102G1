@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+ 
+<meta charset="UTF-8">
+<title>小農活動專區 - 已上架活動一覽 (新增場次用)</title> <link rel="icon" href="./images/logo.png">
+    
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
+<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+<style>
+	.container-header,
+	.container-footer{
+		background-color: #dce2ef;	
+	}
+	.nav > li > a{
+		background-color: #4F9D9D;
+	}
+
+
+	table {
+		width: 100%;
+		border-collapse: separate; /* 保持圓角 */
+		border-spacing: 0;
+		font-size: 1rem;
+		border-radius: 12px; /* 整體圓角 */
+		overflow: hidden; /* 防止表格內容超出圓角 */
+		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+		margin: 20px 0;
+	}
+	
+	table thead th {
+		border: none;
+	    padding: 12px 15px;
+	    background-color: #C7B896;
+	    color: #3E5C2A;
+	    text-align: center;
+	}
+	
+	table thead th:first-child {
+	    border-top-left-radius: 12px;
+	}
+	table thead th:last-child {
+	    border-top-right-radius: 12px;
+	}
+	
+	table tbody td {
+	    padding: 12px 15px;
+	    text-align: center;
+	    border: none;
+	}
+	
+	table tbody tr:nth-child(odd) {
+	    background-color: #F7F4E9; 
+	}
+	table tbody tr:nth-child(even) {
+	    background-color: #FFFFFF; 
+	}
+
+
+	.mainImg { max-width: 100px; max-height: 80px; }
+	.btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
+	
+	h1{ text-align: center;}
+	
+	.list {
+		padding: 20px 40px;
+		background-color: #FFFDF5;
+		border-radius: 8px;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+		margin: 30px; /* 與下方區塊距離 */
+	}
+	
+	.error-message { /* 新增錯誤訊息樣式 */
+        color: #c00;
+        text-align: center;
+        margin: 20px 0;
+        font-weight: bold;
+    }
+	
+</style>
+</head>
+<body>
+
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+
+<div class="container">
+<div class="list">
+	<h1>已上架活動列表 (新增場次)</h1> <div th:if="${#lists.isEmpty(actList)}">
+		<p th:if="${message}" class="error-message" th:text="${message}">目前尚無已上架活動可新增場次</p> 
+		<p th:unless="${message}">目前尚無已上架活動</p>
+	</div>
+
+	<div th:unless="${#lists.isEmpty(actList)}">
+		<table border="1">
+		<thead>
+			<tr>
+				<th>活動ID</th>
+				<th>活動主照片</th>
+				<th>活動名稱</th>
+				<th>開始日期</th>
+				<th>結束日期</th>
+				<th>費用</th>
+				<th>活動狀態</th>
+				<th>活動審核備註</th>
+				<th>活動上下架狀態</th>
+				<th>活動評價</th>
+				<th>操作</th>
+            </tr>
+		</thead>
+		<tbody>
+			<tr th:each="act : ${actList}">
+				<td th:text="${act.actId}"></td>
+				<td>
+					<img class="mainImg" th:if="${act.actMainImg != null}" th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" alt="主照片"/>
+				</td>
+				<td th:text="${act.actName}"></td>
+				<td th:text="${#dates.format(act.actStart, 'yyyy/MM/dd')}"></td>
+				<td th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></td>
+				<td th:text="${act.actFee}"></td>
+				<td th:text="${act.actStatText}"></td>
+				<td th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></td>
+				<td th:text="${act.actLaunStatText}"></td>
+				<td th:text="${act.actCnt != null && act.actCnt > 0 ?
+              #numbers.formatDecimal(act.actScore / act.actCnt, 1, 1) + ' 顆星 (' + act.actCnt + ' 筆評價)' :
+              '尚無評價'}"></td>
+				
+				<td>
+					<a class="btn" th:href="@{/fmem/ses/addSes/{Id}(Id=${act.actId})}">新增場次</a>
+				</td>
+				
+			</tr>
+		</tbody>
+		</table>
+	</div>
+</div>
+</div>
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+</body>
+</html>

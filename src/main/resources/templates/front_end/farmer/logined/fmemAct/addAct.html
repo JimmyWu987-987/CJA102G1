@@ -35,28 +35,29 @@ input[type="text"], input[type="number"], input[type="date"], textarea {
         </div>
 <!-- 更改區 -->
         <div class="form-group">
-            <label for="actStart">活動開始日期 <span style="color: red;">*</span></label>
+            <label for="actStart">活動開始日期 <span style="color: red;">*</span><span style="color: grey;">(考慮到審核作業時間及消費者報名時間, 僅能選擇自送審日算起 45 天之後的日期)</span></label>
            <input type="date" th:field="*{actStart}"
-		       th:attr="min=${#temporals.format(#temporals.createNow().plusDays(45),'yyyy-MM-dd')}" >
+		       th:attr="min=${#temporals.format(#temporals.createNow().plusDays(45),'yyyy-MM-dd')}" required>
 			<span class="error-message" th:if="${#fields.hasErrors('actStart')}" th:errors="*{actStart}"></span>
         </div>
 
         <div class="form-group">
             <label for="actEnd">活動結束日期 <span style="color: red;">*</span></label>
             <input type="date" th:field="*{actEnd}"
-			       th:attr="min=${act.actStart != null ? #dates.format(act.actStart,'yyyy-MM-dd') : ''}" >
+			       th:attr="min=${act.actStart != null ? #dates.format(act.actStart,'yyyy-MM-dd') : ''}" required>
 			<span class="error-message" th:if="${#fields.hasErrors('actEnd')}" th:errors="*{actEnd}"></span>
         </div>
+        
 <!-- /更改區 -->
         <div class="form-group">
             <label for="actFee">活動費用 <span style="color: red;">*</span></label>
-            <input type="number" id="actFee" th:field="*{actFee}" placeholder="請輸入活動費用 (人數為單價)" >
+            <input type="number" id="actFee" th:field="*{actFee}" placeholder="請輸入活動費用 (每人)" required>
             <span class="error-message" th:if="${#fields.hasErrors('actFee')}" th:errors="*{actFee}"></span>
         </div>
         
         <div class="form-group">
             <label for="actDes">活動描述</label>
-            <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述"></textarea>
+            <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述, 請務必要填入聯絡資訊及舉辦地點等資訊" required></textarea>
             <span class="error-message" th:if="${#fields.hasErrors('actDes')}" th:errors="*{actDes}"></span>
         </div>
         

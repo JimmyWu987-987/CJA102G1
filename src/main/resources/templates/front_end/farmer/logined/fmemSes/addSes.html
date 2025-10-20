@@ -1,91 +1,367 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>小農活動專區 - 建立活動</title>
+    <meta charset="UTF-8">
+    <title>新增場次 - 淺綠/淺褐主題</title>
+    <style>
+        /* ==================== CSS 樣式 (淺綠色/淺褐色主題) ==================== */
+        
+        /* 頁面背景與居中 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0fff0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 50px; 
+        }
 
-<!-- 原本引用的 CSS -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" th:href="@{/css/main.css}">
+        /* 卡片容器樣式 */
+        .card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px; 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
+            width: 100%;
+            max-width: 500px; 
+            box-sizing: border-box;
+            border: 3px solid #b8860b; 
+        }
 
-<!-- ToDo 新增活動用的 CSS -->
-<link rel="stylesheet" th:href="@{/css/act/addAct.css}">
+        /* 標題樣式 */
+        h1 {
+            color: #2f4f4f; 
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        /* 表單組件通用樣式 */
+        .form-group { margin-bottom: 20px; }
+
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            color: #4a4a4a;
+        }
+
+        input[type="date"], 
+        input[type="time"], 
+        input[type="number"] { 
+            width: 100%; 
+            padding: 10px; 
+            box-sizing: border-box;
+            border: 1px solid #a9a9a9; 
+            border-radius: 10px; 
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #6b8e23; 
+            outline: none;
+            box-shadow: 0 0 5px rgba(107, 142, 35, 0.3);
+        }
+        
+        /* 費用警告訊息樣式 */
+        .alert-warning { 
+            color: #856404; 
+            background-color: #fff3cd; 
+            border-color: #ffeeba; 
+            padding: 10px; 
+            margin-top: 10px; 
+            border: 1px solid transparent; 
+            border-radius: 10px; 
+            display: none; 
+            font-size: 0.9em;
+        }
+        
+        /* 按鈕樣式 */
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 30px;
+            background-color: #8fbc8f; 
+            color: white;
+            border: none;
+            border-radius: 15px; 
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #6b8e23; 
+        }
+        
+        button[type="submit"]:active {
+            transform: translateY(1px); 
+        }
+        
+        /* 日期/時間限制提示文字 */
+        .date-limit {
+            display: block; 
+            margin-top: 5px; 
+            font-size: 0.9em; 
+            color: #6a6a6a;
+        }
+
+        .date-limit strong {
+            color: #2f4f4f; 
+        }
+        
+        .date-limit strong[style*="red"] {
+            color: #d9534f !important; 
+        }
+        
+        /* 錯誤訊息 */
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
 </head>
-
 <body>
-	<h1 class="act-title">建立活動</h1>
 
-	<div class="act-info">
-		<div class="act-add-details">
+<div class="card">
 
-			<label for="actName">活動名稱<span style="color: red;">*</span></label><br>
-			<input type="text" id="actName" name="actName" required>
-			
-			<label for="actCate">活動類別<span style="color: red;">*</span></label><br>
-				<input type="checkbox" id="cate1" name="actCate" value="體驗">
-				<label for="cate1">農事體驗</label>
-				
-				<input type="checkbox" id="cate2" name="actCate" value="親子">
-				<label for="cate2">食農教育</label>
-				
-				<input type="checkbox" id="cate3" name="actCate" value="農業">
-				<label for="cate3">親子同樂</label>
-				
-				<input type="checkbox" id="cate4" name="actCate" value="農業">
-				<label for="cate3">動物互動</label>
-				
-				<input type="checkbox" id="cate5" name="actCate" value="農業">
-				<label for="cate3">手作工藝</label>
-				
-				<input type="checkbox" id="cate6" name="actCate" value="農業">
-				<label for="cate3">戶外體驗</label>
-				
-				<input type="checkbox" id="cate7" name="actCate" value="農業">
-				<label for="cate3">導覽活動</label>
-				
-				<input type="checkbox" id="cate8" name="actCate" value="農業">
-				<label for="cate3">季節限定</label>
-				
-				<input type="checkbox" id="cateOther" name="actCate" value="其他">
-				<label for="cateOther">其他</label>
-				<input type="text" id="otherText" name="otherText" placeholder="請填寫其他類別" style="display:none;">
+    <h1>新增活動場次</h1>
 
-			<br>
-			
-				<strong>活動基本價格</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動開始日期</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動結束日期</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動介紹</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動主要圖片</strong> <span style="color: red;">*</span>
-			</p>
-			<br>
-			<p>
-				<strong>活動圖片</strong> <span style="color: grey;">(選填)</span>
-			</p>
-			<br>
-		</div>
-	</div>
+    <form id="addSesForm" th:action="@{/fmem/ses/insertSes}" th:object="${ses}" method="post">
+        
+        <input type="hidden" th:field="*{actId}" th:value="${actId}" />
+        <input type="hidden" id="actFeeHidden" th:value="${actFee}" />
+        <input type="hidden" id="minRegEndHidden" th:value="${#dates.format(minRegEnd, 'yyyy-MM-dd')}" /> 
+
+        <div class="form-group">
+            <label for="sesDate">場次日期:</label>
+            <input type="date" id="sesDate" th:field="*{sesDate}" 
+                   th:min="${#dates.format(minDate, 'yyyy-MM-dd')}"  
+                   th:max="${#dates.format(maxDate, 'yyyy-MM-dd')}"
+                   onchange="updateRegEndDateLimit()"
+                   required />
+                   
+            <small class="date-limit">
+                <strong>可選場次日期範圍:</strong> 
+                <span th:text="${#dates.format(minDate, 'yyyy-MM-dd')}"></span> 
+                ~ 
+                <span th:text="${#dates.format(maxDate, 'yyyy-MM-dd')}"></span></br>
+            </small>
+            <span th:if="${#fields.hasErrors('sesDate')}" th:errors="*{sesDate}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="sesStart">場次開始時間:</label>
+            <input type="time" id="sesStart" th:field="*{sesStart}" onchange="updateSesEndTimeLimit()" min="06:00" required />
+            <span th:if="${#fields.hasErrors('sesStart')}" th:errors="*{sesStart}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="sesEnd">場次結束時間:</label>
+            <input type="time" id="sesEnd" th:field="*{sesEnd}" onchange="validateSesEndTime()" required />
+            <small id="sesEndLimit" class="date-limit" style="color: #2f4f4f; margin-top: 0;"></small>
+            <span th:if="${#fields.hasErrors('sesEnd')}" th:errors="*{sesEnd}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="regEnd">報名截止日期:</label>
+            <input type="date" id="regEnd" th:field="*{regEnd}" 
+                   th:min="${#dates.format(minRegEnd, 'yyyy-MM-dd')}" 
+                   onchange="validateRegEndDateLimit()"
+                   required />
+            
+            <small class="date-limit">
+                <span style="color: #d9534f;">最早需為今日 + 3 天</span>
+            </small>
+            <small id="regEndMaxLimit" class="date-limit" style="color: #d9534f"></small>
+            <span th:if="${#fields.hasErrors('regEnd')}" th:errors="*{regEnd}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="minPpl">人數下限:</label>
+            <input type="number" id="minPpl" th:field="*{minPpl}" min="1" required />
+            <span th:if="${#fields.hasErrors('minPpl')}" th:errors="*{minPpl}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="maxPpl">人數上限:</label>
+            <input type="number" id="maxPpl" th:field="*{maxPpl}" min="1" required />
+            <span th:if="${#fields.hasErrors('maxPpl')}" th:errors="*{maxPpl}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="sesFee">場次實際費用 (sesFee):</label>
+            <input type="number" id="sesFee" th:field="*{sesFee}" min="0" oninput="validateSesFee()" required />
+            <div id="feeWarning" class="alert-warning">
+                <strong>警告:</strong> 費用已超過活動基本費用的 20%。如果提交，將要求小農另外提交活動審核。
+            </div>
+            <span th:if="${#fields.hasErrors('sesFee')}" th:errors="*{sesFee}" class="error"></span>
+        </div>
+
+        <button type="submit">新增場次</button>
+    </form>
+
+</div> 
+
+<script>
+    
+    // 初始化報名截止日期的最小值（來自後端：今天 + 3 天）
+    const MIN_REG_END_DATE = document.getElementById('minRegEndHidden').value;
+
+    // ==================== 時間驗證函式 (sesStart/sesEnd) ====================
+    
+    // Helper 函式：將 HH:MM 轉換為 HH:MM + 1 分鐘的字符串 (用於嚴格晚於限制)
+    function addOneMinute(timeString) {
+        if (!timeString) return '';
+        
+        const parts = timeString.split(':');
+        let hours = parseInt(parts[0], 10);
+        let minutes = parseInt(parts[1], 10);
+
+        minutes += 1;
+        if (minutes === 60) {
+            minutes = 0;
+            hours = (hours + 1) % 24; 
+        }
+
+        const newHours = String(hours).padStart(2, '0');
+        const newMinutes = String(minutes).padStart(2, '0');
+        
+        return `${newHours}:${newMinutes}`;
+    }
 
 
-	<div class="button"></div>
+    // 1. 根據開始時間，動態更新結束時間的 min 限制 (嚴格晚於一分鐘)
+    function updateSesEndTimeLimit() {
+        const sesStartInput = document.getElementById('sesStart');
+        const sesEndInput = document.getElementById('sesEnd');
+        const sesEndLimit = document.getElementById('sesEndLimit');
+
+        const startTime = sesStartInput.value;
+        const endTime = sesEndInput.value;
+
+        if (startTime) {
+            // 嚴格晚於限制：開始時間 + 1 分鐘
+            const minTime = addOneMinute(startTime);
+            
+            // 設定 sesEnd 的 min 屬性，JS 直接控制可選範圍
+            sesEndInput.setAttribute('min', minTime); 
+            sesEndLimit.innerHTML = `<strong style="color: red;"></strong> 結束時間必需晚於 ${startTime}`;
+
+            // 如果 sesEnd 已經有值，但小於新的 minTime，則清空並提示
+            if (endTime && endTime < minTime) {
+                 sesEndInput.value = '';
+                 alert('場次結束時間必需晚於開始時間，請重新選擇！');
+            }
+        } else {
+            // 如果開始時間被清空，則移除結束時間的 min 限制
+            sesEndInput.removeAttribute('min');
+            sesEndLimit.textContent = '';
+        }
+    }
+
+    // 2. 結束時間變動時的最終驗證 (防止手動輸入錯誤)
+    function validateSesEndTime() {
+        const sesStartInput = document.getElementById('sesStart');
+        const sesEndInput = document.getElementById('sesEnd');
+
+        const startTime = sesStartInput.value;
+        const endTime = sesEndInput.value;
+
+        if (startTime && endTime) {
+             // 嚴格檢查：如果結束時間 小於或等於 開始時間，則視為錯誤
+             if (endTime <= startTime) {
+                 sesEndInput.value = ''; // 清空錯誤值
+                 alert('場次結束時間必需晚於開始時間，請重新選擇！');
+             }
+        }
+    }
 
 
+    // ==================== 費用驗證 (不變) ====================
+    function validateSesFee() {
+        const actFee = parseFloat(document.getElementById('actFeeHidden').value);
+        const sesFeeInput = document.getElementById('sesFee');
+        const sesFee = parseFloat(sesFeeInput.value);
+        const maxFee = actFee * 1.2;
+        
+        const warningDiv = document.getElementById('feeWarning');
+
+        if (sesFee > maxFee) {
+            warningDiv.style.display = 'block';
+            warningDiv.innerHTML = `<strong>警告:</strong> 場次實際費用 (${sesFee}) 已超過活動基本費用 (${actFee}) 的 20% (最高容許費用: ${maxFee.toFixed(0)})。如果提交，將要求小農另外提交活動審核。`;
+        } else {
+            warningDiv.style.display = 'none';
+        }
+    }
+
+    // ==================== 報名截止日驗證函式 ====================
+
+    function getDateFromString(dateString) {
+        const parts = dateString.split('-');
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    // 當場次日期改變時，更新報名截止日期的最大限制 (sesDate - 2 day)
+    function updateRegEndDateLimit() {
+        const sesDateInput = document.getElementById('sesDate');
+        const regEndInput = document.getElementById('regEnd');
+        const regEndMaxLimit = document.getElementById('regEndMaxLimit');
+
+        if (!sesDateInput.value) {
+            regEndInput.removeAttribute('max');
+            regEndMaxLimit.textContent = '請先選擇場次日期';
+            return;
+        }
+        
+        const sesDate = getDateFromString(sesDateInput.value);
+        const maxDate = new Date(sesDate);
+        maxDate.setDate(maxDate.getDate() - 2); // 場次日期前兩天 ( - 2)
+        
+        const maxDateString = maxDate.toISOString().split('T')[0];
+
+        regEndInput.setAttribute('max', maxDateString);
+        regEndMaxLimit.innerHTML = `<strong>最晚截止日:</strong> ${maxDateString} (場次日期前兩天)`;
+
+        validateRegEndDateLimit();
+    }
+    
+    // 檢查報名截止日期是否在合法範圍內 (Min:今天+3天, Max:場次日期前2天)
+    function validateRegEndDateLimit() {
+        const regEndInput = document.getElementById('regEnd');
+        
+        const currentRegEnd = regEndInput.value;
+        const maxLimit = regEndInput.getAttribute('max');
+        const minLimit = MIN_REG_END_DATE; // 後端傳來的 '今天 + 3 天'
+
+        if (!currentRegEnd) return;
+        
+        // 1. 檢查是否早於最小值 (今天 + 3 天)
+        if (minLimit && currentRegEnd < minLimit) {
+             alert('報名截止日不可早於 ' + minLimit + ' (今天 + 3 天)，請重新選擇！');
+             regEndInput.value = minLimit;
+        }
+        
+        // 2. 檢查是否晚於最大值 (場次日期前兩天)
+        if (maxLimit && currentRegEnd > maxLimit) {
+            alert('報名截止日不可晚於場次日期前兩天 (' + maxLimit + ')，已重設，請重新選擇！');
+            regEndInput.value = maxLimit; 
+        }
+    }
 
 
-	<!-- 分離 ToDoJS -->
-	<script th:src="@{/js/act/addAct.js}"></script>
+    window.onload = function() {
+        // 確保所有驗證在載入時運行一次，處理可能有預設值的情況
+        validateSesFee();
+        updateRegEndDateLimit(); 
+        updateSesEndTimeLimit(); 
+    };
+</script>
+
 </body>
 </html>

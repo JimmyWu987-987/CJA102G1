@@ -52,7 +52,7 @@
 				<td th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></td>
 				<td th:text="${act.actLaunStatText}"></td>
 				<td>
-					<a th:href="@{'/act/view/' + ${act.fmemId} + '/' + ${act.actId}}">查看活動詳細資訊</a>
+					<a class="btn" th:href="@{/fmem/act/detail/{id}(id=${act.actId})}">查看活動詳細資訊</a>
 				</td>
 			</tr>
 		</tbody>
