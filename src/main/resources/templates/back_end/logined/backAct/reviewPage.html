@@ -50,8 +50,8 @@
 				<td th:text="${act.actRemark}"></td>
 				<td th:text="${act.actLaunStatText}"></td>
 				<td>
-					<a th:href="@{/backAct/reviewDetail/{actId}(actId=${act.actId})}" class="btn btn-primary btn-sm">進行審核</a>
-				</td>
+    <a th:href="@{/admin/act/reviewDetail/{actId}(actId=${act.actId})}" class="btn btn-primary btn-sm">進行審核</a>
+</td>
 			</tr>
 		</tbody>
 	</table>

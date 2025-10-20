@@ -40,7 +40,7 @@ public class SesController {
     	if (optSes.isEmpty()) {
             // 查無場次, 導回首頁或活動一覽頁，顯示訊息
             model.addAttribute("message", "查無此場次");
-            return "front_end/customer/unlogined/act/actMainPageTest"; 		// 做一個 "查無此活動" 頁面 or 導回首頁
+            return "redirect:/act";		// 導回活動一覽頁
         }
     	
     	Ses ses = optSes.get();
@@ -49,13 +49,13 @@ public class SesController {
     	if (ses.getSesLaunStat() == null || !ses.getSesLaunStat().equals(1)) {
     		// 查無場次, 導回首頁或活動一覽頁，顯示訊息
             model.addAttribute("message", "查無此場次");
-            return "front_end/customer/unlogined/act/actMainPageTest"; 		// 做一個 "查無此活動" 頁面 or 導回首頁
+            return "front_end/customer/unlogined/act/actMainPageTest"; 		// 回原本的詳細頁
         }
 
     	model.addAttribute("ses", ses);
         model.addAttribute("sessionAct", ses);
         
-        return "front_end/customer/unlogined/ (再看報名表單的連結為何~) ";
+        return "front_end/customer/unlogined/ (再看報名表單的連結為何~) "; //報名表單的部分已另外做了
         
 	}
 	

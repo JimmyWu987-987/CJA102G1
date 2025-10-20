@@ -44,7 +44,7 @@
 </div>
 </div>
 
-<form th:action="@{/backAct/reviewAct}" method="post">
+<form th:action="@{/admin/act/reviewAct}" method="post">
     <!-- 隱藏欄位傳 actId -->
     <input type="hidden" name="actId" th:value="${act.actId}" />
 
@@ -62,7 +62,7 @@
     <div style="margin-top: 10px; display: flex; gap: 10px;">
         <button type="submit" name="action" value="approve" class="btn">通過</button>
         <button type="submit" name="action" value="reject" class="btn">不通過</button>
-        <a th:href="@{/backAct/listUnapprovedAct}" class="btn">返回列表</a>
+        <a th:href="@{/admin/act/listUnapprovedAct}" class="btn">返回列表</a>
     </div>
 </form>
 

@@ -44,7 +44,7 @@ import jakarta.validation.Valid;
 @Controller
 @Validated
 @RequestMapping("/admin/act")
-@SessionAttributes({"sessionAdminAct"})
+//@SessionAttributes({"sessionAdminAct"})  // 應該不會用到
 public class AdminActController {
 
     @Autowired
@@ -88,7 +88,7 @@ public class AdminActController {
     	Optional<Act> optAct = actSvc.getOneAct(actId);
     	if (optAct.isEmpty()) {
         	redirectAttributes.addFlashAttribute("errorMessage", "找不到該活動資料");
-            return "redirect:/backAct/listUnapprovedAct";
+        	return "redirect:/admin/act/listUnapprovedAct";
         }
         
         Act act = optAct.get();
@@ -102,13 +102,13 @@ public class AdminActController {
         		// 不通過但沒寫原因 → 回詳細頁
         		model.addAttribute("errorMessage", "若不通過, 請輸入未通過原因");
         		model.addAttribute("act", act);
-        		return "back_end/logined/backAct/reviewDetail"; // 不要加 ?actId
+        		return "back_end/logined/backAct/reviewDetail";
         	}
         	act.setActStat(3);
         	act.setActRemark(actRemark);
         }  else {
         	redirectAttributes.addFlashAttribute("errorMessage", "無效的操作");
-        	return "redirect:/backAct/listUnapprovedAct";
+        	return "redirect:/admin/act/listUnapprovedAct";
         }
 
         act.setActUpd(new Timestamp(System.currentTimeMillis()));
@@ -116,42 +116,8 @@ public class AdminActController {
         actSvc.reviewAct(act);
 
         redirectAttributes.addFlashAttribute("successMessage", "已完成審核");
-        return "redirect:/backAct/listUnapprovedAct";
+        return "redirect:/admin/act/listUnapprovedAct";
     }
-
-//		
-//		// 主圖
-//		if (mainImg == null || mainImg.isEmpty()) {
-//			model.addAttribute("errorMessage", "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
-//			return "front_end/farmer/logined/fmemAct/addEmp";
-//		}
-//		
-//		act.setActMainImg(mainImg.getBytes());
-//		
-//		// 活動圖片 (可有可無) 
-//		if (actImgs != null) {
-//			for (MultipartFile file : actImgs) {
-//				if (! file.isEmpty()) {
-//					ActImg actImg = new ActImg();
-//					actImg.setActImg(file.getBytes());
-//					actImg.setActimgOrder(order);
-//					order++;
-//				}
-//			}
-//		}
-//		
-//		if (result.hasErrors()) {
-//			 return "front_end/farmer/logined/fmemAct/addEmp";
-//		}
-//		
-//		/*************************** 2.開始新增資料 *****************************************/
-//		actSvc.addAct(act);
-//		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
-//		List<Act> list = actSvc.getAllAct();
-//			model.addAttribute("actListData", list);
-//			return "redirect:back_end/logined/backAct/reviewPage";
-//    	
-//    }
      
  // =========== 查詢活動 ==============
     // 所有活動
@@ -168,7 +134,7 @@ public class AdminActController {
         	model.addAttribute("message", "目前尚無活動");
         }
         
-        return "back_end/logined/backAct/listAllActForAdmin";		// 導回首頁
+        return "back_end/logined/backAct/listAllActForAdmin";		// 導回活動一覽
     }
     
     
@@ -191,57 +157,6 @@ public class AdminActController {
         
         return "back_end/logined/backAct/selectPage";		// 導到查詢結果頁
     }
-    
-    
-    
-//	@GetMapping("updateAct/{actId}")
-//	public String getUpdatePage(@PathVariable Integer actId, ModelMap model) {
-//		Act act = actSvc.getOneAct(actId);
-//		model.addAttribute("act", act);
-//		return "front_end/farmer/logined/fmemAct/updateAct";
-//	}
-//
-//	@PostMapping("update")
-//	public String updateAct(@ModelAttribute("act") Act act, ModelMap model) {
-//		actSvc.updateAct(act);
-//		model.addAttribute("success", "活動修改成功！");
-//		return "redirect:/act/listAll";
-//	}
-//
-//	// =========== 查詢單筆活動 ============
-//	@GetMapping("getOne/{actId}")
-//	public String getOneAct(@PathVariable Integer actId, ModelMap model) {
-//		Act act = actSvc.getOneAct(actId);
-//		model.addAttribute("act", act);
-//		return "front_end/farmer/logined/fmemAct/oneAct";
-//	}
-
-//	// =========== 小農查詢多個活動 ============
-//    
-//    // 查全部
-//    @GetMapping("/listAllActForFmem/{fmemId}")
-//    public String listAllByFmem(@PathVariable Integer fmemId, ModelMap model) {
-//        
-//        List<Act> actList = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
-//        model.addAttribute("actList", actList);
-//        return "front_end/farmer/logined/fmemAct/listAllActForFmem";
-//    }
-//    
-//    // 查已過審的活動 (上下架用)
-//    @GetMapping("/listApprovedActForFmem/{fmemId}")
-//    public String listApprovedForLaunch(@PathVariable Integer fmemId, ModelMap model) {
-//    	List<Act> actList = actRepo.findAll(Sort.by(Sort.Direction.DESC, "actLaunUpd"));
-//
-//    	List<Act> filtered = new ArrayList<>();
-//    	for (Act act : actList) {
-//    		if (act.getFmemId().equals(fmemId) && act.getActStat().equals(2)) {
-//    			filtered.add(act);
-//    		}
-//    	}
-//
-//    	model.addAttribute("actList", filtered);
-//    	return "front_end/farmer/logined/fmemAct/listApprovedActForFmem";
-//    }
     
     
 	// =========== 抓圖 ============

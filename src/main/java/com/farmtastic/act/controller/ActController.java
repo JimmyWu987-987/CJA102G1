@@ -71,7 +71,7 @@ public class ActController {
             model.addAttribute("message", "目前尚無活動");
         }
         
-        return "front_end/customer/unlogined/act/actMainPageTest";		// 導回首頁
+        return "redirect:/act";		// 導回活動一覽頁
     }
      
     
@@ -91,7 +91,7 @@ public class ActController {
         	model.addAttribute("message", "查無符合條件的活動");
         }
         
-        return "front_end/customer/unlogined/act/actMainPageTest";		// 導回首頁
+        return "redirect:/act";		// 導回活動一覽頁
     }
 
 
@@ -183,7 +183,7 @@ public class ActController {
     	if (optAct.isEmpty()) {
             // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
             model.addAttribute("message", "查無此活動");
-            return "front_end/customer/unlogined/act/actMainPageTest"; 		// 做一個 "查無此活動" 頁面 or 導回首頁
+            return "redirect:/act"; 		// 導回首頁
         }
     	
     	Act act = optAct.get();
@@ -192,7 +192,7 @@ public class ActController {
     	if (act.getActLaunStat() == null || !act.getActLaunStat().equals(1)) {
             // 查無活動 > 導回首頁或活動一覽頁，顯示訊息
             model.addAttribute("message", "查無此活動");
-            return "front_end/customer/unlogined/act/actMainPageTest"; 		// 做一個 "查無此活動" 頁面 or 導回首頁
+            return "redirect:/act"; 		// 導回首頁
         }
     	
 
