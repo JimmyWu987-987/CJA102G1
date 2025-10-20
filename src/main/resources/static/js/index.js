@@ -135,15 +135,40 @@ function displayStat(){
 
 
 //banner車-動畫
-window.addEventListener('load', driveCar);
+window.addEventListener('load', function(){
+	driveCar();
+	
+	const appleST = gsap.timeline();
+	appleST.from("#apple-small", {
+		        y: "-1000%",    // 從上方掉下來
+		        duration: 3,  
+		        ease: "bounce.out",
+				rotate: 720,
+		        delay: 0.5
+		    })
+			.to("#apple-small", {
+		        y: "0%",    
+		        duration: .7,  
+				rotate: 75,
+		        delay: 0
+		    });
+});
 window.addEventListener('resize', function(){
     // 視窗resize時，車維持在固定位子
     let bannerW = document.querySelector('.banner').clientWidth;
     gsap.to('#car', { duration: 0, x: -(bannerW*0.5)})
+	
 });
 
 function driveCar(){
     let bannerW = document.querySelector('.banner').clientWidth;
     let carT = gsap.timeline();
-    carT.to('#car', { duration: 2, x: -(bannerW*0.5), ease: 'easeOutSine' , delay: 0.5})
+    carT.to('#car', { duration: 3.5, x: -(bannerW*0.6), ease: 'easeOutSine' , delay: 1})
 }
+
+
+
+
+
+
+

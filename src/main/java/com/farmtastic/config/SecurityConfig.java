@@ -36,9 +36,13 @@ public class SecurityConfig {
 				.requestMatchers("/mem/memArea/**").authenticated()
 				.anyRequest().permitAll()
 			)
-			// ✅ 加上這個：確保 SecurityContext 存到 Session
+			// 確保 SecurityContext 存到 Session
 	        .securityContext(securityContext -> securityContext
 	            .requireExplicitSave(false)  // 自動儲存 SecurityContext 到 Session
+	        )
+	        // 放寬 Frame 限制
+	        .headers(headers -> headers
+	            .frameOptions(frameOptions -> frameOptions.disable())  // 完全停用 X-Frame-Options
 	        )
 			.formLogin(form -> form.disable())
 			.oauth2Login(oauth2 -> oauth2

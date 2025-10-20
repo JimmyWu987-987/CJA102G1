@@ -74,8 +74,6 @@
                 	<div th:text="${session.loggedInFmember.fmemName} + '，'"></div>
                 	<div>您好</div>
                 </div>
-<!--                 <a th:if="${session.loggedInFmember} == null" href="#" class="member-logo link btn"><i class="fa-solid fa-cart-shopping"></i></a> -->
-				
 				
                 <a th:href="@{/fmem/forfnews}" th:if="${session.loggedInFmember} != null" class="member-logo link btn bell">
                 	<i class="fa-solid fa-bell"></i>

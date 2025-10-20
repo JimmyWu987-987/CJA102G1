@@ -23,8 +23,6 @@
 		.notice div{
 			font-size: 18px;
 		}
-		.notice p{
-		}
 		.error{
 			margin-top: 2px;
 		}
@@ -37,35 +35,37 @@
 </head>
 <body>
 
-<div th:replace="~{/front_end/index :: header}"></div>
-
-<div class="container container-member">
-
-    <div class="member-content center">
-        <form method="post" th:action="@{/mem/memArea/completeProfile}" class="userInfo">
-            <h3>填寫會員資料</h3>
-            <div class="notice">
-	            <div><i class="fa-solid fa-bullhorn"></i> 歡迎加入！</div>
-	            <p>為了提供您更好的服務（如生日優惠券），請補充以下必要資料。</p>
-	            <p class="note">* 生日資料填寫後將無法修改</p>
-	        </div>
-            <ul>
-                <li>
-                    <label for="">生日</label>
-                    <input type="date" id="memBirthday" name="memBirthday"  max="2013-10-19" required>
-                    <span th:if="${error}" th:text="*{error}" class="error"></span>
-                </li>
-               
-                <input type="submit" value="儲存" class="btn link" id="btn-submitReg">
-            </ul>
-        </form>
-    </div>
-</div>
+	<div th:replace="~{/front_end/index :: header}"></div>
+	
+	<div class="container container-member">
+	
+	    <div class="member-content center">
+	        <form method="post" th:action="@{/mem/memArea/completeProfile}" class="userInfo">
+	            <h3>填寫會員資料</h3>
+	            <div class="notice">
+		            <div><i class="fa-solid fa-bullhorn"></i> 歡迎加入！</div>
+		            <p>為了提供您更好的服務（如生日優惠券），請補充以下必要資料。</p>
+		            <p class="note">* 生日資料填寫後將無法修改</p>
+		        </div>
+	            <ul>
+	                <li>
+	                    <label for="">生日</label>
+	                    <input type="date" id="memBirthday" name="memBirthday"  max="2013-10-20" required>
+	                    <span th:if="${error}" th:text="*{error}" class="error"></span>
+	                </li>
+	               
+	                <input type="submit" value="儲存" class="btn link" id="btn-submitReg">
+	            </ul>
+	        </form>
+	    </div>
+	</div>
     
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
-
-<div th:replace="~{/front_end/index :: footer}"></div>
-
-
+	<!-- 加載 flatpickr 核心庫 -->
+<!-- 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
+<!-- 	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh-tw.js"></script> 繁體中文 -->
+<!-- 	<script th:src="@{/js/mem/dateSelector.js}"></script> -->
+	
 </body>
 </html>
