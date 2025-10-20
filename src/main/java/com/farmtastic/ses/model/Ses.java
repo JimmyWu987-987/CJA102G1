@@ -37,9 +37,6 @@ public class Ses {
 	@Column(name = "ses_end", nullable = false)
 	private Time sesEnd;
 	
-	@Column(name = "reg_start", nullable = false)
-	private Date regStart;
-	
 	@Column(name = "reg_end", nullable = false)
 	private Date regEnd;
 	
@@ -52,9 +49,6 @@ public class Ses {
 	@Column(name = "ses_fee", nullable = false)
 	private Integer sesFee;
 	
-	@Column(name = "notice", nullable = false)
-	private Integer notice = 1;		// 預設1天前
-	
 	@Column(name = "ses_launstat", nullable = false)
 	private Integer sesLaunStat = 0;	// 預設0 (下架)
 	
@@ -65,7 +59,7 @@ public class Ses {
 	private Timestamp sesLaunUpd;
 
 	@Column(name = "headcount")
-	private Integer headCount = 0;	// 預設0
+	private Integer headCount;
 
 	@Column(name="act_id", insertable=false, updatable=false)
 	private Integer actId;
@@ -110,14 +104,6 @@ public class Ses {
 		this.sesEnd = sesEnd;
 	}
 
-	public Date getRegStart() {
-		return regStart;
-	}
-
-	public void setRegStart(Date regStart) {
-		this.regStart = regStart;
-	}
-
 	public Date getRegEnd() {
 		return regEnd;
 	}
@@ -149,15 +135,6 @@ public class Ses {
 	public void setSesFee(Integer sesFee) {
 		this.sesFee = sesFee;
 	}
-
-	public Integer getNotice() {
-		return notice;
-	}
-
-	public void setNotice(Integer notice) {
-		this.notice = notice;
-	}
-
     
 	// 上下架
 	public Integer getSesLaunStat() {
@@ -216,7 +193,7 @@ public class Ses {
 		this.headCountCache = headCountCache;
 	}
 	
-	public Act getAct() { // 如果您沒有Lombok, 需手動加入
+	public Act getAct() { // 如果沒有Lombok, 需手動加入
 	    return act;
 	}
 	
