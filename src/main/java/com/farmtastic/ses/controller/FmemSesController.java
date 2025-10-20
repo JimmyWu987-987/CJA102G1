@@ -2,11 +2,8 @@ package com.farmtastic.ses.controller;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,13 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.act.model.Act;
-import com.farmtastic.act.model.ActCate;
-import com.farmtastic.act.model.ActCateRepository;
-import com.farmtastic.act.model.ActImg;
 import com.farmtastic.act.model.ActService;
 import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.ses.model.Ses;
@@ -46,6 +39,30 @@ public class FmemSesController {
 	
 	@Autowired
 	private ActService actSvc;
+	
+	// 查已上架的活動 (新增場次用)
+	@GetMapping("/listLaunchedAct")
+    public String listLaunchedActForLaunch(HttpSession session, ModelMap model) {
+    	
+    	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農        
+        if (fmem == null) {
+            model.addAttribute("message", "請先登入小農頁面, 謝謝");
+            return "redirect:/showFmemRegLoginForm"; // 導回小農登入頁
+        }
+        
+        Integer fmemId = fmem.getFmemId();
+    	
+        List<Act> actList = actSvc.findByFmemIdAndActLaunStat(fmemId, 1, Sort.by(Sort.Direction.ASC, "actId"));
+
+    	model.addAttribute("actList", actList);
+    	
+    	if (actList.isEmpty()) {
+            model.addAttribute("message", "目前尚無已上架活動可新增場次");
+        }
+    	
+    	return "front_end/farmer/logined/fmemSes/listLaunchedAct";
+    }	
+	
 	
 	// ========== 小農新增場次 ==========
 	@GetMapping("addSes/{actId}")
@@ -69,7 +86,7 @@ public class FmemSesController {
 	    model.addAttribute("minDate", minDate);
 	    model.addAttribute("maxDate", actEnd);
 	    
-	 // 計算報名截止日期的最小值 >> 至少要當天的 3 天後 且為場次日期的至少前2天
+	    // 計算報名截止日期的最小值 >> 至少要當天的 3 天後 且為場次日期的至少前2天
 	    java.util.Calendar cal = java.util.Calendar.getInstance();
 	    cal.add(java.util.Calendar.DAY_OF_MONTH, 3); // 加3天
 	    java.sql.Date MinRegEnd = new java.sql.Date(cal.getTimeInMillis());
@@ -123,7 +140,7 @@ public class FmemSesController {
 //		// 設置 Flash Attribute，用於 SweetAlert
 //		redirectAttributes.addFlashAttribute("successMessage", "新增成功！");
 //	
-		return "redirect:/fmem/ses/listAllSesForFmem";
+		return "redirect:/fmem/ses/listAllSesForFmem"; 		// 新增完後轉到場次一覽
 	}
 	
 	

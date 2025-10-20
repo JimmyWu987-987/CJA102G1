@@ -37,8 +37,8 @@ public class ActService {
 	}
 	
 	// ========== 小農依活動上下架狀態查詢 >> 上下架活動用 ==========
-	public List<Act> findByFmemIdAndActLaunStat(Integer launStat, Sort sort) {
-		return actRepository.findByActLaunStat(launStat, sort);
+	public List<Act> findByFmemIdAndActLaunStat(Integer fmem, Integer actLaunStat, Sort sort) {
+		return actRepository.findByFmemIdAndActLaunStat(fmem, actLaunStat, sort);
 	}
 	
 	// ========== 複合查詢活動（動態排序）for 小農  ==========

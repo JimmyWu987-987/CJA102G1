@@ -76,7 +76,10 @@
             待審核通過後才能操作上下架。
         </div>
     </div>
-</div> <form id="launchForm" th:action="@{/fmem/act/updateLaunchStatus/{actId}(actId=*{actId})}" method="post" style="display:none;">
+</div>
+
+<!-- 提交上下架狀態的隱藏表單 -->
+<form id="launchForm" th:action="@{/fmem/act/updateLaunchStatus/{actId}(actId=*{actId})}" method="post" style="display:none;">
     <input type="hidden" id="launchStatInput" name="newLaunStat" value="">
 </form>
 
@@ -113,23 +116,40 @@
 </div>
 
 
-
-
-	<!-- for 上下架按鈕 -->
+	<!-- for 上下架按鈕的 JavaScript 邏輯 -->
 	<script>
+    // 從 Thymeleaf 取得活動 ID
     const actId = '[[${act.actId}]]';
-    // 檢查 sesList 是否為空 (已上架場次列表)
+    
+    // 檢查 sesList 是否為空 (用於前端判斷場次狀態)
     const hasLaunchedSes = '[[${!#lists.isEmpty(sesList)}]]' === 'true'; 
     
-    // ... (confirmLaunch 和 confirmDelist 函數保持不變) ...
+    // ===================================
+    // 活動上架函式 (newStat = 1) 
+    // ===================================
+    function confirmLaunch(newStat) {
+        if (confirm("確認要上架此活動嗎？")) {
+            // 設置表單 action 和 input 值
+            document.getElementById('launchForm').action = '/fmem/act/updateLaunchStatus/' + actId;
+            document.getElementById('launchStatInput').value = newStat;
+            // 提交表單給後端 Controller
+            document.getElementById('launchForm').submit();
+        }
+    }
 
-    // 下架 (從 1 -> 0)
+    // ===================================
+    // 活動下架函式 (newStat = 0)
+    // ===================================
     function confirmDelist(newStat) {
+        
+        // 檢查是否有上架中的場次 (前端提示邏輯)
         if (hasLaunchedSes) {
             alert("此活動尚有上架中的場次，請先將所有場次下架或完成所有場次, 才能下架整個活動");
-            return;
+            // ！！！ 關鍵修正：警告後立即返回，不再顯示第二次確認對話框 ！！！
+            return; 
         }
-        
+
+        // 只有在沒有上架中場次的情況下，才詢問是否下架
         if (confirm("確認要下架此活動嗎？")) {
             document.getElementById('launchForm').action = '/fmem/act/updateLaunchStatus/' + actId;
             document.getElementById('launchStatInput').value = newStat;

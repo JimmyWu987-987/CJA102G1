@@ -1,8 +1,10 @@
 package com.farmtastic.ses.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +12,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.farmtastic.act.model.Act;
+import com.farmtastic.act.model.ActService;
+import com.farmtastic.fmember.model.Fmem;
 import com.farmtastic.ses.model.Ses;
 import com.farmtastic.ses.model.SesService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/ses")
 @SessionAttributes({"sessionSes"})
 public class SesController {
+	
+	@Autowired
+	private ActService actSvc;
 	
 	@Autowired
 	private SesService sesSvc;
@@ -47,7 +57,8 @@ public class SesController {
         
         return "front_end/customer/unlogined/ (再看報名表單的連結為何~) ";
         
-    }	
+	}
+	
 	
 ////	================= (這是舊的, 先保留起來以備不時之需) 列出該活動所有場次 ================
 //	@GetMapping("/listByAct/{actId}")
