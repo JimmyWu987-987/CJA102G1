@@ -49,4 +49,8 @@ public class NewsService {
     public List<News> getNewsByStatus(Integer status) {
         return newsRepository.findByNewsStatusOrderByNewsAtDesc(status);
     }
+    
+    public List<News> getNewsForFarmer(Integer fmemId) {
+        return newsRepository.findNewsForFarmer(fmemId, Sort.by(Sort.Direction.DESC, "newsAt"));
+    }
 }

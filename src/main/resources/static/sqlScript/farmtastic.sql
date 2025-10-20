@@ -1176,11 +1176,14 @@ CREATE TABLE favo_act (
 
 -- 最新消息清單
 CREATE TABLE news (
-	news_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	news_title VARCHAR(50) NOT NULL,
-	news_cont VARCHAR(1000) NOT NULL,
-	news_at DATETIME NOT NULL,
-    news_status INT NOT NULL
+    news_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    fmem_id INT NULL,
+    news_title VARCHAR(50) NOT NULL,
+    news_cont VARCHAR(1000) NOT NULL,
+    news_at DATETIME NOT NULL,
+    news_status INT NOT NULL,
+
+    CONSTRAINT fk_news_fmem FOREIGN KEY (fmem_id) REFERENCES fmem(fmem_id)
 );
 
 INSERT INTO news (news_title, news_cont, news_at, news_status) VALUES
@@ -1240,7 +1243,14 @@ CREATE TABLE admin_function (
 INSERT INTO admin_function (admin_func_id, admin_func_name, admin_func_des) VALUES
 (1, '網站總管理', '商品活動廣告上架、下架、編輯，管理員管理'),
 (2, '商城管理', '查看、處理商城商品'),
-(3, '活動管理', '查看、管理活動資料');
+(3, '活動管理', '查看、管理活動資料'),
+(4, '廣告管理', '查看、管理商城廣告活動資料'),
+(5, '金流管理', '查看、管理商城金流資料'),
+(6, '會員管理', '查看、管理商城會員資料'),
+(7, '折價券管理', '查看、管理商城折價券資料'),
+(8, '最新消息管理', '查看、管理最新消息資料'),
+(9, 'QA管理', '查看、管理商城QA資料');
+
 
 -- 角色權限
 CREATE TABLE admin_type_func_list (

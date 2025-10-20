@@ -2,11 +2,16 @@ package com.farmtastic.news.model;
 
 import java.time.LocalDateTime;
 
+import com.farmtastic.fmember.model.Fmem;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 //import lombok.Data;
 
@@ -31,6 +36,10 @@ public class News {
 	
     @Column(name = "news_status")
     private Integer newsStatus; // 0=小農, 1=消費者
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fmem_id", nullable = true)
+    private Fmem fmem; // 屬性名稱與 Fmem 實體對應
 
 	public Long getId() {
 		return id;
@@ -74,6 +83,14 @@ public class News {
 
 	public News() {
 		super();
+	}
+
+	public Fmem getFmem() {
+		return fmem;
+	}
+
+	public void setFmem(Fmem fmem) {
+		this.fmem = fmem;
 	}
     
     

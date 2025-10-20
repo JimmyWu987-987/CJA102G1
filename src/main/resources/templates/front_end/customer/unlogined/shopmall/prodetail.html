@@ -13,23 +13,21 @@
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f9f9f9;
         }
-        .product-detail-container {
+        .container-wrapper {
             max-width: 1100px;
             margin: 3rem auto;
+        }
+        .product-detail-container {
             padding: 2rem;
             background-color: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             display: grid;
-            grid-template-columns: 1fr 1.2fr; /* 調整左右欄位寬度比例 */
+            grid-template-columns: 1fr 1.2fr;
             gap: 3rem;
         }
-        .product-image-gallery {
-            text-align: center;
-        }
+        .product-image-gallery { text-align: center; }
         .main-image-wrapper {
-            margin-bottom: 1rem;
-            /* ★★★ 新增：設定一個外層容器來固定高度 ★★★ */
             height: 450px; 
             display: flex;
             align-items: center;
@@ -37,135 +35,133 @@
             background-color: #f5f5f5;
             border-radius: 12px;
             overflow: hidden;
-        }
-        .main-image {
-            /* ★★★ 修改：讓圖片自適應容器，不再固定高度 ★★★ */
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* 改為 contain，確保圖片完整顯示不裁切 */
-        }
-        .thumbnail-list {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap; 
-        }
-        .thumbnail-item {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: border-color 0.3s;
-            overflow: hidden; 
-        }
-        .thumbnail-item:hover {
-            border-color: #ccc;
-        }
-        .thumbnail-item.active {
-            border-color: #2c5234; 
-        }
-        .thumbnail-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .product-content {
-            display: flex;
-            flex-direction: column;
-        }
-        .product-category {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        .product-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #333;
-            margin: 0;
-            line-height: 1.2;
-        }
-        .farmer-info {
-            font-size: 1.1rem;
-            color: #555;
-            margin-top: 0.75rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #eee;
-        }
-        .farmer-info span {
-            font-weight: bold;
-            color: #2c5234;
-        }
-        .product-price-detail {
-            font-size: 2.8rem;
-            font-weight: bold;
-            color: #c0392b;
-            margin: 1.5rem 0;
-        }
-        .product-price-detail::before {
-            content: '$';
-            font-size: 1.5rem;
-            margin-right: 5px;
-        }
-        .product-meta {
-            font-size: 1rem;
-            color: #666;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-        }
-        .product-meta strong {
-            color: #333;
-            margin-right: 10px;
-        }
-        .product-description {
-            margin-top: 1.5rem;
-        }
-        .product-description h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-left: 4px solid #2c5234;
-            padding-left: 10px;
             margin-bottom: 1rem;
         }
-        .product-description p {
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #555;
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
+        .thumbnail-list { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .thumbnail-item {
+            width: 80px; height: 80px; border-radius: 8px; border: 2px solid transparent;
+            cursor: pointer; transition: border-color 0.3s; overflow: hidden; 
+        }
+        .thumbnail-item:hover { border-color: #ccc; }
+        .thumbnail-item.active { border-color: #2c5234; }
+        .thumbnail-item img { width: 100%; height: 100%; object-fit: cover; }
+        .product-content { display: flex; flex-direction: column; }
+        .product-category { font-size: 0.9rem; color: #888; margin-bottom: 0.5rem; font-weight: 500; }
+        .product-title { font-size: 2.5rem; font-weight: 700; color: #333; margin: 0; line-height: 1.2; }
+        .farmer-info {
+            font-size: 1.1rem; color: #555; margin-top: 0.75rem;
+            padding-bottom: 1.5rem; border-bottom: 1px solid #eee;
+        }
+        .farmer-info span { font-weight: bold; color: #2c5234; }
+        .product-price-detail { font-size: 2.8rem; font-weight: bold; color: #c0392b; margin: 1.5rem 0; }
+        .product-price-detail::before { content: '$'; font-size: 1.5rem; margin-right: 5px; }
+        .product-meta { font-size: 1rem; color: #666; line-height: 1.8; margin-bottom: 2rem; }
+        .product-meta strong { color: #333; margin-right: 10px; }
+        .product-description h3 {
+            font-size: 1.2rem; font-weight: 600; border-left: 4px solid #2c5234;
+            padding-left: 10px; margin-bottom: 1rem;
+        }
+        .product-description p { font-size: 1rem; line-height: 1.8; color: #555; }
         .action-buttons {
-            margin-top: auto; 
-            padding-top: 1.5rem;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 1rem;
+            margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #eee;
+            display: flex; gap: 1rem;
         }
         .action-buttons .btn {
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: bold;
-            flex-grow: 1;
-            transition: all 0.3s;
+            padding: 1rem 1.5rem; border-radius: 8px; text-decoration: none; text-align: center;
+            font-size: 1.1rem; font-weight: bold; flex-grow: 1; transition: all 0.3s;
         }
-        .btn-add-to-cart {
-            background-color: #2c5234;
-            color: white;
+        .btn-add-to-cart { background-color: #2c5234; color: white; }
+        .btn-add-to-cart:hover { background-color: #3a6b45; }
+        .btn-back { background-color: #f0f0f0; color: #555; border: 1px solid #ddd; }
+        .btn-back:hover { background-color: #e0e0e0; }
+        .comment-section-container {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
-        .btn-add-to-cart:hover {
-            background-color: #3a6b45;
+        .comment-section-container h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 1rem;
         }
-        .btn-back {
-             background-color: #f0f0f0;
-             color: #555;
-             border: 1px solid #ddd;
+        .comment-item {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #f0f0f0;
         }
-        .btn-back:hover {
-            background-color: #e0e0e0;
+        .comment-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
         }
+        .comment-avatar { font-size: 2.5rem; color: #ccc; }
+        .comment-body { flex: 1; }
+        .comment-author { font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .comment-meta { font-size: 0.85rem; color: #999; margin-bottom: 0.75rem; }
+        .comment-rating .fa-star { color: #ffc107; }
+        .comment-content { color: #555; line-height: 1.7; }
+        .comment-form-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        .star-rating {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .star-rating .fa-star {
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .star-rating .fa-star:hover,
+        .star-rating .fa-star.hover {
+            color: #ffdd87;
+        }
+        .star-rating .fa-star.selected {
+            color: #ffc107;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid transparent;
+            border-radius: .75rem;
+            font-size: 1rem;
+        }
+        .alert-success {
+            color: #0f5132;
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+        }
+        .alert-danger {
+            color: #842029;
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+        }
+        /* 新增登入提示樣式 */
+        .alert-info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+        
+        .btn-primary {
+        	width: 100px;
+        	color: white;
+        }
+        
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -173,81 +169,174 @@
 </head>
 <body>
 
-<!-- <div th:replace="~{index :: header}"></div> -->
+<div class="container-wrapper">
 
-<div class="product-detail-container" th:if="${pro != null}">
-    <!-- 商品圖片區 -->
-    <div class="product-image-gallery">
-        <div class="main-image-wrapper">
-            <img id="mainProductImage" class="main-image" 
-                 th:src="${pro.proImage != null ? '/product-image/' + pro.proImage.proImgId : '/images/default_product.png'}" 
-                 alt="商品主圖"/>
+    <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+    <div class="product-detail-container" th:if="${pro != null}">
+        <!-- ... (商品圖片和資訊區塊保持不變) ... -->
+        <div class="product-image-gallery">
+            <div class="main-image-wrapper">
+                <img id="mainProductImage" class="main-image" 
+                     th:src="${pro.proImage != null ? '/product-image/' + pro.proImage.proImgId : '/images/default_product.png'}" 
+                     alt="商品主圖"/>
+            </div>
+            <div class="thumbnail-list" th:if="${productImages != null and !productImages.isEmpty()}">
+                <div th:each="img, iterStat : ${productImages}" class="thumbnail-item" 
+                     th:classappend="${iterStat.index == 0} ? 'active' : ''"
+                     th:attr="data-large-src=@{/product-image/{id}(id=${img.proImgId})}"
+                     onclick="changeImage(this)">
+                    <img th:src="@{/product-image/{id}(id=${img.proImgId})}" alt="商品縮圖"/>
+                </div>
+            </div>
         </div>
-        
-        <div class="thumbnail-list" th:if="${productImages != null and !productImages.isEmpty()}">
-            <div th:each="img, iterStat : ${productImages}" class="thumbnail-item" 
-                 th:classappend="${iterStat.index == 0} ? 'active' : ''"
-                 th:attr="data-large-src=@{/product-image/{id}(id=${img.proImgId})}"
-                 onclick="changeImage(this)">
-                <img th:src="@{/product-image/{id}(id=${img.proImgId})}" alt="商品縮圖"/>
+        <div class="product-content">
+            <div>
+                <div class="product-category" th:text="${pro.procateId?.proCateName}">商品類別</div>
+                <h1 class="product-title" th:text="${pro.proName}">商品名稱</h1>
+                <p class="farmer-info">由 
+                    <a th:if="${pro.fmemId != null}" 
+                       th:href="@{/mem/farmerStoreProd(fmemId=${pro.fmemId.fmemId})}" 
+                       th:text="${pro.fmemId.fmemName}">小農姓名</a>
+                    <span th:if="${pro.fmemId == null}">匿名小農</span> 提供
+                </p>
+            </div>
+            <div class="product-price-detail" th:text="${pro.proPrice}">999</div>
+            <div class="product-meta">
+                <p><strong>產地</strong> <span th:text="${pro.proFrom}">台灣</span></p>
+                <p><strong>庫存</strong> <span th:text="${pro.proStock}">100</span> 件</p>
+            </div>
+            <div class="product-description">
+                <h3>商品介紹</h3>
+                <p th:text="${pro.proDes ?: '此商品目前沒有詳細介紹。'}">這裡是商品的詳細介紹文字。</p>
+            </div>
+            <div class="action-buttons">
+                <a href="#" class="btn btn-add-to-cart"><i class="fa-solid fa-cart-shopping"></i> 加入購物車</a>
+                <a th:href="@{/mall/products}" class="btn btn-back">返回商城</a>
             </div>
         </div>
     </div>
 
-    <!-- 商品資訊區 -->
-    <div class="product-content">
-        <div>
-            <div class="product-category" th:text="${pro.procateId?.proCateName}">商品類別</div>
-            <h1 class="product-title" th:text="${pro.proName}">商品名稱</h1>
-            <p class="farmer-info">由 
-                <a th:if="${pro.fmemId != null}" 
-                   th:href="@{/mem/farmerStoreProd(fmemId=${pro.fmemId.fmemId})}" 
-                   th:text="${pro.fmemId.fmemName}">小農姓名</a>
-                <span th:if="${pro.fmemId == null}">匿名小農</span> 提供
-            </p>
-        </div>
-        
-        <div class="product-price-detail" th:text="${pro.proPrice}">999</div>
+    <div th:if="${pro == null}" style="text-align:center; padding: 5rem;">
+        <h2>找不到該商品</h2>
+        <a th:href="@{/mall/products}">返回商城</a>
+    </div>
 
-        <div class="product-meta">
-            <p><strong>產地</strong> <span th:text="${pro.proFrom}">台灣</span></p>
-            <p><strong>庫存</strong> <span th:text="${pro.proStock}">100</span> 件</p>
-        </div>
-        
-        <div class="product-description">
-            <h3>商品介紹</h3>
-            <p th:text="${pro.proDes ?: '此商品目前沒有詳細介紹。'}">這裡是商品的詳細介紹文字。</p>
+    <div class="comment-section-container" th:if="${pro != null}">
+        <h2>商品評價</h2>
+
+        <div class="comment-list" th:if="${not #lists.isEmpty(comments)}">
+            <div class="comment-item" th:each="comment : ${comments}">
+                <div class="comment-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="comment-body">
+                    <div class="comment-author" th:text="'會員 ' + ${comment.memId}">會員 1</div>
+                    <div class="comment-meta">
+                        <span class="comment-rating">
+                            <!-- 【重要】修改此處的星星顯示邏輯 -->
+                            <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                <i th:if="${i <= comment.proComRate}" class="fas fa-star"></i>
+                                <i th:if="${i > comment.proComRate}" class="far fa-star"></i>
+                            </th:block>
+                        </span>
+                        <span class="comment-date" th:text="${#temporals.format(comment.proComTime, 'yyyy-MM-dd HH:mm')}">2025-10-17 20:00</span>
+                    </div>
+                    <p class="comment-content" th:text="${comment.proComContent}">這是很棒的商品！</p>
+                </div>
+            </div>
         </div>
 
-        <div class="action-buttons">
-            <a href="#" class="btn btn-add-to-cart"><i class="fa-solid fa-cart-shopping"></i> 加入購物車</a>
-            <a th:href="@{/mall/products}" class="btn btn-back">返回商城</a>
+        <div th:if="${#lists.isEmpty(comments)}">
+            <p>此商品目前還沒有任何評論。</p>
+        </div>
+
+        <div class="comment-form-section">
+            <!-- 【重要】根據登入狀態顯示不同內容 -->
+            <div th:if="${isUserLoggedIn}">
+                <h3>發表您的評論</h3>
+                <form th:action="@{/mall/product/comment/save}" th:object="${newComment}" method="post">
+                    <input type="hidden" name="proId" th:value="${pro.proId}" />
+                    <input type="hidden" th:field="*{proId}" th:value="${pro.proId}" />
+                    <input type="hidden" id="ratingInput" th:field="*{proComRate}" required />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">您的評分</label>
+                        <div class="star-rating" id="starRating">
+                            <i class="fas fa-star" data-value="1"></i>
+                            <i class="fas fa-star" data-value="2"></i>
+                            <i class="fas fa-star" data-value="3"></i>
+                            <i class="fas fa-star" data-value="4"></i>
+                            <i class="fas fa-star" data-value="5"></i>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="proComContent" class="form-label">您的評論內容</label>
+                        <textarea class="form-control" id="proComContent" rows="4" th:field="*{proComContent}" required placeholder="分享您對此商品的看法..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-add-to-cart">送出評論</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
-<!-- 商品不存在時的提示 -->
-<div th:if="${pro == null}" style="text-align:center; padding: 5rem;">
-    <h2>找不到該商品</h2>
-    <a th:href="@{/mall/products}">返回商城</a>
-</div>
-
-<!-- <div th:replace="~{index :: footer}"></div> -->
 
 <script>
     function changeImage(thumbnailElement) {
         const mainImage = document.getElementById('mainProductImage');
         const newImageSrc = thumbnailElement.getAttribute('data-large-src');
-        
         mainImage.src = newImageSrc;
-
         const allThumbnails = document.querySelectorAll('.thumbnail-item');
         allThumbnails.forEach(item => item.classList.remove('active'));
-        
         thumbnailElement.classList.add('active');
     }
-</script>
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const starRatingContainer = document.getElementById('starRating');
+        if (starRatingContainer) {
+            const stars = starRatingContainer.querySelectorAll('.fa-star');
+            const ratingInput = document.getElementById('ratingInput');
+
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function() {
+                    resetStars();
+                    const value = this.dataset.value;
+                    for (let i = 0; i < value; i++) {
+                        stars[i].classList.add('hover');
+                    }
+                });
+
+                star.addEventListener('mouseout', function() {
+                    resetStars();
+                    const selectedValue = ratingInput.value;
+                    if (selectedValue) {
+                        highlightStars(selectedValue);
+                    }
+                });
+
+                star.addEventListener('click', function() {
+                    const value = this.dataset.value;
+                    ratingInput.value = value;
+                    highlightStars(value);
+                });
+            });
+
+            function resetStars() {
+                stars.forEach(s => s.classList.remove('hover', 'selected'));
+            }
+
+            function highlightStars(value) {
+                resetStars();
+                for (let i = 0; i < value; i++) {
+                    stars[i].classList.add('selected');
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>
 

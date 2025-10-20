@@ -55,13 +55,15 @@ public class PageController {
         Map<String, String[]> managementButtons = new LinkedHashMap<>();
         // 按鈕顯示文字, [連結路徑, 所需權限名稱]
         managementButtons.put("商城管理",   new String[]{"/pro/listAllPro",    "商城管理"});
-        managementButtons.put("活動管理",   new String[]{"#",                 "活動管理"}); // 連結暫時設為 #
-        managementButtons.put("金流管理",   new String[]{"#",                 "金流管理"}); // 連結暫時設為 #
-        managementButtons.put("會員管理",   new String[]{"#",                 "會員管理"}); // 連結暫時設為 #
-        managementButtons.put("折價券管理", new String[]{"#",                 "折價券管理"}); // 連結暫時設為 #
-        managementButtons.put("QA 管理",    new String[]{"/qa/list",          "QA管理"});
+        managementButtons.put("活動管理",   new String[]{"#",                 "活動管理"}); 
+        managementButtons.put("廣告管理",    new String[]{"/admin/proAd/list","廣告管理"}); 
+        managementButtons.put("金流管理",   new String[]{"#",                 "金流管理"}); 
+        managementButtons.put("會員管理",   new String[]{"/admin/mem-management","會員管理"}); 
+        managementButtons.put("折價券管理", new String[]{"/admin/coupon/manage","折價券管理"});
         managementButtons.put("最新消息管理",    new String[]{"/news",          "最新消息管理"});
-        
+        managementButtons.put("QA 管理",    new String[]{"/qa/list",          "QA管理"});
+
+
         model.addAttribute("adminName", loggedInAdmin.getAdminName());
         model.addAttribute("permissions", permissions);
         model.addAttribute("managementButtons", managementButtons); // 將按鈕對應表傳給前端

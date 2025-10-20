@@ -1,6 +1,7 @@
 package com.farmtastic.news.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.news.model.News;
 import com.farmtastic.news.model.NewsService;
 
@@ -19,7 +22,43 @@ public class Newscontroller {
 
 	@Autowired
 	private NewsService newsService;
+	
+	@Autowired
+	private FmemService fmemService;
+	
+	
+	//==========================================
+//    * 顯示發送訊息給小農的表單頁面
+//    * @param model 用於將空的 News 物件和所有小農列表綁定到表單
+//    * @return 發送訊息表單的模板名稱
+  
+    
+   @GetMapping("/showSendMessageForm")
+   public String showSendMessageForm(Model model) {
+       News news = new News();
+       // 從 FarmerService 取得所有小農的列表
+       List<Fmem> allFarmers = fmemService.getAll();
 
+       model.addAttribute("news", news);
+       // 將小農列表傳遞給前端
+       model.addAttribute("allFarmers", allFarmers);
+       return "back_end/logined/admin/news/message_to_farmer";
+   }
+
+   /**
+    * 儲存發送給小農的訊息 (此方法不需修改，Spring 會自動綁定 farmer)
+    * @param news 從表單綁定的 News 物件 (包含指定的 farmer)
+    * @return 重定向到消息列表頁面
+    */
+   @PostMapping("/sendMessageToFarmer")
+   public String sendMessageToFarmer(@ModelAttribute("news") News news) {
+       // 自動將狀態設定為 0 (小農)
+       news.setNewsStatus(0);
+       newsService.saveNews(news);
+       return "redirect:/news";
+   }
+	
+   	//=============================================
 	/**
 	 * 顯示所有最新消息列表
 	 * 
@@ -29,7 +68,7 @@ public class Newscontroller {
 	@GetMapping("/news")
 	public String viewHomePage(Model model) {
 		model.addAttribute("listNews", newsService.getAllNews());
-		return "front_end/customer/unlogined/news/news_list";
+		return "back_end/logined/admin/news/news_list";
 	}
 
 	/**
@@ -70,7 +109,7 @@ public class Newscontroller {
 		News news = newsService.getNewsById(id);
 		// 將 News 設定為 model attribute 來預填表單
 		model.addAttribute("news", news);
-		return "front_end/customer/unlogined/news/edit_news";
+		return "back_end/logined/admin/news/edit_news";
 	}
 
 	/**
@@ -107,7 +146,7 @@ public class Newscontroller {
     public String showFarmerNews(Model model) {
         // 狀態 0 代表「小農」
         model.addAttribute("farmerNewsList", newsService.getNewsByStatus(0));
-        return "for_f_news";
+        return "front_end/farmer/logined/fmemnews/for_f_news";
     }
     
     @GetMapping("/forcusnews")
