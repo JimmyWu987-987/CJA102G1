@@ -269,8 +269,9 @@ div.dataTables_wrapper {
 
 								<div th:if="${proOrderVO.proOrdStatus == 3}">
 									<form method="post"
-										th:action="@{/mem/proorders/listOneProOrder}">
+										th:action="@{/mem/proorders/procom/add}">
 										<input type="submit" value="評論">
+										<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}">
 									</form>
 								</div>
 
