@@ -45,7 +45,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
-//@Validated    //1019
 @RequestMapping("/fmem/act")
 @SessionAttributes({"sessionFmemAct"})
 public class FmemActController {

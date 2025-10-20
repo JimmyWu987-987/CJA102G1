@@ -4,8 +4,9 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.farmtastic.act.enums.LaunStat;
-import com.farmtastic.act.enums.RegStat;
 import com.farmtastic.act.model.Act;
 
 import jakarta.persistence.Column;
@@ -28,15 +29,19 @@ public class Ses {
 	@Column(name = "ses_id")
 	private Integer sesId;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "ses_date", nullable = false)
 	private Date sesDate;
 	
+	@DateTimeFormat(pattern = "HH:mm")
 	@Column(name = "ses_start", nullable = false)
 	private Time sesStart;
 	
+	@DateTimeFormat(pattern = "HH:mm")
 	@Column(name = "ses_end", nullable = false)
 	private Time sesEnd;
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "reg_end", nullable = false)
 	private Date regEnd;
 	
@@ -195,6 +200,10 @@ public class Ses {
 	
 	public Act getAct() { // 如果沒有Lombok, 需手動加入
 	    return act;
+	}
+	
+	public void setAct(Act act) {
+	    this.act = act;
 	}
 	
 	// 取得報名狀態
