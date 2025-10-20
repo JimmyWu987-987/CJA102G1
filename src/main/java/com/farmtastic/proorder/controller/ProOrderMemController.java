@@ -130,7 +130,7 @@ public class ProOrderMemController {
 	@PostMapping("updatestatus")
 	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
 			@RequestParam("proOrdStatus") Integer proOrdStatus,
-			@RequestParam("proOrdComm") String proOrdComm,
+			@RequestParam(value="proOrdComm",required = false) String proOrdComm,
 			ModelMap model, RedirectAttributes redirectAttributes,
 			HttpSession session) {
 
@@ -179,7 +179,7 @@ public class ProOrderMemController {
 				break;
 			} else {
 				String originalComm = proOrderVO.getProOrdComm();
-				String finalComm = originalComm+"退貨原因[ "+proOrdComm+" ]。";
+				String finalComm = originalComm+"----退貨原因[ "+proOrdComm+" ]。";
 				
 				proOrderVO.setProOrdComm(finalComm);
 				redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
