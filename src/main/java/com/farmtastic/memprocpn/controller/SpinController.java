@@ -1,7 +1,9 @@
 package com.farmtastic.memprocpn.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.memprocpn.model.SpinServiceImp;
+import com.farmtastic.procpn.model.ProCpnVO;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -27,6 +30,25 @@ public class SpinController {
 	@GetMapping
 	public String showSpinPage() {
 		return "front_end/customer/logined/memcpn/Spin";
+	}
+
+	/**
+	 * 取得目前抽獎券清單（供前端初始化 flowerMap）
+	 */
+	@GetMapping("/list")
+	@ResponseBody
+	public List<Map<String, Object>> getLotteryCoupons() {
+		// 從 service 層取得抽獎券池
+		List<ProCpnVO> lotteryCoupons = spinService.getLotteryCoupons();
+
+		return lotteryCoupons.stream().map(c -> {
+			Map<String, Object> item = new HashMap<>();
+			item.put("name", c.getCpnName());
+			item.put("discValue", c.getDiscValue());
+			item.put("desc", c.getCpnDesc());
+			item.put("validDays", c.getValidDays());
+			return item;
+		}).collect(Collectors.toList());
 	}
 
 	// 抽獎發券 API
