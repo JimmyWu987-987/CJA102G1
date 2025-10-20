@@ -108,6 +108,10 @@ public class MemService {
 		return repository.findByMemAcc(memAcc);
 	}
 	
+	public Mem getOneByMemAccAndAuthProvider(String memAcc, AuthProvider authProvider) {
+		return repository.findByMemAccAndAuthProvider(memAcc, authProvider);
+	}
+	
 	public Mem getOneByMemId(Integer memId) {
 		return repository.findById(memId).orElse(null);
 	}

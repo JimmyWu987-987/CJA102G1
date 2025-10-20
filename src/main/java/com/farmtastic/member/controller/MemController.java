@@ -352,13 +352,13 @@ public class MemController {
 	@GetMapping("/verifyEmail")
 	public String verifyEmail(@RequestParam("code") String code, ModelMap model, RedirectAttributes redirectAttrs) {
 
-		String memAcc = redisSvc.getMemAccByCode(code);
+		String memAcc = redisSvc.getMemEmailByCode(code);
 		if (memAcc == null) {
 			model.addAttribute("fail", "驗證碼失效或不存在");
 			return "redirect:/";
 		}
 
-		Mem mem = memSvc.getOneByMemAcc(memAcc);
+		Mem mem = memSvc.getOneByMemAccAndAuthProvider(memAcc, AuthProvider.LOCAL);
 		if (mem != null) {
 			mem.setAccStatus((byte) 1);
 			memSvc.updateMem(mem);
@@ -436,13 +436,13 @@ public class MemController {
 	public String resetPasswordPage(@RequestParam("code") String code, ModelMap model, RedirectAttributes redirectAttrs,
 			HttpSession session) {
 
-		String memAcc = redisSvc.getMemAccByCode(code);
+		String memAcc = redisSvc.getMemEmailByCode(code);
 		if (memAcc == null) {
 			redirectAttrs.addFlashAttribute("fail", "驗證碼失效或不存在");
 			return "redirect:/mem/forgetPasswordPage";
 		}
 
-		Mem memForResetPwd = memSvc.getOneByMemAcc(memAcc);
+		Mem memForResetPwd = memSvc.getOneByMemAccAndAuthProvider(memAcc, AuthProvider.LOCAL);
 		if (memForResetPwd != null) {
 			model.addAttribute("memForResetPwd", memForResetPwd);
 			model.addAttribute("updatePasswordMem", new UpdatePasswordMem());

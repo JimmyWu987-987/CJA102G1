@@ -506,7 +506,7 @@ insert into ses values (null, '2025-08-08', '15:00', '17:30', '2025-08-01',  5, 
 DROP TABLE IF EXISTS mem;
 CREATE TABLE mem (
 	mem_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	mem_acc varchar(40) NOT NULL UNIQUE,
+	mem_acc varchar(40) NOT NULL,
 	mem_pwd varchar(100) NULL,
 	acc_status tinyint NOT NULL DEFAULT 0,
 	mem_name varchar(20) NOT NULL,
