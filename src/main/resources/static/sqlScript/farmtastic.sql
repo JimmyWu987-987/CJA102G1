@@ -448,38 +448,35 @@ create table ses (
  ses_date			date not null,
  ses_start			time not null,
  ses_end			time not null,
- reg_start			date not null,
  reg_end			date not null,
  minppl				int not null default 1,
  maxppl				int not null,
  ses_fee			int not null,
- notice				int not null default 1,
  ses_launstat		tinyint not null default 0,
  ses_launupd		datetime,
- reg_stat			tinyint not null default 0,
+ reg_stat			tinyint not null default 5,
  headcount			int default 0,
  act_id				int not null,
  constraint ses_act_id_fk foreign key (act_id) references act (act_id),
- constraint ses_ses_id_pk primary key (ses_id));																									/* 0現正報名中 1成團 2不成團.取消*/
-																																/* 0下 1上*/	    /* 3場次異動.需再確認是否成團 4取消場次 5場次已圓滿結束 6結案 */		
-                    /* (場次id, 場次date, 開始時間, 結束時間, 開始報名date, 報名截止(確認是否成團)date, 人數下限, 人數上限, 報名費, 行前通知, 場次狀態, 場次狀態更新時間, 報名狀態, 報名人數, 活動id)*/
+ constraint ses_ses_id_pk primary key (ses_id));																									/* 0報名中 1成團 2不成團、取消場次*/
+																													/* 0下 1上*/	   				/* 3已完成場次 4取消場次 5尚未開始報名(因為未上架) */		
+                    /* (場次id, 場次date, 開始時間, 結束時間, 報名截止(確認是否成團)date, 人數下限, 人數上限, 報名費, 場次狀態, 場次狀態更新時間, 報名狀態, 報名人數, 活動id)*/
 						/*目前是1.3.4有上架過可以寫場次, 4只能寫已結束的*/
  
- 					   /*圓滿結束*/
-insert into ses values (null, '2025-08-08', '15:00', '17:30', '2025-07-01', '2025-08-01',  5, 20, 230, 3, 0, '2025-08-08 17:30:00', 5, 18, 1),
+ 					   /*圓滿結束 */
+insert into ses values (null, '2025-08-08', '15:00', '17:30', '2025-08-01',  5, 20, 230, 0, '2025-08-08 17:30:00', 3, null, 1),
 					   /*還在報名中...這邊我有修改上架狀態更新時間&修正場次狀態*/
-					   (null, '2025-10-10', '14:00', '16:30', '2025-08-25', '2025-10-01',  5, 20, 200, 3, 1, '2025-08-11 14:10:09', 0, 10, 1),
-                       /*不成團, 取消...這邊我有修改上架狀態跟人數 (確定取消的話人數應要歸0? 這樣後台才不會用金額成以人數結果撥款過來? 是不是應該要以場次算啊) */
-                       (null, '2025-03-20', '10:30', '11:30', '2025-01-20', '2025-03-10',  5, 15, 399, 2, 0, '2025-03-10 00:00:00', 2, 0, 3),
-					   /* 場次有異動, 還未確認是否成團*/                       
-                       (null, '2025-10-05', '15:00', '16:00', '2025-08-10', '2025-09-20',  5, 15, 449, 2, 1, '2025-08-05 00:00:00', 3, 4, 3),
+					   (null, '2025-10-10', '14:00', '16:30', '2025-10-01',  5, 20, 200, 1, '2025-08-11 14:10:09', 0, null, 1),
+                       /*不成團, 取消 */
+                       (null, '2025-03-20', '10:30', '11:30', '2025-03-10',  5, 15, 399, 0, '2025-03-10 00:00:00', 2, null, 3),
+					   /* 報名中 */                       
+                       (null, '2025-10-05', '15:00', '16:00', '2025-09-20',  5, 15, 449, 1, '2025-08-05 00:00:00', 0, null, 3),
                        /* 場次取消 (10/7有地震導致部分設施要維修、直接取消) */
-                       (null, '2025-10-10', '16:30', '17:30', '2025-08-25', '2025-10-01', 10, 20, 499, 3, 0, '2025-10-07 00:00:00', 4, 0, 3),
-                       /* 結案 */
-                       (null, '2025-06-05', '14:00', '16:30', '2025-04-25', '2025-05-25', 15, 30, 700, 3, 1, '2025-06-30 00:00:00', 6, 25, 4),
+                       (null, '2025-10-10', '16:30', '17:30', '2025-10-01', 10, 20, 499, 0, '2025-10-07 00:00:00', 4, null, 3),
+                       /* 圓滿結束 */
+                       (null, '2025-06-05', '14:00', '16:30', '2025-05-25', 15, 30, 700, 1, '2025-06-30 00:00:00', 3, null, 4),
                        /* 成團, 活動尚未進行 */
-                       (null, '2025-09-10', '14:00', '16:30', '2025-07-20', '2025-09-01',  5, 15, 200, 3, 1, '2025-09-01 00:00:00', 1, 11, 1);
-
+                       (null, '2025-09-10', '14:00', '16:30', '2025-09-01',  5, 15, 200, 1, '2025-09-01 00:00:00', 1, null, 1);
 
 -- 刪除/建立 活動廣告
 
@@ -1369,3 +1366,17 @@ FOREIGN KEY (admin_func_id) REFERENCES admin_function(admin_func_id);
 ALTER TABLE act_ad
 ADD CONSTRAINT act_ad_act_FK FOREIGN KEY (act_id) REFERENCES act(act_id),
 ADD CONSTRAINT act_ad_fmem_ID_FK FOREIGN KEY (fmem_id) REFERENCES fmem(fmem_id);
+
+
+
+
+-- 動態抓相關資料進資料庫內
+SET SQL_SAFE_UPDATES = 0;
+UPDATE ses s
+SET s.headcount = (
+SELECT SUM(r.reg_count)
+FROM reg r
+WHERE r.ses_id = s.ses_id);
+
+
+
