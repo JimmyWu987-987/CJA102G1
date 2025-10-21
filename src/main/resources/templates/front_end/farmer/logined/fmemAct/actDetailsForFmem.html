@@ -13,6 +13,12 @@
     
 <!--     活動詳情專用 CSS -->
     <link rel="stylesheet" th:href="@{/css/act/actDetailsForFmem.css}">
+	<style>
+	.header-spacing {
+    	height: 30px; /* 根據開發者工具測量的精確數值 */
+	}
+    </style>
+    
 </head>
 <body>
 
@@ -20,7 +26,7 @@
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 <!-- ==================================== -->
 
-
+<div class="header-spacing"></div>
 <div class="container">
 <div class="main-content">
     <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
