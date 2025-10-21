@@ -205,7 +205,7 @@ body{
 </div>
 
 
-
+  
 
 </div>
 
@@ -250,13 +250,15 @@ document.getElementById('tw').addEventListener('load', function () {
 
       if (titleEl) titleEl.textContent = '縣市：' + city;
 
-      // 直接拿 Thymeleaf 片段（HTML），塞進 #fmemList
+      if (listEl) listEl.innerHTML = '<div style="padding:12px;">資料載入中…</div>';
+      
+      // 塞進 fmemList
       try {
         const resp = await fetch(`/twMap/farmersFragment?city=${encodeURIComponent(city)}`, { credentials: 'same-origin' });
         const html = await resp.text();
         if (listEl) listEl.innerHTML = html;
       } catch (e) {
-        if (listEl) listEl.innerHTML = '<div style="padding:12px;color:#64748b;">載入失敗</div>';
+        if (listEl) listEl.innerHTML = '<div style="padding:12px;color:#64748b;">系統忙線中</div>';
       }
     });
   });

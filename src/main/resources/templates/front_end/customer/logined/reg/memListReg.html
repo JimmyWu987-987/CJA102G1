@@ -572,6 +572,37 @@ window.addEventListener("load", function() {
 
 		}
 		
+		if (successMsg === "評論成功") {
+			Swal.fire({
+				icon : 'success',
+				title : successMsg,
+				text : "恭喜您活動順利完成!",
+				showConfirmButton : false,
+				customClass : {
+					icon : 'custom-icon',
+					popup : 'custom-swal',
+					title : 'custom-swal-title',
+					htmlContainer : 'custom-swal-content'
+				}
+			});
+
+		}
+		if (successMsg === "取消成功") {
+			Swal.fire({
+				icon : 'success',
+				title : successMsg,
+				text : "點數已退回，期待您的再次參與!",
+				showConfirmButton : false,
+				customClass : {
+					icon : 'custom-icon',
+					popup : 'custom-swal',
+					title : 'custom-swal-title',
+					htmlContainer : 'custom-swal-content'
+				}
+			});
+
+		}
+		
 	}
 });
 
