@@ -2,9 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>小農活動專區 - 建立活動 (最終修復版 V8)</title>
-<link rel="stylesheet" th:href="@{/css/main.css}">
-<link rel="stylesheet" th:href="@{/css/act/addAct.css}">
+<title>小農活動專區 - 建立活動</title>
+<link rel="icon" th:href="@{/images/logo.png}">
+
+<!-- ============================================ -->
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<!-- ============================================== -->
+
+<!-- <link rel="stylesheet" th:href="@{/css/main.css}"> -->
+<!-- <link rel="stylesheet" th:href="@{/css/act/addAct.css}"> -->
+
 <style>
 .error-message { color: red; font-size: 14px; margin-top: 5px; display: block; }
 .form-group { margin-bottom: 15px; }
@@ -20,6 +29,12 @@ input[type="text"], input[type="number"], input[type="date"], textarea {
 
 <body>
 
+<!-- =============================== -->
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+<!-- ==================================== -->
+
+
+<div class="container">
 <div class="act-add-container">
     <h1>建立活動</h1>
 
@@ -90,6 +105,15 @@ input[type="text"], input[type="number"], input[type="date"], textarea {
 
     </form>
 </div>
+</div>
+
+
+<!-- ==================================== -->
+<div th:replace="~{/front_end/index :: footer}"></div>
+<!-- ==================================== -->
+
+
+
 
 <script>
 // JavaScript 邏輯 (保留)

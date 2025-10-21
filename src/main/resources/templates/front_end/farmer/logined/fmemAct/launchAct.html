@@ -3,7 +3,14 @@
 <head>
 
 <meta charset="UTF-8">
-<title>小農活動專區 - 已過審活動一覽</title>
+<title>小農活動專區 - 活動上下架</title>
+<link rel="icon" th:href="@{/images/logo.png}">
+
+<!-- ============================================ -->
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<!-- ============================================== -->
 
 <style>
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -14,6 +21,13 @@
 </style>
 </head>
 <body>
+
+<!-- =============================== -->
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+<!-- ==================================== -->
+
+
+<div class = "container">
     <h1>活動上下架</h1>
 
 	
@@ -58,5 +72,11 @@
 		</tbody>
 	</table>
 </div>
+</div>
+
+
+<!-- ==================================== -->
+<div th:replace="~{/front_end/index :: footer}"></div>
+<!-- ==================================== -->
 </body>
 </html>
