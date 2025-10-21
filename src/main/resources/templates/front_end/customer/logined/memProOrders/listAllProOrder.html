@@ -299,7 +299,7 @@ div.dataTables_wrapper {
 
 								<div
 									th:if="${proOrderVO.proOrdStatus >=2 && proOrderVO.proOrdStatus <= 3}">
-									<form method="post" th:action="@{/mem/proorders/updatestatus}">
+									<form method="post" th:action="@{/mem/proorders/return}">
 										<input type="submit" value="退貨"> 
 										<input type="hidden" name="proOrdId" th:value="${proOrderVO.proOrdId}"> 
 										<input type="hidden" name="proOrdStatus" th:value="${proOrderVO.proOrdStatus}">
