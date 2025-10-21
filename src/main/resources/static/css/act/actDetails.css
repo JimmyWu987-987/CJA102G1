@@ -24,7 +24,7 @@
 /* ======================== 卡片區塊 (填滿 55% 容器) - 使用柔和色調 ======================== */
 .act-info, .ses-info {
     padding: 20px 40px;
-    background-color: #F7F4E9; /* 淺米色/淺褐色，柔和色調 */
+    background-color: #FFFDF5; 
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     width: 100%; 
@@ -78,23 +78,22 @@ h2.ses-title {
 /* ======================== 活動詳情專用按鈕 (取代 .btn) ======================== */
 .act-btn {
     display: inline-block;
-    /* 尺寸增大 1.5 倍 */
-    padding: 15px 30px; /* 從 10px/20px 增加到 15px/30px */
+    /* 尺寸再次加大 */
+    padding: 15px 30px; 
     background-color: #E6F0E6; /* 淺綠色 */
     color: #3E5C2A; /* 深綠色文字 */
     text-decoration: none;
     /* 圓角 */
-    border-radius: 20px; 
+    border-radius: 25px; /* 稍微增加圓角 */
     transition: 0.3s;
     border: 1px solid #3E5C2A; 
     cursor: pointer;
     /* 卡片質感：輕微陰影 */
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); 
     /* 文字加大 */
-    font-size: 1.3rem; /* 從 1.1rem 增加到 1.3rem */
+    font-size: 1.5rem; /* 顯著加大文字 */
     font-weight: bold;
     text-align: center;
-    /* 確保按鈕不會被表格文字內容擠壓變形 */
     white-space: nowrap; 
 }
 
