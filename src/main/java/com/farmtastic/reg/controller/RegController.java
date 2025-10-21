@@ -139,14 +139,30 @@ public class RegController {
 		return "redirect:/fmem/reg/list";
 	}
 	
-	// 小農改變訂單狀態(取消訂單)
+	// 小農改變訂單狀態 (取消訂單)
 	@PostMapping("fmem/reg/cancel")
 	public String cancelByFmemReg(@RequestParam Integer regId,
-	                        @RequestParam Integer regStat,
-	                        HttpSession session,
-	                        RedirectAttributes redirectAttributes) {
+	                              @RequestParam Integer regStat,
+	                              HttpSession session,
+	                              RedirectAttributes redirectAttributes) {
 
-	    regService.updateRegStat(regId, regStat); 
+	    RegVO reg = regService.getOne(regId);
+	    Mem mem = memSvc.getOneByMemId(reg.getMemId());
+
+	    int used = reg.getRegPointDisc() == null ? 0 : reg.getRegPointDisc(); // 使用的點數
+	    int reward = reg.getRegPointGet() == null ? 0 : reg.getRegPointGet(); // 贈送的點數
+	    int now = mem.getMemPoint() == null ? 0 : mem.getMemPoint();
+
+	    // 邏輯：加回使用的點數，扣掉贈送的點數
+	    mem.setMemPoint(Math.max(0, now + used - reward));
+	    memSvc.updateMem(mem);
+
+	    // 更新訂單狀態為取消
+	    reg.setRegStat(regStat);
+	    reg.setRegPointDisc(0);
+	    reg.setRegPointGet(0);
+	    regService.updatePayReg(reg);
+
 	    redirectAttributes.addFlashAttribute("success", "取消成功");
 	    return "redirect:/fmem/reg/list";
 	}
@@ -278,7 +294,7 @@ public class RegController {
 		if (regVO.getRegPointDisc() == null)
 			regVO.setRegPointDisc(0);
 
-		// 回傳 regId
+		// 回傳 regId(把資料帶入LinePay)
 		RegVO saved = regService.addRegAndReturn(regVO);
 		return "redirect:/mem/reg/pay?regId=" + saved.getRegId(); // 轉去付款
 	}
@@ -360,7 +376,7 @@ public class RegController {
 		memSvc.updateMem(mem);
 
 		session.setAttribute("loggedInMember", mem);
-
+		
 		   // ===== 寄信通知=====
 	    try {
 	        // 收件人
@@ -416,8 +432,25 @@ public class RegController {
 	                        @RequestParam Integer regStat, 
 	                        HttpSession session,
 	                        RedirectAttributes ra) {
-	    regService.updateRegStat(regId, regStat); // 將狀態改為 1(待退款)
-	    ra.addFlashAttribute("success", "已取消，待退款。");
+
+	    RegVO reg = regService.getOne(regId);
+	    Mem mem = memSvc.getOneByMemId(reg.getMemId());
+
+	    int used = reg.getRegPointDisc() == null ? 0 : reg.getRegPointDisc();
+	    int reward = reg.getRegPointGet() == null ? 0 : reg.getRegPointGet();
+	    int now = mem.getMemPoint() == null ? 0 : mem.getMemPoint();
+
+	    // 加回使用的點數，扣掉贈送的點數
+	    mem.setMemPoint(Math.max(0, now + used - reward));
+	    memSvc.updateMem(mem);
+
+	    // 狀態改為待退款
+	    reg.setRegStat(regStat);
+	    reg.setRegPointDisc(0);
+	    reg.setRegPointGet(0);
+	    regService.updatePayReg(reg);
+
+	    ra.addFlashAttribute("success", "取消成功");
 	    return "redirect:/mem/reg/list";
 	}
 
