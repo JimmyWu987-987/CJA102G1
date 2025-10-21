@@ -77,8 +77,8 @@
 	margin-left: 16px;
 }
 
-.list .k, .list .v { 
-white-space: nowrap; 
+.list .k, .list .v {
+	white-space: nowrap;
 }
 
 .function-btn {
@@ -116,44 +116,38 @@ white-space: nowrap;
 	transform: scale(1.1);
 }
 
-
 /* 評論彈窗區 */
 #commPopup, .commPopup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 999;
-  display: none;
-  justify-content: center;
-  align-items: center;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 999;
+	display: none;
+	justify-content: center;
+	align-items: center;
 }
-
 
 .advBox {
-  width: 500px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  font-size: 18px;
-  line-height: 1.8;
-  transform: translateX(100px);
+	width: 500px;
+	background: #fff;
+	border-radius: 10px;
+	padding: 20px;
+	font-size: 18px;
+	line-height: 1.8;
+	transform: translateX(100px);
 }
-
 
 .advBox h2 {
-  text-align: center;
-  font-size: 22px;
-  margin-bottom: 15px;
+	text-align: center;
+	font-size: 22px;
+	margin-bottom: 15px;
 }
-
 
 .advBox div {
-  margin: 6px 0;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 6px;
+	margin: 6px 0;
+	border-bottom: 2px solid #ccc;
+	padding-bottom: 6px;
 }
-
-
 
 .closeBtn {
 	position: absolute;
@@ -163,62 +157,74 @@ white-space: nowrap;
 	cursor: pointer;
 }
 
-
 /* 金額細項彈窗 */
-#amountPopup  {
+#amountPopup {
 	position: fixed;
 	inset: 0;
 	background: rgba(0, 0, 0, 0.4);
 	z-index: 999;
-	display:flex;
+	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-#amountPopup .advBox h2{
-  margin: 0 0 10px;
-  text-align: center;
+#amountPopup .advBox h2 {
+	margin: 0 0 10px;
+	text-align: center;
 }
 
-#amountPopup .advBox div{
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 6px 0;
-  font-size: 18px;
+#amountPopup .advBox div {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	padding: 6px 0;
+	font-size: 18px;
 }
 
-
-#amountPopup .advBox div span{
-  display: inline-block;
-  text-align: right;              
+#amountPopup .advBox div span {
+	display: inline-block;
+	text-align: right;
 }
 
 /* 折抵 */
-#amountPopup #amtCpn,
-#amountPopup #amtPoint{
-  color: #b02a37;
+#amountPopup #amtCpn, #amountPopup #amtPoint {
+	color: #b02a37;
 }
 
 /* 總計 */
-#amountPopup .advBox div:last-of-type{
-  border-top: 2px solid #ccc;  
-  border-bottom:none;
-  margin-top: 6px;
-  padding-top: 10px;
-  font-weight: 700;
+#amountPopup .advBox div:last-of-type {
+	border-top: 2px solid #ccc;
+	border-bottom: none;
+	margin-top: 6px;
+	padding-top: 10px;
+	font-weight: 700;
 }
 
 /* 訂單狀態顏色 */
-.badge-ok{background:#e6f4ea;color:#1e7e34}
-.badge-cancel{background:#fdecea;color:#b02a37}
-.badge-wait{background:#fff4e5;color:#b26a00}
-.badge-done{background:#e7f1ff;color:#0b5ed7}
-.badge-closed{background:#f0f0f0;color:#555}
+.badge-ok {
+	background: #e6f4ea;
+	color: #1e7e34
+}
 
+.badge-cancel {
+	background: #fdecea;
+	color: #b02a37
+}
 
+.badge-wait {
+	background: #fff4e5;
+	color: #b26a00
+}
 
+.badge-done {
+	background: #e7f1ff;
+	color: #0b5ed7
+}
 
+.badge-closed {
+	background: #f0f0f0;
+	color: #555
+}
 </style>
 </head>
 <body th:data-success="${success}">
@@ -232,197 +238,229 @@ white-space: nowrap;
 			<ul th:replace="~{/front_end/index :: memAreaLink}"></ul>
 		</div>
 
-		<div class="member-content" style="padding:20px;">
-		<h1 class="title">活動訂單管理</h1>
-	
+		<div class="member-content" style="padding: 20px;">
+			<h1 class="title">活動訂單管理</h1>
+
 
 			<div>
-			<select id="filterStat" style="font-size: 20px; margin: 10px 0 10px 0; padding-left: 5px;">
-			    <option value="">訂單狀態</option>
-			    <option value="0" class="badge-ok">報名成立(已付款)</option>
-			    <option value="1" class="badge-cancel">取消報名(待退款)</option>
-			    <option value="2" class="badge-wait">已退款</option>
-			    <option value="3" class="badge-done">活動已完成</option>
-			  </select>
+				<select id="filterStat"
+					style="font-size: 20px; margin: 10px 0 10px 0; padding-left: 5px;">
+					<option value="">訂單狀態</option>
+					<option value="0" class="badge-ok">報名成立(已付款)</option>
+					<option value="1" class="badge-cancel">取消報名(待退款)</option>
+					<option value="2" class="badge-wait">已退款</option>
+					<option value="3" class="badge-done">活動已完成</option>
+				</select>
 			</div>
 
 			<div class="reg-area">
-            <div class="reg-list">
-  <div class="reg-box" th:each="r : ${listReg}" th:attr="data-stat=${r.regStat}">
-	<h2 style="margin:0;">
-	  訂單編號：
-	  <span th:text="|#ACT102${#numbers.formatInteger((r.regId % 100), 2)}|">#ACT10201</span>
-	</h2>
+				<div class="reg-list">
+					<div class="reg-box" th:each="r : ${listReg}"
+						th:attr="data-stat=${r.regStat}">
+						<h2 style="margin: 0;">
+							訂單編號： <span
+								th:text="|#ACT102${#numbers.formatInteger((r.regId % 100), 2)}|">#ACT10201</span>
+						</h2>
 
-    <div>
-      下單時間：
-      <span th:text="${#dates.format(r.regAt,'yyyy-MM-dd HH:mm')}">114-10-25 12:00:00</span>
+						<div>
+							下單時間： <span
+								th:text="${#dates.format(r.regAt,'yyyy-MM-dd HH:mm')}">114-10-25
+								12:00:00</span> <span style="margin-left: 20px;">訂單狀態： <span
+								th:switch="${r.regStat}"> <span th:case="0"
+									class="badge-ok">報名成立(已付款)</span> <span th:case="1"
+									class="badge-cancel">取消報名(待退款)</span> <span th:case="2"
+									class="badge-wait">已退款</span> <span th:case="3"
+									class="badge-done">活動已完成</span> <span th:case="4"
+									class="badge-done">活動已完成</span> <span th:case="5"
+									class="badge-done">活動已完成</span>
+							</span>
+							</span>
 
-     <span style="margin-left:20px;">訂單狀態：
-		  <span th:switch="${r.regStat}">
-		    <span th:case="0" class="badge-ok">報名成立(已付款)</span>
-		    <span th:case="1" class="badge-cancel">取消報名(待退款)</span>
-		    <span th:case="2" class="badge-wait">已退款</span>
-		    <span th:case="3" class="badge-done">活動已完成</span>
-		    <span th:case="4" class="badge-done">活動已完成</span>
-		    <span th:case="5" class="badge-done">活動已完成</span>
-		  </span>
-	</span>
+							<!-- 活動完成時才顯示 -->
+							<!-- 有評語或回覆才顯示按鈕？如果你要完成才可點，也可加 regStat 判斷 -->
+							<button class="function-btn btnComment" type="button"
+								th:if="${r.regStat==3 or r.regStat==4 or r.regStat==5}">
+								查看評價 / 給予評價</button>
 
-      <!-- 活動完成時才顯示 -->
-		<!-- 有評語或回覆才顯示按鈕？如果你要完成才可點，也可加 regStat 判斷 -->
-<button class="function-btn btnComment" type="button"
-        th:if="${r.regStat==3 or r.regStat==4 or r.regStat==5}">
-  查看評價 / 給予評價
-</button>
+							<!-- 評價彈窗 -->
+							<div class="commPopup" style="display: none;">
+								<div class="advBox" style="position: relative;">
+									<span class="closeComm closeBtn">×</span>
+									<h2>評價詳細資訊</h2>
 
-<!-- 評價彈窗 -->
-<div class="commPopup" style="display:none;">
-  <div class="advBox" style="position:relative;">
-    <span class="closeComm closeBtn">×</span>
-    <h2>評價詳細資訊</h2>
+									<div>
+										<b>評價時間：</b> <span
+											th:text="${r.actCommat != null ? #dates.format(r.actCommat,'yyyy-MM-dd HH:mm') : '未評價'}">未評價</span>
+									</div>
 
-    <div><b>評價時間：</b>
-      <span th:text="${r.actCommat != null ? #dates.format(r.actCommat,'yyyy-MM-dd HH:mm') : '未評價'}">未評價</span>
-    </div>
+									<div>
+										<b>評分：</b> <span
+											th:text="${r.actRate != null ? r.actRate + '⭐' : '未評價'}">未評價</span>
+									</div>
 
-    <div><b>評分：</b>
-      <span th:text="${r.actRate != null ? r.actRate + '⭐' : '未評價'}">未評價</span>
-    </div>
+									<div>
+										<b>評語：</b> <span
+											th:text="${!#strings.isEmpty(r.actComm) ? r.actComm : '未評價'}">未評價</span>
+									</div>
 
-    <div><b>評語：</b>
-      <span th:text="${!#strings.isEmpty(r.actComm) ? r.actComm : '未評價'}">未評價</span>
-    </div>
+									<div>
+										<b>小農回覆：</b> <span
+											th:text="${!#strings.isEmpty(r.actCommReply) ? r.actCommReply : '無回覆'}">無回覆</span>
+									</div>
 
-    <div>
-      <b>小農回覆：</b>
-      <span th:text="${!#strings.isEmpty(r.actCommReply) ? r.actCommReply : '無回覆'}">無回覆</span>
-    </div>
+									<!-- 消費者「尚未評價」才可填-->
+									<form
+										th:if="${(r.actRate == null or r.actRate == 0) 
+              							and #strings.isEmpty(#strings.trim(r.actComm))}"
+										th:action="@{/mem/act/comm/rate}" method="post"
+										onsubmit="return confirm('送出後將無法更改，確定提交嗎？');">
+										<input type="hidden" name="regId" th:value="${r.regId}">
 
-    <!-- 消費者「尚未評價」才可填-->
-    <form th:if="${(r.actRate == null or r.actRate == 0) 
-              and #strings.isEmpty(#strings.trim(r.actComm))}"
-      th:action="@{/mem/act/comm/rate}" method="post"
-      onsubmit="return confirm('送出後將無法更改，確定提交嗎？');">
-      <input type="hidden" name="regId" th:value="${r.regId}">
+										<label><b>評分：</b></label> <select name="actRate" required>
+											<option value="" disabled selected>請選擇</option>
+											<option value="1">1⭐</option>
+											<option value="2">2⭐</option>
+											<option value="3">3⭐</option>
+											<option value="4">4⭐</option>
+											<option value="5">5⭐</option>
+										</select> 
+										<label style="display: block; margin-top: 6px;"><b>評語：</b></label>
+										<textarea name="actComm" rows="4" maxlength="100"
+											placeholder="給予評論!"
+											style="width: 100%; box-sizing: border-box; padding: 8px;">
+										</textarea>
 
-      <label><b>評分：</b></label>
-      <select name="actRate" required>
-        <option value="" disabled selected>請選擇</option>
-        <option value="1">1⭐</option>
-        <option value="2">2⭐</option>
-        <option value="3">3⭐</option>
-        <option value="4">4⭐</option>
-        <option value="5">5⭐</option>
-      </select>
-
-      <label style="display:block;margin-top:6px;"><b>評語：</b></label>
-      <textarea name="actComm" rows="4" maxlength="100"
-                placeholder="給予評論!"
-                style="width:100%;box-sizing:border-box;padding:8px;"></textarea>
-
-      <div style="text-align:center;margin-top:8px;">
-        <button type="submit" class="function-btn">送出</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-
-    </div>
-
-    <div style="font-size:20px;margin-top:5px;">
-      報名人數：<span th:text="${r.regCount}">2</span> 👨🏻‍💼
-    </div>
-
-    <br>
-
-    <div class="info">
-      <div class="box">
-        <h4>活動資訊</h4>
-        <ul class="list"
-		    th:with="
-		      filtered=${extras.?[regId == #vars.r.regId]},
-		      x=${filtered[0]},
-		      name=${x.actName},
-		      dateStr=${#dates.format(x.sesDate,'yyyy-MM-dd')},
-		      timeStr=${#dates.format(x.sesStart,'HH:mm') + ' ~ ' + #dates.format(x.sesEnd,'HH:mm')}
-		    ">
-		  <li><span class="k">活動名稱：</span><span class="v" th:text="${name}">活動的名稱</span></li>
-		  <li><span class="k">場次日期：</span><span class="v" th:text="${dateStr}">場次日期</span></li>
-		  <li><span class="k">場次時間：</span><span class="v" th:text="${timeStr}">場次時間</span></li>
-		</ul>
-      </div>
-
-      <div class="box">
-        <h4>聯絡人資訊</h4>
-        <ul class="list">
-          <li>
-            <span class="k">會員編號：</span>
-            <span class="v"><span th:text="${r.memId}">1</span></span>
-          </li>
-          <li><span class="k">聯絡人：</span><span class="v" th:text="${r.regName}">吳冠宏</span></li>
-          <li><span class="k">電話：</span><span class="v" th:text="${r.regMob}">0922-183-888</span></li>
-          <li><span class="k">Email：</span><span class="v" th:text="${r.regMail}">test12345@gmail.com</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <br>
-
-    <div style="font-size:20px;">
-      實付金額：💰<span th:text="${#numbers.formatInteger(r.regGrandTotal,0,'COMMA')}">5000</span>
-        <button class="function-btn btnAmount"
-       		  th:attr="data-regTotal=${r.regTotal},
-       		  		   data-regCpnDisc=${r.regCpnDisc},
-                       data-regPointDisc=${r.regPointDisc},
-                       data-regGrandTotal=${r.regGrandTotal}">
-        查看金額細項
-      </button>
-    </div>
-
-    <br>
-
-		<form th:if="${r.regStat == 0}"
-	      th:action="@{/mem/reg/cancel}"
-	      method="post"
-	      onsubmit="return confirm('確定取消報名嗎？');">
-		  <input type="hidden" name="regId" th:value="${r.regId}">
-		  <input type="hidden" name="regStat" value="1"> <!-- 取消帶退款 -->
-		  <button type="submit" class="cancel-btn">X 取消報名</button>
-		</form>
-  </div>
-
-  <!-- 分頁 -->
-  <div class="pagination" th:if="${totalPages != null}">
-    <a th:each="p : ${#numbers.sequence(1,totalPages)}"
-       th:href="@{|/admin/reg/list?page=${p}|}"
-       th:text="${p}"
-       th:classappend="${p==currentPage} ? ' active' : ''">1</a>
-  </div>
-</div>
+										<div style="text-align: center; margin-top: 8px;">
+											<button type="submit" class="function-btn">送出</button>
+										</div>
+									</form>
+								</div>
+							</div>
 
 
- </div>
-		</div>	
+						</div>
+
+						<div style="font-size: 20px; margin-top: 5px;">
+							報名人數：<span th:text="${r.regCount}">2</span> 👨🏻‍💼
+						</div>
+
+						<br>
+
+						<div class="info">
+							<div class="box">
+								<h4>活動資訊</h4>
+								<ul class="list"
+									th:with="
+								      filtered=${extras.?[regId == #vars.r.regId]},
+								      x=${filtered[0]},
+								      name=${x.actName},
+								      dateStr=${#dates.format(x.sesDate,'yyyy-MM-dd')},
+								      timeStr=${#dates.format(x.sesStart,'HH:mm') + ' ~ ' + #dates.format(x.sesEnd,'HH:mm')}
+								    ">
+									<li>
+									<span class="k">活動名稱：</span>
+									<span class="v" th:text="${name}">活動的名稱</span>
+									</li>
+									
+									<li>
+									<span class="k">場次日期：</span>
+									<span class="v" th:text="${dateStr}">場次日期</span>
+									</li>
+									
+									<li>
+									<span class="k">場次時間：</span>
+									<span class="v" th:text="${timeStr}">場次時間</span>
+									</li>
+								</ul>
+							</div>
+
+							<div class="box">
+								<h4>聯絡人資訊</h4>
+								<ul class="list">
+									<li>
+									<span class="k">會員編號：</span> 
+									<span class="v"><span
+											th:text="${r.memId}">1</span>
+									</span>
+									</li>
+									
+									<li>
+									<span class="k">聯絡人：</span>
+									<span class="v" th:text="${r.regName}"></span>
+									</li>
+									
+									<li>
+									<span class="k">電話：</span>
+									<span class="v" th:text="${r.regMob}">0922-183-888</span></li>
+									<li>
+									<span class="k">Email：</span>
+									<span class="v" th:text="${r.regMail}">test12345@gmail.com</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<br>
+
+						<div style="font-size: 20px;">
+							實付金額：💰<span
+								th:text="${#numbers.formatInteger(r.regGrandTotal,0,'COMMA')}">5000</span>
+							<button class="function-btn btnAmount"
+								th:attr="data-regTotal=${r.regTotal},
+		       		  		   data-regCpnDisc=${r.regCpnDisc},
+		                       data-regPointDisc=${r.regPointDisc},
+		                       data-regGrandTotal=${r.regGrandTotal}">
+								查看金額細項</button>
+						</div>
+
+						<br>
+
+						<form th:if="${r.regStat == 0}" th:action="@{/mem/reg/cancel}"
+							method="post" onsubmit="return confirm('確定取消報名嗎？');">
+							<input type="hidden" name="regId" th:value="${r.regId}">
+							<input type="hidden" name="regStat" value="1">
+							<!-- 取消帶退款 -->
+							<button type="submit" class="cancel-btn">X 取消報名</button>
+						</form>
+					</div>
+
+					<!-- 分頁 -->
+					<div class="pagination" th:if="${totalPages != null}">
+						<a th:each="p : ${#numbers.sequence(1,totalPages)}"
+							th:href="@{|/admin/reg/list?page=${p}|}" th:text="${p}"
+							th:classappend="${p==currentPage} ? ' active' : ''">1</a>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
 	</div>
 
-<!-- 金額細項彈窗 -->
-<div id="amountPopup" style="display:none;">
-  <div class="advBox" style="position:relative;">
-    <span id="closeAmount" class="closeBtn">×</span>
-    <h2>金額細項</h2>
-    <div><b>原價：</b><span id="amtTotal">$0</span></div>
-    <div><b>折價券折抵：</b><span id="amtCpn">-$0</span></div>
-    <div><b>點數折抵：</b><span id="amtPoint">-$0</span></div>
-    <div><b>實付金額：</b><span id="amtGrand" style="font-weight:700;">$0</span></div>
-  </div>
-</div>
-	
-	
-	
-	
-<div th:replace="~{/front_end/index :: footer}"></div>
+	<!-- 金額細項彈窗 -->
+	<div id="amountPopup" style="display: none;">
+		<div class="advBox" style="position: relative;">
+			<span id="closeAmount" class="closeBtn">×</span>
+			<h2>金額細項</h2>
+			<div>
+				<b>原價：</b><span id="amtTotal">$0</span>
+			</div>
+			<div>
+				<b>折價券折抵：</b><span id="amtCpn">-$0</span>
+			</div>
+			<div>
+				<b>點數折抵：</b><span id="amtPoint">-$0</span>
+			</div>
+			<div>
+				<b>實付金額：</b><span id="amtGrand" style="font-weight: 700;">$0</span>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
 </body>
 

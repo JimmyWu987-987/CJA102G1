@@ -11,8 +11,8 @@
 <link rel="stylesheet" th:href="@{/css/ad/fmemAd-sidebar.css}">
 <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
   
-  <style>
-    body {
+<style>
+body {
 	max-width: 100%;
 	height: auto;
 	inset: 0;
@@ -38,145 +38,142 @@
 	height: auto;
 	padding: 30px;
 	position: relative;
-	background:white;
+	background: white;
 }
-	
-	.title{
-	  	display: flex;
-		justify-content: center;
-		color: #2c3e50;
-		margin-bottom: 20px;
-	}
-	
-	
-    .reg-area{
-      width: 100%;
-      min-height: auto; 
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
 
+.title {
+	display: flex;
+	justify-content: center;
+	color: #2c3e50;
+	margin-bottom: 20px;
+}
 
-     .reg-list{
-      display: flex;
-      flex-direction: column;
-      gap: 12px;                 
-      flex: 1;                        
-    }
+.reg-area {
+	width: 100%;
+	min-height: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
 
-    .reg-box{
-      background: #ffffff;
-      border: 1px solid #e2e8f0; 
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);  
-      justify-content: flex-start;
-      border-radius: 10px;         
-      height: auto;   
-      padding: 20px;
-    }
+.reg-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	flex: 1;
+}
 
-  .info { 
-    display:flex; 
-    gap:16px;
-  }
-  .box  { 
-    flex:1 1 320px;
-    background:#fff; 
-    border:1px solid #c8d1e2; 
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
-    border-radius:8px; 
-    padding:12px 14px; 
-  }
-  .box h4 { 
-    margin:0 0 8px; 
-    font-size:20px; 
-  }
-  .list { 
-    font-size: 18px;
-    list-style:none; 
-    margin-bottom: 0;
-    padding:0; 
-  }
-  .list li { 
-    align-items: center;
-    display:flex;
-    gap:8px; 
-    margin-bottom: 5px; 
-    margin-left: 16px;
-  }
+.reg-box {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+	justify-content: flex-start;
+	border-radius: 10px;
+	height: auto;
+	padding: 20px;
+}
 
- .function-btn{
-    appearance: none;
-    background:#6d9b7d; color:white; border-color:#bbc5d3;                
-    font-size: 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 3px 10px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  
-  .function-btn:hover{
-    background:#6d856f;
-    transform: scale(1.1);
-  }
+.info {
+	display: flex;
+	gap: 16px;
+}
 
-  .cancel-btn{
-    appearance: none;
-    background:#ee6161; 
-    color:white;;                 
-    font-size: 16px;
-    border: 1px solid #e5e7eb;        
-    border-radius: 10px;
-    padding: 3px 10px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+.box {
+	flex: 1 1 320px;
+	background: #fff;
+	border: 1px solid #c8d1e2;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	padding: 12px 14px;
+}
 
-  .cancel-btn:hover{
-    background:#eb7b7b;
-    transform: scale(1.1);
-  }
-  
+.box h4 {
+	margin: 0 0 8px;
+	font-size: 20px;
+}
 
+.list {
+	font-size: 18px;
+	list-style: none;
+	margin-bottom: 0;
+	padding: 0;
+}
 
+.list li {
+	align-items: center;
+	display: flex;
+	gap: 8px;
+	margin-bottom: 5px;
+	margin-left: 16px;
+}
+
+.function-btn {
+	appearance: none;
+	background: #6d9b7d;
+	color: white;
+	border-color: #bbc5d3;
+	font-size: 16px;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 3px 10px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.function-btn:hover {
+	background: #6d856f;
+	transform: scale(1.1);
+}
+
+.cancel-btn {
+	appearance: none;
+	background: #ee6161;
+	color: white;;
+	font-size: 16px;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 3px 10px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.cancel-btn:hover {
+	background: #eb7b7b;
+	transform: scale(1.1);
+}
 
 /* 評論彈窗區 */
 #commPopup, .commPopup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
-  display: none;           
-  justify-content: center;
-  align-items: center;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 999;
+	display: none;
+	justify-content: center;
+	align-items: center;
 }
 
 .advBox {
-  width: 500px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  font-size: 18px;
-  line-height: 1.8;
-  transform: translateX(100px);
+	width: 500px;
+	background: #fff;
+	border-radius: 10px;
+	padding: 20px;
+	font-size: 18px;
+	line-height: 1.8;
+	transform: translateX(100px);
 }
-
 
 .advBox h2 {
-  text-align: center;
-  font-size: 22px;
-  margin-bottom: 15px;
+	text-align: center;
+	font-size: 22px;
+	margin-bottom: 15px;
 }
-
 
 .advBox div {
-  margin: 6px 0;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 6px;
+	margin: 6px 0;
+	border-bottom: 2px solid #ccc;
+	padding-bottom: 6px;
 }
-
-
 
 .closeBtn {
 	position: absolute;
@@ -186,50 +183,47 @@
 	cursor: pointer;
 }
 
-
 /* 金額細項彈窗 */
-#amountPopup  {
+#amountPopup {
 	position: fixed;
 	inset: 0;
 	background: rgba(0, 0, 0, 0.4);
 	z-index: 999;
-	display:flex;
+	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-#amountPopup .advBox h2{
-  margin: 0 0 10px;
-  text-align: center;
+#amountPopup .advBox h2 {
+	margin: 0 0 10px;
+	text-align: center;
 }
 
-#amountPopup .advBox div{
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 6px 0;
-  font-size: 18px;
+#amountPopup .advBox div {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	padding: 6px 0;
+	font-size: 18px;
 }
 
-
-#amountPopup .advBox div span{
-  display: inline-block;
-  text-align: right;              
+#amountPopup .advBox div span {
+	display: inline-block;
+	text-align: right;
 }
 
 /* 折抵 */
-#amountPopup #amtCpn,
-#amountPopup #amtPoint{
-  color: #b02a37;
+#amountPopup #amtCpn, #amountPopup #amtPoint {
+	color: #b02a37;
 }
 
 /* 總計 */
-#amountPopup .advBox div:last-of-type{
-  border-top: 2px solid #ccc;  
-  border-bottom:none;
-  margin-top: 6px;
-  padding-top: 10px;
-  font-weight: 700;
+#amountPopup .advBox div:last-of-type {
+	border-top: 2px solid #ccc;
+	border-bottom: none;
+	margin-top: 6px;
+	padding-top: 10px;
+	font-weight: 700;
 }
 
 /* 狀態顏色 */
@@ -257,9 +251,7 @@
 	background: #f0f0f0;
 	color: #555
 }
-
-
-  </style>
+</style>
 </head>
 <body th:data-success="${success}"> 
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>

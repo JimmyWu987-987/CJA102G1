@@ -1,401 +1,147 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
- <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
- <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
- <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
- 
- <link rel="stylesheet" th:href="@{/css/ad/fmemAd-sidebar.css}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品廣告列表</title>
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
+<link rel="stylesheet" th:href="@{/css/ad/fmemAd-sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/ad/fmemList.css}">
 
 
-  <style>
-
-body {
-	max-width: 100%;
-	height: auto;
-	inset: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.field {
-	margin-top: 40px;
-	width: 90%;
-	height: auto;
-	display: flex;
-	align-items: flex-start;
-	gap: 24px;
-}
-
-
-.main-area {
-	flex: 1;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-	border-radius: 8px;
-	max-width: 100%;
-	height: auto;
-	padding: 30px;
-	position: relative;
-	background:white;
-}
-
-/* 主要畫面功能css */
-.functions {
-	margin: 6px 0;
-	font-size: 20px;
-}
-
-.title {
-	display: flex;
-	justify-content: center;
-	color: #2c3e50;
-	margin-bottom: 20px;
-}
-
-table {
-	margin-top: 10px;
-	border-collapse: collapse;
-	width: 100%;
-	background-color: #fff;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	border-radius: 8px;
-	overflow: hidden;
-	z-index: 20;
-}
-
-th, td {
-	padding: 7px 8px;
-	text-align: center;
-	  white-space: nowrap; /* 不換行 */
-}
-
-th {
-	background-color: #2F855A;
-	color: #fff;
-	font-weight: bold;
-	letter-spacing: 0.5px;
-	padding: 8px 10px;
-}
-
-tr:nth-child(even) {
-	background-color: #F0FFF4;
-}
-
-tr:hover {
-	background-color: #C6F6D5;
-}
-
-.adImg {
-	border-radius: 10px;
-}
-
-.adImg:hover {
-	cursor: pointer;
-	transform: scale(1.2);
-}
-
-#outSide {
-	display: none;
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, .5);
-	z-index: 10;
-	width: 1020px;
-	height: 550px;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	border-radius: 10px
-}
-
-.closeButton {
-	font-size: 28px;
-	width: 36px;
-	height: 36px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: 1px solid white;
-	border-radius: 50%;
-	position: absolute;
-	top: 6%;
-	left: 96.9%;
-	transform: translate(-50%, -50%);
-	cursor: pointer;
-	z-index: 2;
-	color: azure;
-}
-
-.inSide {
-	width: 925px;
-	height: 450px;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	object-fit: contain;
-	border-radius: 10px;
-}
-
-.zoomImg {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	z-index: 1;
-	border-radius: 10px;
-}
-
-.function-btn {
-	background:white;
-	border-radius: 8px;
-	padding: 8px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.function-btn:hover {
-	transform:scale(1.1);
-	cursor: pointer;
-}
-
-.detailBtn {
-	padding: 6px 3px;
-	border-radius: 8px;
-	border: 1px solid #ccc;
-	background: white;
-	font-size: 14px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.detailBtn:hover {
-	transform:scale(1.1);
-	cursor: pointer;
-}
-
-
-/* 彈窗區 */
-#advPopup {
-	display: none;
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.4);
-	z-index: 999;
-	display:flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.advBox {
-  width: 500px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  font-size: 18px;
-  line-height: 1.8;
-  transform: translateX(100px);
-}
-
-
-.advBox h2 {
-  text-align: center;
-  font-size: 22px;
-  margin-bottom: 15px;
-}
-
-
-.advBox div {
-  margin: 6px 0;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 6px;
-}
-
-.closeBtn {
-	position: absolute;
-	top: 5px;
-	right: 15px;
-	font-size: 22px;
-	cursor: pointer;
-}
-</style>
 
 </head>
 <body>
-<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 	<div class="field">
 
-	<div class="left-area">
-	  <h3 class="left-title">廣告功能</h3>
-	  <ul class="left-list">
-	    <li><a th:href="@{/fmem/proAd/list}">查看廣告列表</a></li>
-	    <li><a th:href="@{/fmem/proAd/applyAdView}">申請廣告</a></li>
-	  </ul>
-	</div>
-
-  <div class="main-area">
-    <h1 class="title"> 小農查詢廣告申請列表 </h1>
-		<div>
-		  <label for="adType" class="functions">選擇廣告類型：</label>
-		  <select id="adType" class="function-btn">
-		    <option th:value="@{/fmem/proAd/list}" th:selected="${selectedType} == 'proAd'" >商品廣告</option>
-		    <option th:value="@{/fmem/actAd/list}" th:selected="${selectedType} == 'actAd'">活動廣告</option>
-		  </select>
+		<div class="left-area">
+			<h3 class="left-title">廣告功能</h3>
+			<ul class="left-list">
+				<li><a th:href="@{/fmem/proAd/list}">查看廣告列表</a></li>
+				<li><a th:href="@{/fmem/proAd/applyAdView}">申請廣告</a></li>
+			</ul>
 		</div>
 
+		<div class="main-area">
+			<h1 class="title">小農查詢廣告申請列表</h1>
+			<div>
+				<label for="adType" class="functions">選擇廣告類型：</label> <select
+					id="adType" class="function-btn">
+					<option th:value="@{/fmem/proAd/list}"
+						th:selected="${selectedType} == 'proAd'">商品廣告</option>
+					<option th:value="@{/fmem/actAd/list}"
+						th:selected="${selectedType} == 'actAd'">活動廣告</option>
+				</select>
+			</div>
 
-		
-		<table>
-			<tr>
-				<th>商品<br>廣告編號</th>
-				<th>商品名稱</th>
-				<th>商品廣告圖片</th>
-				<th>審核狀態</th>
-				<th>開始日期</th>
-				<th>結束日期</th>
-				<th>費用</th>
-				<th>繳費截止日</th>
-				<th>前往繳費</th>
-			</tr>
-			
-			<th:block th:each="proAdVO : ${listProAd}">
+
+
+			<table>
 				<tr>
-					<td th:text="${proAdVO.proAdId}"></td>
-					<td th:text="${proAdVO.product.proName}"></td>
-					<td>
-						<img class="adImg"
+					<th>商品<br>廣告編號
+					</th>
+					<th>商品名稱</th>
+					<th>商品廣告圖片</th>
+					<th>審核狀態</th>
+					<th>開始日期</th>
+					<th>結束日期</th>
+					<th>費用</th>
+					<th>繳費截止日</th>
+					<th>前往繳費</th>
+				</tr>
+
+				<th:block th:each="proAdVO : ${listProAd}">
+					<tr>
+						<td th:text="${proAdVO.proAdId}"></td>
+						<td th:text="${proAdVO.product.proName}"></td>
+						<td><img class="adImg"
 							th:src="@{/proAd/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg"
-							width="100" />
-					</td>
-					
-					<td th:switch="${proAdVO.proAdRevStat}">
-						<span th:case="0">編輯中</span>
-						<span th:case="1">待審核</span> 
-						<span th:case="2">通過</span> 
-						<span th:case="3">未通過</span> 
-						<span th:case="4">待繳費</span> 
-						<span th:case="5">已繳費</span>
-					 <div>
-					  <button type="button" class="detailBtn"
-					    th:attr="
+							width="100" /></td>
+
+						<td th:switch="${proAdVO.proAdRevStat}"><span th:case="0">編輯中</span>
+							<span th:case="1">待審核</span> <span th:case="2">通過</span> <span
+							th:case="3">未通過</span> <span th:case="4">待繳費</span> <span
+							th:case="5">已繳費</span>
+							<div>
+								<button type="button" class="detailBtn"
+									th:attr="
 					      data-revupd=${proAdVO.proAdRevUpd != null ? #dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd HH:mm:ss') : '-'},
 					      data-remark=${proAdVO.proAdRevRemark != null ? proAdVO.proAdRevRemark : '-'},
 					      data-launstat=${proAdVO.proAdLaunStat == 0 ? '下架中' : '上架中'},
 					      data-launupd=${proAdVO.proAdLaunUpd != null ? #dates.format(proAdVO.proAdLaunUpd,'yyyy-MM-dd HH:mm:ss') : '-'}
 					    ">
-					    查看詳細
-					  </button>
-					  </div>
-					</td>
+									查看詳細</button>
+							</div></td>
 
-					<td>
-						<span th:if="${proAdVO.proAdStart != null}" th:text="${proAdVO.proAdStart}"></span> 
-						<span th:unless="${proAdVO.proAdStart != null}">-</span></td>
+						<td><span th:if="${proAdVO.proAdStart != null}"
+							th:text="${proAdVO.proAdStart}"></span> <span
+							th:unless="${proAdVO.proAdStart != null}">-</span></td>
 
-					<td><span th:if="${proAdVO.proAdEnd != null}"
-						th:text="${proAdVO.proAdEnd}"></span> 
-						<span th:unless="${proAdVO.proAdEnd != null}">-</span></td>
+						<td><span th:if="${proAdVO.proAdEnd != null}"
+							th:text="${proAdVO.proAdEnd}"></span> <span
+							th:unless="${proAdVO.proAdEnd != null}">-</span></td>
 
-					<td><span th:if="${proAdVO.proAdFee != null}"
-						th:text="|$ ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}|"></span>
-						<span th:unless="${proAdVO.proAdFee != null}">-</span></td>
+						<td><span th:if="${proAdVO.proAdFee != null}"
+							th:text="|$ ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}|"></span>
+							<span th:unless="${proAdVO.proAdFee != null}">-</span></td>
 
-					<td><span th:if="${proAdVO.proAdFeeEnd != null}"
-						th:text="${proAdVO.proAdFeeEnd}"></span> 
-						<span th:unless="${proAdVO.proAdFeeEnd != null}">-</span>
-					</td>
-						
-					<td>
-						<form th:if="${proAdVO.proAdRevStat == 4}"
-					        	th:action="@{/fmem/proAd/pay}" method="get">
-					    <input type="hidden" name="proAdId" th:value="${proAdVO.proAdId}">
-					    <button type="submit" class="function-btn">前往繳費</button>
-					   </form>
-					</td>
-					
-				</tr>
-			</th:block>
-	</table>
+						<td><span th:if="${proAdVO.proAdFeeEnd != null}"
+							th:text="${proAdVO.proAdFeeEnd}"></span> <span
+							th:unless="${proAdVO.proAdFeeEnd != null}">-</span></td>
 
-  </div>
-</div>
-<div th:replace="~{/front_end/index :: footer}"></div>
+						<td>
+							<form th:if="${proAdVO.proAdRevStat == 4}"
+								th:action="@{/fmem/proAd/pay}" method="get">
+								<input type="hidden" name="proAdId"
+									th:value="${proAdVO.proAdId}">
+								<button type="submit" class="function-btn">前往繳費</button>
+							</form>
+						</td>
 
-<!-- 圖片放大區 -->
-	<div id="outSide" class="outSide">
-	  <b><span id="closeButton" class="closeButton">X</span></b>
-	  <div id="inSide" class="inSide">
-	    <img id="zoomImg" class="zoomImg" alt="預覽">
-	  </div>
+					</tr>
+				</th:block>
+			</table>
+
+		</div>
 	</div>
-	
-	
-<!-- 彈窗區 -->
-<div id="advPopup" style="display:none;">
-  <div class="advBox">
-    <span id="closeAdv" class="closeBtn">×</span>
-    <h2>審核詳細資訊</h2>
-    <div><b>審核更新時間：</b><span id="revUpd"></span></div>
-    <div><b>審核備註：</b><span id="revRemark"></span></div>
-    <div><b>上下架狀態：</b><span id="launStat"></span></div>
-    <div><b>上下架更新時間：</b><span id="launUpd"></span></div>
-  </div>
-</div>
-	
-	<script>
-	 // 下拉切換
-    document.getElementById('adType').addEventListener('change', e=>{
-      location.href = e.target.value;
-    });  
-	
-	
-	// 圖片放大
-const outSide = document.getElementById('outSide');
-const zoomImg = document.getElementById('zoomImg');
-document.addEventListener('click', e=>{
-  const img = e.target.closest('.adImg');
-  if (!img) return;
-  outSide.style.display = 'block';
-  zoomImg.src = img.src;
-});
-document.getElementById('closeButton').addEventListener('click', ()=>{
-  outSide.style.display = 'none';
-  zoomImg.src = '';
-});
-	
-	
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
-//欄位彈窗
-const advPopup = document.getElementById('advPopup');
-const closeAdv = document.getElementById('closeAdv');
-const revUpd   = document.getElementById('revUpd');
-const revRemark= document.getElementById('revRemark');
-const launStat = document.getElementById('launStat');
-const launUpd  = document.getElementById('launUpd');
-
-document.addEventListener('click', e=>{
-  const btn = e.target.closest('.detailBtn');
-  if (!btn) return;
-  revUpd.textContent    = btn.dataset.revupd   || '-';
-  revRemark.textContent = btn.dataset.remark   || '-';
-  launStat.textContent  = btn.dataset.launstat || '-';
-  launUpd.textContent   = btn.dataset.launupd  || '-';
-  advPopup.style.display = 'flex';
-});
-
-closeAdv.addEventListener('click', ()=>{ advPopup.style.display = 'none'; });
-advPopup.addEventListener('click', e=>{ if (e.target === advPopup) advPopup.style.display = 'none'; });
+	<!-- 圖片放大區 -->
+	<div id="outSide" class="outSide">
+		<b><span id="closeButton" class="closeButton">X</span></b>
+		<div id="inSide" class="inSide">
+			<img id="zoomImg" class="zoomImg" alt="預覽">
+		</div>
+	</div>
 
 
-</script>
- 
+	<!-- 彈窗區 -->
+	<div id="advPopup" style="display: none;">
+		<div class="advBox">
+			<span id="closeAdv" class="closeBtn">×</span>
+			<h2>審核詳細資訊</h2>
+			<div>
+				<b>審核更新時間：</b><span id="revUpd"></span>
+			</div>
+			<div>
+				<b>審核備註：</b><span id="revRemark"></span>
+			</div>
+			<div>
+				<b>上下架狀態：</b><span id="launStat"></span>
+			</div>
+			<div>
+				<b>上下架更新時間：</b><span id="launUpd"></span>
+			</div>
+		</div>
+	</div>
+
+	<script th:src="@{/js/ad/fmemList.js}"></script>
+
+
 
 </body>
 </html>

@@ -2,56 +2,9 @@
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>修改活動廣告</title>
+<link rel="stylesheet" th:href="@{/css/ad/adminUpdate.css}">
 <style>
-
-body {
-	margin: 0;
-	padding: 24px;
-	background: #f8fafc;
-	color: #111827;
-	line-height: 1.6;
-}
-
-h1 {
-	text-align: center;
-	font-size: 30px;
-	font-weight: 700;
-}
-
-form {
-	max-width: 800px;
-	margin: 0 auto;
-	background: #fff;
-	border: 1px solid #e5e7eb;
-	border-radius: 12px;
-	padding: 16px;
-	box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
-}
-
-/* 表格 */
-table {
-	width: 100%;
-	border-collapse: collapse;
-	border-radius: 10px;
-	overflow: hidden;
-}
-
-th, td {
-	padding: 10px 12px;
-	border-bottom: 1px solid #f1f5f9;
-	text-align: left;
-}
-
-th {
-	width: 160px;
-	color: #475569;
-	font-weight: 600;
-}
-
-td{
-	width: 250px
-}
 
 /* 第一列（原本/修改 標題列） */
 table tr:first-child th, table tr:first-child td {
@@ -62,45 +15,26 @@ table tr:first-child th, table tr:first-child td {
 }
 
 tr:nth-child(even) {
-	background-color:#fff7ed; 
+	background-color: #fff7ed;
 }
 
 tr:hover {
-	background-color:#ffedd5;
+	background-color: #ffedd5;
 }
-
-.adImg, #newImgPreview {
-	border: 1px solid #e5e7eb;
-	border-radius: 8px;
-	max-height: 200px;
-	height: auto;
-}
-
-
 
 /* 送出按鈕 */
 button {
-	margin-left:45%;
-	margin-top: 12px;
 	background: #d97706;
 	color: #fff;
-	border: none;
-	border-radius: 10px;
-	padding: 8px 14px;
-	font-weight: 700;
-	cursor: pointer;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, .06);
 }
 
 button:hover {
-	transform:scale(1.2);
-	box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
+	background: #ffb366;
 }
-
 </style>
 </head>
 <body>
-	
+
 	<form th:action="@{/admin/actAd/updateActAd}" method="post"
 		enctype="multipart/form-data" th:object="${actAdVO}">
 		<input type="hidden" name="actAdId" th:value="*{actAdId}" />

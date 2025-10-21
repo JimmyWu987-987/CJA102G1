@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>審核商品廣告</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>審核商品廣告</title>
 </head>
 
 <body>
 
-<div th:fragment="reviewProAd-div">
-  <form method="post" th:action="@{reviewProAd}">
-  <input type="hidden" name="proAdId" th:value="${proAdVO.proAdId}" />
-  <div class = "field" >
-  <b><span id = "closeRev" class="closeRev">X</span></b>
+	<div th:fragment="reviewProAd-div">
+		<form method="post" th:action="@{reviewProAd}">
+			<input type="hidden" name="proAdId" th:value="${proAdVO.proAdId}" />
+			<div class="field">
+				<b><span id="closeRev" class="closeRev">X</span></b>
 
-    <div class ="revadImg">
-        <img class="revadImgs" th:src="@{/proAd/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg" width="100"/>
-    </div>
+				<div class="revadImg">
+					<img class="revadImgs"
+						th:src="@{/proAd/img/{id}(id=${proAdVO.proAdId})}" alt="proAdImg"
+						width="100" />
+				</div>
 
-    <div class="adInfo">
-    <p>商品編號：<span th:text="${proAdVO.proAdId}"></span></p>
-    <p>商品名稱：<span th:text="${proAdVO.product.proName}"></span></p>
-    <p>申請時間：<span th:text="${#dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd HH:mm:ss')}"></span></p>
-    <p>播放時間：<span th:text="${proAdVO.proAdStart}"></span>~<span th:text="${proAdVO.proAdEnd}"></span></p>
-    <p>廣告費用：<span th:text="'$' + ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}"></span></p>
-    
-    
-    <p>
-      <label>審核備註：<br>
-        <textarea class="remark" name="remark" id="remark" th:text="${proAdVO.proAdRevRemark}"></textarea>
-      </label>
-    </p>
-  </div>
+				<div class="adInfo">
+					<p>
+						商品編號：<span th:text="${proAdVO.proAdId}"></span>
+					</p>
+					<p>
+						商品名稱：<span th:text="${proAdVO.product.proName}"></span>
+					</p>
+					<p>
+						申請時間：<span
+							th:text="${#dates.format(proAdVO.proAdRevUpd,'yyyy-MM-dd HH:mm:ss')}"></span>
+					</p>
+					<p>
+						播放時間：<span th:text="${proAdVO.proAdStart}"></span>~<span
+							th:text="${proAdVO.proAdEnd}"></span>
+					</p>
+					<p>
+						廣告費用：<span
+							th:text="'$' + ${#numbers.formatInteger(proAdVO.proAdFee, 0, 'COMMA')}"></span>
+					</p>
 
-  <div class="revButtons">
-    <button class="pass"  type="submit" name="action" value="pass" onclick="return confirm('確定【通過】嗎？')">通過 🙆‍♂️</button>
-    <button class="failed" type="submit" name="action" value="failed" onclick="return confirm('確定【不通過】嗎？')">不通過 🙅‍♂️</button>
-  </div>
 
-      
-    </div>
+					<p>
+						<label>審核備註：<br> <textarea class="remark"
+								name="remark" id="remark" th:text="${proAdVO.proAdRevRemark}"></textarea>
+						</label>
+					</p>
+				</div>
 
-  </form>
-  </div>
+				<div class="revButtons">
+					<button class="pass" type="submit" name="action" value="pass"
+						onclick="return confirm('確定【通過】嗎？')">通過 🙆‍♂️</button>
+					<button class="failed" type="submit" name="action" value="failed"
+						onclick="return confirm('確定【不通過】嗎？')">不通過 🙅‍♂️</button>
+				</div>
+
+
+			</div>
+
+		</form>
+	</div>
 
 
 </body>

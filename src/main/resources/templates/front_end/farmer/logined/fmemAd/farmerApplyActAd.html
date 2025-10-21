@@ -1,443 +1,153 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>小農申請活動廣告</title>
-	 <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
- <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
- <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-  <link rel="stylesheet" th:href="@{/css/ad/fmemAd-sidebar.css}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小農申請活動廣告</title>
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+<link rel="stylesheet" th:href="@{/css/ad/fmemAd-sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/ad/fmemApplyAd.css}">
 
-<style>
-
-body {
-	max-width: 100%;
-	height: auto;
-	inset: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.field {
-	margin-top: 40px;
-	width: 90%;
-	height: auto;
-	display: flex;
-	align-items: flex-start;
-	gap: 24px;
-}
-
-
-.main-area {
-	flex: 1;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-	border-radius: 8px;
-	max-width: 100%;
-	height: auto;
-	padding: 30px;
-	position: relative;
-	background-image: url('/images/ad/applyAd-Background.gif');
-	background-size: cover;
-	background-position: center;
-}
-
-/* 	黑透明遮罩 */
-.main-field {
-	width: 100%;
-	height: 500px;
-	background-color: black;
-	display: flex;
-	border-radius: 2%;
-	background: rgba(0, 0, 0, 0.7);
-	z-index: 2;
-}
-
-/* 圖片區 */
-.box {
-	border: 8px dashed #ccc;
-	margin: auto 30px;
-	min-width: 480px;
-	aspect-ratio:1.9/1;
-	flex: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	position: relative;
-	z-index: 4;
-}
-
-.box input {
-	width: 100%;
-	height: 100%;
-	cursor: pointer;
-	position: absolute;
-	top: 0;
-	left: 0;
-	opacity: 0;
-	z-index: 8;
-}
-
-.box img {
-	width: 100%;
-	height: 100%;
-	object-fit: fill;
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 6; 
-}
-
-.add {
-	font: bold 100px Tahoma;
-	color: #ccc;
-}
-
-/* 文字區 */
-.input-right {
-	background-color: white;
-	min-width: 280px;
-	border-radius: 0 2% 2% 0;
-	z-index: 4;
-}
-
-.main-title {
-	margin-top: 15px;
-	margin-bottom: 10px;
-	font-size: 30px;
-	text-align: center;
-}
-
-.textContent {
-	display: block;
-	font-size: 16px;
-	width: 89%;
-	margin: 0 30px;
-}
-
-.textContent td {
-	padding: 4px 2px;
-}
-
-input.textNo, select.textNo {
-	width: 100%;
-	max-width: 140px;
-	height: 28px;
-	font-size: 14px;
-	box-sizing: border-box;
-	border: 1px solid #d0d5dd;
-	border-radius: 8px;
-	padding: 4px 5px;
-}
-
-.submit-btn {
-	padding: 8px 12px;
-	border: 0;
-	border-radius: 8px;
-	background: #ccc;
-	color: #fff;
-	margin: 10px auto;
-	cursor: pointer;
-	text-align: center;
-	display: block;
-}
-
-.littlefarmer:hover {
-	cursor: pointer;
-}
-
-.littlefarmer {
-	width: 180px;
-	position: absolute;
-	right: -30px;
-	bottom: -10px;
-	z-index: 5;
-	cursor: pointer;
-}
-
-#ruleContent ol, #ruleContent ul, #ruleContent li {
-	list-style-type: decimal;
-	padding-left: 10px;
-}
-
-.rulebody {
-	display: none;
-	position: fixed;
-	top: 60%;
-	left: 60%;
-	transform: translate(-50%, -60%);
-	width: 700px;
-	height: 400px;
-	background: #fff;
-	padding: 18px 50px;
-	border: 1px solid #ccc;
-	border-radius: 8px;
-	box-shadow: 0 6px 24px;
-	overflow: auto;
-	z-index: 9999;
-}
-</style>
 </head>
 <body>
-<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
-  <div class="field">
-  
-	<div class="left-area">
-	  <div class="left-title">廣告功能</div>
-	  <ul class="left-list">
-	    <li><a th:href="@{/fmem/actAd/list}">查看廣告列表</a></li>
-	    <li><a th:href="@{/fmem/actAd/applyAdView}">申請廣告</a></li>
-	  </ul>
+	<div class="field">
+
+		<div class="left-area">
+			<div class="left-title">廣告功能</div>
+			<ul class="left-list">
+				<li><a th:href="@{/fmem/actAd/list}">查看廣告列表</a></li>
+				<li><a th:href="@{/fmem/actAd/applyAdView}">申請廣告</a></li>
+			</ul>
+		</div>
+
+
+
+
+		<div class="main-area">
+			<img class="littlefarmer"
+				th:src="@{/images/ad/applyAd-littleFarmer.gif}" alt="littlefarmer">
+			<form th:action="@{applyActAd}" method="post" th:object="${actAdVO}"
+				enctype="multipart/form-data">
+				<input type="hidden" th:field="*{fmem.fmemId}"
+					th:value="${session.fmemId}" />
+				<div class="main-field">
+
+					<!-- 圖片區 -->
+					<div class="box">
+						<div class="add">+</div>
+						<input type="file" name="adImg" id="theFile" accept="image/*">
+					</div>
+
+					<!-- 輸入區 -->
+					<div class="input-right">
+						<div class="input-content">
+							<h1 class="main-title">小農申請廣告</h1>
+
+
+							<table class="textContent">
+
+								<tr class="textNo">
+									<td>廣告類型：</td>
+									<td><select class="textNo" id="adType">
+											<option th:value="@{/fmem/proAd/applyAdView}"
+												th:selected="${selectedType} == 'proAd'">商品廣告</option>
+											<option th:value="@{/fmem/actAd/applyAdView}"
+												th:selected="${selectedType} == 'actAd'">活動廣告</option>
+									</select></td>
+								</tr>
+
+								<tr class="textNo">
+									<td>活動編號：</td>
+									<td><select class="textNo" th:field="*{actId}">
+											<option value="" disabled selected>請選擇活動</option>
+											<option th:each="a : ${act}" th:value="${a.actId}"
+												th:text="|${a.actId} - ${a.actName}|"></option>
+									</select></td>
+								</tr>
+
+
+								<tr>
+									<td>開始日期：</td>
+									<td><input class="textNo" type="date"
+										th:field="*{actAdStart}"
+										th:attr="min=${#temporals.format(#temporals.createNow().plusDays(7), 'yyyy-MM-dd')}"
+										required /></td>
+								</tr>
+
+
+								<tr>
+									<td>播放時間：</td>
+									<td><select class="textNo" id="duration">
+											<option value="0">一個月</option>
+											<option value="1">兩個月</option>
+											<option value="2">三個月</option>
+									</select></td>
+								</tr>
+
+
+								<tr>
+									<td>廣告費用：</td>
+									<td><input class="textNo" type="text" id="adFeeShow"
+										readonly> <input type="hidden" id="adFee"
+										th:field="*{actAdFee}"></td>
+								</tr>
+
+
+								<tr>
+									<td>結束日期：</td>
+									<td><input class="textNo" type="date"
+										th:field="*{actAdEnd}" readonly></td>
+								</tr>
+							</table>
+
+							<!-- 規則閱讀與勾選 -->
+							<div style="margin-left: 5%; margin-top: 10px">
+								<label style="display: flex; align-items: center; gap: 8px;">
+									<input type="checkbox" id="checkbox" disabled> <span>我已閱讀並同意
+										<span id="openRule"
+										style="color: blue; text-decoration: underline; cursor: pointer;">
+											《廣告刊登規則》 </span>
+								</span>
+								</label>
+
+								<div th:if="${#fields.hasAnyErrors()}">
+									<ul
+										style="margin-top: 0; margin-left: 0; color: red; text-align: center;">
+										<li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+									</ul>
+								</div>
+							</div>
+
+							<input id="submit-btn" type="submit" value="提交申請"
+								class="submit-btn" disabled>
+						</div>
+					</div>
+
+				</div>
+				<!-- /main-field -->
+			</form>
+		</div>
+		<!-- /main-area -->
+
 	</div>
 
- 
 
-
- <div class="main-area">
-  <img class="littlefarmer" th:src="@{/images/ad/applyAd-littleFarmer.gif}"  alt="littlefarmer">
-  <form th:action="@{applyActAd}" method="post" th:object="${actAdVO}" enctype="multipart/form-data">
-	<input type="hidden" th:field="*{fmem.fmemId}" th:value="${session.fmemId}"/>
-    <div class="main-field">
-      
-      <!-- 圖片區 -->
-      <div class="box">
-        <div class="add">+</div>
-        <input type="file" name="adImg" id="theFile" accept="image/*">
-      </div>
-
-      <!-- 輸入區 -->
-      <div class="input-right">
-        <div class="input-content">
-          <h1 class="main-title">小農申請廣告</h1>
-          
-
-          <table class="textContent">
-        
-        <tr class="textNo" >
-          <td>廣告類型：</td>
-          <td>
-            <select class="textNo" id="adType">
-              <option th:value="@{/fmem/proAd/applyAdView}" th:selected="${selectedType} == 'proAd'" >商品廣告</option>
-		      <option th:value="@{/fmem/actAd/applyAdView}" th:selected="${selectedType} == 'actAd'">活動廣告</option>
-            </select>
-          </td>
-        </tr>
-
-		<tr class="textNo">
-		  <td>活動編號：</td>
-		  <td>
-		    <select class="textNo" th:field="*{actId}">
-		      <option value="" disabled selected>請選擇活動</option>
-		      <option th:each="a : ${act}"
-		              th:value="${a.actId}"
-		              th:text="|${a.actId} - ${a.actName}|">
-		      </option>
-		    </select>
-		  </td>
-		</tr>
-
-
-        <tr>
-			<td>開始日期：</td>
-			<td>
-			<input class="textNo" type="date" th:field="*{actAdStart}"
-       		th:attr="min=${#temporals.format(#temporals.createNow().plusDays(7), 'yyyy-MM-dd')}" required/>
-			</td>
-			</tr>
-
-
-				<tr>
-					<td>播放時間：</td>
-					<td>
-					<select class="textNo" id="duration"   >
-							<option value="0">一個月</option>
-							<option value="1">兩個月</option>
-							<option value="2">三個月</option>
-					</select>
-					</td>
-				</tr>
-
-
-				<tr>
-					<td>廣告費用：</td>
-					<td>
-						<input class="textNo" type="text" id="adFeeShow"  readonly> 
-						<input type="hidden" id="adFee" th:field="*{actAdFee}">
-					</td>
-				</tr>
-
-
-				<tr>
-					<td>結束日期：</td>
-					 <td>
-						<input class="textNo" type="date" th:field="*{actAdEnd}" readonly>
-    				 </td>
-				</tr>
-          </table>
-
-          <!-- 規則閱讀與勾選 -->
-			    <div style="margin-left: 5%; margin-top:10px">
-			      <label style="display:flex; align-items:center; gap:8px; ">
-			        <input type="checkbox" id="checkbox" disabled>
-			        <span>我已閱讀並同意
-					<span id="openRule" style="color:blue;text-decoration:underline;cursor:pointer; ">
-					《廣告刊登規則》
-					</span></span>
-			      </label>
-			      
-			    <div th:if="${#fields.hasAnyErrors()}">
-			    	 <ul style= "margin-top:0; margin-left:0; color:red; text-align:center;">
-				       <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-				     </ul>
-			    </div>
-			    </div>
-
-          <input id="submit-btn" type="submit" value="提交申請" class="submit-btn" disabled>
-        </div>
-      </div>
-
-    </div> <!-- /main-field -->
-  </form>
-</div> <!-- /main-area -->
-
- </div>
-
-
-  <!-- 規則框：預設隱藏 -->
-    <div id="rulebody" class= "rulebody">
-			<div id="ruleContent">載入中…</div>
-      <div style="text-align:center;">
-        <a href="#" id="closeRule">閱讀完畢，關閉此視窗</a>
-      </div>
-    </div>
+	<!-- 規則框：預設隱藏 -->
+	<div id="rulebody" class="rulebody">
+		<div id="ruleContent">載入中…</div>
+		<div style="text-align: center;">
+			<a href="#" id="closeRule">閱讀完畢，關閉此視窗</a>
+		</div>
+	</div>
 
 
 
-<div th:replace="~{/front_end/index :: footer}"></div>
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
-
-  <script>
- // 下拉切換
-    document.getElementById('adType').addEventListener('change', e=>{
-      location.href = e.target.value;
-    });    
-    
-  // 	圖片控制
-function doFirst() {
-	document.querySelector('#theFile').onchange = fileChange
-}
-function fileChange(e) {
-	let file = e.target.files[0]
-	const reader = new FileReader()
-	reader.readAsDataURL(file)
-	reader.addEventListener('load', () => {
-		// 建立 <img>
-		let image = document.createElement('img')
-		image.src = reader.result
-
-		let box = document.querySelector('.box')
-		// 移除舊圖片（保留 input）
-		let oldImg = box.querySelector('img')
-		if (oldImg) box.removeChild(oldImg)
-
-		// 隱藏 "+"
-		document.querySelector('.add').style.opacity = 0
-
-		// 加入新圖片
-		box.appendChild(image)
-	})
-}
-window.addEventListener('load', doFirst)
-
-//廣告費用：選單變更
-const duration = document.getElementById("duration");
-const show = document.getElementById("adFeeShow");
-const hide = document.getElementById("adFee");
-
-function updateFee() {
-	let feeS = "$0", fee = 0;
-	switch (duration.value) {
-		case "0": feeS = "$1,000"; fee = 1000; break;
-		case "1": feeS = "$2,000"; fee = 2000; break;
-		case "2": feeS = "$3,000"; fee = 3000;
-	}
-	show.value = feeS; // 有 $
-	hide.value = fee;  // 純數字
-}
-duration.addEventListener("change", updateFee); updateFee();
-
-
-// 結束日期
-const start = document.getElementById('actAdStart');
-const end   = document.getElementById('actAdEnd');
-
-function updateEnd() {
-
-	  // 把 "YYYY-MM-DD" 轉成 Date（本地時區，避免時差問題）
-	  const [y, m, d] = start.value.split('-').map(Number);
-	  const dt = new Date(y, m - 1, d);
-
-	  // 0=30天, 1=60天, 2=90天
-	  let addDays = 30;
-	  if (duration.value === '1') addDays = 60;
-	  else if (duration.value === '2') addDays = 90;
-
-	  dt.setDate(dt.getDate() + addDays);
-	  end.valueAsDate = dt;
-}
-
-start.addEventListener("change", updateEnd);
-duration.addEventListener("change", updateEnd);
-updateEnd();
-
-
-//閱讀規則
-const checkbox = document.getElementById('checkbox');
-const openRule  = document.getElementById('openRule');
-const rulebody   = document.getElementById('rulebody');
-const closeRule = document.getElementById('closeRule');
-const submitBtn = document.getElementById('submit-btn');
-
-
-openRule.addEventListener('click', (e) => {
-  e.preventDefault();
-  rulebody.style.display = 'block';
-
-	fetch('/json/ad/fmemApplyAds.json')
-    .then(res => res.json())
-  	.then(data => {
-    const box = document.getElementById('ruleContent');
-
-    let listHtml = '';
-    for (let i = 0; i < data.rules.length; i++) {
-       listHtml += `<li style="margin-bottom:12px;">${data.rules[i]}</li>`;
-    }
-		
-    let html = `
-      <h4 style="text-align:center;margin:0; font-size:25px">${data.intro}</h4>
-      <p style="text-align:center;margin:6px 0 10px">${data.title}</p>
-			<ol>${listHtml}</ol>
-      `;
-    box.innerHTML = html;
-  });
-});
-
-closeRule.addEventListener('click',(e)=> {
-  e.preventDefault();
-  rulebody.style.display = 'none';
-	checkbox.disabled = false;
-})
-
-checkbox.addEventListener('change', () => {
-  submitBtn.disabled = !checkbox.checked;  // 勾了才能提交
-  if (checkbox.checked) {
-	    submitBtn.style.backgroundColor = '#2d6cdf';  // 勾選時便藍色
-	  } else {
-	    submitBtn.style.backgroundColor = '#ccc';     
-	  }
-})
-</script>
+<script th:src="@{/js/ad/fmemApplyAd.js}"></script>
 </body>
 </html>
