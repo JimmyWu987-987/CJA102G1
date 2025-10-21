@@ -1,0 +1,212 @@
+body {
+	max-width: 100%;
+	height: auto;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.field {
+	margin-top: 40px;
+	width: 90%;
+	height: auto;
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
+}
+
+
+.main-area {
+	flex: 1;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+	border-radius: 8px;
+	max-width: 100%;
+	height: auto;
+	padding: 30px;
+	position: relative;
+	background:white;
+}
+
+/* 主要畫面功能css */
+.functions {
+	margin: 6px 0;
+	font-size: 20px;
+}
+
+.title {
+	display: flex;
+	justify-content: center;
+	color: #2c3e50;
+	margin-bottom: 20px;
+}
+
+table {
+	margin-top: 10px;
+	border-collapse: collapse;
+	width: 100%;
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	overflow: hidden;
+	z-index: 20;
+}
+
+th, td {
+	padding: 7px 8px;
+	text-align: center;
+	  white-space: nowrap; /* 不換行 */
+}
+
+th {
+	background-color: #2F855A;
+	color: #fff;
+	font-weight: bold;
+	letter-spacing: 0.5px;
+	padding: 8px 10px;
+}
+
+tr:nth-child(even) {
+	background-color: #F0FFF4;
+}
+
+tr:hover {
+	background-color: #C6F6D5;
+}
+
+.adImg {
+	border-radius: 10px;
+}
+
+.adImg:hover {
+	cursor: pointer;
+	transform: scale(1.2);
+}
+
+#outSide {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, .5);
+	z-index: 10;
+	width: 1020px;
+	height: 550px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 10px
+}
+
+.closeButton {
+	font-size: 28px;
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid white;
+	border-radius: 50%;
+	position: absolute;
+	top: 6%;
+	left: 96.9%;
+	transform: translate(-50%, -50%);
+	cursor: pointer;
+	z-index: 2;
+	color: azure;
+}
+
+.inSide {
+	width: 925px;
+	height: 450px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	object-fit: contain;
+	border-radius: 10px;
+}
+
+.zoomImg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	z-index: 1;
+	border-radius: 10px;
+}
+
+.function-btn {
+	background:white;
+	border-radius: 8px;
+	padding: 8px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.function-btn:hover {
+	transform:scale(1.1);
+	cursor: pointer;
+}
+
+.detailBtn {
+	padding: 6px 3px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	background: white;
+	font-size: 14px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.detailBtn:hover {
+	transform:scale(1.1);
+	cursor: pointer;
+}
+
+
+/* 彈窗區 */
+#advPopup {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 999;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.advBox {
+  width: 500px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 18px;
+  line-height: 1.8;
+  transform: translateX(100px);
+}
+
+
+.advBox h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+
+.advBox div {
+  margin: 6px 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+.closeBtn {
+	position: absolute;
+	top: 5px;
+	right: 15px;
+	font-size: 22px;
+	cursor: pointer;
+}
