@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title th:text="${#strings.equals(mode, 'edit') ? '編輯活動折價券' : '新增活動折價券'}">活動折價券表單</title>
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- ✅ 外部樣式表 -->
   <link rel="stylesheet" th:href="@{/css/memcpn/addCpnAdmin.css}">
@@ -15,75 +16,121 @@
         th:text="${#strings.equals(mode, 'edit') ? '編輯活動折價券' : '新增活動折價券'}">
       新增活動折價券
     </h2>
-
+<!-- 表單開始 -->
     <form th:action="@{${actionUrl}}" th:object="${actCpnForm}" method="post" class="space-y-5">
+  <!-- 表格 -->
+  <table class="w-full border border-gray-300 rounded-lg text-sm text-gray-700">
+        <thead class="bg-gray-100 font-semibold text-gray-800">
+          <tr>
+            <th class="w-1/4 py-2 px-4 text-left">欄位名稱</th>
+            <th class="py-2 px-4 text-left">輸入內容</th>
+          </tr>
+        </thead>
+   <tbody class="divide-y divide-gray-200">
+       <!-- 折價券編號（僅編輯時顯示） -->
+          <tr th:if="${#strings.equals(mode, 'edit')}">
+            <td class="py-3 px-4 font-medium">折價券編號</td>
+            <td class="py-3 px-4">
+              <input type="text" th:field="*{actCpnId}"
+                     class="form-input bg-gray-100 cursor-not-allowed w-full" readonly>
+            </td>
+          </tr>
 
-      <!-- 折價券編號（僅編輯時顯示） -->
-      <div th:if="${#strings.equals(mode, 'edit')}">
-        <label class="block text-sm font-medium">折價券編號</label>
-        <input type="text" th:field="*{proCpnId}" class="form-input bg-gray-100 cursor-not-allowed" readonly>
-      </div>
-
-      <!-- 名稱 -->
-      <div>
-        <label class="block text-sm font-medium">折價券名稱</label>
-        <input type="text" th:field="*{cpnName}" class="form-input">
-        <p class="form-error" th:errors="*{cpnName}"></p>
-      </div>
-
+     <!-- 折價券名稱 -->
+          <tr>
+            <td class="py-3 px-4 font-medium">折價券名稱</td>
+            <td class="py-3 px-4">
+              <input type="text" th:field="*{cpnName}"
+                     class="form-input w-full bg-gray-100 cursor-not-allowed" readonly>
+              <p class="form-error text-red-500 text-xs mt-1" th:errors="*{cpnName}"></p>
+            </td>
+          </tr>
+ <!-- 折價券來源 -->
+          <tr>
+            <td class="py-3 px-4 font-medium">折價券來源</td>
+            <td class="py-3 px-4">
+              <select th:field="*{cpnSource}" class="form-select w-full">
+                <option value="">請選擇折價券來源</option>
+                <option th:value="REGISTRATION">註冊券</option>
+                <option th:value="LOTTERY">抽獎券</option>
+                <option th:value="BIRTHDAY">生日券</option>
+                <option th:value="EVENT">活動券</option>
+                <option th:value="COMMON">一般券</option>
+              </select>
+              <p class="form-error text-red-500 text-xs mt-1" th:errors="*{cpnSource}"></p>
+            </td>
+          </tr>
       <!-- 折扣類型 -->
-      <div>
-        <label class="block text-sm font-medium">折扣類型</label>
-        <select th:field="*{discType}" class="form-select">
-          <option value="">請選擇折扣類型</option>
-          <option th:value="FULL_REDUCTION">滿額折抵</option>
-          <option th:value="PERCENTAGE">百分比折扣</option>
-        </select>
-        <p class="form-error" th:errors="*{discType}"></p>
-      </div>
+          <tr>
+            <td class="py-3 px-4 font-medium">折扣類型</td>
+            <td class="py-3 px-4">
+              <select th:field="*{discType}" class="form-select w-full">
+                <option value="">請選擇折扣類型</option>
+                <option th:value="FULL_REDUCTION">滿額折抵</option>
+                <option th:value="PERCENTAGE">百分比折扣</option>
+              </select>
+              <p class="form-error text-red-500 text-xs mt-1" th:errors="*{discType}"></p>
+            </td>
+          </tr>
 
-      <!-- 折扣值 -->
-      <div>
-        <label class="block text-sm font-medium">折扣值</label>
-        <input type="number" step="0.01" th:field="*{discValue}" class="form-input">
-        <p class="form-error" th:errors="*{discValue}"></p>
-      </div>
+     <!-- 折扣值 -->
+          <tr>
+            <td class="py-3 px-4 font-medium">折扣值</td>
+            <td class="py-3 px-4">
+              <input id="discValue" type="number" step="0.01" min="1" max="99999"
+                     th:field="*{discValue}" class="form-input w-full">
+              <p class="text-xs text-gray-400 mt-1" id="discHint">請輸入折扣金額（例如：100）</p>
+            </td>
+          </tr>
 
       <!-- 最低消費金額 -->
-      <div>
-        <label class="block text-sm font-medium">最低消費金額</label>
-        <input type="number" th:field="*{minSpend}" class="form-input">
-        <p class="form-error" th:errors="*{minSpend}"></p>
-      </div>
+          <tr>
+            <td class="py-3 px-4 font-medium">最低消費金額</td>
+            <td class="py-3 px-4">
+              <input type="number" th:field="*{minSpend}" class="form-input w-full">
+              <p class="form-error text-red-500 text-xs mt-1" th:errors="*{minSpend}"></p>
+            </td>
+          </tr>
 
-      <!-- 起始日期 -->
-      <div>
-        <label class="block text-sm font-medium">起始日期</label>
-        <input type="date" th:field="*{startDate}" class="form-input">
-        <p class="form-error" th:errors="*{startDate}"></p>
-      </div>
+      <!-- 開始日期 -->
+          <tr>
+            <td class="py-3 px-4 font-medium">開始日期</td>
+            <td class="py-3 px-4">
+              <input id="startDate" type="date" th:field="*{startDate}" class="form-input w-full">
+              <p class="form-error text-red-500 text-xs mt-1" th:errors="*{startDate}"></p>
+            </td>
+          </tr>
 
-      <!-- 有效天數 -->
-      <div>
-        <label class="block text-sm font-medium">有效天數</label>
-        <input type="number" th:field="*{validDays}" class="form-input">
-        <p class="form-error" th:errors="*{validDays}"></p>
-      </div>
+       <!-- 有效天數 -->
+          <tr>
+            <td class="py-3 px-4 font-medium">有效天數</td>
+            <td class="py-3 px-4">
+              <input type="number" th:field="*{validDays}" class="form-input w-full" min="1">
+              <p class="form-error text-red-500 text-xs mt-1" th:errors="*{validDays}"></p>
+            </td>
+          </tr>
 
-      <!-- 描述 -->
-      <div>
-        <label class="block text-sm font-medium">折價券描述</label>
-        <textarea th:field="*{cpnDesc}" rows="3" class="form-input resize-none"></textarea>
-      </div>
+        <!-- 折價券描述 -->
+          <tr>
+            <td class="py-3 px-4 font-medium">折價券描述</td>
+            <td class="py-3 px-4">
+              <textarea th:field="*{cpnDesc}" rows="3" class="form-input w-full resize-none"></textarea>
+            </td>
+          </tr>
 
       <!-- 狀態 -->
-      <div>
-        <label class="block text-sm font-medium">狀態</label>
-        <select th:field="*{isActive}" class="form-select">
-          <option th:value="ACTIVE">啟用中</option>
-          <option th:value="INACTIVE">未啟用</option>
-        </select>
-      </div>
+          <tr>
+            <td class="py-3 px-4 font-medium">狀態</td>
+            <td class="py-3 px-4">
+              <select th:field="*{isActive}" class="form-select w-full">
+                <option th:value="ACTIVE">啟用中</option>
+                <option th:value="INACTIVE">未啟用</option>
+              </select>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
 
       <!-- 按鈕 -->
       <div class="flex justify-center space-x-4 pt-4">
@@ -95,6 +142,6 @@
       </div>
     </form>
   </div>
-
+<script th:src="@{/js/memcpn/cpn-form.js}"></script>
 </body>
 </html>
