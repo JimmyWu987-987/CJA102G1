@@ -112,6 +112,8 @@ public class ProOrderAdminController {
 		List<Fmem> fmemList = fmemSvc.getAll();
 		model.addAttribute("fmemList", fmemList);
 
+		model.addAttribute("successMessage", "已通知小農撥款");
+		
 		return "/back_end/logined/cash_flow/index";
 	}
 
