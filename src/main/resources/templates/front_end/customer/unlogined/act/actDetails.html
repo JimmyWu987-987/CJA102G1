@@ -3,6 +3,7 @@
 <head> 
     <meta charset="UTF-8">
     <title>活動詳情</title>
+    <link rel="icon" th:href="@{/images/logo.png}">
     
 	<!--     引入main.css, iconfonts -->
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
@@ -22,78 +23,81 @@
 <div th:replace="~{/front_end/index :: header}"></div>
 
 <div class="main-content">
-
-    <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
-
-    <!-- 輪播器 -->
-    <div class="carousel">
-        <div class="carousel-track">
-            <!-- 主圖 -->
-            <div class="carousel-item">
-                <img th:src="@{/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
-            </div>
-            <!-- 活動多圖 -->
-            <div class="carousel-item" th:each="img : ${act.actImg}">
-                <img th:src="@{/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
-            </div>
-        </div>
-        <button class="carousel-btn prev">&#10094;</button>
-        <button class="carousel-btn next">&#10095;</button>
-        <div class="carousel-dots">
-            <span class="dot" th:each="img, iterStat : ${act.actImg}" th:data-index="${iterStat.index}"></span>
-        </div>
-    </div>
-<div class="act-info">
-<div class="act-details">
-    <p><strong>活動日期:</strong> <span th:text="${act.actStart} + ' ~ ' + ${act.actEnd}"></span></p><br>
-    <p><strong>活動基本價:</strong> <span th:text="${act.actFee}"></span> 元</p><br>
-    <p><strong>分類:</strong>
-        <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
-    </p><br>
-    <p><strong>活動說明:</strong></p>
-<p th:utext="${#strings.replace(act.actDes, '\n', '<br/>')}"></p>
-
     
-</div>
-</div>
+    <div class="content-wrapper">
 
-<div class="ses-info">
-    <div th:if="${#lists.isEmpty(sesList)}"> 
-        <p>此活動目前尚無場次</p> 
-    </div>
+        <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
 
-    <div th:if="${!#lists.isEmpty(sesList)}">
-        <h2 class="ses-title">場次一覽</h2> 
-        <table class="ses-table">
-            <thead>
-                <tr>
-                    <th>場次日期</th>
-                    <th>場次進行時間</th>
-                    <th>報名費用</th>
-                    <th>可參加人數</th>
-                    <th>報名截止日期</th>
-                    <th>進行報名</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="ses : ${sesList}">
-                    <td th:text="${#dates.format(ses.sesDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${#dates.format(ses.sesStart, 'HH:mm')} + ' ~ ' + ${#dates.format(ses.sesEnd, 'HH:mm')}"></td>
-                    <td th:text="${ses.sesFee}" ></td>
-                    <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
-                    <td th:text="${#dates.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
-                    <td>
-					   <form th:action="@{/mem/reg/actReg}" method="get" target="memRegistration">
-						  <input type="hidden" name="actId" th:value="${act.actId}">
-						  <input type="hidden" name="sesId" th:value="${ses.sesId}">
-						  <button type="submit" class="btn btn-primary">我要報名</button>
-						</form>
-					</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="carousel">
+            <div class="carousel-track">
+                <div class="carousel-item">
+                    <img class="carousel-img" th:src="@{/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
+                </div>
+                <div class="carousel-item" th:each="img : ${act.actImg}">
+                    <img class="carousel-img" th:src="@{/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
+                </div>
+            </div>
+            <button class="carousel-btn prev">&#10094;</button>
+            <button class="carousel-btn next">&#10095;</button>
+            <div class="carousel-dots">
+                <span class="dot" th:each="img, iterStat : ${act.actImg}" th:data-index="${iterStat.index}"></span>
+            </div>
+        </div>
+        
+        <div class="info-ses-container">
+            <div class="act-info">
+                <div class="act-details">
+                    <p><strong>活動日期:</strong> <span th:text="${act.actStart} + ' ~ ' + ${act.actEnd}"></span></p><br>
+                    <p><strong>活動基本價:</strong> <span th:text="${act.actFee}"></span> 元</p><br>
+                    <p><strong>分類:</strong>
+                        <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
+                    </p><br>
+                    <p><strong>活動說明:</strong></p>
+                <p th:utext="${#strings.replace(act.actDes, '\n', '<br/>')}"></p>
+                </div>
+            </div>
+            
+            <div class="ses-info">
+                <div th:if="${#lists.isEmpty(sesList)}"> 
+                    <p>此活動目前尚無場次</p> 
+                </div>
+            
+                <div th:if="${!#lists.isEmpty(sesList)}">
+                    <h2 class="ses-title">場次一覽</h2> 
+                    <table class="ses-table">
+                        <thead>
+                            <tr>
+                                <th>場次日期</th>
+                                <th>場次進行時間</th>
+                                <th>報名費用</th>
+                                <th>可參加人數</th>
+                                <th>報名截止日期</th>
+                                <th>進行報名</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ses : ${sesList}">
+                                <td th:text="${#dates.format(ses.sesDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#dates.format(ses.sesStart, 'HH:mm')} + ' ~ ' + ${#dates.format(ses.sesEnd, 'HH:mm')}"></td>
+                                <td th:text="${ses.sesFee}" ></td>
+                                <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
+                                <td th:text="${#dates.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
+<td>
+   <form th:action="@{/mem/reg/actReg}" method="get" target="memRegistration">
+      <input type="hidden" name="actId" th:value="${act.actId}">
+      <input type="hidden" name="sesId" th:value="${ses.sesId}">
+      <button type="submit" class="act-btn">我要報名</button>
+    </form>
+</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+        
 			<!--報名區域 -->
 			<iframe id="memRegistration" 
 			name="memRegistration" 
@@ -111,7 +115,7 @@
 			  style="width:98%; margin-left:10px;min-height:500px; border:0; border-radius:8px; margin-top:12px; text-align:center;">
 			</iframe>
 
-</div>
+
 <div th:replace="~{/front_end/index :: footer}"></div>
 
 
