@@ -179,6 +179,10 @@
 .btn:hover {
     background-color: #6b8e23; /* 深一點的綠色 */
 }
+
+.header-spacing {
+    height: 30px; /* 設定你需要的間距高度 */
+}
 </style>
 
 
@@ -187,6 +191,7 @@
 
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 <div class = "container">
+<div class="header-spacing"></div>
     <h1>活動上下架</h1>
 
 	<div th:if="${#lists.isEmpty(actList)}" class="no-data-message">

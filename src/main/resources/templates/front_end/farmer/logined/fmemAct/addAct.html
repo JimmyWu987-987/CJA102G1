@@ -5,116 +5,264 @@
 <title>小農活動專區 - 建立活動</title>
 <link rel="icon" th:href="@{/images/logo.png}">
 
-<!-- ============================================ -->
-<!--     引入main.css, iconfonts -->
-    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
-<!-- ============================================== -->
-
-<!-- <link rel="stylesheet" th:href="@{/css/main.css}"> -->
-<!-- <link rel="stylesheet" th:href="@{/css/act/addAct.css}"> -->
-
 <style>
-.error-message { color: red; font-size: 14px; margin-top: 5px; display: block; }
-.form-group { margin-bottom: 15px; }
-label { display: block; font-weight: bold; margin-bottom: 5px; }
-input[type="text"], input[type="number"], input[type="date"], textarea {
-    width: 300px;
-    padding: 8px;
+/* ================================================= */
+/* 表單卡片風格 CSS - 獨特且局部化的樣式 (最終版) */
+/* ================================================= */
+
+/* 獨特 Wrapper Class：使用 'outside' 實現頁面內容區塊的背景和垂直間距隔離 */
+.outside {
+    /* 淺白綠色背景，實現與 Header 區隔的視覺效果 */
+    background-color: #f7fcf5; 
+    
+    /* 提供與 Header 隔開的間距 (頂部) 和與 Footer 隔開的間距 (底部) */
+    padding-top: 30px; 
+    padding-bottom: 30px; 
+    
+    /* 確保寬度正確，防止背景色溢出或變形 */
+    width: 100%;
+    box-sizing: border-box; 
+    
+    /* 為了應對 Header 可能是 fixed 造成遮擋，可以增加一個微小的上邊距，
+       但通常 padding-top: 30px 已經足夠將內容推開。
+       如果您Header是固定高度，可以嘗試用 margin-top 替代 padding-top
+       margin-top: -1px; 避免 CSS Collapsing，並確保無縫銜接
+    */
+    /* margin-top: -1px; */ 
+}
+
+/* 建立活動主卡片容器 (核心卡片樣式) */
+.act-add-container {
+    max-width: 650px; /* 限制表單寬度 */
+    margin: 0 auto; /* 居中 */
+    padding: 30px 40px;
+    background-color: #ffffff; /* 白色卡片底色 */
+    border-radius: 12px; /* 圓角 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+    border: 1px solid #e6eedb; /* 淺綠色邊框 */
+}
+
+/* 標題樣式 */
+.act-add-container h1 {
+    color: #38761d; /* 深綠色標題 */
+    text-align: center;
+    margin-top: 0; 
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e6eedb;
+}
+
+/* 錯誤訊息和提示 */
+.error-message { 
+    color: #dc3545; /* 紅色 */
+    font-size: 14px; 
+    margin-top: 5px; 
+    display: block; 
+}
+
+.general-error {
+    background-color: #fcebeb; /* 淺紅背景 */
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #dc3545;
+}
+
+/* 表單組件群組 */
+.form-group { 
+    margin-bottom: 20px; 
+}
+
+/* 標籤樣式 */
+label { 
+    display: block; 
+    font-weight: bold; 
+    margin-bottom: 8px; 
+    color: #6a4a3c; /* 淺褐色標籤 */
+    font-size: 1.05em;
+}
+
+/* 輸入框/文本域基礎樣式 */
+input[type="text"], input[type="number"], input[type="date"], textarea, input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    box-sizing: border-box; 
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+    font-size: 1em;
+}
+
+input[type="date"] {
+    min-height: 40px; 
+}
+
+input:focus, textarea:focus {
+    border-color: #8fbc8f; /* 淺綠色聚焦效果 */
+    box-shadow: 0 0 5px rgba(143, 188, 143, 0.5);
+    outline: none;
+}
+
+/* 活動描述文本域 */
+textarea {
+    resize: vertical; 
+    min-height: 100px;
+}
+
+/* 活動日期提示文字 */
+.form-group label span[style*="grey"] {
+    font-weight: normal;
+    color: #888;
+    font-size: 0.85em;
+    display: block;
+    margin-top: 5px;
+}
+
+/* 活動類別複選框排版 */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px 25px; 
+    padding: 10px;
+    border: 1px solid #e6eedb;
+    border-radius: 6px;
+    background-color: #fafff8; /* 淺綠白背景 */
+}
+
+.checkbox-group label {
+    display: inline-flex;
+    align-items: center;
+    font-weight: normal;
+    margin-bottom: 0;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+/* 檔案上傳輸入框樣式調整 */
+input[type="file"] {
+    border: 1px solid #e6eedb;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+/* 提交按鈕樣式 - 最終防禦，確保不被壓扁 */
+.act-add-container button[type="submit"] {
+    /* 確保其不會被父層的 flex/grid 擠壓 */
+    flex-shrink: 0 !important; 
+    align-self: flex-start; 
+
+    /* 確保寬度佔滿容器 */
+    width: 100%; 
+    padding: 12px;
+    display: block; 
+    box-sizing: border-box; 
+
+    background-color: #8fbc8f; /* 淺綠色按鈕 */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    margin-top: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center; 
+}
+
+.act-add-container button[type="submit"]:hover {
+    background-color: #6b8e23; /* 深一點的綠色 */
+    transform: translateY(-1px);
 }
 </style>
 </head>
 
 <body>
 
-<!-- =============================== -->
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-<!-- ==================================== -->
+<div class="outside">
+    <div class="container">
+        <div class="act-add-container">
+            
+            <h1>建立活動</h1>
 
+            <div th:if="${errorMsg}" class="error-message general-error" th:text="${errorMsg}"></div>
 
-<div class="container">
-<div class="act-add-container">
-    <h1>建立活動</h1>
+            <form th:action="@{/fmem/act/insert}" th:object="${act}" method="post" enctype="multipart/form-data">
+                
+                <div class="form-group">
+                    <label for="actName">活動名稱 <span style="color: red;">*</span></label>
+                    <input type="text" id="actName" th:field="*{actName}" placeholder="請輸入活動名稱" required>
+                    <span class="error-message" th:if="${#fields.hasErrors('actName')}" th:errors="*{actName}"></span>
+                </div>
+<div class="form-group">
+                    <label for="actStart">活動開始日期 <span style="color: red;">*</span><span style="color: grey;">(考慮到審核作業時間及消費者報名時間, 僅能選擇自送審日算起 45 天之後的日期)</span></label>
+                   <input type="date" th:field="*{actStart}"
+                       th:attr="min=${#temporals.format(#temporals.createNow().plusDays(45),'yyyy-MM-dd')}" required>
+                    <span class="error-message" th:if="${#fields.hasErrors('actStart')}" th:errors="*{actStart}"></span>
+                </div>
 
+                <div class="form-group">
+                    <label for="actEnd">活動結束日期 <span style="color: red;">*</span></label>
+                    <input type="date" th:field="*{actEnd}"
+                           th:attr="min=${act.actStart != null ? #dates.format(act.actStart,'yyyy-MM-dd') : ''}" required>
+                    <span class="error-message" th:if="${#fields.hasErrors('actEnd')}" th:errors="*{actEnd}"></span>
+                </div>
+                
+<div class="form-group">
+                    <label for="actFee">活動費用 <span style="color: red;">*</span></label>
+                    <input type="number" id="actFee" th:field="*{actFee}" placeholder="請輸入活動費用 (每人)" required>
+                    <span class="error-message" th:if="${#fields.hasErrors('actFee')}" th:errors="*{actFee}"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="actDes">活動描述</label>
+                    <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述, 請務必要填入聯絡資訊及舉辦地點等資訊" required></textarea>
+                    <span class="error-message" th:if="${#fields.hasErrors('actDes')}" th:errors="*{actDes}"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label>活動類別 <span style="color: red;">*</span></label>
+                    <div class="checkbox-group">
+                        <div th:each="actCate : ${allCategories}">
+                            <label>
+                                <input type="checkbox" name="actCateId" th:value="${actCate.actCateId}"
+                                       th:checked="${#lists.contains(actCateId ?: {}, actCate.actCateId)}"/>
+                                <span th:text="${actCate.actCateName}">分類名稱</span>
+                            </label>
+                        </div>
+                    </div>
+                    <span class="error-message" th:if="${#fields.hasErrors('actCate')}" th:errors="*{actCate}"></span>
+                </div>
+<div class="form-group">
+                    <label for="actMainImg">活動主要圖片 <span style="color: red;">*</span></label>
+                    <input type="file" id="actMainImg" name="actMainImgFile" accept="image/*" required>
+                    <span class="error-message"
+                          th:if="${#fields.hasErrors('actMainImg')}"
+                          th:errors="*{actMainImg}"></span>
+                </div>
+<div class="form-group">
+                    <label for="actImgs">活動圖片</label>
+                    <input type="file" id="actImgs" name="actImgs" accept="image/*" multiple>
+                </div>
 
-    <div th:if="${errorMsg}" class="error-message general-error" th:text="${errorMsg}"></div>
+                <button type="submit">提交審核</button>
 
-    <form th:action="@{/fmem/act/insert}" th:object="${act}" method="post" enctype="multipart/form-data">
-        
-        <div class="form-group">
-            <label for="actName">活動名稱 <span style="color: red;">*</span></label>
-            <input type="text" id="actName" th:field="*{actName}" placeholder="請輸入活動名稱" required>
-            <span class="error-message" th:if="${#fields.hasErrors('actName')}" th:errors="*{actName}"></span>
+            </form>
         </div>
-<!-- 更改區 -->
-        <div class="form-group">
-            <label for="actStart">活動開始日期 <span style="color: red;">*</span><span style="color: grey;">(考慮到審核作業時間及消費者報名時間, 僅能選擇自送審日算起 45 天之後的日期)</span></label>
-           <input type="date" th:field="*{actStart}"
-		       th:attr="min=${#temporals.format(#temporals.createNow().plusDays(45),'yyyy-MM-dd')}" required>
-			<span class="error-message" th:if="${#fields.hasErrors('actStart')}" th:errors="*{actStart}"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="actEnd">活動結束日期 <span style="color: red;">*</span></label>
-            <input type="date" th:field="*{actEnd}"
-			       th:attr="min=${act.actStart != null ? #dates.format(act.actStart,'yyyy-MM-dd') : ''}" required>
-			<span class="error-message" th:if="${#fields.hasErrors('actEnd')}" th:errors="*{actEnd}"></span>
-        </div>
-        
-<!-- /更改區 -->
-        <div class="form-group">
-            <label for="actFee">活動費用 <span style="color: red;">*</span></label>
-            <input type="number" id="actFee" th:field="*{actFee}" placeholder="請輸入活動費用 (每人)" required>
-            <span class="error-message" th:if="${#fields.hasErrors('actFee')}" th:errors="*{actFee}"></span>
-        </div>
-        
-        <div class="form-group">
-            <label for="actDes">活動描述</label>
-            <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述, 請務必要填入聯絡資訊及舉辦地點等資訊" required></textarea>
-            <span class="error-message" th:if="${#fields.hasErrors('actDes')}" th:errors="*{actDes}"></span>
-        </div>
-        
-        <div class="form-group">
-            <label>活動類別 <span style="color: red;">*</span></label>
-            <div th:each="actCate : ${allCategories}">
-                <label>
-                    <input type="checkbox" name="actCateId" th:value="${actCate.actCateId}"
-                           th:checked="${#lists.contains(actCateId ?: {}, actCate.actCateId)}"/>
-                    <span th:text="${actCate.actCateName}">分類名稱</span>
-                </label>
-            </div>
-            <span class="error-message" th:if="${#fields.hasErrors('actCate')}" th:errors="*{actCate}"></span>
-        </div>
-<!-- 更改區 -->
-        <div class="form-group">
-            <label for="actMainImg">活動主要圖片 <span style="color: red;">*</span></label>
-            <input type="file" id="actMainImg" name="actMainImgFile" accept="image/*" required>
-			<span class="error-message"
-			      th:if="${#fields.hasErrors('actMainImg')}"
-			      th:errors="*{actMainImg}"></span>
-        </div>
-<!-- /更改區 -->
-        <div class="form-group">
-            <label for="actImgs">活動圖片</label>
-            <input type="file" id="actImgs" name="actImgs" accept="image/*" multiple>
-        </div>
-
-        <button type="submit">提交審核</button>
-
-    </form>
-</div>
+    </div>
 </div>
 
 
-<!-- ==================================== -->
 <div th:replace="~{/front_end/index :: footer}"></div>
-<!-- ==================================== -->
-
-
-
-
 <script>
 // JavaScript 邏輯 (保留)
 const actStart = document.getElementById('actStart');
