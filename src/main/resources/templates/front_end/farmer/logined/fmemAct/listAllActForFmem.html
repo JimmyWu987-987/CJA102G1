@@ -4,84 +4,87 @@
  
 <meta charset="UTF-8">
 <title>小農活動專區 - 活動一覽</title>
+<link rel="icon" th:href="@{/images/logo.png}">
 
-<link rel="icon" href="./images/logo.png">
-    
+<!-- ============================================ -->
 <!--     引入main.css, iconfonts -->
-<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-    
-<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<!-- ============================================== -->
+
 
 <!--     @{/css} + "/sty/storeSty2.css" -->
-<style>
-	.container-header,
-	.container-footer{
-		background-color: #dce2ef;	
-	}
-	.nav > li > a{
-		background-color: #4F9D9D;
-	}
+<!-- <style> -->
+<!-- 	.container-header, -->
+<!-- 	.container-footer{ -->
+<!-- 		background-color: #dce2ef;	 -->
+<!-- 	} -->
+<!-- 	.nav > li > a{ -->
+<!-- 		background-color: #4F9D9D; -->
+<!-- 	} -->
 
 
-	table {
-		width: 100%;
-		border-collapse: separate; /* 保持圓角 */
-		border-spacing: 0;
-		font-size: 1rem;
-		border-radius: 12px; /* 整體圓角 */
-		overflow: hidden; /* 防止表格內容超出圓角 */
-		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-		margin: 20px 0;
-	}
+<!-- 	table { -->
+<!-- 		width: 100%; -->
+<!-- 		border-collapse: separate; /* 保持圓角 */ -->
+<!-- 		border-spacing: 0; -->
+<!-- 		font-size: 1rem; -->
+<!-- 		border-radius: 12px; /* 整體圓角 */ -->
+<!-- 		overflow: hidden; /* 防止表格內容超出圓角 */ -->
+<!-- 		box-shadow: 0 4px 10px rgba(0,0,0,0.1); -->
+<!-- 		margin: 20px 0; -->
+<!-- 	} -->
 	
-	table thead th {
-		border: none;
-	    padding: 12px 15px;
-	    background-color: #C7B896;
-	    color: #3E5C2A;
-	    text-align: center;
-	}
+<!-- 	table thead th { -->
+<!-- 		border: none; -->
+<!-- 	    padding: 12px 15px; -->
+<!-- 	    background-color: #C7B896; -->
+<!-- 	    color: #3E5C2A; -->
+<!-- 	    text-align: center; -->
+<!-- 	} -->
 	
-	table thead th:first-child {
-	    border-top-left-radius: 12px;
-	}
-	table thead th:last-child {
-	    border-top-right-radius: 12px;
-	}
+<!-- 	table thead th:first-child { -->
+<!-- 	    border-top-left-radius: 12px; -->
+<!-- 	} -->
+<!-- 	table thead th:last-child { -->
+<!-- 	    border-top-right-radius: 12px; -->
+<!-- 	} -->
 	
-	table tbody td {
-	    padding: 12px 15px;
-	    text-align: center;
-	    border: none;
-	}
+<!-- 	table tbody td { -->
+<!-- 	    padding: 12px 15px; -->
+<!-- 	    text-align: center; -->
+<!-- 	    border: none; -->
+<!-- 	} -->
 	
-	table tbody tr:nth-child(odd) {
-	    background-color: #F7F4E9; 
-	}
-	table tbody tr:nth-child(even) {
-	    background-color: #FFFFFF; 
-	}
+<!-- 	table tbody tr:nth-child(odd) { -->
+<!-- 	    background-color: #F7F4E9;  -->
+<!-- 	} -->
+<!-- 	table tbody tr:nth-child(even) { -->
+<!-- 	    background-color: #FFFFFF;  -->
+<!-- 	} -->
 
 
-	.mainImg { max-width: 100px; max-height: 80px; }
-	.btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
+<!-- 	.mainImg { max-width: 100px; max-height: 80px; } -->
+<!-- 	.btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; } -->
 	
-	h1{ text-align: center;}
+<!-- 	h1{ text-align: center;} -->
 	
-	.list {
-		padding: 20px 40px;
-		background-color: #FFFDF5;
-		border-radius: 8px;
-		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-		margin: 30px; /* 與下方區塊距離 */
-	}
+<!-- 	.list { -->
+<!-- 		padding: 20px 40px; -->
+<!-- 		background-color: #FFFDF5; -->
+<!-- 		border-radius: 8px; -->
+<!-- 		box-shadow: 0 2px 6px rgba(0,0,0,0.1); -->
+<!-- 		margin: 30px; /* 與下方區塊距離 */ -->
+<!-- 	} -->
 	
 	
-</style>
+<!-- </style> -->
 </head>
 <body>
 
+<!-- =============================== -->
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+<!-- ==================================== -->
 
 <div class="container">
 <div class="list">
@@ -148,7 +151,10 @@
 	</div>
 </div>
 </div>
+
+<!-- ==================================== -->
 <div th:replace="~{/front_end/index :: footer}"></div>
+<!-- ==================================== -->
 
 </body>
 </html>
