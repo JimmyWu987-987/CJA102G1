@@ -5,148 +5,170 @@
     <title>小農活動專區 - 新增場次</title>
     <link rel="icon" th:href="@{/images/logo.png}">
 
-<!-- ============================================ -->
-<!--     引入main.css, iconfonts -->
-    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
-<!-- ============================================== -->
+<style>
+/* ================================================= */
+/* 表單卡片風格 CSS - 獨特且局部化的樣式 (新增場次) */
+/* (與建立/編輯活動共用相同樣式) */
+/* ================================================= */
 
+/* 顏色定義 */
+:root {
+    --color-light-green: #e6eedb; /* 淺綠色 (邊框, 分隔線) */
+    --color-dark-green: #38761d; /* 深綠色 (標題) */
+    --color-beige: #f7fcf5; /* 淺白綠色 (頁面背景) */
+    --color-white: #ffffff; /* 白色 (卡片底色) */
+    --color-label-brown: #6a4a3c; /* 淺褐色標籤文字 */
+    --color-submit-green: #8fbc8f; /* 提交按鈕綠色 */
+    --color-warning-bg: #fff3cd; /* 警告背景色 */
+    --color-warning-border: #ffeeba; /* 警告邊框色 */
+    --color-error: #dc3545; /* 錯誤紅色 */
+    --color-hint-grey: #888; /* 提示灰色 */
+}
 
+/* 獨特 Wrapper Class：使用 'outside' 實現頁面內容區塊的背景和垂直間距隔離 */
+.outside {
+    background-color: var(--color-beige); 
+    padding-top: 30px; 
+    padding-bottom: 30px; 
+    width: 100%;
+    box-sizing: border-box; 
+    min-height: 80vh; 
+}
 
-<!--     <style> -->
-<!--         /* ==================== CSS 樣式 (淺綠色/淺褐色主題) ==================== */ -->
-        
-<!--         /* 頁面背景與居中 */ -->
-<!--         body { -->
-<!--             font-family: 'Arial', sans-serif; -->
-<!--             background-color: #f0fff0; -->
-<!--             display: flex; -->
-<!--             justify-content: center; -->
-<!--             align-items: flex-start;  -->
-<!--             min-height: 100vh; -->
-<!--             margin: 0; -->
-<!--             padding-top: 50px;  -->
-<!--         } -->
+/* 新增場次主卡片容器 (核心卡片樣式) */
+.ses-add-container {
+    max-width: 550px; /* 限制表單寬度 */
+    margin: 0 auto; /* 居中 */
+    padding: 30px 40px;
+    background-color: var(--color-white); 
+    border-radius: 12px; 
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); 
+    border: 1px solid var(--color-light-green); 
+}
 
-<!--         /* 卡片容器樣式 */ -->
-<!--         .card { -->
-<!--             background-color: #ffffff; -->
-<!--             padding: 30px; -->
-<!--             border-radius: 20px;  -->
-<!--             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);  -->
-<!--             width: 100%; -->
-<!--             max-width: 500px;  -->
-<!--             box-sizing: border-box; -->
-<!--             border: 3px solid #b8860b;  -->
-<!--         } -->
+/* 標題樣式 */
+.ses-add-container h1 {
+    color: var(--color-dark-green); 
+    text-align: center;
+    margin-top: 0; 
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-light-green);
+    font-size: 1.8em; 
+}
 
-<!--         /* 標題樣式 */ -->
-<!--         h1 { -->
-<!--             color: #2f4f4f;  -->
-<!--             text-align: center; -->
-<!--             margin-bottom: 25px; -->
-<!--             font-size: 1.8em; -->
-<!--             font-weight: bold; -->
-<!--         } -->
+/* 表單組件群組 */
+.form-group { 
+    margin-bottom: 20px; 
+}
 
-<!--         /* 表單組件通用樣式 */ -->
-<!--         .form-group { margin-bottom: 20px; } -->
+/* 標籤樣式 */
+label { 
+    display: block; 
+    font-weight: bold; 
+    margin-bottom: 8px; 
+    color: var(--color-label-brown); 
+    font-size: 1.05em;
+}
 
-<!--         label {  -->
-<!--             display: block;  -->
-<!--             margin-bottom: 8px;  -->
-<!--             font-weight: bold;  -->
-<!--             color: #4a4a4a; -->
-<!--         } -->
+/* 輸入框通用樣式 */
+input[type="date"],  
+input[type="time"],  
+input[type="number"] {  
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; 
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+    font-size: 1em;
+}
 
-<!--         input[type="date"],  -->
-<!--         input[type="time"],  -->
-<!--         input[type="number"] {  -->
-<!--             width: 100%;  -->
-<!--             padding: 10px;  -->
-<!--             box-sizing: border-box; -->
-<!--             border: 1px solid #a9a9a9;  -->
-<!--             border-radius: 10px;  -->
-<!--             transition: border-color 0.3s; -->
-<!--         } -->
+input:focus {
+    border-color: var(--color-submit-green); 
+    box-shadow: 0 0 5px rgba(143, 188, 143, 0.5);
+    outline: none;
+}
 
-<!--         input:focus { -->
-<!--             border-color: #6b8e23;  -->
-<!--             outline: none; -->
-<!--             box-shadow: 0 0 5px rgba(107, 142, 35, 0.3); -->
-<!--         } -->
-        
-<!--         /* 費用警告訊息樣式 */ -->
-<!--         .alert-warning {  -->
-<!--             color: #856404;  -->
-<!--             background-color: #fff3cd;  -->
-<!--             border-color: #ffeeba;  -->
-<!--             padding: 10px;  -->
-<!--             margin-top: 10px;  -->
-<!--             border: 1px solid transparent;  -->
-<!--             border-radius: 10px;  -->
-<!--             display: none;  -->
-<!--             font-size: 0.9em; -->
-<!--         } -->
-        
-<!--         /* 按鈕樣式 */ -->
-<!--         button[type="submit"] { -->
-<!--             display: block; -->
-<!--             width: 100%; -->
-<!--             padding: 12px; -->
-<!--             margin-top: 30px; -->
-<!--             background-color: #8fbc8f;  -->
-<!--             color: white; -->
-<!--             border: none; -->
-<!--             border-radius: 15px;  -->
-<!--             font-size: 1.1em; -->
-<!--             cursor: pointer; -->
-<!--             transition: background-color 0.3s, transform 0.1s; -->
-<!--         } -->
+/* 提示文字 */
+.date-limit {
+    display: block;  
+    margin-top: 5px;  
+    font-size: 0.9em;  
+    color: var(--color-hint-grey);
+}
 
-<!--         button[type="submit"]:hover { -->
-<!--             background-color: #6b8e23;  -->
-<!--         } -->
-        
-<!--         button[type="submit"]:active { -->
-<!--             transform: translateY(1px);  -->
-<!--         } -->
-        
-<!--         /* 日期/時間限制提示文字 */ -->
-<!--         .date-limit { -->
-<!--             display: block;  -->
-<!--             margin-top: 5px;  -->
-<!--             font-size: 0.9em;  -->
-<!--             color: #6a6a6a; -->
-<!--         } -->
+.date-limit strong {
+    color: var(--color-dark-green); 
+}
 
-<!--         .date-limit strong { -->
-<!--             color: #2f4f4f;  -->
-<!--         } -->
-        
-<!--         .date-limit strong[style*="red"] { -->
-<!--             color: #d9534f !important;  -->
-<!--         } -->
-        
-<!--         /* 錯誤訊息 */ -->
-<!--         .error { -->
-<!--             color: red; -->
-<!--             font-size: 0.9em; -->
-<!--             margin-top: 5px; -->
-<!--         } -->
-<!--     </style> -->
-    
-<!--     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+.date-limit strong[style*="red"], 
+.date-limit span[style*="#d9534f"] {
+    color: var(--color-error) !important; /* 強制紅色顯示重要日期限制 */
+}
+
+/* 錯誤訊息 */
+.error {
+    color: var(--color-error);
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+/* 費用警告訊息樣式 */
+.alert-warning {  
+    color: #856404;  
+    background-color: var(--color-warning-bg); 
+    border-color: var(--color-warning-border);  
+    padding: 10px;  
+    margin-top: 10px;  
+    border: 1px solid var(--color-warning-border);  
+    border-radius: 6px;  
+    display: none;  
+    font-size: 0.9em;
+}
+
+/* 新增的按鈕容器 (解決對齊問題) */
+.form-action {
+    margin-top: 30px; /* 將按鈕的頂部間距放在容器上 */
+}
+
+/* 提交按鈕樣式 */
+.form-action button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-submit-green);  
+    color: var(--color-white);
+    border: none;
+    border-radius: 8px; 
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-action button[type="submit"]:hover {
+    background-color: #6b8e23;  
+    transform: translateY(-1px);
+}
+
+.form-action button[type="submit"]:active {
+    transform: translateY(1px);  
+}
+
+</style>
     
 </head>
 <body>
 
-<!-- =============================== -->
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-<!-- ==================================== -->
-
+<div class="outside">
 <div class="container">
-<div class="card">
+<div class="ses-add-container">
 
     <h1>新增活動場次</h1>
 
@@ -173,7 +195,7 @@
             <span th:if="${#fields.hasErrors('sesDate')}" th:errors="*{sesDate}" class="error"></span>
         </div>
 
-<div class="form-group">
+        <div class="form-group">
             <label for="sesStart">場次開始時間:</label>
             <input type="time" id="sesStart" th:field="*{sesStart}" onchange="updateSesEndTimeLimit()" required />
             <span th:if="${#fields.hasErrors('sesStart')}" th:errors="*{sesStart}" class="error"></span>
@@ -220,17 +242,17 @@
             </div>
             <span th:if="${#fields.hasErrors('sesFee')}" th:errors="*{sesFee}" class="error"></span>
         </div>
-
-        <button type="submit">新增場次</button>
+        
+        <div class="form-action">
+            <button type="submit">新增場次</button>
+        </div>
     </form>
 
 </div>
 </div>  
+</div>
 
-<!-- ==================================== -->
 <div th:replace="~{/front_end/index :: footer}"></div>
-<!-- ==================================== -->
-
 <script>
     
     // 初始化報名截止日期的最小值（來自後端：今天 + 3 天）

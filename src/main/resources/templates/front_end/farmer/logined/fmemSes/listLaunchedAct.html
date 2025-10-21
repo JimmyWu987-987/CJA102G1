@@ -3,150 +3,300 @@
 <head>
  
 <meta charset="UTF-8">
-<title>小農活動專區 - 已上架活動一覽 (新增場次用)</title> <link rel="icon" href="./images/logo.png">
-<!-- [for 新增場次用] -->
+<title>小農活動專區 - 已上架活動一覽 (新增場次用)</title>
 <link rel="icon" th:href="@{/images/logo.png}">
 
-
-<!-- ============================================ -->
-<!--     引入main.css, iconfonts -->
-    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
 	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
-<!-- ============================================== -->
+<style>
+/* ================================================= */
+/* 卡片風格 CSS - 已上架活動列表 (新增場次用) */
+/* ================================================= */
 
-<!-- <style> -->
-<!-- 	.container-header, -->
-<!-- 	.container-footer{ -->
-<!-- 		background-color: #dce2ef;	 -->
-<!-- 	} -->
-<!-- 	.nav > li > a{ -->
-<!-- 		background-color: #4F9D9D; -->
-<!-- 	} -->
+/* 顏色定義 */
+:root {
+    --color-light-green: #e6eedb; /* 淺綠色 (卡片邊框, 分隔線) */
+    --color-dark-green: #38761d; /* 深綠色 (標題/重要文字) */
+    --color-beige: #f7fcf5; /* 淺白綠色 (頁面背景) */
+    --color-white: #ffffff; /* 白色 (卡片底色) */
+    --color-label-brown: #6a4a3c; /* 淺褐色標籤文字 */
+    --color-light-grey: #f0f0f0; /* 淺灰色 (圖片區塊背景) */
+    --color-purple-action: #b19cd9; /* *** 淺紫色 (新增場次按鈕) *** */
+}
+
+/* 獨特 Wrapper Class：提供背景和頁面間距 */
+.act-list-wrapper {
+    background-color: var(--color-beige); 
+    padding-top: 30px; 
+    padding-bottom: 30px; 
+    width: 100%;
+    box-sizing: border-box; 
+    min-height: 80vh; /* 確保內容區塊不會太短 */
+}
+
+/* 頁面標題樣式 */
+.act-list-wrapper h1 { 
+    text-align: center;
+    color: var(--color-dark-green);
+    margin-bottom: 25px;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* 無數據提示區塊 */
+.no-data-message {
+    background-color: #fff8e1; 
+    color: #a06e00; 
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    text-align: center;
+    max-width: 600px;
+    margin: 30px auto;
+}
+.error-message { /* 沿用原檔案錯誤訊息樣式 */
+    color: #c00;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+/* 活動卡片列表容器 - Grid 佈局 */
+.card-list-container {
+    display: grid;
+    /* 響應式佈局: 350px 最小寬度 */
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px; 
+    padding: 10px 0;
+}
+
+/* 單一活動卡片樣式 */
+.activity-card {
+    background-color: var(--color-white); 
+    border-radius: 15px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--color-light-green); 
+}
+
+/* 懸停效果 (重點) */
+.activity-card:hover {
+    transform: translateY(-8px); 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 卡片圖片區塊 */
+.card-image {
+    width: 100%;
+    height: 200px; 
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: var(--color-light-grey); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+/* 圖片在卡片中置中顯示 */
+.card-image img {
+    max-width: 100%; 
+    max-height: 100%; 
+    object-fit: contain; 
+    display: block;
+}
+
+/* 卡片詳細資訊區塊 */
+.card-details {
+    padding: 15px 20px;
+    flex-grow: 1; 
+}
+
+.card-title {
+    font-size: 1.5em;
+    color: var(--color-dark-green); 
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--color-light-green); 
+    padding-bottom: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 數據列表項 */
+.card-data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 0.95em;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.data-label {
+    font-weight: bold;
+    color: var(--color-label-brown); 
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+
+.data-value {
+    color: #333;
+    text-align: right;
+    word-break: break-word; 
+}
+
+/* 狀態顏色 */
+.status-published {
+    color: #28a745; /* 綠色 */
+    background-color: #e8f5e9; 
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-draft {
+    color: #dc3545; /* 紅色 */
+    background-color: #fcebeb; 
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* 審核備註 */
+.remark-area {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-light-green);
+    font-size: 0.9em;
+    color: #555;
+}
+
+.remark-area .data-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--color-dark-green);
+    font-weight: bold;
+}
 
 
-<!-- 	table { -->
-<!-- 		width: 100%; -->
-<!-- 		border-collapse: separate; /* 保持圓角 */ -->
-<!-- 		border-spacing: 0; -->
-<!-- 		font-size: 1rem; -->
-<!-- 		border-radius: 12px; /* 整體圓角 */ -->
-<!-- 		overflow: hidden; /* 防止表格內容超出圓角 */ -->
-<!-- 		box-shadow: 0 4px 10px rgba(0,0,0,0.1); -->
-<!-- 		margin: 20px 0; -->
-<!-- 	} -->
-	
-<!-- 	table thead th { -->
-<!-- 		border: none; -->
-<!-- 	    padding: 12px 15px; -->
-<!-- 	    background-color: #C7B896; -->
-<!-- 	    color: #3E5C2A; -->
-<!-- 	    text-align: center; -->
-<!-- 	} -->
-	
-<!-- 	table thead th:first-child { -->
-<!-- 	    border-top-left-radius: 12px; -->
-<!-- 	} -->
-<!-- 	table thead th:last-child { -->
-<!-- 	    border-top-right-radius: 12px; -->
-<!-- 	} -->
-	
-<!-- 	table tbody td { -->
-<!-- 	    padding: 12px 15px; -->
-<!-- 	    text-align: center; -->
-<!-- 	    border: none; -->
-<!-- 	} -->
-	
-<!-- 	table tbody tr:nth-child(odd) { -->
-<!-- 	    background-color: #F7F4E9;  -->
-<!-- 	} -->
-<!-- 	table tbody tr:nth-child(even) { -->
-<!-- 	    background-color: #FFFFFF;  -->
-<!-- 	} -->
+/* 卡片操作區塊 */
+.card-actions {
+    padding: 10px 20px 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
 
+/* 新增場次按鈕樣式 */
+.card-actions .btn-add-session {
+    display: block; 
+    width: 100%;
+    padding: 10px 15px;
+    color: white !important; 
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    background-color: var(--color-purple-action); /* *** 淺紫色 *** */
+}
 
-<!-- 	.mainImg { max-width: 100px; max-height: 80px; } -->
-<!-- 	.btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; } -->
-	
-<!-- 	h1{ text-align: center;} -->
-	
-<!-- 	.list { -->
-<!-- 		padding: 20px 40px; -->
-<!-- 		background-color: #FFFDF5; -->
-<!-- 		border-radius: 8px; -->
-<!-- 		box-shadow: 0 2px 6px rgba(0,0,0,0.1); -->
-<!-- 		margin: 30px; /* 與下方區塊距離 */ -->
-<!-- 	} -->
-	
-<!-- 	.error-message { /* 新增錯誤訊息樣式 */ -->
-<!--         color: #c00; -->
-<!--         text-align: center; -->
-<!--         margin: 20px 0; -->
-<!--         font-weight: bold; -->
-<!--     } -->
-	
-<!-- </style> -->
+.card-actions .btn-add-session:hover {
+    background-color: #9a7dbe; /* 淺紫色 Hover 效果 */
+}
+</style>
 </head>
 <body>
 
-<!-- =============================== -->
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-<!-- ==================================== -->
-
+<div class="act-list-wrapper">
 <div class="container">
-<div class="list">
-	<h1>已上架活動列表 (新增場次)</h1> <div th:if="${#lists.isEmpty(actList)}">
+    
+	<h1>已上架活動列表 (新增場次)</h1> 
+	
+	<div th:if="${#lists.isEmpty(actList)}" class="no-data-message">
 		<p th:if="${message}" class="error-message" th:text="${message}">目前尚無已上架活動可新增場次</p> 
 		<p th:unless="${message}">目前尚無已上架活動</p>
 	</div>
 
-	<div th:unless="${#lists.isEmpty(actList)}">
-		<table border="1">
-		<thead>
-			<tr>
-				<th>活動ID</th>
-				<th>活動主照片</th>
-				<th>活動名稱</th>
-				<th>開始日期</th>
-				<th>結束日期</th>
-				<th>費用</th>
-				<th>活動狀態</th>
-				<th>活動審核備註</th>
-				<th>活動上下架狀態</th>
-				<th>活動評價</th>
-				<th>操作</th>
-            </tr>
-		</thead>
-		<tbody>
-			<tr th:each="act : ${actList}">
-				<td th:text="${act.actId}"></td>
-				<td>
-					<img class="mainImg" th:if="${act.actMainImg != null}" th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" alt="主照片"/>
-				</td>
-				<td th:text="${act.actName}"></td>
-				<td th:text="${#dates.format(act.actStart, 'yyyy/MM/dd')}"></td>
-				<td th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></td>
-				<td th:text="${act.actFee}"></td>
-				<td th:text="${act.actStatText}"></td>
-				<td th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></td>
-				<td th:text="${act.actLaunStatText}"></td>
-				<td th:text="${act.actCnt != null && act.actCnt > 0 ?
-              #numbers.formatDecimal(act.actScore / act.actCnt, 1, 1) + ' 顆星 (' + act.actCnt + ' 筆評價)' :
-              '尚無評價'}"></td>
+	<div th:unless="${#lists.isEmpty(actList)}" class="card-list-container">
+		
+		<div th:each="act : ${actList}" class="activity-card">
+			
+			<div class="card-image">
+				<img th:if="${act.actMainImg != null}" 
+					 th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" 
+					 alt="活動主照片"/>
+				<div th:unless="${act.actMainImg != null}" class="no-image-placeholder">
+				</div>
+			</div>
+
+			<div class="card-details">
 				
-				<td>
-					<a class="btn" th:href="@{/fmem/ses/addSes/{Id}(Id=${act.actId})}">新增場次</a>
-				</td>
+				<h2 class="card-title" th:text="${act.actName}">活動名稱</h2>
 				
-			</tr>
-		</tbody>
-		</table>
+				<div class="card-data-item">
+					<span class="data-label">活動ID:</span>
+					<span class="data-value" th:text="${act.actId}"></span>
+				</div>
+
+				<div class="card-data-item">
+					<span class="data-label">開始日期:</span>
+					<span class="data-value" th:text="${#dates.format(act.actStart, 'yyyy/MM/dd')}"></span>
+				</div>
+				
+				<div class="card-data-item">
+					<span class="data-label">結束日期:</span>
+					<span class="data-value" th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></span>
+				</div>
+				
+				<div class="card-data-item">
+					<span class="data-label">費用:</span>
+					<span class="data-value" th:text="${act.actFee}"></span>
+				</div>
+
+				<div class="card-data-item">
+					<span class="data-label">活動狀態:</span>
+					<span class="data-value" th:text="${act.actStatText}"></span>
+				</div>
+
+				<div class="card-data-item">
+					<span class="data-label">上下架狀態:</span>
+					<span class="data-value status-text" 
+						  th:text="${act.actLaunStatText}"
+						  th:classappend="${act.actLaunStatText == '已上架'} ? 'status-published' : 'status-draft'">
+					</span>
+				</div>
+				
+				<div class="card-data-item">
+					<span class="data-label">活動評價:</span>
+					<span class="data-value" 
+					      th:text="${act.actCnt != null and act.actCnt > 0 ?
+					              #numbers.formatDecimal(act.actScore / act.actCnt, 1, 1) + ' 顆星 (' + act.actCnt + ' 筆評價)' :
+					              '尚無評價'}">
+				    </span>
+				</div>
+				
+				<div class="remark-area">
+					<span class="data-label">審核備註:</span>
+					<p class="data-value" th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></p>
+				</div>
+
+			</div>
+			
+			<div class="card-actions">
+				<a class="btn btn-add-session" th:href="@{/fmem/ses/addSes/{Id}(Id=${act.actId})}">新增場次</a>
+			</div>
+			
+		</div>
 	</div>
 </div>
 </div>
 
-<!-- ==================================== -->
 <div th:replace="~{/front_end/index :: footer}"></div>
-<!-- ==================================== -->
-
 </body>
 </html>
