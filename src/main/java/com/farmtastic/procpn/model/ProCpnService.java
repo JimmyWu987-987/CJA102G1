@@ -1,6 +1,7 @@
 package com.farmtastic.procpn.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public interface ProCpnService {
 	List<ProCpnVO> findByKeyword(String keyword);
 
 	// 查詢指定日期範圍內的折價券
-	Page<ProCpnVO> filterByDateRange(java.util.Date start, java.util.Date end, Pageable pageable);
+	List<ProCpnVO> filterByDateRange(LocalDate start, LocalDate end);
 
 	// 停用所有過期折價券（排程）
 	void deactivateExpiredCoupons();
@@ -46,7 +47,5 @@ public interface ProCpnService {
 
 	// 計算折扣金額（for 測試 / 套用邏輯）
 	BigDecimal calculateDiscount(ProCpnVO coupon, BigDecimal originalPrice);
-
-	void toggleProCpnStatus(Integer proCpnId);
 
 }

@@ -1,12 +1,10 @@
 package com.farmtastic.procpn.controller;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -91,12 +89,12 @@ public class ProCpnAdminController {
 	}
 
 	@GetMapping("/find")
-	public String findOneProCpn(@RequestParam(required = false) Integer id, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "5") int size, Model model) {
-		// 1. 判斷空值
+	public String findOneProCpn(@RequestParam(required = false) Integer id, Model model) {
+		List<ProCpnVO> coupons;
+		// 1. 檢查是否有輸入 ID
 		if (id == null) {
-			model.addAttribute("error", "請輸入折價券編號！");
-			model.addAttribute("pageData", Page.empty()); // 避免 pageData=null
+			coupons = proCpnSvc.getAll();
+			model.addAttribute("coupons", coupons);
 			return VIEW_PATH;
 
 		}
@@ -105,12 +103,12 @@ public class ProCpnAdminController {
 		Optional<ProCpnVO> optional = proCpnSvc.getById(id);
 
 		// 3.處理結果
-		Page<ProCpnVO> pageData = optional.map(cpn -> new PageImpl<>(List.of(cpn), buildPageable(page, size), 1))
-				.orElseGet(() -> {
-					model.addAttribute("error", "查無此折價券編號：" + id);
-					return new PageImpl<>(List.of(), buildPageable(page, size), 0);
-				});
-		model.addAttribute("pageData", pageData);
+		if (optional.isPresent()) {
+			model.addAttribute("coupons", List.of(optional.get()));
+		} else {
+			model.addAttribute("error", "查無此折價券編號：" + id);
+			coupons = proCpnSvc.getAll();
+		}
 		return VIEW_PATH;
 	}
 
@@ -127,13 +125,26 @@ public class ProCpnAdminController {
 
 	/** 日期篩選 */
 	@GetMapping("/filter")
-	public String filterCpns(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, Model model) {
-		Page<ProCpnVO> pageData = proCpnSvc.filterByDateRange(start, end, buildPageable(page, size));
+	public String filterCpns(
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end, Model model) {
+		// 1.呼叫日期SERVICE
+		List<ProCpnVO> filteredList = proCpnSvc.filterByDateRange(start, end);
+		// 2.日期
+		if (start == null && end == null) {
+			// 沒選日期：顯示所有資料，但提示錯誤訊息
+			filteredList = proCpnSvc.getAll();
+			model.addAttribute("error", " 請選擇日期區間！已顯示全部資料");
+		} else {
+			// 有選日期就正常查詢
+			filteredList = proCpnSvc.filterByDateRange(start, end);
+			model.addAttribute("successMessage", "篩選成功，共 " + filteredList.size() + " 筆資料");
+		}
+
+		// 3.放進 model，讓 Thymeleaf 渲染
+		model.addAttribute("coupons", filteredList);
 		model.addAttribute("start", start);
 		model.addAttribute("end", end);
-		model.addAttribute("pageData", pageData);
 		return VIEW_PATH;
 	}
 
@@ -167,7 +178,7 @@ public class ProCpnAdminController {
 
 //改變狀態
 	@GetMapping("/toggleStatus/{id}/{status}")
-	public String deleteProCpn(@PathVariable Integer id, @PathVariable String status) {
+	public String toggleProCpnStatus(@PathVariable Integer id, @PathVariable String status) {
 		IsActive newStatus = "ACTIVE".equalsIgnoreCase(status) ? IsActive.ACTIVE : IsActive.INACTIVE;
 		proCpnSvc.changeProCpnStatus(id, newStatus);
 		return "redirect:/admin/procpn/list";

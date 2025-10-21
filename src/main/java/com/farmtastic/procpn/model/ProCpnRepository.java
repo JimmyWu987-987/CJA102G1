@@ -1,14 +1,13 @@
 package com.farmtastic.procpn.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.IsActive;
@@ -43,11 +42,11 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 //	List<ProCpnVO> findByDiscType(DiscountType discType);
 
 	// 上架日期篩選
-	Page<ProCpnVO> findByStartDateBetween(Date start, Date end, Pageable pageable);
+	List<ProCpnVO> findByStartDateBetween(LocalDate start, LocalDate end);
 
-	Page<ProCpnVO> findByStartDateAfter(Date start, Pageable pageable);
+	List<ProCpnVO> findByStartDateAfter(LocalDate start);
 
-	Page<ProCpnVO> findByStartDateBefore(Date end, Pageable pageable);
+	List<ProCpnVO> findByStartDateBefore(LocalDate end);
 
 	// 批次停用過期券
 	@Modifying
@@ -67,5 +66,9 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 			      AND CURRENT_DATE BETWEEN start_date AND DATE_ADD(start_date, INTERVAL valid_days DAY)
 			""", nativeQuery = true)
 	List<ProCpnVO> findAvailableForMember();
+
+	@Modifying
+	@Query("UPDATE ProCpnVO c SET c.isActive = :status WHERE c.proCpnId = :id")
+	void updateStatus(@Param("id") Integer id, @Param("status") IsActive status);
 
 }
