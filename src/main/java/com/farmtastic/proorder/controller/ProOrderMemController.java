@@ -128,14 +128,12 @@ public class ProOrderMemController {
 	 * 修改訂單的狀態
 	 */
 	@PostMapping("updatestatus")
-	public String proOrderReturn(@RequestParam("proOrdId") Integer proOrdId,
-			@RequestParam("proOrdStatus") Integer proOrdStatus,
-			@RequestParam(value="proOrdComm",required = false) String proOrdComm,
-			ModelMap model, RedirectAttributes redirectAttributes,
+	public String updateStatus(@RequestParam("proOrdId") Integer proOrdId,
+			@RequestParam("proOrdStatus") Integer proOrdStatus, ModelMap model, RedirectAttributes redirectAttributes,
 			HttpSession session) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
-		
+
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
 
@@ -154,8 +152,7 @@ public class ProOrderMemController {
 			proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
 
 			Mem updateMemVO = memSvc.getOneByMemId(proOrderVO.getMemVO().getMemId());
-			
-			
+
 			// 要將更新過的 Mem 資料，存到 session
 			session.setAttribute("loggedInMember", updateMemVO);
 
@@ -164,29 +161,15 @@ public class ProOrderMemController {
 			break;
 		// 出貨中，通知賣家到貨
 		case 2:
+
 			System.out.println("已通知賣家到貨！");
 			proOrderVO.setProOrdStatus((byte) 3);
 			updateStatus = true;
 			redirectAttributes.addFlashAttribute("successMessage", "已通知賣家到貨！");
 			break;
-		// 已出貨，需要輸入文字，才能申請退貨。
+
 		case 3:
-			System.out.println("買家提出退貨申請！");
-			proOrderVO.setProOrdStatus((byte) 4);
-			
-			if(proOrdComm == null || proOrdComm.isEmpty()) {
-				redirectAttributes.addFlashAttribute("errorMessage", "請輸入退貨原因！");
-				break;
-			} else {
-				String originalComm = proOrderVO.getProOrdComm();
-				String finalComm = originalComm+"----退貨原因[ "+proOrdComm+" ]。";
-				
-				proOrderVO.setProOrdComm(finalComm);
-				redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
-				updateStatus = true;
-				break;
-			}
-		// 訂單已經是退貨流程，直接返回。
+			// 訂單已經是退貨流程，直接返回。
 		case 4:
 			System.out.println("已通知賣家退貨！");
 			proOrderVO.setProOrdStatus((byte) 5);
@@ -203,12 +186,40 @@ public class ProOrderMemController {
 		default:
 			break;
 		}
-		
+
 		if (updateStatus) {
 			proOrdSvc.updateProOrder(proOrderVO);
 		}
 
 		return "redirect:/mem/proorders/listAllProOrder";
+	}
+
+	@PostMapping("return")
+	public String proOrdeReturn(@RequestParam("proOrdId") Integer proOrdId,
+			@RequestParam("proOrdStatus") Integer proOrdStatus,
+			@RequestParam(value = "proOrdComm", required = false) String proOrdComm, ModelMap model,
+			RedirectAttributes redirectAttributes, HttpSession session) {
+
+		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
+
+		System.out.println("買家提出退貨申請！");
+		proOrderVO.setProOrdStatus((byte) 4);
+
+		if (proOrdComm == null || proOrdComm.isEmpty()) {
+			redirectAttributes.addFlashAttribute("errorMessage", "請輸入退貨原因！");
+			return "redirect:/mem/proorders/listAllProOrder";
+		} else {
+			String originalComm = proOrderVO.getProOrdComm();
+			String finalComm = originalComm + "----退貨原因[ " + proOrdComm + " ]。";
+
+			proOrderVO.setProOrdComm(finalComm);
+			redirectAttributes.addFlashAttribute("successMessage", "已提出退貨申請！");
+
+			proOrdSvc.updateProOrder(proOrderVO);
+			return "redirect:/mem/proorders/listAllProOrder";
+
+		}
+
 	}
 
 	// URL: POST /mem/proorders/insert
@@ -357,20 +368,19 @@ public class ProOrderMemController {
 		// ===================== 清除 該訂單的購物車內容 =====================
 		proOrdSvc.insertOrderCleanCart(proOrderVO);
 
-
 		// ================= 根據付款不同導向不同頁面 ==================
-		
+
 		// 0元購買，直接新增訂單
 		if (proOrderVO.getProPayStatus() == 2 && proOrderVO.getProOrdPayment() == 2) {
-			
+
 			// 清除 Session 相關屬性
 			session.removeAttribute("cartToProOrder");
 			session.removeAttribute("proOrdIdByPay");
-			
+
 			redirectAttributes.addFlashAttribute("successMessage", "新的訂單已成功建立！0元購買算你狠！！！");
 			return "redirect:/mem/proorders/listAllProOrder";
 		}
-	
+
 		// 取得新增訂單後的 proOrdId
 		Integer newProOrdId = proOrderVO.getProOrdId();
 
