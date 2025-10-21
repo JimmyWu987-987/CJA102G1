@@ -23,7 +23,7 @@ public class MemProCpnServiceImp {
 	@Autowired
 	private ProCpnRepository proCpnRepository; // ✅ 查找折價券名稱用這個
 	@Autowired
-	MemProCpnRepository memProCpnRepository;
+	MemProCpnRepository memProCpnRepo;
 	@Autowired
 	private MemProCpnMapperImp mapper;
 	@Autowired
@@ -31,19 +31,19 @@ public class MemProCpnServiceImp {
 
 	// 新增
 	public void addMemProCpn(MemProCpnVO memProCpnVO) {
-		memProCpnRepository.save(memProCpnVO);
+		memProCpnRepo.save(memProCpnVO);
 	}
 
 	// 修改
 	public void updateMemProCpn(MemProCpnVO memProCpnVO) {
-		memProCpnRepository.save(memProCpnVO);
+		memProCpnRepo.save(memProCpnVO);
 	}
 
 //修改卷狀態
 	// cpnHolderDetailId 前端購物車選的折價券
 	public void changeMemProCpnStatus(Integer memId, Integer cpnHolderDetailId) {
 		// 查出這筆券
-		MemProCpnVO vo = memProCpnRepository.findByMemVO_MemIdAndProCpnVO_ProCpnId(memId, cpnHolderDetailId)
+		MemProCpnVO vo = memProCpnRepo.findByMemVO_MemIdAndProCpnVO_ProCpnId(memId, cpnHolderDetailId)
 				.orElseThrow(() -> new RuntimeException("找不到會員折價券記錄"));
 
 		// 更新使用狀態
@@ -52,28 +52,34 @@ public class MemProCpnServiceImp {
 		vo.setUsedAt(LocalDateTime.now()); // 使用時間
 
 		// 儲存更新
-		memProCpnRepository.save(vo);
+		memProCpnRepo.save(vo);
 	}
 
 	// 查全部
 	public List<MemProCpnVO> getAll() {
-		return memProCpnRepository.findAll();
+		return memProCpnRepo.findAll();
+	}
+
+//查指定狀態
+	public List<MemProCpnVO> findByStatus(String status) {
+		CpnUseStatus useStatus = CpnUseStatus.valueOf(status);
+		return memProCpnRepo.findByCpnUseStatus(useStatus);
 	}
 
 // 查出一筆會員折價券
 	public MemProCpnVO getOne(Integer cpnHolderDetailId) {
-		return memProCpnRepository.findById(cpnHolderDetailId).orElse(null);
+		return memProCpnRepo.findById(cpnHolderDetailId).orElse(null);
 	}
 
 	// 查「某會員」所有效折價券
 	public List<MemProCpnVO> getCpnsByMember(Integer memId) {
-		List<MemProCpnVO> list = memProCpnRepository.findAllByMember(memId);
+		List<MemProCpnVO> list = memProCpnRepo.findAllByMember(memId);
 		return list == null ? Collections.emptyList() : list;
 	}
 
 	// 查「某會員」未使用且有效折價券
 	public List<MemProCpnVO> getValidCpnsByMember(Integer memId) {
-		return memProCpnRepository.findValidCpnByMember(memId);
+		return memProCpnRepo.findValidCpnByMember(memId);
 	}
 
 // 發送券
@@ -109,6 +115,6 @@ public class MemProCpnServiceImp {
 		}
 
 		// 儲存
-		memProCpnRepository.save(memProCpn);
+		memProCpnRepo.save(memProCpn);
 	}
 }

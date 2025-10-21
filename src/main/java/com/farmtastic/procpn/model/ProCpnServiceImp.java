@@ -2,13 +2,10 @@ package com.farmtastic.procpn.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,29 +110,13 @@ public class ProCpnServiceImp implements ProCpnService {
 
 	// 改變卷狀態 啟用或停用
 	@Override
+	@Transactional
 	public void changeProCpnStatus(Integer proCpnId, IsActive status) {
-		ProCpnVO procpnVO = proCpnRepo.findById(proCpnId).orElseThrow();
+		ProCpnVO procpnVO = proCpnRepo.findById(proCpnId)
+				.orElseThrow(() -> new RuntimeException("找不到折價券 ID: " + proCpnId));
 		if (procpnVO.getIsActive().equals(status))
 			return; // 避免重複設定
-		procpnVO.setIsActive(status);
-		proCpnRepo.save(procpnVO);
-	}
-
-	// 改變卷狀態 啟用或停用
-	@Override
-	@Transactional
-	public void toggleProCpnStatus(Integer proCpnId) {
-		ProCpnVO coupon = proCpnRepo.findById(proCpnId)
-				.orElseThrow(() -> new IllegalArgumentException("找不到折價券：" + proCpnId));
-
-		// 切換狀態
-		if (coupon.getIsActive() == IsActive.ACTIVE) {
-			coupon.setIsActive(IsActive.INACTIVE);
-		} else {
-			coupon.setIsActive(IsActive.ACTIVE);
-		}
-
-		proCpnRepo.save(coupon);
+		proCpnRepo.updateStatus(proCpnId, status);
 	}
 
 	// 名稱模糊搜尋
@@ -146,15 +127,15 @@ public class ProCpnServiceImp implements ProCpnService {
 
 	// 查詢指定日期範圍內的折價券
 	@Override
-	public Page<ProCpnVO> filterByDateRange(Date start, Date end, Pageable pageable) {
+	public List<ProCpnVO> filterByDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null)
-			return proCpnRepo.findByStartDateBetween(start, end, pageable);
+			return proCpnRepo.findByStartDateBetween(start, end);
 		else if (start != null)
-			return proCpnRepo.findByStartDateAfter(start, pageable);
+			return proCpnRepo.findByStartDateAfter(start);
 		else if (end != null)
-			return proCpnRepo.findByStartDateBefore(end, pageable);
+			return proCpnRepo.findByStartDateBefore(end);
 		else
-			return proCpnRepo.findAll(pageable);
+			return proCpnRepo.findAll();
 	}
 
 //3點自動停過期卷
@@ -169,11 +150,6 @@ public class ProCpnServiceImp implements ProCpnService {
 	@Override
 	public List<ProCpnVO> findAvailableForMember() {
 		return proCpnRepo.findAvailableForMember();
-	}
-
-//分頁
-	public Page<ProCpnVO> findPagedProCpn(Pageable pageable) {
-		return proCpnRepo.findAll(pageable);
 	}
 
 	@Override

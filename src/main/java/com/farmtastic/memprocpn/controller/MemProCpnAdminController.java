@@ -66,6 +66,25 @@ public class MemProCpnAdminController {
 		return "/back_end/logined/memprocpn/listValidByMember";
 	}
 
+	@GetMapping("/filterByStatus")
+	public String filterByStatus(@RequestParam(required = false) String status, Model model) {
+
+		List<MemProCpnVO> list;
+
+		if (status == null || status.isEmpty()) {
+			// 沒選就查全部
+			list = memProCpnSvc.getAll();
+			model.addAttribute("successMessage", "顯示全部折價券");
+		} else {
+			// 查指定狀態
+			list = memProCpnSvc.findByStatus(status);
+		}
+
+		model.addAttribute("memCoupons", list);
+		model.addAttribute("selectedStatus", status);
+		return "/back_end/logined/memprocpn/listAllMemProCpn";
+	}
+
 	@GetMapping("/view/{cpnHolderDetailId}")
 	public String viewMemProCpn(@PathVariable Integer cpnHolderDetailId, Model model) {
 		MemProCpnVO memProCpn = memProCpnSvc.getOne(cpnHolderDetailId);

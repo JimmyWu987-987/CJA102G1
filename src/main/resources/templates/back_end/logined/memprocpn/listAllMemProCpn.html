@@ -18,6 +18,10 @@
     .status-used { color: #2563eb; font-weight: 600; }
     .status-expired { color: #dc2626; font-weight: 600; }
     table.dataTable tbody tr:hover { background-color: #f1f5f9; }
+    select {
+    background-color: #2d2d2d;
+    color: white;
+}
 </style>
 </head>
 <body>
@@ -38,6 +42,14 @@
                class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
                重置</a>
     </form>
+   <form th:action="@{/admin/memprocpn/filterByStatus}" method="get" class="flex justify-center gap-3 mb-6 flex-wrap">
+    <select name="status" class="form-select border rounded px-2 py-1" id="statusSelect">
+        <option value="">全部狀態</option>
+        <option value="UNUSED" th:selected="${selectedStatus == 'UNUSED'}">未使用</option>
+        <option value="USED" th:selected="${selectedStatus == 'USED'}">已使用</option>
+        <option value="EXPIRED" th:selected="${selectedStatus == 'EXPIRED'}">已過期</option>
+    </select>
+</form>
 
     <!-- ⚠️ 無資料提示 -->
     <div th:if="${#lists.isEmpty(memCoupons)}" 
@@ -95,6 +107,7 @@
     </div>
      </div>
 	<script>
+	
 		// ... DataTables 初始化腳本 ...
 		$(document).ready(function() {
 			console.log("DataTables 初始化中")
@@ -121,6 +134,13 @@
 				}
 			});
 			  console.log("DataTables 已啟用");
+		});
+		document.addEventListener("DOMContentLoaded", function() {
+		    const select = document.getElementById("statusSelect");
+		    select.addEventListener("change", function() {
+		        // 自動送出 form
+		        this.form.submit();
+		    });
 		});
 	</script>
 </body>

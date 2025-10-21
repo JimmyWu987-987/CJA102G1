@@ -98,33 +98,52 @@
            class="min-w-full border border-gray-200 divide-y divide-gray-200 text-sm">
       <thead class="bg-gray-100 text-gray-700">
         <tr class="text-center font-semibold">
-          <th>編號</th>
-          <th>名稱</th>
-          <th>折扣類型</th>
-          <th>折扣值</th>
-          <th>起始日</th>
-          <th>有效天數</th>
-          <th>到期日</th>
-          <th>狀態</th>
-          <th>建立時間</th>
-          <th>操作</th>
+           <th>編號</th>
+            <th>名稱</th>
+            <th>折扣類型</th>
+            <th>折扣值</th>
+            <th>起始日</th>
+            <th>有效天數</th>
+            <th>到期日</th>
+            <th>狀態</th>
+            <th>建立時間</th>
+            <th>操作</th>
         </tr>
       </thead>
       <tbody>
-        <tr th:each="c : ${coupons}" class="text-center hover:bg-gray-50">
+       <tr th:each="c : ${coupons}" class="text-center hover:bg-gray-50">
           <td th:text="${c.actCpnId}"></td>
           <td th:text="${c.cpnName}"></td>
           <td th:text="${c.discType != null ? c.discType.text : '-'}"></td>
-          <td th:text="${c.discValue}"></td>
-          <td th:text="${c.formattedDiscValue}"></td>
-          <td th:text="${c.startDate != null ? c.startDate : '-'}"></td>
-          <td th:text="${c.validDays != null ? c.validDays + ' 天' : '-'}"></td>
-          <td th:text="${c.expDate != null ? c.expDate : '-'}"></td>
-          <td th:text="${c.isActive != null ? c.isActive.text : '-'}"></td>
+   		  <td th:text="${c.formattedDiscValue}"></td>
+          <!-- 起始日、有期限、到期日 -->
+            <td th:text="${c.startDate != null ? c.startDate : '-'}"></td>
+            <td th:text="${c.validDays != null ? c.validDays + ' 天' : '-'}"></td>
+            <td th:text="${c.expDate != null ? c.expDate : '-'}"></td>
+         <!--  狀態中文 -->
+            <td th:text="${c.activeFlag}"></td>
           <td th:text="${c.formattedCrtAt}"></td>
           <td class="flex justify-center gap-2">
-            <!-- 編輯/啟用/停用按鈕 -->
-          </td>
+              <a th:href="@{/admin/actcpn/edit/{id}(id=${c.actCpnId})}"
+                 class="bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500 transition">
+                 編輯
+              </a>
+                     <!-- 停用按鈕（當前狀態為啟用時顯示） -->
+              <a th:if="${c.isActive == T(com.farmtastic.common.enums.IsActive).ACTIVE}"
+                 th:href="@{/admin/actcpn/toggleStatus/{id}/{status}(id=${c.actCpnId}, status='INACTIVE')}"
+                 onclick="return confirm('確定停用此折價券？')"
+                 class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition">
+                 停用
+              </a>
+
+  				<!-- 啟用按鈕（當前狀態為停用時顯示） -->
+              <a th:if="${c.isActive == T(com.farmtastic.common.enums.IsActive).INACTIVE}"
+                 th:href="@{/admin/actcpn/toggleStatus/{id}/{status}(id=${c.actCpnId}, status='ACTIVE')}"
+                 onclick="return confirm('確定啟用此折價券？')"
+                 class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition">
+                 啟用
+               </a>
+					</td>
         </tr>
       </tbody>
     </table>
