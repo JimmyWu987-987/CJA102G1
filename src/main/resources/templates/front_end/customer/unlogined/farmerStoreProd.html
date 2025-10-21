@@ -63,7 +63,7 @@
 	                    <a th:href="${pro.proStatus == 1} ? @{/mall/product/{id}(id=${pro.proId})} : '#'">
 	                   		<div class="mask"></div>
 	                   		<div class="tag">熱銷</div>
-	                   		<img th:src="'data:image/jpeg;base64, ' + ${pro.proImage?.proImgBase64}" alt="商品圖片">
+	                   		<img th:if="${pro.proImageBase64 != null}" th:src="'data:image/jpeg;base64, ' + ${pro.proImageBase64}" alt="商品圖片">
 	                    </a>
                    	</div>
                     <div class="text">

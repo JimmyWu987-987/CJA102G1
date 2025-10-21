@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
@@ -44,6 +45,8 @@ import com.farmtastic.fmember.model.UpdateSupplementFmem;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.procom.model.ProComService;
+import com.farmtastic.proimage.model.ProImage;
+import com.farmtastic.proimage.model.ProImageService;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.reg.model.RegService;
@@ -73,6 +76,9 @@ public class FmemController{
 	
 	@Autowired
 	ProComService proComSvc;
+	
+	@Autowired
+	ProImageService proImageSvc;
 	
 	@Autowired
 	ActService actSvc;
@@ -131,6 +137,15 @@ public class FmemController{
 			model.addAttribute("fmemPicBase64", fmemPicBase64);
 			
 			List<Pro> proList = proSvc.findByFmemId(fmem.getFmemId());
+			for(Pro pro : proList) {
+				Integer proId = pro.getProId();
+				Optional<ProImage> proImage = proImageSvc.findFirstImageByProId(Long.valueOf(proId));
+				
+				if(proImage.isPresent()) {
+					String proImageBase64 = Base64.getEncoder().encodeToString(proImage.orElse(null).getProImg());
+					pro.setProImageBase64(proImageBase64);
+				}
+			}
 			model.addAttribute("proList", proList);
 			
 		} else {
@@ -153,6 +168,11 @@ public class FmemController{
 			model.addAttribute("fmemPicBase64", fmemPicBase64);
 			
 			List<Act> actList = actSvc.findByFmemId(fmem.getFmemId(), Sort.by(Sort.Direction.DESC, "actLaunUpd"));
+			for(Act act : actList) {
+				if(act.getActMainImg() != null) {
+					act.setActMainImgBase64(Base64.getEncoder().encodeToString(act.getActMainImg()));
+				}
+			}
 			model.addAttribute("actList", actList);
 			
 		} else {

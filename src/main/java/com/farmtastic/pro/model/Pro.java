@@ -78,6 +78,9 @@ public class Pro implements java.io.Serializable {
 	
 	@Transient 
 	private ProImage proImage;
+	
+	@Transient 
+	private String proImageBase64;
 
 
 	public Pro() {
@@ -192,6 +195,14 @@ public class Pro implements java.io.Serializable {
 
 	public void setProImage(ProImage proImage) {
 		this.proImage = proImage;
+	}
+
+	public String getProImageBase64() {
+		return proImageBase64;
+	}
+
+	public void setProImageBase64(String proImageBase64) {
+		this.proImageBase64 = proImageBase64;
 	}
 
 	
