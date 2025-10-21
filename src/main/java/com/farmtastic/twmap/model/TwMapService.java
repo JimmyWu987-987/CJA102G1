@@ -21,8 +21,8 @@ public class TwMapService {
 		return fmemRepository.findByFmemCity(c);
 	}
 
-	public Fmem findOne(Integer id) {
-		return fmemRepository.findByStatus(id);
-	}
+    public Fmem findOne(Integer id) {
+        return fmemRepository.findById(id).orElse(null);
+    }
 
 }

@@ -22,7 +22,6 @@ public interface FmemRepository extends JpaRepository<Fmem, Integer>{
 	@Query("select f from Fmem f where f.fmemCity  = :fmemCity and accStatus=2")
 	List<Fmem> findByFmemCity(String fmemCity);
 	
-	@Query("select f from Fmem f where f.fId  = :fId")
-	Fmem findByStatus(@Param("fId") Integer fId);
+
 	
 }
