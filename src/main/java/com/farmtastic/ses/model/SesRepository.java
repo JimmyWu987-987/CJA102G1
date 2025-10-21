@@ -27,7 +27,8 @@ public interface SesRepository extends JpaRepository<Ses, Integer> {
     @Query("DELETE FROM Ses a WHERE a.actId = :sesId")
     void deleteBySesId(@Param("sesId") Integer sesId);
 	
-	@Query("SELECT SUM(r.regCount) FROM RegVO r WHERE r.sesId = :sesId")
+	// 報名人數應為正常訂單狀態 (0已成立. 3已完成. 4待撥款. 5已完成) 的人數加總
+	@Query("SELECT SUM(r.regCount) FROM RegVO r WHERE r.sesId = :sesId AND r.regStat IN (0, 3, 4, 5)")
     Integer getHeadCountBySesId(@Param("sesId") Integer sesId);
 	
 	// 用另一個方式
