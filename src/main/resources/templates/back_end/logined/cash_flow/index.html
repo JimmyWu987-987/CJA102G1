@@ -32,6 +32,27 @@ body>form, body>div>form {
 	margin-bottom: 15px; /* 增加表單間距 */
 }
 
+/* 訊息/錯誤提示樣式 */
+.success-message, .error-message {
+	padding: 10px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	font-size: var(--content-font-size);
+	text-align: center;
+}
+.success-message {
+	background-color: #e6ffe6; /* 淺綠色 */
+	border: 1px solid #00cc00; /* 綠色邊框 */
+	color: #008000;
+}
+
+.error-message {
+	background-color: #ffe6e6; /* 淺紅色 */
+	border: 1px solid #ff0000; /* 紅色邊框 */
+	color: #cc0000;
+}
+
+
 /* ------------------ 按鈕群組置中樣式 ------------------ */
 
 .btn-group-center {
@@ -354,7 +375,7 @@ input[type="submit"]:hover {
 		</form>
 		
 		<form method="get" th:action="@{/managepage}">
-			<input type="submit" value="回管理員首頁">
+			<input type="submit" value="回到管理員首頁">
 		</form>
 		
 	</div>
