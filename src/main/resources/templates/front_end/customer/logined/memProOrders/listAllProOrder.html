@@ -256,6 +256,18 @@ div.dataTables_wrapper {
 										th:case="8">貨物已沉入大海</span> <span th:case="9">貨物被偷了</span> <span
 										th:case="10">貨物已失蹤</span> <span th:case="*">N/A</span>
 								</div>
+								
+								<div th:if="${proOrderVO.proOrdStatus >= 2 && proOrderVO.proOrdStatus <4}">
+									<div style="font-size: 6px;">
+										<p></p>
+										<span>出貨日期:</span>
+											<div>
+											<span th:text="${#dates.format(proOrderVO.proOrdShipdate, 'yyyy-MM-dd')}"></span>
+<!-- 										<p>
+										<span>物流追蹤碼:</span><span th:text="${proOrderVO.proTrackingNo}"></span> -->
+											</div>
+									</div>
+								</div>
 							</td>
 
 							<td>
