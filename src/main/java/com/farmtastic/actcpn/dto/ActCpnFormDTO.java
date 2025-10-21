@@ -17,7 +17,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public class ActCpnFormDTO {
-	private Integer actCpnId; // ✅ 編輯時會需要
+	private Integer actCpnId; // 編輯時會需要
 
 	@NotBlank(message = "折價券名稱不可空白")
 	private String cpnName;
