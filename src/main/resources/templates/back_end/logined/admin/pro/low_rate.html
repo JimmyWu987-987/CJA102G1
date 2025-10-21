@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>低評分商品管理</title>
+    <!-- 引入基本的 CSS 樣式，您可以替換成您自己的後台樣式 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 30px;
+        }
+        .table-title {
+            margin-bottom: 20px;
+        }
+        .btn-disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="table-title">低評分商品管理 (平均評分 < 3)</h2>
+
+    <!-- 用於顯示成功或失敗訊息 -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>商品 ID (proId)</th>
+                    <th>小農 ID (fmemId)</th>
+                    <th>平均評分 (pro_com_rate)</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 【重要】使用 th:block 來包裝迴圈和空資料提示 -->
+                <th:block th:if="${not #lists.isEmpty(LowRatePro)}">
+                    <tr th:each="product : ${LowRatePro}">
+                        <td th:text="${product.proId}"></td>
+                        <td th:text="${product.fmemId}"></td>
+                        <td th:text="${#numbers.formatDecimal(product.averageRating, 1, 2)}"></td>
+                        <td>
+                            <!-- 【重要】根據商品狀態 (proStatus) 顯示不同按鈕 -->
+                            <!-- 如果商品狀態為 1 (上架中)，顯示可操作的下架按鈕 -->
+                            <form th:if="${product.proStatus == 1}" th:action="@{/pro/admin/takedown}" method="post" style="display:inline;">
+                                <input type="hidden" name="proId" th:value="${product.proId}" />
+                                <button type="submit" class="btn btn-danger" 
+                                        th:onclick="'return confirm(\'您確定要下架商品 #' + ${product.proId} + ' 嗎？\');'">下架</button>
+                            </form>
+                            <!-- 如果商品狀態不為 1 (例如 0, 代表已下架)，則顯示已禁用的按鈕 -->
+                            <button th:if="${product.proStatus != 1}" type="button" class="btn btn-disabled" disabled>已下架</button>
+                        </td>
+                    </tr>
+                </th:block>
+                <!-- 【重要】只有在 List 為空時，才顯示這段提示 -->
+                <tr th:if="${#lists.isEmpty(LowRatePro)}">
+                    <td colspan="4" class="no-data">目前沒有平均評分低於 3 的商品。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <a th:href="@{/managepage}" class="btn btn-secondary mt-3">返回主選單</a>
+</div>
+
+</body>
+</html>

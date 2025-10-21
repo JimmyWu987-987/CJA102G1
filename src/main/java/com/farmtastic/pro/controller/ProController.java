@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.farmtastic.fmember.model.Fmem;
+import com.farmtastic.pro.model.LowRatePro;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.procate.model.Procate;
 import com.farmtastic.procate.model.ProcateService;
+import com.farmtastic.procom.model.ProComService;
 import com.farmtastic.proimage.model.ProImageService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pro")
@@ -42,6 +45,9 @@ public class ProController {
 
 	@Autowired
 	ProImageService proimageSvc;
+	
+	@Autowired
+	ProComService proComService;
 
 	@GetMapping("/admin/add")
 	public String adminAddPro(Model model) {
@@ -91,6 +97,36 @@ public class ProController {
 		redirectAttributes.addFlashAttribute("success", "- (管理員刪除成功)");
 		return "redirect:/pro/listAllPro";
 	}
+	
+	
+	   @GetMapping("/admin/low-rated")
+	    public String showLowRatedProducts(Model model) {
+	        List<LowRatePro> lowRatedProducts = proComService.findLowRatedProducts();
+	        
+	        List<LowRatePro> enrichedProducts = lowRatedProducts.stream().map(dto -> {
+	            Pro product = proSvc.getOnePro(dto.getProId());
+	            if (product != null && product.getFmemId() != null) {
+	                dto.setFmemId(product.getFmemId().getFmemId());
+	            }
+	            return dto;
+	        }).collect(Collectors.toList());
+
+	        model.addAttribute("LowRatePro", enrichedProducts);
+	        return "back_end/logined/admin/pro/low_rate";
+	    }
+		
+		
+	    // 處理商品下架的請求
+	    @PostMapping("/admin/takedown")
+	    public String takeDownProduct(@RequestParam("proId") Integer proId, RedirectAttributes redirectAttributes) {
+	        try {
+	            proSvc.takeDownProduct(proId);
+	            redirectAttributes.addFlashAttribute("successMessage", "商品 #" + proId + " 已成功下架。");
+	        } catch (Exception e) {
+	            redirectAttributes.addFlashAttribute("errorMessage", "商品下架失敗，請稍後再試。");
+	        }
+	        return "redirect:/pro/admin/low-rated";
+	    }
 	
 	// ================= 小農專用 (Fmem) =================
 
@@ -181,6 +217,8 @@ public class ProController {
 		// model.addAttribute("fmemId", currentFmemId);
 		return "front_end/farmer/logined/fmemProfile/fmemAllPro";
 	}
+	
+	
 
 	// ================= 共用及其他頁面 =================
 

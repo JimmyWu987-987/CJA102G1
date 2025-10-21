@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,18 +67,117 @@
             padding-left: 10px; margin-bottom: 1rem;
         }
         .product-description p { font-size: 1rem; line-height: 1.8; color: #555; }
+        
+        /* 購買選項區域 */
+        .purchase-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quantity-selector label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .quantity-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            border: none;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            outline: none;
+        }
+        
+        /* 移除數字輸入框的上下箭頭 */
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .quantity-input[type=number] {
+            -moz-appearance: textfield;
+        }
+        
         .action-buttons {
             margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #eee;
-            display: flex; gap: 1rem;
+            display: flex; gap: 1rem; flex-wrap: wrap;
         }
+        
         .action-buttons .btn {
             padding: 1rem 1.5rem; border-radius: 8px; text-decoration: none; text-align: center;
-            font-size: 1.1rem; font-weight: bold; flex-grow: 1; transition: all 0.3s;
+            font-size: 1.1rem; font-weight: bold; transition: all 0.3s;
+            border: none;
+            cursor: pointer;
         }
-        .btn-add-to-cart { background-color: #2c5234; color: white; }
+        
+        .btn-add-to-cart { 
+            background-color: #2c5234; 
+            color: white; 
+            flex: 2;
+            min-width: 200px;
+        }
         .btn-add-to-cart:hover { background-color: #3a6b45; }
-        .btn-back { background-color: #f0f0f0; color: #555; border: 1px solid #ddd; }
+        
+        .btn-add-to-favorites {
+            background-color: #ff7b42;
+            color: white;
+            flex: 1;
+            min-width: 120px;
+        }
+        .btn-add-to-favorites:hover {
+            background-color: #e65c2d;
+        }
+        
+        .btn-back { 
+            background-color: #f0f0f0; 
+            color: #555; 
+            border: 1px solid #ddd;
+            flex: 1;
+            min-width: 120px;
+        }
         .btn-back:hover { background-color: #e0e0e0; }
+        
+        .stock-warning {
+            color: #dc3545;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        /* 評論區域樣式 */
         .comment-section-container {
             margin-top: 3rem;
             padding: 2rem;
@@ -92,47 +191,169 @@
             margin-bottom: 2rem;
             border-bottom: 2px solid #eee;
             padding-bottom: 1rem;
+            color: #333;
+        }
+        
+        /* 評論統計 */
+        .comment-stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* 評論列表 */
+        .comment-list {
+            margin-bottom: 3rem;
         }
         .comment-item {
             display: flex;
             gap: 1.5rem;
             margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #2c5234;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .comment-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+        .comment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .comment-avatar { font-size: 2.5rem; color: #ccc; }
+        .comment-avatar {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
         .comment-body { flex: 1; }
-        .comment-author { font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; }
-        .comment-meta { font-size: 0.85rem; color: #999; margin-bottom: 0.75rem; }
-        .comment-rating .fa-star { color: #ffc107; }
-        .comment-content { color: #555; line-height: 1.7; }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .comment-author { 
+            font-weight: bold; 
+            font-size: 1.1rem;
+            color: #2c5234;
+        }
+        .comment-meta { 
+            font-size: 0.85rem; 
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .comment-rating {
+            display: inline-flex;
+            gap: 2px;
+        }
+        .comment-rating .fa-star { 
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+        .comment-content { 
+            color: #555; 
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+            font-size: 1.1rem;
+        }
+        .no-comments i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+        }
+        
+        /* 評論表單區域 */
+        .comment-form-section {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
         .comment-form-section h3 {
             font-size: 1.5rem;
             font-weight: 600;
-            margin-top: 3rem;
             margin-bottom: 1.5rem;
+            color: #333;
         }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
         .star-rating {
             font-size: 2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 5px;
         }
         .star-rating .fa-star {
             color: #ddd;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
         .star-rating .fa-star:hover,
         .star-rating .fa-star.hover {
             color: #ffdd87;
+            transform: scale(1.1);
         }
         .star-rating .fa-star.selected {
             color: #ffc107;
         }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Noto Sans TC', sans-serif;
+            transition: border-color 0.3s;
+            resize: vertical;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #2c5234;
+            box-shadow: 0 0 0 3px rgba(44, 82, 52, 0.1);
+        }
+        
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+        
         .alert {
             padding: 1rem;
             margin-bottom: 1.5rem;
@@ -150,7 +371,6 @@
             background-color: #f8d7da;
             border-color: #f5c2c7;
         }
-        /* 新增登入提示樣式 */
         .alert-info {
             color: #0c5460;
             background-color: #d1ecf1;
@@ -158,10 +378,51 @@
         }
         
         .btn-primary {
-        	width: 100px;
-        	color: white;
+            background-color: #2c5234;
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #3a6b45;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 82, 52, 0.3);
         }
         
+        .login-prompt {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+        .login-prompt i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .login-prompt p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .login-prompt a {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background-color: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .login-prompt a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -175,7 +436,7 @@
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
 
     <div class="product-detail-container" th:if="${pro != null}">
-        <!-- ... (商品圖片和資訊區塊保持不變) ... -->
+        <!-- 商品圖片區域 -->
         <div class="product-image-gallery">
             <div class="main-image-wrapper">
                 <img id="mainProductImage" class="main-image" 
@@ -191,6 +452,8 @@
                 </div>
             </div>
         </div>
+        
+        <!-- 商品資訊區域 -->
         <div class="product-content">
             <div>
                 <div class="product-category" th:text="${pro.procateId?.proCateName}">商品類別</div>
@@ -211,9 +474,49 @@
                 <h3>商品介紹</h3>
                 <p th:text="${pro.proDes ?: '此商品目前沒有詳細介紹。'}">這裡是商品的詳細介紹文字。</p>
             </div>
+            
+            <!-- 購買選項區域 -->
+            <div class="purchase-section">
+                <form id="cartForm" th:action="@{/cart/add}" method="post">
+                    <input type="hidden" name="proId" th:value="${pro.proId}" />
+                    
+                    <div class="quantity-selector">
+                        <label for="quantity">數量：</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" 
+                                   id="quantity" 
+                                   name="quantity" 
+                                   class="quantity-input" 
+                                   value="1" 
+                                   min="1" 
+                                   th:max="${pro.proStock}"
+                                   onchange="validateQuantity()" />
+                            <button type="button" class="quantity-btn" onclick="increaseQuantity()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div th:if="${pro.proStock <= 0}" class="stock-warning">
+                        <i class="fas fa-exclamation-triangle"></i> 商品庫存不足
+                    </div>
+                </form>
+            </div>
+            
+            <!-- 操作按鈕 -->
             <div class="action-buttons">
-                <a href="#" class="btn btn-add-to-cart"><i class="fa-solid fa-cart-shopping"></i> 加入購物車</a>
-                <a th:href="@{/mall/products}" class="btn btn-back">返回商城</a>
+                <button type="button" 
+                        class="btn btn-add-to-cart" 
+                        th:disabled="${pro.proStock <= 0}"
+                        onclick="submitCartForm()">
+                    <i class="fas fa-cart-plus me-2"></i> 加入購物車
+                </button>
+                <a th:href="@{/mall/products}" class="btn btn-back">
+                    <i class="fas fa-arrow-left me-2"></i> 返回商城
+                </a>
             </div>
         </div>
     </div>
@@ -223,46 +526,69 @@
         <a th:href="@{/mall/products}">返回商城</a>
     </div>
 
+    <!-- 評論區域 -->
     <div class="comment-section-container" th:if="${pro != null}">
-        <h2>商品評價</h2>
+        <h2>
+            <i class="fas fa-comments"></i> 商品評價
+        </h2>
 
-        <div class="comment-list" th:if="${not #lists.isEmpty(comments)}">
+        <!-- 評論統計 -->
+        <div class="comment-stats" th:if="${comments != null and !comments.isEmpty()}">
+            <div class="stat-item">
+                <div class="stat-number" th:text="${#lists.size(comments)}">0</div>
+                <div class="stat-label">評論總數</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span th:text="${#numbers.formatDecimal(#aggregates.avg(comments.![proComRate]), 1, 1)}">0.0</span>
+                    <i class="fas fa-star" style="font-size: 1.2rem;"></i>
+                </div>
+                <div class="stat-label">平均評分</div>
+            </div>
+        </div>
+
+        <!-- 評論列表 -->
+        <div class="comment-list" th:if="${comments != null and !comments.isEmpty()}">
             <div class="comment-item" th:each="comment : ${comments}">
                 <div class="comment-avatar">
-                    <i class="fas fa-user-circle"></i>
+                    <i class="fas fa-user"></i>
                 </div>
                 <div class="comment-body">
-                    <div class="comment-author" th:text="'會員 ' + ${comment.memId}">會員 1</div>
-                    <div class="comment-meta">
-                        <span class="comment-rating">
-                            <!-- 【重要】修改此處的星星顯示邏輯 -->
-                            <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                <i th:if="${i <= comment.proComRate}" class="fas fa-star"></i>
-                                <i th:if="${i > comment.proComRate}" class="far fa-star"></i>
-                            </th:block>
-                        </span>
-                        <span class="comment-date" th:text="${#temporals.format(comment.proComTime, 'yyyy-MM-dd HH:mm')}">2025-10-17 20:00</span>
+                    <div class="comment-header">
+                        <span class="comment-author" th:text="${comment.memVO != null ? comment.memVO.memName : '匿名會員'}">會員姓名</span>
+                        <div class="comment-meta">
+                            <span class="comment-rating">
+                                <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <i th:if="${i <= comment.proComRate}" class="fas fa-star"></i>
+                                    <i th:if="${i > comment.proComRate}" class="far fa-star"></i>
+                                </th:block>
+                            </span>
+                            <span class="comment-date">
+                                <i class="far fa-clock"></i>
+                                <span th:text="${#dates.format(comment.proComTime, 'yyyy-MM-dd HH:mm')}">2025-08-01 10:30</span>
+                            </span>
+                        </div>
                     </div>
-                    <p class="comment-content" th:text="${comment.proComContent}">這是很棒的商品！</p>
+                    <p class="comment-content" th:text="${comment.proComContent != null ? comment.proComContent : '此評論沒有內容'}">這是很棒的商品！</p>
                 </div>
             </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(comments)}">
-            <p>此商品目前還沒有任何評論。</p>
+        <!-- 無評論提示 -->
+        <div class="no-comments" th:if="${comments == null or comments.isEmpty()}">
+            <div>
+                <i class="far fa-comment-dots"></i>
+            </div>
+            <p>此商品目前還沒有任何評論！</p>
         </div>
 
+        <!-- 評論表單區域 -->
         <div class="comment-form-section">
-            <!-- 【重要】根據登入狀態顯示不同內容 -->
+            <!-- 已登入使用者 -->
             <div th:if="${isUserLoggedIn}">
-                <h3>發表您的評論</h3>
-                <form th:action="@{/mall/product/comment/save}" th:object="${newComment}" method="post">
-                    <input type="hidden" name="proId" th:value="${pro.proId}" />
-                    <input type="hidden" th:field="*{proId}" th:value="${pro.proId}" />
-                    <input type="hidden" id="ratingInput" th:field="*{proComRate}" required />
                     
                     <div class="mb-3">
-                        <label class="form-label">您的評分</label>
+                        <label class="form-label">您的評分 <span style="color: red;">*</span></label>
                         <div class="star-rating" id="starRating">
                             <i class="fas fa-star" data-value="1"></i>
                             <i class="fas fa-star" data-value="2"></i>
@@ -273,18 +599,26 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="proComContent" class="form-label">您的評論內容</label>
-                        <textarea class="form-control" id="proComContent" rows="4" th:field="*{proComContent}" required placeholder="分享您對此商品的看法..."></textarea>
+                        <label for="proComContent" class="form-label">您的評論內容 <span style="color: red;">*</span></label>
+                        <textarea class="form-control" 
+                                  id="proComContent" 
+                                  rows="4" 
+                                  th:field="*{proComContent}" 
+                                  required 
+                                  placeholder="分享您對此商品的看法..."></textarea>
                     </div>
-
-                    <button type="submit" class="btn btn-add-to-cart">送出評論</button>
                 </form>
             </div>
+            
         </div>
     </div>
 </div>
 
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
+    // 圖片切換功能
     function changeImage(thumbnailElement) {
         const mainImage = document.getElementById('mainProductImage');
         const newImageSrc = thumbnailElement.getAttribute('data-large-src');
@@ -294,6 +628,80 @@
         thumbnailElement.classList.add('active');
     }
 
+    // 獲取最大庫存數量
+    const maxStock = parseInt(document.getElementById('quantity').max) || 999;
+
+    // 增加數量
+    function increaseQuantity() {
+        const input = document.getElementById('quantity');
+        let value = parseInt(input.value) || 1;
+        if (value < maxStock) {
+            input.value = value + 1;
+        } else {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'warning',
+                title: '已達庫存上限',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        }
+    }
+
+    // 減少數量
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        let value = parseInt(input.value) || 1;
+        if (value > 1) {
+            input.value = value - 1;
+        }
+    }
+
+    // 驗證數量
+    function validateQuantity() {
+        const input = document.getElementById('quantity');
+        let value = parseInt(input.value) || 1;
+        
+        if (value < 1) {
+            input.value = 1;
+        } else if (value > maxStock) {
+            input.value = maxStock;
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'warning',
+                title: '數量超過庫存上限',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        }
+    }
+
+    // 提交購物車表單
+    function submitCartForm() {
+        const form = document.getElementById('cartForm');
+        const quantity = document.getElementById('quantity').value;
+        
+        if (quantity < 1) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: '請輸入有效數量',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+            return;
+        }
+        
+        form.submit();
+    }
+
+    // 評分星星功能
     document.addEventListener('DOMContentLoaded', function() {
         const starRatingContainer = document.getElementById('starRating');
         if (starRatingContainer) {
@@ -321,6 +729,17 @@
                     const value = this.dataset.value;
                     ratingInput.value = value;
                     highlightStars(value);
+                    
+                    // 顯示選擇的評分
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: `已選擇 ${value} 顆星`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true
+                    });
                 });
             });
 
@@ -335,8 +754,18 @@
                 }
             }
         }
+        
+        // 自動消失的提示訊息
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
     });
 </script>
 </body>
 </html>
-
+            

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.pro.model.LowRatePro;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.procom.dto.ProComByFmemIdDTO;
@@ -19,6 +20,7 @@ public class ProComService {
 
 	@Autowired
 	ProService proSvc;
+	
 
 	// 查詢該商品的所有評論
 	public List<ProComVO> getProComByProVO(Pro proVO) {
@@ -113,5 +115,25 @@ public class ProComService {
 		Optional<ProComVO> optional = repository.findById(proComId);
 		return optional.orElse(null);
 	}
+	
+	
+	//=========低分
+	
+    // 呼叫評分過低的商品
+    public List<LowRatePro> findLowRatedProducts() {
+        return repository.findProductsWithAverageRatingLessThan();
+    }
+    
+    // 新增：統計低評分商品數量======
+    public long countLowRatedProducts() {
+        List<LowRatePro> lowRatedProducts = repository.findProductsWithAverageRatingLessThan();
+        return lowRatedProducts.size();
+    }
+    
+    // 新增：只統計未下架的低評分商品數量（用於徽章顯示）
+    public long countActiveLowRatedProducts() {
+        List<LowRatePro> activeLowRatedProducts = repository.findActiveProductsWithLowRating();
+        return activeLowRatedProducts.size();
+    }
 
 }

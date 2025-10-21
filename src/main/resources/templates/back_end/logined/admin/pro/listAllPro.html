@@ -163,7 +163,7 @@ a:hover {
 					<th>商品介紹</th>
 					<th>商品類別</th>
 					<th>小農</th>
-					<th>刪除</th>
+<!-- 					<th>刪除</th> -->
 				</tr>
 			</thead>
 			<tbody>
@@ -185,16 +185,16 @@ a:hover {
 					<td th:text="${pro.proDes}"></td>
 					<td th:text="${pro.procateId?.proCateName}"></td>
 					<td th:text="${pro.fmemId?.fmemName}"></td>
-					<td>
-						<form method="post" th:action="@{/pro/delete}" class="action-form">
-							<input type="submit" value="刪除"> <input type="hidden"
-								name="proId" th:value="${pro.proId}">
-						</form>
-					</td>
+<!-- 					<td> -->
+<!-- 						<form method="post" th:action="@{/pro/delete}" class="action-form"> -->
+<!-- 							<input type="submit" value="刪除"> <input type="hidden" -->
+<!-- 								name="proId" th:value="${pro.proId}"> -->
+<!-- 						</form> -->
+<!-- 					</td> -->
 				</tr>
 			</tbody>
 		</table>
-		        <a th:href="@{/managepage}" class="back-btn">返回主選單</a>
+		        <a th:href="@{/managepage}" class="btn btn-secondary mt-3">返回主選單</a>
 	</div>
 
 	<script

@@ -150,4 +150,19 @@ public class ProService {
     public List<Pro> findByFmemId(Integer fmemId) {
         return repository.findByFmemId_FmemId(fmemId);
     }
+    
+	// 將商品下架 (即更新商品狀態)
+    @Transactional
+    @Caching(evict = { 
+        @CacheEvict(value = "pro", key = "#proId"), 
+        @CacheEvict(value = "pros", allEntries = true) 
+    })
+    public void takeDownProduct(Integer proId) {
+        Pro pro = getOnePro(proId);
+        if (pro != null) {
+            pro.setProStatus((int) 0); // 假設 0 代表下架
+            repository.save(pro);
+        }
+    }
+    
 }
