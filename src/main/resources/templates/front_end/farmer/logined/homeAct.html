@@ -10,6 +10,18 @@
 
 	<link rel="stylesheet" th:if="${session.loggedInFmember.sty.styCssPath}" th:href="@{${session.loggedInFmember.sty.styCssPath}}">
 
+	<style>
+		.notice{
+			position: absolute;
+			right: 40px;
+			bottom: 40px;
+			font-size: 28px;
+			background-color: #ffffff90;
+			padding: 4px 10px;
+			border-radius: 8px;
+		}
+	</style>
+
 </head>
 <body>
 
@@ -26,7 +38,6 @@
             
 
         <div class="store-content">
-<!--             <h3>商品</h3> -->
             <ul class="activities">
             	<p th:if="${actList == null or #lists.isEmpty(actList)}" th:text="目前尚無上架活動" class="no-item-msg"></p>
                 <li class="activity" th:each="act : ${actList}">
@@ -34,7 +45,7 @@
                     	<a href="#">
                     		<div class="mask"></div>
                     		<div class="tag">熱門</div>
-<!--                     		<img th:src="'data:image/jpeg;base64, ' + ${act.actMainImgBase64}" alt=""> -->
+                    		<img th:src="'data:image/jpeg;base64, ' + ${act.actMainImg?.actMainImgBase64}" alt="活動圖片">
                     	</a>
                    	</div>
 	                <div class="text">
@@ -53,7 +64,6 @@
                         	<span th:text="${act.actStart}"></span>
                         	<span>~</span>
                         	<span th:text="${act.actEnd}"></span>
-<!--                         	<span>10/10、10/25、12/25</span> -->
                         </div>
 						<button class="addToCart">立馬報名去</button>	                    
 	                </div>
