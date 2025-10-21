@@ -99,7 +99,9 @@ public class ProComController {
 
         // 5. 重定向回訂單列表或您希望的頁面
         // 注意: 這裡不能使用 model.addAttribute()，因為是重定向，需要使用 RedirectAttributes
-		return "redirect:/mem/proorders/listAllProOrder";
+//		return "redirect:/mem/proorders/listAllProOrder";
+		return "redirect:/mall/product/"+proId;
+		
 	}
 	
 }
