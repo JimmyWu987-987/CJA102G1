@@ -1,33 +1,31 @@
 package com.farmtastic.pro.controller;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.farmtastic.member.model.Mem;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proad.model.ProAdService;
 import com.farmtastic.procate.model.Procate;
 import com.farmtastic.procate.model.ProcateService;
+import com.farmtastic.procom.model.ProComService;
+import com.farmtastic.procom.model.ProComVO;
 import com.farmtastic.proimage.model.ProImage;
 import com.farmtastic.proimage.model.ProImageService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/mall")
@@ -44,6 +42,9 @@ public class RedisProController {
     
     @Autowired
     private ProAdService proAdService;
+    
+    @Autowired
+    private ProComService proComSvc;
 
     @GetMapping("/products")
     public String listProducts(HttpServletRequest req, Model model, @RequestParam(defaultValue = "0") int page) {
@@ -91,7 +92,7 @@ public class RedisProController {
      * @return 返回商品詳細頁面
      */
     @GetMapping("/product/{proId}")
-    public String showProductDetail(@PathVariable("proId") Integer proId, Model model) {
+    public String showProductDetail(@PathVariable("proId") Integer proId, Model model, HttpSession session) {
     	
         Map<String, String[]> map = Map.of("proId", new String[]{String.valueOf(proId)});
         List<Pro> result = proSvc.getAll(map);
@@ -106,6 +107,50 @@ public class RedisProController {
             // 獲取商品的第一張圖片
             proImageSvc.findFirstImageByProId(pro.getProId().longValue())
                        .ifPresent(pro::setProImage);
+        
+        
+        // 獲取該商品的所有評論
+            try {
+                // 獲取該商品的所有評論
+                
+                List<ProComVO> comments = proComSvc.getProComByProVO(pro);
+                
+                // === Debug: 印出評論資料 ===
+                System.out.println("=== 評論查詢結果 ===");
+                System.out.println("商品ID: " + pro.getProId());
+                System.out.println("評論數量: " + (comments != null ? comments.size() : 0));
+                if (comments != null && !comments.isEmpty()) {
+                    for (int i = 0; i < comments.size(); i++) {
+                        ProComVO c = comments.get(i);
+                        System.out.println("評論 " + (i+1) + ":");
+                        System.out.println("  - 評論ID: " + c.getProComId());
+                        System.out.println("  - 會員: " + (c.getMemVO() != null ? c.getMemVO().getMemName() : "null"));
+                        System.out.println("  - 內容: " + c.getProComContent());
+                        System.out.println("  - 評分: " + c.getProComRate());
+                        System.out.println("  - 時間: " + c.getProComTime());
+                    }
+                }
+                System.out.println("===================");
+                
+                
+                // 手動排序：最新的評論在前面
+                if (comments != null && !comments.isEmpty()) {
+                    comments.sort((c1, c2) -> c2.getProComTime().compareTo(c1.getProComTime()));
+                }
+                
+                model.addAttribute("comments", comments);
+            } catch (Exception e) {
+                // 如果評論查詢失敗，記錄錯誤但不影響頁面顯示
+                System.err.println("查詢評論時發生錯誤: " + e.getMessage());
+                e.printStackTrace();
+                model.addAttribute("comments", List.of());
+            }
+            
+            // 檢查使用者是否已登入
+            Mem loginMem = (Mem) session.getAttribute("loginMem");
+            boolean isUserLoggedIn = (loginMem != null);
+            model.addAttribute("isUserLoggedIn", isUserLoggedIn);
+            // ===== 評論查詢功能結束 =====
         }
         
         model.addAttribute("pro", pro);
@@ -122,14 +167,14 @@ public class RedisProController {
         return procateSvc.getAll();
     }
     
-    @PostMapping("/cart/add")
-    public ResponseEntity<String> addToCart(@RequestParam("proId") Integer proId) {
-        // 在這裡，您應該加入實際的購物車邏輯，例如：
-        // 1. 檢查使用者是否登入
-        // 2. 獲取購物車物件 (可能來自 Session 或資料庫)
-        // 3. 將 proId 和數量加入購物車
-        // 4. 更新購物車狀態
-        System.out.println("成功將商品 #" + proId + " 加入購物車！");
-        return ResponseEntity.ok("加入成功");
-    }
+//    @PostMapping("/cart/add")
+//    public ResponseEntity<String> addToCart(@RequestParam("proId") Integer proId) {
+//        // 在這裡，您應該加入實際的購物車邏輯，例如：
+//        // 1. 檢查使用者是否登入
+//        // 2. 獲取購物車物件 (可能來自 Session 或資料庫)
+//        // 3. 將 proId 和數量加入購物車
+//        // 4. 更新購物車狀態
+//        System.out.println("成功將商品 #" + proId + " 加入購物車！");
+//        return ResponseEntity.ok("加入成功");
+//    }
 }

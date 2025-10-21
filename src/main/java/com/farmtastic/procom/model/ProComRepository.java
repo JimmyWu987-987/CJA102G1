@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.farmtastic.member.model.Mem;
+import com.farmtastic.pro.model.LowRatePro;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.procom.dto.ProComByFmemIdDTO;
 
@@ -47,7 +48,21 @@ public interface ProComRepository extends JpaRepository<ProComVO, Integer> {
 	List<ProComByFmemIdDTO> findProComByFmemId(Integer fmemId);
 	
 
-	
-
+	// 新增，計算每個商品的平均評分，並篩選出平均小於 2 的商品
+    @Query("SELECT new com.farmtastic.pro.model.LowRatePro(" +
+            "p.proId, p.fmemId.fmemId, CAST(AVG(pc.proComRate) AS double), p.proStatus) " +
+            "FROM ProComVO pc JOIN pc.proVO p " +  
+            "GROUP BY p.proId, p.fmemId.fmemId, p.proStatus " +
+            "HAVING AVG(pc.proComRate) < 3.0")
+     List<LowRatePro> findProductsWithAverageRatingLessThan();
+    
+    //新增：只查詢未下架的低評分商品（proStatus = 1）
+    @Query("SELECT new com.farmtastic.pro.model.LowRatePro(" +
+            "p.proId, p.fmemId.fmemId, CAST(AVG(pc.proComRate) AS double), p.proStatus) " +
+            "FROM ProComVO pc JOIN pc.proVO p " + 
+            "WHERE p.proStatus = 1 " +
+            "GROUP BY p.proId, p.fmemId.fmemId, p.proStatus " +
+            "HAVING AVG(pc.proComRate) < 3.0")
+    List<LowRatePro> findActiveProductsWithLowRating();
 	
 }

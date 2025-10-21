@@ -51,14 +51,21 @@
             <input type="text" id="proPrice" th:field="*{proPrice}" />
             <span th:if="${#fields.hasErrors('proPrice')}" th:errors="*{proPrice}" class="error"></span>
         </div>
-
+        
+        
         <div class="form-group">
-            <label for="proStatus">商品狀態:</label>
-            <select id="proStatus" th:field="*{proStatus}">
-                <option value="1">上架</option>
-                <option value="0">下架</option>
-            </select>
+            <label for="proStatus_display">商品狀態:</label>
+            <input type="text" id="proStatus_display" value="上架" readonly />
+            <input type="hidden" name="proStatus" value="1" />
         </div>
+
+<!--         <div class="form-group"> -->
+<!--             <label for="proStatus">商品狀態:</label> -->
+<!--             <select id="proStatus" th:field="*{proStatus}"> -->
+<!--                 <option value="1">上架</option> -->
+<!--                 <option value="0">下架</option> -->
+<!--             </select> -->
+<!--         </div> -->
 
         <div class="form-group">
             <label for="proFrom">商品產地:</label>
