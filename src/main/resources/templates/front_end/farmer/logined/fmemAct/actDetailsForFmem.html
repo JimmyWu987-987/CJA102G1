@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>小農活動專區 -- 活動詳情</title>
     
+    <link rel="icon" href="./images/logo.png">
+    
+    <!--     引入main.css, iconfonts -->
+	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
     <!-- 原本引用的 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/main.css}">
@@ -12,6 +17,11 @@
     <link rel="stylesheet" th:href="@{/css/act/actDetailsForFmem.css}">
 </head>
 <body>
+
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+
+
+<div class="main-content">
     <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
 
     <!-- 輪播器 -->
@@ -51,6 +61,7 @@
 
 
     <div class="launch-control-box">
+<!--     	<<div class="launch-control-info"> -->
         <h1 class="launch-status-title">活動上下架狀態:</h1>
         <div class="status-display" 
              th:classappend="*{actLaunStat == 1 ? 'status-launched' : 'status-delisted'}">
@@ -70,12 +81,13 @@
                     onclick="confirmDelist(0)">
                 <i class="fas fa-arrow-down"></i> 立即下架
             </button>
+            </div>
         </div>
         
         <div th:unless="*{actStat == 2}" class="alert alert-warning mt-3">
             待審核通過後才能操作上下架。
         </div>
-    </div>
+<!--     </div> -->
 </div>
 
 <!-- 提交上下架狀態的隱藏表單 -->
@@ -114,6 +126,12 @@
         </table>
     </div>
 </div>
+</div>
+
+
+
+<div th:replace="~{/front_end/index :: footer}"></div>
+
 
 
 	<!-- for 上下架按鈕的 JavaScript 邏輯 -->

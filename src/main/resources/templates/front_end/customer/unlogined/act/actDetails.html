@@ -4,14 +4,25 @@
     <meta charset="UTF-8">
     <title>活動詳情</title>
     
+	<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+    
     <!-- 原本引用的 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     
     <!-- 活動詳情專用 CSS -->
     <link rel="stylesheet" th:href="@{/css/act/actDetails.css}">
+    
+    
+    
 </head>
 <body>
+
+<div th:replace="~{/front_end/index :: header}"></div>
+
+<div class="main-content">
+
     <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
 
     <!-- 輪播器 -->
@@ -99,8 +110,11 @@
 			  th:src="@{/act/review(actId=${actId})}"
 			  style="width:98%; margin-left:10px;min-height:500px; border:0; border-radius:8px; margin-top:12px; text-align:center;">
 			</iframe>
-	
-	
+
+</div>
+<div th:replace="~{/front_end/index :: footer}"></div>
+
+
     <!-- 分離 JS -->
     <script th:src="@{/js/act/actCarousel.js}"></script>
 	
