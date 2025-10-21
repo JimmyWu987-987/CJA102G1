@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.procpn.model.ProCpnVO;
 
@@ -46,4 +47,6 @@ public interface MemProCpnRepository extends JpaRepository<MemProCpnVO, Integer>
 
 	boolean existsByMemVOAndProCpnVO(Mem memVO, ProCpnVO proCpnVO);
 
+	// 查狀態
+	List<MemProCpnVO> findByCpnUseStatus(CpnUseStatus cpnUseStatus);
 }
