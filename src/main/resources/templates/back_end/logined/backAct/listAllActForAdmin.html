@@ -3,14 +3,11 @@
 <head>
 
 <meta charset="UTF-8">
-<title>小農活動專區 - 活動一覽</title>
+<title>管理員頁面 - 活動一覽</title>
+<link rel="icon" th:href="@{/images/logo.png}">
 
 <link rel="icon" href="./images/logo.png">
-    
-<!--     引入main.css, iconfonts -->
-<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-    
-<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
+
 
 <!--     @{/css} + "/sty/storeSty2.css" -->
 <style>
@@ -81,7 +78,6 @@
 </head>
 <body>
 
-<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
 <div class="container">
 <div class="list">
@@ -136,7 +132,6 @@
 	</div>
 </div>
 </div>
-<div th:replace="~{/front_end/index :: footer}"></div>
 
 </body>
 </html>

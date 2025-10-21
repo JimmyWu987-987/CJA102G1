@@ -2,135 +2,150 @@
 <html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>新增場次 - 淺綠/淺褐主題</title>
-    <style>
-        /* ==================== CSS 樣式 (淺綠色/淺褐色主題) ==================== */
+    <title>小農活動專區 - 新增場次</title>
+    <link rel="icon" th:href="@{/images/logo.png}">
+
+<!-- ============================================ -->
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<!-- ============================================== -->
+
+
+
+<!--     <style> -->
+<!--         /* ==================== CSS 樣式 (淺綠色/淺褐色主題) ==================== */ -->
         
-        /* 頁面背景與居中 */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0fff0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; 
-            min-height: 100vh;
-            margin: 0;
-            padding-top: 50px; 
-        }
+<!--         /* 頁面背景與居中 */ -->
+<!--         body { -->
+<!--             font-family: 'Arial', sans-serif; -->
+<!--             background-color: #f0fff0; -->
+<!--             display: flex; -->
+<!--             justify-content: center; -->
+<!--             align-items: flex-start;  -->
+<!--             min-height: 100vh; -->
+<!--             margin: 0; -->
+<!--             padding-top: 50px;  -->
+<!--         } -->
 
-        /* 卡片容器樣式 */
-        .card {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 20px; 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
-            width: 100%;
-            max-width: 500px; 
-            box-sizing: border-box;
-            border: 3px solid #b8860b; 
-        }
+<!--         /* 卡片容器樣式 */ -->
+<!--         .card { -->
+<!--             background-color: #ffffff; -->
+<!--             padding: 30px; -->
+<!--             border-radius: 20px;  -->
+<!--             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);  -->
+<!--             width: 100%; -->
+<!--             max-width: 500px;  -->
+<!--             box-sizing: border-box; -->
+<!--             border: 3px solid #b8860b;  -->
+<!--         } -->
 
-        /* 標題樣式 */
-        h1 {
-            color: #2f4f4f; 
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-            font-weight: bold;
-        }
+<!--         /* 標題樣式 */ -->
+<!--         h1 { -->
+<!--             color: #2f4f4f;  -->
+<!--             text-align: center; -->
+<!--             margin-bottom: 25px; -->
+<!--             font-size: 1.8em; -->
+<!--             font-weight: bold; -->
+<!--         } -->
 
-        /* 表單組件通用樣式 */
-        .form-group { margin-bottom: 20px; }
+<!--         /* 表單組件通用樣式 */ -->
+<!--         .form-group { margin-bottom: 20px; } -->
 
-        label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: bold; 
-            color: #4a4a4a;
-        }
+<!--         label {  -->
+<!--             display: block;  -->
+<!--             margin-bottom: 8px;  -->
+<!--             font-weight: bold;  -->
+<!--             color: #4a4a4a; -->
+<!--         } -->
 
-        input[type="date"], 
-        input[type="time"], 
-        input[type="number"] { 
-            width: 100%; 
-            padding: 10px; 
-            box-sizing: border-box;
-            border: 1px solid #a9a9a9; 
-            border-radius: 10px; 
-            transition: border-color 0.3s;
-        }
+<!--         input[type="date"],  -->
+<!--         input[type="time"],  -->
+<!--         input[type="number"] {  -->
+<!--             width: 100%;  -->
+<!--             padding: 10px;  -->
+<!--             box-sizing: border-box; -->
+<!--             border: 1px solid #a9a9a9;  -->
+<!--             border-radius: 10px;  -->
+<!--             transition: border-color 0.3s; -->
+<!--         } -->
 
-        input:focus {
-            border-color: #6b8e23; 
-            outline: none;
-            box-shadow: 0 0 5px rgba(107, 142, 35, 0.3);
-        }
+<!--         input:focus { -->
+<!--             border-color: #6b8e23;  -->
+<!--             outline: none; -->
+<!--             box-shadow: 0 0 5px rgba(107, 142, 35, 0.3); -->
+<!--         } -->
         
-        /* 費用警告訊息樣式 */
-        .alert-warning { 
-            color: #856404; 
-            background-color: #fff3cd; 
-            border-color: #ffeeba; 
-            padding: 10px; 
-            margin-top: 10px; 
-            border: 1px solid transparent; 
-            border-radius: 10px; 
-            display: none; 
-            font-size: 0.9em;
-        }
+<!--         /* 費用警告訊息樣式 */ -->
+<!--         .alert-warning {  -->
+<!--             color: #856404;  -->
+<!--             background-color: #fff3cd;  -->
+<!--             border-color: #ffeeba;  -->
+<!--             padding: 10px;  -->
+<!--             margin-top: 10px;  -->
+<!--             border: 1px solid transparent;  -->
+<!--             border-radius: 10px;  -->
+<!--             display: none;  -->
+<!--             font-size: 0.9em; -->
+<!--         } -->
         
-        /* 按鈕樣式 */
-        button[type="submit"] {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-top: 30px;
-            background-color: #8fbc8f; 
-            color: white;
-            border: none;
-            border-radius: 15px; 
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-        }
+<!--         /* 按鈕樣式 */ -->
+<!--         button[type="submit"] { -->
+<!--             display: block; -->
+<!--             width: 100%; -->
+<!--             padding: 12px; -->
+<!--             margin-top: 30px; -->
+<!--             background-color: #8fbc8f;  -->
+<!--             color: white; -->
+<!--             border: none; -->
+<!--             border-radius: 15px;  -->
+<!--             font-size: 1.1em; -->
+<!--             cursor: pointer; -->
+<!--             transition: background-color 0.3s, transform 0.1s; -->
+<!--         } -->
 
-        button[type="submit"]:hover {
-            background-color: #6b8e23; 
-        }
+<!--         button[type="submit"]:hover { -->
+<!--             background-color: #6b8e23;  -->
+<!--         } -->
         
-        button[type="submit"]:active {
-            transform: translateY(1px); 
-        }
+<!--         button[type="submit"]:active { -->
+<!--             transform: translateY(1px);  -->
+<!--         } -->
         
-        /* 日期/時間限制提示文字 */
-        .date-limit {
-            display: block; 
-            margin-top: 5px; 
-            font-size: 0.9em; 
-            color: #6a6a6a;
-        }
+<!--         /* 日期/時間限制提示文字 */ -->
+<!--         .date-limit { -->
+<!--             display: block;  -->
+<!--             margin-top: 5px;  -->
+<!--             font-size: 0.9em;  -->
+<!--             color: #6a6a6a; -->
+<!--         } -->
 
-        .date-limit strong {
-            color: #2f4f4f; 
-        }
+<!--         .date-limit strong { -->
+<!--             color: #2f4f4f;  -->
+<!--         } -->
         
-        .date-limit strong[style*="red"] {
-            color: #d9534f !important; 
-        }
+<!--         .date-limit strong[style*="red"] { -->
+<!--             color: #d9534f !important;  -->
+<!--         } -->
         
-        /* 錯誤訊息 */
-        .error {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-    </style>
+<!--         /* 錯誤訊息 */ -->
+<!--         .error { -->
+<!--             color: red; -->
+<!--             font-size: 0.9em; -->
+<!--             margin-top: 5px; -->
+<!--         } -->
+<!--     </style> -->
     
 <!--     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
     
 </head>
 <body>
 
+<!-- =============================== -->
+<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+<!-- ==================================== -->
+
+<div class="container">
 <div class="card">
 
     <h1>新增活動場次</h1>
@@ -209,7 +224,12 @@
         <button type="submit">新增場次</button>
     </form>
 
-</div> 
+</div>
+</div>  
+
+<!-- ==================================== -->
+<div th:replace="~{/front_end/index :: footer}"></div>
+<!-- ==================================== -->
 
 <script>
     

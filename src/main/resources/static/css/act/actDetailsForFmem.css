@@ -1,166 +1,181 @@
-/* ======================== 整體設定 ======================== */
-body {
-    padding: 20px 160px; /* 整體距離視窗邊緣 */
-    background-color: #FAFAF0;
-    font-family: "Noto Sans", sans-serif;
-    line-height: 1;
-}
+/* /* ======================== 整體設定 ======================== */ */
+
+/* body { */
+/*     修正：移除所有 padding，讓 Header 貼齊頂部 */
+/*     padding: 0;  */
+/*     確保所有瀏覽器的預設 margin 也被消除 */
+/*     margin: 0;  */
+    
+/*     background-color: #FAFAF0; */
+/*     font-family: "Noto Sans", sans-serif; */
+/*     line-height: 1; */
+/* } */
+
+
 
 /* ======================== 卡片區塊 ======================== */
+
 .act-info, .ses-info {
+    width: 50vw;
     padding: 20px 40px;
+    box-sizing: border-box; /* 確保 padding 不增加總寬度，維持 50vw */
+
     background-color: #FFFDF5;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin: 20px; /* 與下方區塊距離 */
+
+    /* ❗ 修正：將左右 margin 設置為 auto 實現置中 */
+    margin: 20px auto; /* 上下 20px，左右自動置中 */
 }
 
-/* ======================== 標題 ======================== */
-h1.act-title,
-h2.ses-title {
-    text-align: center;
-    color: #3E5C2A;
-}
 
-h1.act-title {
-    font-size: 2.2rem;
-    margin-bottom: 20px;
-}
 
-h2.ses-title {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-}
+/* /* ======================== 標題 ======================== */ */
+/* h1.act-title, */
+/* h2.ses-title { */
+/* text-align: center; */
+/* color: #3E5C2A; */
+/* } */
 
-/* ======================== 活動圖片 ======================== */
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 20px auto;
-    border-radius: 8px;
-}
+/* h1.act-title { */
+/* font-size: 2.2rem; */
+/* margin-bottom: 20px; */
+/* } */
 
-/* ======================== 按鈕 ======================== */
-.btn {
-    display: inline-block;
-    padding: 6px 12px;
-    background-color: #3E5C2A;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: 0.3s;
-}
+/* h2.ses-title { */
+/* font-size: 1.5rem; */
+/* margin-bottom: 20px; */
+/* } */
 
-.btn:hover {
-    background-color: #55783C;
-}
+/* /* ======================== 活動圖片 ======================== */ */
+/* img { */
+/* max-width: 100%; */
+/* height: auto; */
+/* display: block; */
+/* margin: 20px auto; */
+/* border-radius: 8px; */
+/* } */
 
-/* ======================== 表格 ======================== */
-table.ses-table {
-    width: 100%;
-    border-collapse: separate; /* 保持圓角 */
-    border-spacing: 0;
-    font-size: 1rem;
-    border-radius: 12px; /* 整體圓角 */
-    overflow: hidden; /* 防止表格內容超出圓角 */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 20px 0;
-}
+/* /* ======================== 按鈕 ======================== */ */
+/* .btn { */
+/* display: inline-block; */
+/* padding: 6px 12px; */
+/* background-color: #3E5C2A; */
+/* color: white; */
+/* text-decoration: none; */
+/* border-radius: 5px; */
+/* transition: 0.3s; */
+/* } */
 
-table.ses-table thead th {
-    padding: 12px 15px;
-    background-color: #C7B896;
-    color: #3E5C2A;
-    text-align: center;
-}
 
-table.ses-table thead th:first-child {
-    border-top-left-radius: 12px;
-}
-table.ses-table thead th:last-child {
-    border-top-right-radius: 12px;
-}
+/* .btn:hover { */
+/* background-color: #55783C; */
+/* } */
 
-table.ses-table tbody td {
-    padding: 12px 15px;
-    text-align: center;
-    border: none;
-}
+/* /* ======================== 表格 ======================== */ */
+/* table.ses-table { */
+/* width: 100%; */
+/* border-collapse: separate; 保持圓角 */
+/* border-spacing: 0; */
+/* font-size: 1rem; */
+/* border-radius: 12px; 整體圓角 */
+/* overflow: hidden; 防止表格內容超出圓角 */
+/* box-shadow: 0 4px 10px rgba(0,0,0,0.1); */
+/* margin: 20px 0; */
+/* } */
 
-table.ses-table tbody tr:nth-child(odd) {
-    background-color: #F7F4E9; 
-}
-table.ses-table tbody tr:nth-child(even) {
-    background-color: #FFFFFF; 
-}
+/* table.ses-table thead th { */
+/* padding: 12px 15px; */
+/* background-color: #C7B896; */
+/* color: #3E5C2A; */
+/* text-align: center; */
+/* } */
+
+/* table.ses-table thead th:first-child { */
+/* border-top-left-radius: 12px; */
+/* } */
+/* table.ses-table thead th:last-child { */
+/* border-top-right-radius: 12px; */
+/* } */
+
+/* table.ses-table tbody td { */
+/* padding: 12px 15px; */
+/* text-align: center; */
+/* border: none; */
+/* } */
+
+/* table.ses-table tbody tr:nth-child(odd) { */
+/* background-color: #F7F4E9; */
+/* } */
+/* table.ses-table tbody tr:nth-child(even) { */
+/* background-color: #FFFFFF; */
+/* } */
 
 /* ======================== 輪播器 ======================== */
 .carousel {
-    position: relative;
-    width: 90%;
-    /* 保持您喜歡的 max 限制 */
-    max-width: 35vw; 
-    max-height: 45vh;
-    margin: 10px auto;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
-    
-    /* 關鍵：給予固定高度 (例如 45vh) 讓圖片有參考空間 */
-    /* 由於您前面使用了 max-height，我們強制將高度設為最大高度，讓圖片有空間縮放 */
-    height: 45vh; /* 確保容器高度被固定，以便圖片縮放 */
-    width: 35vw; /* 讓寬度也是固定的，確保圖片不會溢出 */
+position: relative;
+width: 90%;
+/* 保持您喜歡的 max 限制 */
+max-width: 35vw;
+max-height: 45vh;
+margin: 10px auto;
+overflow: hidden;
+border-radius: 8px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+margin-bottom: 20px;
+
+/* 關鍵：給予固定高度 (例如 45vh) 讓圖片有參考空間 */
+/* 由於您前面使用了 max-height，我們強制將高度設為最大高度，讓圖片有空間縮放 */
+height: 45vh; /* 確保容器高度被固定，以便圖片縮放 */
+width: 35vw; /* 讓寬度也是固定的，確保圖片不會溢出 */
 }
 
 .carousel-track {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    
-    /* 關鍵：填滿父容器的高度 */
-    height: 100%; 
+display: flex;
+transition: transform 0.5s ease-in-out;
+
+/* 關鍵：填滿父容器的高度 */
+height: 100%;
 }
 
 .carousel-item {
-    min-width: 100%;
-    box-sizing: border-box;
+min-width: 100%;
+box-sizing: border-box;
 
-    display: flex;            
-    justify-content: center;  
-    align-items: center;      
-    
-    /* 關鍵：填滿父容器的高度 */
-    height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+/* 關鍵：填滿父容器的高度 */
+height: 100%;
 }
 
 .carousel-item img {
-    /* 移除 width: 100%; (會讓圖片變形) */
-    /* 移除 max-width: 88%; max-height: 88%; */
-    
-    /* 關鍵：讓圖片縮放以填滿容器，但保持比例 */
-    width: auto;           /* 讓寬度自動計算 */
-    height: auto;          /* 讓高度自動計算 */
-    max-width: 100%;       /* 最大寬度不超過容器 */
-    max-height: 100%;      /* 最大高度不超過容器 */
-    
-    object-fit: contain;    /* 保持比例，如果容器比例與圖片不同，則留白 */
-    display: block;
-    border-radius: 8px;
+/* 移除 width: 100%; (會讓圖片變形) */
+/* 移除 max-width: 88%; max-height: 88%; */
+
+/* 關鍵：讓圖片縮放以填滿容器，但保持比例 */
+width: auto; /* 讓寬度自動計算 */
+height: auto; /* 讓高度自動計算 */
+max-width: 100%; /* 最大寬度不超過容器 */
+max-height: 100%; /* 最大高度不超過容器 */
+
+object-fit: contain; /* 保持比例，如果容器比例與圖片不同，則留白 */
+display: block;
+border-radius: 8px;
 }
 
 /* 左右按鈕 */
 .carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(62, 92, 42, 0.7);
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 1.5rem;
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+background-color: rgba(62, 92, 42, 0.7);
+border: none;
+color: white;
+padding: 8px 12px;
+cursor: pointer;
+border-radius: 5px;
+font-size: 1.5rem;
 }
 
 .carousel-btn.prev { left: 5px; }
@@ -168,153 +183,154 @@ table.ses-table tbody tr:nth-child(even) {
 
 /* 圓點 */
 .carousel-dots {
-    text-align: center;
-    position: absolute;
-    bottom: 3px;
-    width: 100%;
+text-align: center;
+position: absolute;
+bottom: 3px;
+width: 100%;
 }
 
 .carousel-dots .dot {
-    height: 10px;
-    width: 10px;
-    margin: 0 4px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-    cursor: pointer;
+height: 10px;
+width: 10px;
+margin: 0 4px;
+background-color: #bbb;
+border-radius: 50%;
+display: inline-block;
+cursor: pointer;
 }
 
 .carousel-dots .dot.active {
-    background-color: #3E5C2A;
+background-color: #3E5C2A;
 }
+
 
 /* ======================== 活動說明段落 ======================== */
 /* 活動資訊區卡片 */
 /* 啟用 Flexbox 排版 */
 .act-info {
-    padding: 30px 40px;
-    background-color: #FFFDF5;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    
-    display: flex;             /* 啟用 Flexbox */
-    justify-content: space-between; 
-    align-items: stretch;      /* 讓高度由最高的子元素決定 */
-    gap: 40px;
+padding: 30px 40px;
+background-color: #FFFDF5;
+border-radius: 8px;
+box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+display: flex; /* 啟用 Flexbox */
+justify-content: space-between;
+align-items: stretch; /* 讓高度由最高的子元素決定 */
+gap: 40px;
 }
 
 /* 活動詳情區塊 (左側) */
 .act-details {
-    flex: 1; /* 佔用 1 份寬度 */
+flex: 1; /* 佔用 1 份寬度 */
 }
 
 /* 上下架控制區塊 (右側) */
 .launch-control-box {
-    flex: 1; /* 佔用 1 份寬度 (與左側等寬) */
-    
-    /* 高度調整：固定為外部區塊的 70%，並垂直居中 */
-    height: 70%; 
-    margin: auto 0; 
-    
-    /* 可愛/卡片風格調整 */
-    padding: 30px 20px; /* 增加內邊距 */
-    border: 3px solid #C7B896; /* 邊框加粗，使用品牌色 */
-    border-radius: 15px; /* 更大的圓角 */
-    background-color: #F7F4E9; /* 使用淺色背景，協調表格底色 */
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(62, 92, 42, 0.1); /* 輕微陰影 */
+flex: 1; /* 佔用 1 份寬度 (與左側等寬) */
+/* 高度調整：固定為外部區塊的 70%，並垂直居中 */
+height: 70%;
+margin: auto 0;
+
+/* 可愛/卡片風格調整 */
+padding: 30px 20px; /* 增加內邊距 */
+border: 3px solid #C7B896; /* 邊框加粗，使用品牌色 */
+border-radius: 15px; /* 更大的圓角 */
+background-color: #F7F4E9; /* 使用淺色背景，協調表格底色 */
+text-align: center;
+box-shadow: 0 4px 8px rgba(62, 92, 42, 0.1); /* 輕微陰影 */
 }
 
 .launch-status-title {
-    font-size: 2rem;
-    color: #3E5C2A;
-    margin-bottom: 20px;
-    font-weight: bold;
-    border-bottom: 2px solid #C7B896;
-    padding-bottom: 5px;
+font-size: 2rem;
+color: #3E5C2A;
+margin-bottom: 20px;
+font-weight: bold;
+border-bottom: 2px solid #C7B896;
+padding-bottom: 5px;
 }
 
 
 .status-display {
-    font-size: 3rem; /* 字體放大 */
-    font-weight: 900;
-    padding: 15px 0;
-    margin-bottom: 30px;
-    border-radius: 8px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* 內嵌陰影增加層次感 */
+font-size: 3rem; /* 字體放大 */
+font-weight: 900;
+padding: 15px 0;
+margin-bottom: 30px;
+border-radius: 8px;
+box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* 內嵌陰影增加層次感 */
 }
 
 /* 狀態顏色調整 */
 .status-launched {
-    color: #3E5C2A; /* 上架使用品牌色 */
-    background-color: #E6F0E0; /* 淺綠色背景 */
+color: #3E5C2A; /* 上架使用品牌色 */
+background-color: #E6F0E0; /* 淺綠色背景 */
 }
 
 .status-delisted {
-    color: #dc3545; /* 下架使用警告色 */
-    background-color: #FFE6E6; /* 淺紅色背景 */
+color: #dc3545; /* 下架使用警告色 */
+background-color: #FFE6E6; /* 淺紅色背景 */
 }
 
 /* 上下架按鈕 */
 .launch-btn {
-    width: 90%; /* 寬度佔滿 */
-    padding: 15px 10px; /* 增加按鈕高度 */
-    font-size: 1.2rem;
-    font-weight: bold;
-    border-radius: 30px; /* 圓角膠囊形狀 */
-    transition: background-color 0.3s, transform 0.1s;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    border: none;
-    margin-bottom: 15px; /* 增加底部間距 */
+width: 90%; /* 寬度佔滿 */
+padding: 15px 10px; /* 增加按鈕高度 */
+font-size: 1.2rem;
+font-weight: bold;
+border-radius: 30px; /* 圓角膠囊形狀 */
+transition: background-color 0.3s, transform 0.1s;
+box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+border: none;
+margin-bottom: 15px; /* 增加底部間距 */
 }
 
 /* 確保上架按鈕使用品牌色 */
 .launch-btn.btn-success {
-    background-color: #3E5C2A; 
-    color: white;
+background-color: #3E5C2A;
+color: white;
 }
 
 .launch-btn.btn-success:hover {
-    background-color: #55783C;
-    transform: translateY(-2px);
+background-color: #55783C;
+transform: translateY(-2px);
 }
 
 /* 確保下架按鈕使用警告色 */
 .launch-btn.btn-danger {
-    background-color: #dc3545; 
-    color: white;
+background-color: #dc3545;
+color: white;
 }
 
 .launch-btn.btn-danger:hover {
-    background-color: #c82333;
-    transform: translateY(-2px);
+background-color: #c82333;
+transform: translateY(-2px);
 }
 
 
 
 /* 段落間距緊湊 */
 .act-info p {
-    margin: 8px 0;        
-    line-height: 1.5;
-    margin-bottom: 4px;
+margin: 8px 0;
+line-height: 1.5;
+margin-bottom: 4px;
 }
 
 /* 標籤換行加粗 */
 .act-info p strong {
-    display: block;       /* 換行 */
-    font-weight: bold;
-    margin-bottom: 4px;   /* 標籤與內容間距 */
+display: block; /* 換行 */
+font-weight: bold;
+margin-bottom: 4px; /* 標籤與內容間距 */
 }
 
 /* 活動說明最後段落 */
 .act-info p:last-child {
-    margin-top: 10px;
-    line-height: 1.6;
-    margin-bottom: 4px;
+margin-top: 10px;
+line-height: 1.6;
+margin-bottom: 4px;
 }
 
 /* 標題置中 */
 .act-info h2, .act-info h1 {
-    text-align: center;
-    margin-bottom: 15px;
+text-align: center;
+margin-bottom: 15px;
+
 }

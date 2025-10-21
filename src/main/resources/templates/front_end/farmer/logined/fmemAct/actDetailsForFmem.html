@@ -2,25 +2,27 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head> 
     <meta charset="UTF-8">
-    <title>小農活動專區 -- 活動詳情</title>
+    <title>小農活動專區 - 活動詳情</title>
+<link rel="icon" th:href="@{/images/logo.png}">
     
-    <link rel="icon" href="./images/logo.png">
+<!-- ============================================ -->
+<!--     引入main.css, iconfonts -->
+    <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
+	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<!-- ============================================== -->
     
-    <!--     引入main.css, iconfonts -->
-	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-    
-    <!-- 原本引用的 CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    
-    <!-- 活動詳情專用 CSS -->
+<!--     活動詳情專用 CSS -->
     <link rel="stylesheet" th:href="@{/css/act/actDetailsForFmem.css}">
 </head>
 <body>
 
+<!-- =============================== -->
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+<!-- ==================================== -->
 
 
+
+<div class="container">
 <div class="main-content">
     <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
 
@@ -127,10 +129,13 @@
     </div>
 </div>
 </div>
+</div>
 
 
 
+<!-- ==================================== -->
 <div th:replace="~{/front_end/index :: footer}"></div>
+<!-- ==================================== -->
 
 
 
