@@ -1,5 +1,6 @@
 package com.farmtastic.common.mapper;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
@@ -14,15 +15,16 @@ import com.farmtastic.procpn.model.ProCpnVO;
 public class ActCpnMapperImp {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
-	public ActCpnFormDTO toFormDTO(ActCpnVO vo) {
+	public ActCpnFormDTO toDTO(ActCpnVO vo) {
 		if (vo == null) {
 			return null;
 		}
 
 		ActCpnFormDTO dto = new ActCpnFormDTO();
 
-		// 1️⃣ 基本欄位直接轉
+		// 1️. 基本欄位直接轉
 		dto.setActCpnId(vo.getActCpnId());
+		dto.setCpnSource(vo.getCpnSource());
 		dto.setCpnName(vo.getCpnName());
 		dto.setDiscType(vo.getDiscType());
 		dto.setDiscValue(vo.getDiscValue());
@@ -82,6 +84,7 @@ public class ActCpnMapperImp {
 
 		ActCpnVO vo = new ActCpnVO();
 		vo.setActCpnId(dto.getActCpnId());
+		vo.setCpnSource(dto.getCpnSource());
 		vo.setCpnName(dto.getCpnName());
 		vo.setDiscType(dto.getDiscType());
 		vo.setDiscValue(dto.getDiscValue());
@@ -91,11 +94,12 @@ public class ActCpnMapperImp {
 			vo.setStartDate((dto.getStartDate()));
 		} else {
 			// 若表單未填，給預設今天
-			vo.setStartDate(new java.sql.Date(System.currentTimeMillis()));
+			vo.setStartDate(LocalDate.now());
 		}
 		vo.setValidDays(dto.getValidDays());
 		vo.setCpnDesc(dto.getCpnDesc());
 		vo.setIsActive(dto.getIsActive());
 		return vo;
 	}
+
 }

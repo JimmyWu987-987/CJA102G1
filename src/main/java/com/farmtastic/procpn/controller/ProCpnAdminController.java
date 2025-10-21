@@ -34,7 +34,7 @@ public class ProCpnAdminController {
 	@Autowired
 	private ProCpnMapper mapper;
 
-	// ✅ 共用模板名稱
+	// 共用模板名稱
 	private static final String VIEW_PATH = "back_end/logined/procpn/listAllProCpn";
 
 	// 查詢全部折價卷

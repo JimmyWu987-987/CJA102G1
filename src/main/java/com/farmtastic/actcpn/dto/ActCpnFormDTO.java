@@ -1,11 +1,15 @@
 package com.farmtastic.actcpn.dto;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
+import com.farmtastic.common.converter.EnumConverters;
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,20 +18,31 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 public class ActCpnFormDTO {
 	private Integer actCpnId; // ✅ 編輯時會需要
+
 	@NotBlank(message = "折價券名稱不可空白")
 	private String cpnName;
+
+	@Convert(converter = EnumConverters.CpnSourceConverter.class)
+	@Column(name = "cpn_source", nullable = false, length = 20)
+	private CpnSource cpnSource;
+
 	@NotNull(message = "折扣類型必填")
 	private DiscountType discType;
+
 	@NotNull(message = "折扣值不得為空")
 	@Positive(message = "折扣值必須大於 0")
 	private BigDecimal discValue;
+
 	@PositiveOrZero(message = "最低消費金額不可為負")
 	private Integer minSpend;
+
 	@NotNull(message = "請選擇開始日期")
-	private Date startDate;
+	private LocalDate startDate;
+
 	@NotNull(message = "有效天數必填")
 	@Positive(message = "有效天數需為正整數")
 	private Integer validDays;
+
 	private String cpnDesc;
 	@NotNull
 	private IsActive isActive = IsActive.ACTIVE;
@@ -38,6 +53,14 @@ public class ActCpnFormDTO {
 
 	public void setActCpnId(Integer actCpnId) {
 		this.actCpnId = actCpnId;
+	}
+
+	public CpnSource getCpnSource() {
+		return cpnSource;
+	}
+
+	public void setCpnSource(CpnSource cpnSource) {
+		this.cpnSource = cpnSource;
 	}
 
 	public String getCpnName() {
@@ -72,11 +95,11 @@ public class ActCpnFormDTO {
 		this.minSpend = minSpend;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 

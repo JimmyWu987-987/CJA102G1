@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import com.farmtastic.common.enums.IsActive;
 
 //多個Service切換實作不改 Controller
@@ -41,9 +38,6 @@ public interface ProCpnService {
 
 	// 查啟用中且在有效日期內的券（前台領券用）
 	List<ProCpnVO> findAvailableForMember();
-
-	// 分頁
-	Page<ProCpnVO> findPagedProCpn(Pageable pageable);
 
 	// 計算折扣金額（for 測試 / 套用邏輯）
 	BigDecimal calculateDiscount(ProCpnVO coupon, BigDecimal originalPrice);
