@@ -35,6 +35,7 @@ public class ActCpnAdminController {
 	private ActCpnMapperImp mapper;
 	// 共用模板名稱
 	private static final String VIEW_PATH = "back_end/logined/actcpn/listAllActCpn";
+	private static final String ADD_PATH = "/back_end/logined/actcpn/actCpnForm";
 
 	// 查詢全部折價卷
 	@GetMapping("/list")
@@ -62,7 +63,7 @@ public class ActCpnAdminController {
 		model.addAttribute("mode", "add");
 		model.addAttribute("actionUrl", "/admin/actcpn/add");
 		model.addAttribute("actCpnForm", new ActCpnFormDTO());
-		return "/back_end/logined/actcpn/actCpnForm";
+		return ADD_PATH;
 	}
 
 	// 新增折價卷
@@ -72,7 +73,7 @@ public class ActCpnAdminController {
 		if (result.hasErrors()) {
 			model.addAttribute("mode", "add");
 			model.addAttribute("actionUrl", "/admin/actcpn/add");
-			return "/back_end/logined/actcpn/actCpnForm";
+			return ADD_PATH;
 		}
 		actCpnSvc.addActCpn(mapper.toEntity(form));
 		redirectAttributes.addFlashAttribute("successMessage", "新增折價券成功！");
@@ -124,7 +125,7 @@ public class ActCpnAdminController {
 		model.addAttribute("mode", "edit");
 		model.addAttribute("actionUrl", "/admin/acrcpn/update");
 		model.addAttribute("proCpnForm", mapper.toDTO(optional.get()));
-		return "/back_end/logined/actcpn/proCpnForm";
+		return ADD_PATH;
 	}
 
 //更新
