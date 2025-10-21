@@ -203,7 +203,7 @@ public class ProOrderMemController {
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
 
 		System.out.println("買家提出退貨申請！");
-		proOrderVO.setProOrdStatus((byte) 4);
+		proOrderVO.setProOrdStatus((byte) 5);
 
 		if (proOrdComm == null || proOrdComm.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "請輸入退貨原因！");
