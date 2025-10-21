@@ -82,4 +82,21 @@ public interface ActRepository extends JpaRepository<Act, Integer> {
     @Modifying
     @Query("DELETE FROM Act a WHERE a.actId = :actId")
     void deleteByActId(@Param("actId") Integer actId);
+    
+    // 活動評價總分
+    @Query("SELECT SUM(r.actRate) " +
+           "FROM RegVO r " +
+           "JOIN Ses s ON r.sesId = s.sesId " +
+           "WHERE s.actId = :actId AND r.regStat IN (3, 4, 5) AND r.actRate IS NOT NULL")
+    Integer getActScoreByActId(@Param("actId") Integer actId);
+
+    // 活動評價人數 (= 有幾張已完成的訂單給了評價)
+    @Query("SELECT COUNT(r) " +
+           "FROM RegVO r " +
+           "JOIN Ses s ON r.sesId = s.sesId " +
+           "WHERE s.actId = :actId AND r.regStat IN (3, 4, 5) AND r.actRate IS NOT NULL")
+    Long getActCntByActId(@Param("actId") Integer actId);
+    
+    
+    
 }

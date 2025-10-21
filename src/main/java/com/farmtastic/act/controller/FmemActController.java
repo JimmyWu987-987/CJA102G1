@@ -275,7 +275,7 @@ public class FmemActController {
 	// =========== 小農查詢自己的活動 (ok) ============
 
 	// 查全部
-	@GetMapping("/listAllActForFmem") // 之後要登入測試喔喔喔喔喔!!!
+	@GetMapping("/listAllActForFmem")
 	public String listAllActForFmem(HttpSession session, ModelMap model) {
 
 		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
@@ -283,6 +283,21 @@ public class FmemActController {
 
 		// 塞自己的FmemId
 		List<Act> actList = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
+
+        for (Act act : actList) {
+            Integer actId = act.getActId();
+
+            actSvc.persistActScores(actId); 
+
+            Integer totalScore = actSvc.getActScore(actId);
+            Integer reviewCount = actSvc.getActCnt(actId);
+            
+            act.setActScore(totalScore); 
+            act.setActCnt(reviewCount);
+
+            String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
+            act.setActAvgScore(avgScoreStr); 
+        }		
 
 		model.addAttribute("actList", actList);
 
@@ -303,6 +318,21 @@ public class FmemActController {
 		// 找自己的+已過審的
 		List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.ASC, "actId"));
 
+        for (Act act : actList) {
+            Integer actId = act.getActId();
+
+            actSvc.persistActScores(actId); 
+
+            Integer totalScore = actSvc.getActScore(actId);
+            Integer reviewCount = actSvc.getActCnt(actId);
+            
+            act.setActScore(totalScore); 
+            act.setActCnt(reviewCount);
+
+            String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
+            act.setActAvgScore(avgScoreStr); 
+        }
+		
 		model.addAttribute("actList", actList);
 
 		if (actList.isEmpty()) {
@@ -337,6 +367,19 @@ public class FmemActController {
 
 		Act act = optAct.get();
 
+			actSvc.persistActScores(actId); 
+
+			Integer totalScore = actSvc.getActScore(actId);
+			Integer reviewCount = actSvc.getActCnt(actId);
+            
+			act.setActScore(totalScore); 
+			act.setActCnt(reviewCount);
+
+			String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
+			act.setActAvgScore(avgScoreStr); 
+
+		
+		
 		if (act.getActImg() != null) {
 			act.getActImg().size();
 		}
@@ -354,11 +397,11 @@ public class FmemActController {
 
 		for (Ses ses : launchedSes) {
 			// 呼叫 SesService 取得報名人數
-			Integer count = sesRepo.getHeadCountBySesId(ses.getSesId());
+			Integer headCount = sesSvc.getHeadCount(ses.getSesId());
 
 			// 將計算結果設定到 Ses 物件中。
 			// 注意：您需要在 Ses.java 中新增 setActualRegCount() 方法
-			sesSvc.getHeadCount(count);
+			ses.setHeadCountCache(headCount);
 		}
 
 		model.addAttribute("sesList", launchedSes);

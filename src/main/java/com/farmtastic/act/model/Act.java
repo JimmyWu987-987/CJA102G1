@@ -98,10 +98,10 @@ public class Act implements java.io.Serializable {
 	private Integer fmemId;
 	
 	@Column(name = "act_score")	
-	private Integer actScore;
+	private Integer actScore = 0;
 	
 	@Column(name = "act_cnt")	
-	private Integer actCnt;
+	private Integer actCnt = 0;
 	
 	@Lob
 	@Column(name = "act_mainimg", nullable = false, columnDefinition = "LONGBLOB")
@@ -137,6 +137,9 @@ public class Act implements java.io.Serializable {
 	
 	@Transient
 	private String actMainImgBase64;
+	
+	@Transient
+	private String actAvgScore;
     
 	public Act() {
 		super();
@@ -314,5 +317,14 @@ public class Act implements java.io.Serializable {
 	public void setActMainImgBase64(String actMainImgBase64) {
 		this.actMainImgBase64 = actMainImgBase64;
 	}
+	
+	// 動態算評分相關資料
+	public String getActAvgScore() {
+        return actAvgScore;
+    }
+
+    public String setActAvgScore(String actAvgScore) {
+        return this.actAvgScore = actAvgScore;
+    }
 	
 }
