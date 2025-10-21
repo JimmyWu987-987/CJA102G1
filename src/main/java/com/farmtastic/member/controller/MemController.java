@@ -4,13 +4,13 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
@@ -47,6 +47,7 @@ import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
 import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProService;
 import com.farmtastic.proimage.model.ProImage;
+import com.farmtastic.proimage.model.ProImageService;
 import com.farmtastic.redis.verification.MailService;
 import com.farmtastic.redis.verification.RedisService;
 import com.farmtastic.validator.RegistrationValidation;
@@ -73,6 +74,9 @@ public class MemController {
 	
 	@Autowired
 	ProService proSvc;
+	
+	@Autowired
+	ProImageService proImageSvc;
 
 	@Autowired
 	RedisService redisSvc;
@@ -127,6 +131,15 @@ public class MemController {
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
 
 		List<Pro> proList = proSvc.findByFmemId(fmemIdInteger);
+		for(Pro pro : proList) {
+			Integer proId = pro.getProId();
+			Optional<ProImage> proImage = proImageSvc.findFirstImageByProId(Long.valueOf(proId));
+			
+			if(proImage.isPresent()) {
+				String proImageBase64 = Base64.getEncoder().encodeToString(proImage.orElse(null).getProImg());
+				pro.setProImageBase64(proImageBase64);
+			}
+		}
 		model.addAttribute("proList", proList);
 		
 		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
@@ -148,14 +161,12 @@ public class MemController {
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
 		
 		List<Act> actList = actSvc.findByFmemId(fmemIdInteger, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
-		
-//		for(Act act : actList) {
-//			if(act.getActMainImg() != null) {
-//				act.setActMainImgBase64(Base64.getEncoder().encodeToString(act.getActMainImg()));
-//			}
-//		}
+		for(Act act : actList) {
+			if(act.getActMainImg() != null) {
+				act.setActMainImgBase64(Base64.getEncoder().encodeToString(act.getActMainImg()));
+			}
+		}
 		model.addAttribute("actList", actList);
-		
 		
 		String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 		String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
@@ -306,7 +317,7 @@ public class MemController {
 			@Validated(RegistrationValidation.class) @ModelAttribute("mem") Mem mem, BindingResult result,
 			ModelMap model, RedirectAttributes redirectAttrs) {
 
-		// 驗證帳號、手機不能跟別人重複
+		// 驗證帳號(local/google分開)、手機、信箱不能跟別人重複
 		String memAcc = mem.getMemAcc();
 		String memMobile = mem.getMemMobile();
 		String memEmail = mem.getMemEmail();
