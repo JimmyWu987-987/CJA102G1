@@ -376,8 +376,8 @@ create table act (
  act_launstat		tinyint,
  act_launupd		datetime,
  fmem_id			int not null,
- act_score			int,
- act_cnt			int,
+ act_score			int default 0,
+ act_cnt			int default 0,
  act_mainimg		longblob,		/* 活動主圖, 活動一覽頁面會顯示的圖片 */
  constraint act_fmem_id_fk foreign key (fmem_id) references fmem (fmem_id),
  constraint act_act_id_pk primary key (act_id));
@@ -386,7 +386,7 @@ insert into act values
   /*到目前都正常上架&有人評價過*/
  (null, '下田去！一日小農體驗', '2025-07-01','2025-12-30',
  '捲起袖子、赤腳踩在田裡，親手插秧、採收蔬果，感受最真實的農村日常。',
- 200, 2, '2025-05-10 10:20:30', null, 1, '2025-05-15 09:20:30', 1, 101, 23, null),
+ 200, 2, '2025-05-10 10:20:30', null, 1, '2025-05-15 09:20:30', 1, null, null, null),
  
  /*審核未過*/
  (null, '從產地到餐桌的秘密', '2025-10-25','2026-03-31',
@@ -396,12 +396,12 @@ insert into act values
  /*到目前都正常上架&有人評價過*/
  (null, '小小牧場', '2025-03-15','2025-10-31',
  '餵小羊、抱兔子，近距離接觸可愛動物，體驗牧場生活樂趣。',
- 399, 2, '2025-01-10 14:10:30', null, 1, '2025-01-15 16:00:30', 2, 168, 38, null),
+ 399, 2, '2025-01-10 14:10:30', null, 1, '2025-01-15 16:00:30', 2, null, null, null),
  
  /*有人評價過此活動, 此活動已結束並下架*/
  (null, '藍染工藝體驗課程', '2024-12-01','2025-06-10',
  '親手體驗藍染工藝，學習天然染色技巧，創作獨一無二的布藝作品。',
- 700, 2, '2024-10-27 19:10:30', '已修正金額，審核通過', 0, '2025-06-11 00:00:00', 2, 666, 150, null),
+ 700, 2, '2024-10-27 19:10:30', '已修正金額，審核通過', 0, '2025-06-11 00:00:00', 2, null, null, null),
  
  /*審核已通過但還沒上架*/
  (null, '小村莊的故事之旅', '2025-10-01','2026-02-28',
@@ -663,7 +663,8 @@ INSERT INTO PRO_ORDER (
 -- ===================================================================================================
 (1, NULL, '2025-08-01 10:00:00', 3, 1, 950, 60, 50, 0, 10, 960, '請盡快出貨', 0, 0, 'SF10101010', '2025-08-03 09:00:00', '謝維綺', '0910-380143', 'pamela8508@gmail.com', '320桃園市中壢區仁和街35號', '0'),
 (1, NULL, '2025-08-03 16:30:00', 4, 1, 600, 60, 0, 0, 6, 660, NULL, 1, 1, '711A1010101', '2025-08-05 14:00:00', '謝維綺', '0910-380143', 'pamela8508@gmail.com', '320桃園市中壢區仁和街35號', '0'),
-(1, NULL, '2025-08-10 11:00:00', 1, 0, 400, 60, 0, 0, 0, 460, '付款完成通知', 1, 0, NULL, NULL, '謝維綺', '0910-380143', 'pamela8508@gmail.com', '320桃園市中壢區仁和街35號', '0'),
+(1, NULL, '2025-08-10 11:00:00', 0, 0, 400, 60, 0, 0, 0, 460, '付款完成通知', 1, 0, NULL, NULL, '謝維綺', '0910-380143', 'pamela8508@gmail.com', '320桃園市中壢區仁和街35號', '0'),
+
 
 -- ===================================================================================================
 -- MEM_ID 2: 胡得軒 (3 筆訂單 - FMEM_ID 2)
@@ -1389,9 +1390,37 @@ ADD CONSTRAINT act_ad_fmem_ID_FK FOREIGN KEY (fmem_id) REFERENCES fmem(fmem_id);
 SET SQL_SAFE_UPDATES = 0;
 UPDATE ses s
 SET s.headcount = (
-SELECT SUM(r.reg_count)
-FROM reg r
-WHERE r.ses_id = s.ses_id);
+	SELECT COALESCE(SUM(r.reg_count), 0)
+	FROM reg r
+	WHERE r.ses_id = s.ses_id
+		AND r.reg_stat IN (0, 3, 4, 5) 
+);
+SET SQL_SAFE_UPDATES = 1;
 
+SET SQL_SAFE_UPDATES = 0;
+UPDATE act a
+SET a.act_score = (
+    SELECT COALESCE(SUM(r.act_rate), 0)
+    FROM reg r
+    JOIN ses s ON r.ses_id = s.ses_id
+    WHERE s.act_id = a.act_id
+		AND r.act_rate IS NOT NULL
+		AND r.reg_stat IN (3, 4, 5)
+);
 
+SET SQL_SAFE_UPDATES = 1;
 
+SET SQL_SAFE_UPDATES = 0; -- 允許無 WHERE 條件的 UPDATE
+
+-- 更新 Act 表格中的 act_cnt 欄位
+UPDATE act a
+SET a.act_cnt = (
+	SELECT COUNT(r.reg_id)
+	FROM reg r
+	JOIN ses s ON r.ses_id = s.ses_id
+	WHERE s.act_id = a.act_id
+		AND r.act_rate IS NOT NULL
+		AND r.reg_stat IN (3, 4, 5)
+);
+
+SET SQL_SAFE_UPDATES = 1;

@@ -31,7 +31,10 @@
 	            <div class="info">
 	                <span th:if="${fmem.fmemEmail}">信箱: <span th:text="${fmem.fmemEmail}"></span></span>
 <!-- 	                <span>電話: 03-4259888</span> -->
-	                <span th:if="${fmem.fmemAddr}">地址: <span th:text="${fmem.fmemAddr}"></span></span>
+	                <span th:if="${fmem.fmemCity}">地區: 
+	                	<span th:text="${fmem.fmemCity}"></span>
+	                	<span th:if="${fmem.fmemDist}" th:text="${fmem.fmemDist}"></span>
+	                </span>
 	            </div>
             </div>
             
@@ -53,26 +56,23 @@
         <div class="store-content">
 <!--             <h3>商品</h3> -->
             <ul class="products">
+           		<p th:if="${proList == null or #lists.isEmpty(proList)}" th:text="目前尚無上架商品" class="no-item-msg"></p>
 <!--                 <li class="product" th:fragment="product"> -->
                 <li class="product" th:each="pro : ${proList}">
                    	<div class="pic">
-	                    <a href="#">
+	                    <a th:href="${pro.proStatus == 1} ? @{/mall/product/{id}(id=${pro.proId})} : '#'">
 	                   		<div class="mask"></div>
 	                   		<div class="tag">熱銷</div>
-<!-- 	                   		<img th:src="'data:image/jpeg;base64, ' + ${pro.proImage?.proImgBase64}" alt="商品圖片"> -->
+	                   		<img th:if="${pro.proImageBase64 != null}" th:src="'data:image/jpeg;base64, ' + ${pro.proImageBase64}" alt="商品圖片">
 	                    </a>
                    	</div>
                     <div class="text">
-	                    <a href="#">
+	                     <a th:href="${pro.proStatus == 1} ? @{/mall/product/{id}(id=${pro.proId})} : '#'">
 	                        <div th:text="${pro.proName}" class="name"></div>
 	                        <div class="price">
 	                            <span class="prefix">$</span>
 	                            <span th:text="${pro.proPrice}" class="number"></span>
 	                        </div>
-<!-- 	                        <div class="score"> -->
-<!-- 	                            <span class="prefix">⭐</span> -->
-<!-- 	                            <span th:text="${pro.proScore}" class="number"></span> -->
-<!-- 	                        </div> -->
 	                    </a>
                     </div>
                     

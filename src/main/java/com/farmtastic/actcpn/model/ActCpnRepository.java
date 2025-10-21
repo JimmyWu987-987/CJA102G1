@@ -1,31 +1,43 @@
 package com.farmtastic.actcpn.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.IsActive;
 
 import jakarta.transaction.Transactional;
 
 public interface ActCpnRepository extends JpaRepository<ActCpnVO, Integer> {
+	// 查詢折價券用途
+	Optional<ActCpnVO> findByCpnSource(CpnSource cpnSource);
+
+	Optional<ActCpnVO> findFirstByCpnSourceAndIsActiveOrderByCrtAtDesc(CpnSource source, IsActive isActive);
+
 	// 查詢全部啟用或停用的折價券
 	List<ActCpnVO> findByIsActive(IsActive isActive);
 
 	// 查詢指定名稱 + 狀態的單張券
 	Optional<ActCpnVO> findByCpnNameAndIsActive(String cpnName, IsActive isActive);
 
+	// 查詢指定ID單張券
+	Optional<ActCpnVO> findById(Integer actCpnId);
+
 	// 名稱模糊查詢
 	List<ActCpnVO> findByCpnNameContaining(String keyword);
 
 	// 上架日期篩選
-	List<ActCpnVO> findByStartDateAfter(Date startDate);
+	List<ActCpnVO> findByStartDateBetween(LocalDate start, LocalDate end);
 
-	List<ActCpnVO> findByStartDateBetween(Date start, Date end);
+	List<ActCpnVO> findByStartDateAfter(LocalDate start);
+
+	List<ActCpnVO> findByStartDateBefore(LocalDate end);
 
 	// 批次停用過期券
 	@Modifying
@@ -46,4 +58,7 @@ public interface ActCpnRepository extends JpaRepository<ActCpnVO, Integer> {
 			""", nativeQuery = true)
 	List<ActCpnVO> findAvailableForMember();
 
+	@Modifying
+	@Query("UPDATE ProCpnVO c SET c.isActive = :status WHERE c.proCpnId = :id")
+	void updateStatus(@Param("id") Integer id, @Param("status") IsActive status);
 }

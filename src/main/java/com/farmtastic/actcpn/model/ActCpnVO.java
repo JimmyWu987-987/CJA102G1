@@ -1,7 +1,6 @@
 package com.farmtastic.actcpn.model;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -9,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.farmtastic.common.converter.EnumConverters;
+import com.farmtastic.common.enums.CpnSource;
 import com.farmtastic.common.enums.DiscountType;
 import com.farmtastic.common.enums.IsActive;
 
@@ -35,6 +35,10 @@ public class ActCpnVO implements java.io.Serializable {
 	@Column(name = "act_cpn_id")
 	private Integer actCpnId;
 
+	@Convert(converter = EnumConverters.CpnSourceConverter.class)
+	@Column(name = "cpn_source", nullable = false, length = 20)
+	private CpnSource cpnSource; // 折價券用途：REGISTRATION, LOTTERY, BIRTHDAY, EVENT, OTHER
+
 	@Column(name = "cpn_name", nullable = false, length = 50)
 	private String cpnName; // 折價券名稱
 
@@ -51,7 +55,7 @@ public class ActCpnVO implements java.io.Serializable {
 	private Integer minSpend; // 消費門檻金額
 
 	@Column(name = "start_date")
-	private Date startDate; // 開始日期
+	private LocalDate startDate; // 開始日期
 
 	@Column(name = "valid_days")
 	private Integer validDays; // 有效天數
@@ -66,6 +70,14 @@ public class ActCpnVO implements java.io.Serializable {
 
 	@Column(name = "crt_at", nullable = false, insertable = false, updatable = false)
 	private Timestamp crtAt; // 建立時間 (由 DB 預設 CURRENT_TIMESTAMP)
+
+	public CpnSource getCpnSource() {
+		return cpnSource;
+	}
+
+	public void setCpnSource(CpnSource cpnSource) {
+		this.cpnSource = cpnSource;
+	}
 
 	public Integer getActCpnId() {
 		return actCpnId;
@@ -107,11 +119,11 @@ public class ActCpnVO implements java.io.Serializable {
 		this.minSpend = minSpend;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
@@ -152,7 +164,7 @@ public class ActCpnVO implements java.io.Serializable {
 	}
 
 	public ActCpnVO(Integer actCpnId, String cpnName, DiscountType discType, BigDecimal discValue, Integer minSpend,
-			Date startDate, Integer validDays, String cpnDesc, IsActive isActive, Timestamp crtAt) {
+			LocalDate startDate, Integer validDays, String cpnDesc, IsActive isActive, Timestamp crtAt) {
 		super();
 		this.actCpnId = actCpnId;
 		this.cpnName = cpnName;
@@ -179,7 +191,7 @@ public class ActCpnVO implements java.io.Serializable {
 			return null;
 
 		// 把 Date 轉成 LocalDate 加天數後再轉回 Date
-		LocalDate exp = startDate.toLocalDate().plusDays(validDays);
+		LocalDate exp = startDate.plusDays(validDays);
 		return java.sql.Date.valueOf(exp);
 	}
 
@@ -216,6 +228,22 @@ public class ActCpnVO implements java.io.Serializable {
 
 		default:
 			return "-";
+		}
+	}
+
+	@Transient
+	public String getActiveFlag() {
+		// 防止 nullPointer
+		if (isActive == null)
+			return "未設定";
+
+		switch (isActive) {
+		case ACTIVE:
+			return "啟用中";
+		case INACTIVE:
+			return "停用中";
+		default:
+			return "未知狀態";
 		}
 	}
 }

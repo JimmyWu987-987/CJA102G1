@@ -14,7 +14,8 @@
 .container-header .member .bell i{
 	background-color: #57a24d;
 }
-/* .container-header .member .btn-logout:hover i, */
-/* .container-header .member .bell:hover i{ */
-/* 	background-color: #37922d; */
-/* } */
+
+.store-content .products a,
+.store-content .products button{
+	cursor: default;
+}

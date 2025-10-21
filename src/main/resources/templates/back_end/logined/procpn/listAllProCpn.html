@@ -113,7 +113,7 @@
             <td th:text="${c.proCpnId}"></td>
             <td th:text="${c.cpnName}"></td>
             <td th:text="${c.discType != null ? c.discType.text : '-'}"></td>
-   <td th:text="${c.formattedDiscValue}"></td>
+   			<td th:text="${c.formattedDiscValue}"></td>
                   <td>
               <span class="inline-block rounded-full px-2 py-1 text-sm font-medium"
                     th:classappend="${
@@ -167,7 +167,7 @@
 //... DataTables 初始化腳本 ...
 $(document).ready(function() {
 	console.log("DataTables 初始化中")
-	$('#memCpnTable').DataTable({
+	$('#proCpnTable').DataTable({
 		"lengthMenu" : [ 5, 10, 20, 50 ],
 		"searching" : false, // 禁用 DataTables 內建的搜尋框
 		"paging" : true, // 保留分頁功能

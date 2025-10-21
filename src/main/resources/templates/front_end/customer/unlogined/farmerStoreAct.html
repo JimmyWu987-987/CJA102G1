@@ -30,13 +30,14 @@
         <div class="store-content">
 <!--             <h3>商品</h3> -->
             <ul class="activities">
+            	<p th:if="${actList == null or #lists.isEmpty(actList)}" th:text="目前尚無上架活動" class="no-item-msg"></p>
 <!--                 <li class="activity" th:fragment="activity"> -->
                 <li class="activity" th:each="act : ${actList}">
                     <div class="pic">
                     	<a href="#">
                     		<div class="mask"></div>
                     		<div class="tag">熱門</div>
-<!--                     		<img th:src="'data:image/jpeg;base64, ' + ${act.actMainImgBase64}" alt=""> -->
+                    		<img th:if="${act.actMainImgBase64 != null}" th:src="'data:image/jpeg;base64, ' + ${act.actMainImgBase64}" alt="活動圖片">
                     	</a>
                    	</div>
 	                <div class="text">
@@ -54,7 +55,6 @@
                         	<span th:text="${act.actStart}"></span>
                         	<span>~</span>
                         	<span th:text="${act.actEnd}"></span>
-<!--                         	<span>10/10、10/25、12/25</span> -->
                         </div>
 						<button class="addToCart">立馬報名去</button>	                    
 	                </div>

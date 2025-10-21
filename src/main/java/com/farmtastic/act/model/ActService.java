@@ -1,5 +1,7 @@
 package com.farmtastic.act.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -59,6 +61,58 @@ public class ActService {
 		if (actRepository.existsById(actId)) {
 			actRepository.deleteByActId(actId);
 		}
+	}
+	
+	// =========== 算評分相關 =============
+	
+	// 評架總分
+	@Transactional(readOnly = true)
+    public Integer getActScore(Integer actId) {
+        Integer totalScore = actRepository.getActScoreByActId(actId);
+        // 若為空值就設為 0
+        return totalScore != null ? totalScore : 0;
+    }
+	
+	// 評價人數(= 訂單數)
+	@Transactional(readOnly = true)
+    public Integer getActCnt(Integer actId) {
+        Long count = actRepository.getActCntByActId(actId);
+        // 若為空值就設為 0
+        return count != null ? count.intValue() : 0;
+    }
+	
+	// 平均評分
+	public String calculateAverageActScore(Integer totalScore, Integer reviewCount) {
+        
+        // 防呆用 >> 總分或人數為 null or 0
+        if (totalScore == null || reviewCount == null || reviewCount.longValue() == 0) {
+            return "0.0"; 
+        }
+
+        // 計算平均
+        BigDecimal avg = new BigDecimal(totalScore)
+        				 .divide(new BigDecimal(reviewCount), 1, RoundingMode.HALF_UP);
+
+        return avg.toString();
+    }
+	
+	
+	// set 評分人數 & 評價總分
+	@Transactional
+	public void persistActScores(Integer actId) {
+	    Integer newScore = this.getActScore(actId);
+	    Integer newCount = this.getActCnt(actId);
+	    
+	    Optional<Act> actOpt = actRepository.findById(actId);
+	    
+	    if (actOpt.isPresent()) {
+	        Act act = actOpt.get();
+
+	        act.setActScore(newScore); 
+	        act.setActCnt(newCount); 
+
+	        actRepository.save(act);
+	    }
 	}
 	
 	
