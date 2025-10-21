@@ -1,17 +1,25 @@
 package com.farmtastic.ses.controller;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +48,78 @@ public class FmemSesController {
 	@Autowired
 	private ActService actSvc;
 	
+	
+	
+	// 定義時間格式, 讓時間格式與前端 input type="time" (HH:mm) 相符
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+	    
+	    
+	    // 註冊 java.sql.Date 編輯器 (處理 sesDate 和 regEnd 格式為 yyyy-MM-dd)
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	    dateFormat.setLenient(false); 
+	    
+	    binder.registerCustomEditor(java.sql.Date.class, new CustomDateEditor(dateFormat, true) {
+	        @Override
+	        public void setAsText(String text) throws IllegalArgumentException {
+	            if (text == null || text.trim().isEmpty()) {
+	                setValue(null);
+	            } else {
+	                try {
+	                    // 使用 SimpleDateFormat 解析為 java.util.Date
+	                    java.util.Date utilDate = dateFormat.parse(text); 
+	                    // 轉換為 java.sql.Date 並設置值
+	                    setValue(new java.sql.Date(utilDate.getTime())); 
+	                } catch (Exception ex) {
+	                    throw new IllegalArgumentException("日期格式無效，應為 yyyy-MM-dd: " + text, ex);
+	                }
+	            }
+	        }
+	        // 確保 Thymeleaf 顯示時也能正確格式化
+	        @Override
+	        public String getAsText() {
+	            Object value = getValue();
+	            if (value instanceof java.sql.Date) {
+	                return dateFormat.format((java.sql.Date) value);
+	            }
+	            return "";
+	        }
+	    });
+
+
+	    // 註冊 java.sql.Time 編輯器 (處理 sesStart 和 sesEnd 格式為 HH:mm)
+	    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+	    timeFormat.setLenient(false); 
+	    
+	    binder.registerCustomEditor(java.sql.Time.class, new CustomDateEditor(timeFormat, true) {
+	        @Override
+	        public void setAsText(String text) throws IllegalArgumentException {
+	            if (text == null || text.trim().isEmpty()) {
+	                setValue(null);
+	            } else {
+	                try {
+	                    // 將字串解析為 java.util.Date
+	                    java.util.Date date = timeFormat.parse(text);
+	                    // 轉換為 java.sql.Time
+	                    setValue(new java.sql.Time(date.getTime())); 
+	                } catch (Exception ex) {
+	                    throw new IllegalArgumentException("時間格式無效，應為 HH:mm: " + text, ex);
+	                }
+	            }
+	        }
+	        
+	        @Override // 確保 Thymeleaf 顯示時也能正確格式化
+	        public String getAsText() {
+	            Object value = getValue();
+	            if (value instanceof java.sql.Time) {
+	                return timeFormat.format((java.sql.Time) value);
+	            }
+	            return "";
+	        }
+	    });
+	}
+	
 	// 查已上架的活動 (新增場次用)
 	@GetMapping("/listLaunchedAct")
     public String listLaunchedActForLaunch(HttpSession session, ModelMap model) {
@@ -66,9 +146,12 @@ public class FmemSesController {
 	
 	// ========== 小農新增場次 ==========
 	@GetMapping("addSes/{actId}")
-	public String showAddSesForm(@PathVariable Integer actId, ModelMap model) {
+	public String showAddSesForm(@PathVariable Integer actId,
+								 ModelMap model,
+								 HttpSession session) {
 		
 		Act act = actSvc.getOneAct(actId).orElseThrow(() -> new RuntimeException("活動不存在"));
+		session.setAttribute("sessionAct", act);
 		
 		java.sql.Date actStart = act.getActStart();
 	    java.sql.Date actEnd = act.getActEnd();
@@ -93,9 +176,6 @@ public class FmemSesController {
 	    
 	    // 傳遞給前端
 	    model.addAttribute("minRegEnd", MinRegEnd);
-	    
-	    
-	    // *** 關鍵新增: 將活動開始/結束日期傳入 Model ***
 	    model.addAttribute("actStart", act.getActStart()); 
 	    model.addAttribute("actEnd", act.getActEnd());       
         return "front_end/farmer/logined/fmemSes/addSes";
@@ -127,18 +207,18 @@ public class FmemSesController {
 	    	model.addAttribute("errorMsg", "查無此活動, 無法新增場次");
 	        return "front_end/farmer/logined/fmemSes/addSes";
 	    }
+		
+		ses.setAct(act);
 
 		// 初始化非必填但可能需要預設值的欄位... 測試看看
         if (ses.getSesLaunStat() == null) {
             ses.setSesLaunStat(0); // 預設為 0 (未上架/預設值)
         }
 
-		/*************************** 2.開始新增資料 *****************************************/
 		sesSvc.addSes(ses);
-		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
 			
 //		// 設置 Flash Attribute，用於 SweetAlert
-//		redirectAttributes.addFlashAttribute("successMessage", "新增成功！");
+		redirectAttributes.addFlashAttribute("successMessage", "已成功新增場次！");
 //	
 		return "redirect:/fmem/ses/listAllSesForFmem"; 		// 新增完後轉到場次一覽
 	}
@@ -148,7 +228,7 @@ public class FmemSesController {
 	
 	// ========== 查小農自己的全部場次 ==========
 	// 查全部
-    @GetMapping("/listAllSesForFmem")		// 之後要登入測試喔喔喔喔喔!!!
+    @GetMapping("/listAllSesForFmem")
     public String listAllSesForFmem(HttpSession session, ModelMap model) {
 
     	Fmem fmem = (Fmem) session.getAttribute("loggedInFmember");			// 取得登入小農
@@ -162,12 +242,38 @@ public class FmemSesController {
     	
     	// 塞自己的FmemId、依日期排序
         List<Ses> sesList = sesSvc.findSesWithActByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "sesDate"));
+        // 用 Set 避免同一個活動重複更新資料庫
+        Set<Integer> processedActIds = new HashSet<>();
+        
         
         for (Ses ses : sesList) {
-            Integer headCount = sesSvc.getHeadCount(ses.getSesId());
-            ses.setHeadCountCache(headCount); 
+        	
+        	Integer headCount = sesSvc.getHeadCount(ses.getSesId());
+        	ses.setHeadCountCache(headCount);
+        	
+            Act act = ses.getAct();
+            
+            if (act != null) {
+            	Integer actId = act.getActId();
+            	
+            	if (!processedActIds.contains(actId)) {
+            		actSvc.persistActScores(actId);
+            		
+            		Integer totalScore = actSvc.getActScore(actId);
+                    act.setActScore(totalScore); 
+                    
+                    Integer reviewCount = actSvc.getActCnt(actId);
+                    act.setActCnt(reviewCount);
+                    
+                    String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount); 
+                    act.setActAvgScore(avgScoreStr);
+
+                    processedActIds.add(actId);
+            		
+            	}
+            }
         }
-        
+
         model.addAttribute("sesList", sesList);
         
         if (sesList.isEmpty()) {
@@ -264,6 +370,6 @@ public class FmemSesController {
             model.addAttribute("errorMessage", "找不到該場次 ID: " + sesId);
         }
         
-        return "redirect:/fmem/ses/listAllSesForFmem"; 
+        return "redirect:/fmem/ses/listAllSesForFmem";
     }
 }

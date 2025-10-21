@@ -3,6 +3,7 @@ package com.farmtastic.ses.model;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -206,6 +207,57 @@ public class Ses {
 	    this.act = act;
 	}
 	
+	
+	@Transient
+	public Integer getDynamicRegStat() {
+	    
+	    // 取得今日日期
+	    LocalDate today = LocalDate.now();
+	    
+	    // 將 java.sql.Date 轉換為 LocalDate 比較
+	    LocalDate regEndDate = this.regEnd.toLocalDate();
+	    LocalDate sesDate = this.sesDate.toLocalDate();
+	    
+	    Integer currentHeadCount = this.getHeadCount(); 
+	    Integer minPpl = this.getMinPpl();
+
+
+	    // 小農自己取消 (優先)
+	    if (this.regStat == 4) {
+	         return 4; // 已取消
+	    }
+
+	    // 未開始報名 (次要(預設))
+	    if (this.sesLaunStat == 0) {
+	        return 5; // 未開始報名
+	    }
+
+	    // 已過場次日期
+	    if (today.isAfter(sesDate)) {
+	         
+	         if (currentHeadCount >= minPpl) {
+	             return 3; // 已完成 (成團 + 舉辦日期已過)
+	         } else {
+	             // 若為不成團, 狀態會繼續維持
+	             return 2; // case 2: 不成團, 取消 (不成團 + 舉辦日期已過)
+	         }
+	    }
+	    
+	    // 已過截止日
+	    if (today.isAfter(regEndDate)) {
+	        if (currentHeadCount >= minPpl) {
+	            return 1; // 已成團 (截止日已過, 人數>= mimPpl, 不過場次未到)
+	        } else {
+	            return 2; // case 2: 不成團，取消 (截止日已過, 人數>= mimPpl, 場次未到)
+	        }
+	    }
+	    
+	    // 報名中 (還不到截止日、仍為報名中)
+	    return 0; // 報名中
+	}
+	
+	
+	
 	// 取得報名狀態
 	//TODO: 需修改假資料, 不做編輯場次了, default要改成5
 	@Transient
@@ -216,7 +268,7 @@ public class Ses {
 	        case 1:
 	            return "已成團";
 	        case 2:
-	            return "不成團，取消";
+	            return "不成團, 取消";
 	        case 3:
 	            return "已完成";
 	        case 4:
