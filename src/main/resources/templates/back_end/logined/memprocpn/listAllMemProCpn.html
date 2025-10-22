@@ -22,6 +22,22 @@
     background-color: #2d2d2d;
     color: white;
 }
+.btn-info {
+    background-color: #3b82f6;     
+    color: white;                 
+    padding: 0.4rem 0.8rem;        
+    border-radius: 0.4rem;         
+    font-size: 0.875rem;          
+    transition: background-color 0.25s ease, transform 0.15s ease;
+    text-align: center;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.btn-info:hover {
+    background-color: #2563eb;     
+    transform: translateY(-1px);   
+}
 </style>
 </head>
 <body>
@@ -60,18 +76,18 @@
     <!-- 清單表格 -->
     <div th:if="${!#lists.isEmpty(memCoupons)}" class="overflow-x-auto">
         <table id="memProCpnTable"
-                   class="min-w-full text-sm text-center text-gray-700 border border-gray-200 rounded-lg">
-                <thead class="bg-gray-100 text-gray-800 font-semibold">
-            <tr>
-                <th class="px-4 py-2">序號</th>
-                <th class="px-4 py-2">會員帳號</th>
-                <th class="px-4 py-2">折價券名稱</th>
-                <th class="px-4 py-2">使用狀態</th>
-                <th class="px-4 py-2">領取時間</th>
-                <th class="px-4 py-2">起始日</th>
-                <th class="px-4 py-2">到期日</th>
-                <th class="px-4 py-2">使用訂單</th>
-                <th class="px-4 py-2">操作</th>
+                   class="min-w-full border border-gray-200 divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-100 text-gray-700">
+            <tr class="text-center font-semibold">
+                <th>序號</th>
+                <th>會員帳號</th>
+                <th>折價券名稱</th>
+                <th>使用狀態</th>
+                <th>領取時間</th>
+                <th>起始日</th>
+                <th>到期日</th>
+                <th>使用訂單</th>
+                <th>操作</th>
             </tr>
         </thead>
         
@@ -95,7 +111,7 @@
                 <!-- 操作按鈕 -->
                 <td>
                     <a th:href="@{'/admin/memprocpn/view/' + ${mc.cpnHolderDetailId}}"
-                       class="btn btn-sm btn-info">查看</a>
+                       class="btn-info">查看</a>
                 </td>
             </tr>
         </tbody>

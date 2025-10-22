@@ -8,17 +8,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- 外部樣式 -->
-  <link rel="stylesheet" th:href="@{/css/memcpn/addCpnAdmin.css}">
+ <link rel="stylesheet" th:href="@{/css/memcpn/addCpnAdmin.css}">
 </head>
 
 <body class="bg-[#FEFBF6] p-8 font-sans text-gray-800">
 
   <!-- 主容器 -->
-  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8">
-
-    <!-- 標題 -->
-    <h2 class="text-2xl font-bold text-center mb-6 text-gray-700"
-        th:text="${#strings.equals(mode, 'edit') ? '編輯商品折價券' : '新增商品折價券'}">
+ <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8">
+   <h2 class="text-2xl font-bold text-center mb-6"
+        th:text="${#strings.equals(mode, 'edit') ? '編輯活動折價券' : '新增活動折價券'}">
       新增商品折價券
     </h2>
 
@@ -156,16 +154,15 @@
       </table>
 
       <!-- 按鈕區 -->
-      <div class="flex justify-center space-x-4 pt-6">
-        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded transition"
+      <div class="flex justify-center space-x-4 pt-4">
+        <button type="submit"
+                class="btn-primary"
                 th:text="${#strings.equals(mode, 'edit') ? '更新折價券' : '新增折價券'}">
         </button>
-        <a th:href="@{/admin/procpn/list}" class="bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded transition">
-          返回列表
-        </a>
+        <a th:href="@{/admin/procpn/list}" class="btn-secondary">返回列表</a>
       </div>
-
-    </form>
+ 
+   </form>
     <!-- 表單結束 -->
   </div>
 

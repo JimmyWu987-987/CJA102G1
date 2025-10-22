@@ -67,3 +67,31 @@ body {
 .form-radio {
     accent-color: #FF7B42;
 }
+.btn-primary{
+    background-color: #2563eb;     /* bg-blue-600 */
+    color: white;                  /* text-white */
+    padding: 0.5rem 1rem;          /* py-2 px-4 */
+    border-radius: 0.5rem;         /* rounded-lg */
+    transition: background-color 0.25s ease; /* transition */
+    display: inline-block;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* 滑過變色 */
+.btn-primary:hover {
+    background-color: #1d4ed8;    
+     }
+.btn-secondary{
+	  background-color: #6b7280;     
+    color: white;                 
+    padding: 0.5rem 1rem;         
+    border-radius: 0.5rem;        
+    transition: background-color 0.25s ease; 
+    display: inline-block;
+    text-align: center;
+    font-weight: 500;
+}
+.btn-secondary:hover {
+    background-color: #4b5563;     
+}

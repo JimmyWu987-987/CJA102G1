@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" th:href="@{/css/memcpn/couponManage.css}">
+<link rel="stylesheet" th:href="@{/css/memcpn/listAllCpnMode.css}">
 <style>
   body { background-color: #f8fafc; font-family: 'Noto Sans TC', sans-serif; }
     h2 { text-align: center; color: #1e293b; font-weight: 700; margin: 2rem 0; font-size: 1.75rem; }
@@ -71,34 +72,34 @@
   </div>
 
   <!-- 資料表格 -->
-  <div th:if="${!#lists.isEmpty(logs)}" class="overflow-x-auto">
-    <table id="logTable" 
-           class="min-w-full text-sm text-center text-gray-700 border border-gray-200 rounded-lg">
-      <thead class="bg-gray-100 text-gray-800 font-semibold">
-        <tr>
-          <th class="px-4 py-2">日誌ID</th>
-          <th class="px-4 py-2">管理員ID</th>
-          <th class="px-4 py-2">折價券ID</th>
-          <th class="px-4 py-2">操作類型</th>
-          <th class="px-4 py-2">操作時間</th>
-          <th class="px-4 py-2">描述</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="log : ${logs}">
-          <td th:text="${log.logId}"></td>
-          <td th:text="${log.adminId}"></td>
-          <td th:text="${log.proCpnId != null ? log.proCpnId : '-'}"></td>
-          <td th:text="${log.actionType}" 
-              th:classappend="${log.actionType == '新增' ? 'text-green-600 font-semibold' :
-                              log.actionType == '修改' ? 'text-blue-600 font-semibold' :
-                              log.actionType == '刪除' ? 'text-red-600 font-semibold' : 'text-gray-600'}">
-          </td>
-          <td th:text="${#temporals.format(log.actionTime, 'yyyy/MM/dd HH:mm:ss')}"></td>
-          <td th:text="${log.description}"></td>
-        </tr>
-      </tbody>
-    </table>
+  <div th:if="${!#lists.isEmpty(logs)}" class="table-container">
+  <table id="logTable" class="coupon-table">
+    <thead>
+      <tr>
+        <th>日誌ID</th>
+        <th>管理員ID</th>
+        <th>折價券ID</th>
+        <th>操作類型</th>
+        <th>操作時間</th>
+        <th>描述</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="log : ${logs}">
+        <td th:text="${log.logId}"></td>
+        <td th:text="${log.adminId}"></td>
+        <td th:text="${log.proCpnId != null ? log.proCpnId : '-'}"></td>
+        <td th:text="${log.actionType}" 
+            th:classappend="${log.actionType == '新增' ? 'log-add' :
+                            log.actionType == '修改' ? 'log-edit' :
+                            log.actionType == '刪除' ? 'log-delete' : 'log-neutral'}">
+        </td>
+        <td th:text="${#temporals.format(log.actionTime, 'yyyy/MM/dd HH:mm:ss')}"></td>
+        <td th:text="${log.description}"></td>
+      </tr>
+    </tbody>
+  </table>
+
 
     <!-- 總筆數 -->
     <div class="text-right text-gray-500 text-sm mt-3"
@@ -110,7 +111,7 @@
 	// ... DataTables 初始化腳本 ...
 	$(document).ready(function() {
 		console.log("DataTables 初始化中")
-		$('#memProCpnTable').DataTable({
+		$('#logTable').DataTable({
 			"lengthMenu" : [ 5, 10, 20, 50 ],
 			"searching" : false, // 禁用 DataTables 內建的搜尋框
 			"paging" : true, // 保留分頁功能
