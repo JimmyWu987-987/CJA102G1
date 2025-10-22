@@ -10,17 +10,18 @@
 <link rel="stylesheet" th:href="@{/css/ad/fmemAd-sidebar.css}">
 <link rel="stylesheet" th:href="@{/css/ad/fmemApplyAd.css}">
 
+
 </head>
 <body>
 	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-
+<!-- 	<div class="container"> -->
 	<div class="field">
 
 		<div class="left-area">
 			<div class="left-title">廣告功能</div>
 			<ul class="left-list">
-				<li><a th:href="@{/fmem/actAd/list}">查看廣告列表</a></li>
 				<li><a th:href="@{/fmem/actAd/applyAdView}">申請廣告</a></li>
+				<li><a th:href="@{/fmem/actAd/list}">查看廣告</a></li>
 			</ul>
 		</div>
 
@@ -134,7 +135,7 @@
 		<!-- /main-area -->
 
 	</div>
-
+<!-- </div> -->
 
 	<!-- 規則框：預設隱藏 -->
 	<div id="rulebody" class="rulebody">
