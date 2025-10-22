@@ -114,10 +114,11 @@ table.ses-table tbody tr:nth-child(even) {
 /* ======================== 輪播器 (保持具體 Class 選擇器) ======================== */
 .carousel {
     position: relative;
-    width: 90%;
+    width: 100%;
     /* 保持您喜歡的 max 限制 */
-/*     max-width: 35vw;  */
-/*     max-height: 45vh; */
+    min-height: 90px; 
+    min-width: 160px;
+    height: 45vh;
     margin: 10px auto;
     overflow: hidden;
     border-radius: 8px;
@@ -152,16 +153,9 @@ table.ses-table tbody tr:nth-child(even) {
 
 /* 注意：這裡的 .carousel-item img 會覆蓋上面的 .main-content img 的設定，是正確的 */
 .carousel-item img {
-    /* 移除 width: 100%; (會讓圖片變形) */
-    /* 移除 max-width: 88%; max-height: 88%; */
-    
-    /* 關鍵：讓圖片縮放以填滿容器，但保持比例 */
-    width: auto;           /* 讓寬度自動計算 */
-    height: auto;          /* 讓高度自動計算 */
-    max-width: 100%;       /* 最大寬度不超過容器 */
-    max-height: 100%;      /* 最大高度不超過容器 */
-    
-    object-fit: contain;    /* 保持比例，如果容器比例與圖片不同，則留白 */
+    width: 80%;           
+    height: 80%;
+    object-fit: contain;
     display: block;
     border-radius: 8px;
 }

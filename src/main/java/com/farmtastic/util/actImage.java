@@ -20,7 +20,7 @@ public class actImage {
 		uploadImages("main", "UPDATE act SET act_mainimg = ? WHERE act_id = ?");
 
 		// 上傳其他活動圖片
-		uploadImages("other", "UPDATE actimg SET act_img = ? WHERE act_id = ?");
+		uploadImages("other", "UPDATE actimg SET act_img = ? WHERE actimg_id = ?");
 
 		System.out.println("\n上傳完成！");
 	}
