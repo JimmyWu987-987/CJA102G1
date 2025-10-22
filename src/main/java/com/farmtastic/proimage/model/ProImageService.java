@@ -22,7 +22,8 @@ public class ProImageService {
 	public void deleteProImage(Long proImgId) {
 		proImageRepository.deleteById(proImgId);
 	}
-
+	
+	@Transactional
 	public void deleteImageByProId(Long proId) {
 		proImageRepository.deleteByProId(proId);
 	}
