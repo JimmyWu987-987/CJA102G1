@@ -72,11 +72,11 @@ public class AdminActController {
 		
 		List<Act> actList1 = actSvc.findByActStat(1, sort);
 
-	    // 抓取狀態為 1 or 4 的活動
-	    List<Act> actList4 = actSvc.findByActStat(4, sort);
+//	    // 抓取狀態為 1 or 4 的活動
+//	    List<Act> actList4 = actSvc.findByActStat(4, sort);
 
 	    List<Act> actList = new ArrayList<>(actList1);
-	    actList.addAll(actList4);
+//	    actList.addAll(actList4);
 
 	    actList.sort(Comparator.comparing(Act::getActUpd).reversed());
 

@@ -310,7 +310,8 @@ public class FmemActController {
 		Integer fmemId = fmem.getFmemId();
 
 		// 塞自己的FmemId
-		List<Act> actList = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
+//		List<Act> actList = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
+		List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.ASC, "actId"));
 
 		for (Act act : actList) {
 			Integer actId = act.getActId();
