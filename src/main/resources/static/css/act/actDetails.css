@@ -8,11 +8,14 @@
 /* } */
 
 /* ======================== 主要內容容器 (負責 55% 寬度) ======================== */
+.iframe-box {
+	margin : -8px;
+}
 .main-content {
-    width: 55%; 
+/*     width: 55%;  */
     margin: 0 auto; 
     padding: 0; 
-    max-width: 1600px; 
+/*     max-width: 1600px;  */
 }
 
 /* 新增：將所有內容包裹起來以利排版 */
@@ -22,7 +25,7 @@
 }
 
 /* ======================== 卡片區塊 (填滿 55% 容器) - 使用柔和色調 ======================== */
-.act-info, .ses-info {
+.ses-info {
     padding: 20px 40px;
     background-color: #FFFDF5; 
     border-radius: 8px;
@@ -30,6 +33,10 @@
     width: 100%; 
     box-sizing: border-box; 
     margin: 20px 0; 
+}
+
+.act-info {
+	padding:0;
 }
 
 /* ======================== 標題 (解註釋並使用專屬 class) ======================== */
@@ -153,7 +160,7 @@ table.ses-table tbody tr:nth-child(even) {
     min-height: 90px; 
     min-width: 160px;
     height: 45vh;
-    width: 80vh;
+/*     width: 80vh; */
     margin: 10px auto; 
     overflow: hidden;
     border-radius: 8px;

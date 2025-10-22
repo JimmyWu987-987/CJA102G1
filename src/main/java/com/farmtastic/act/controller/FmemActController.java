@@ -315,8 +315,8 @@ public class FmemActController {
 		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
 		Integer fmemId = fmem.getFmemId();
 
-		// 找自己的+已過審的
-		List<Act> actList = actSvc.findByFmemIdAndActStat(fmemId, 2, Sort.by(Sort.Direction.ASC, "actId"));
+		// 塞自己的FmemId
+		List<Act> actList = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
 
         for (Act act : actList) {
             Integer actId = act.getActId();
