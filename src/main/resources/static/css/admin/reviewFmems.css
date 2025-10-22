@@ -1,5 +1,25 @@
 
 
+/* 改變整體顏色 */
+.container{
+    background: #eaf2ec;
+}
+thead tr{
+	background-color: #c7d3e9;
+}
+tbody tr:nth-child(2n){
+	background-color: #d8e7df;
+}
+tbody tr:hover{
+	background-color: #bfd7cc;
+}
+tbody tr.activeRow{
+	outline: 2px solid #789bed;
+	background-color: #d1e6f5;
+}
+
+
+
 .fuzzy-search{
 	margin-left: auto;
 }
