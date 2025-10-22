@@ -446,7 +446,7 @@ transform:scale(1.1);
 
               <div class="act-text">
                 <h2 class="act-name" th:text="${act.actName}">活動名稱</h2>
-                <p class="act-intro" th:text="${act.actDes}">活動介紹</p>
+<!--                 <p class="act-intro" th:text="${act.actDes}">活動介紹</p> -->
                 <span class="act-dates" th:text="|${#dates.format(act.actStart,'yyyy/MM/dd')}－${#dates.format(act.actEnd,'yyyy/MM/dd')}|">
 			        2025/10/01－2025/10/31
 			    </span>

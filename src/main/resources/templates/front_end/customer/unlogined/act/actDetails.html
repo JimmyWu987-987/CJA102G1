@@ -22,7 +22,7 @@
 
 <div th:replace="~{/front_end/index :: header}"></div>
 
-<div class="main-content">
+<div class="main-content container">
     
     <div class="content-wrapper">
 
@@ -99,8 +99,7 @@
             </div>
         </div>
     </div>
-</div>
-        
+        <div class = "iframe-box">
 			<!--報名區域 -->
 			<iframe id="memRegistration" 
 			name="memRegistration" 
@@ -115,8 +114,10 @@
 			  class="regReview"
 			  src="#"
 			  th:src="@{/act/review(actId=${actId})}"
-			  style="width:98%; margin-left:10px;min-height:500px; border:0; border-radius:8px; margin-top:12px; text-align:center;">
+			  style="width:100%; margin-left:0;min-height:500px; border:0; border-radius:8px; margin-top:12px; text-align:center;">
 			</iframe>
+		</div>
+</div>
 
 
 <div th:replace="~{/front_end/index :: footer}"></div>
