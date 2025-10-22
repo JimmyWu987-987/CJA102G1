@@ -2,12 +2,7 @@ package com.farmtastic.act.enums;
 
 // 待刪
 public enum RegStat {
-	NORMAL(0, "正常"),
-	CONFIRMED(1, "成團"),
-	CANCELLED_BY_NOT_ENOUGH(2, "不成團，取消"),
-	MODIFIED(3, "已完成"),
-	CANCELLED(4, "取消");
-
+	NORMAL(0, "正常"), CONFIRMED(1, "成團"), CANCELLED_BY_NOT_ENOUGH(2, "不成團，取消"), MODIFIED(3, "已完成"), CANCELLED(4, "取消");
 
 	private final int code;
 	private final String desc;
@@ -22,16 +17,17 @@ public enum RegStat {
 	}
 
 	public String getDesc() {
-	return desc;
-    }
-    
+		return desc;
+	}
+
 	public static String getRegStatDesc(Integer code) {
-		if (code == null) return "";
+		if (code == null)
+			return "";
 		for (RegStat status : RegStat.values()) {
 			if (Integer.valueOf(status.getCode()).equals(code)) {
 				return status.getDesc();
 			}
 		}
 		return "";
-    }
+	}
 }
