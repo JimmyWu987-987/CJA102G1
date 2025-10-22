@@ -222,7 +222,7 @@ public class AdminActController {
         model.addAttribute("act", act);
         model.addAttribute("sessionAct", act);
         
-        return "back_end/logined/backAct/actDetailForAdmin";
+        return "back_end/logined/backAct/reviewDetail";
         
     }
     

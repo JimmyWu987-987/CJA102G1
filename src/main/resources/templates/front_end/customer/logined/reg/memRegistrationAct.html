@@ -12,7 +12,7 @@ html,body{
 }
 
 .field{
-  width:810px;height:560px;
+  width:820px;height:600px;
   background-color: #FFFDF5;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -73,29 +73,59 @@ html,body{
 margin-top:25px;
 }
 
-.inputArea{
-  height: 310px;
-  background:white;
-  border-radius:8px;
-  margin-top: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+/* === 表單輸入區塊 === */
+.inputArea {
+  background: #fff;
+  border-radius: 10px;
+  margin-top: 15px;
+  padding: 18px 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  font-family: "Noto Sans TC", sans-serif;
 }
 
-.inputArea label{
-  display:inline-block;
-  width:105px;
-  margin-left:160px; 
-  margin-top: 6px;
-}
-.inputArea input{
-  width:130px;
-  padding:4px;
-}
-.inputArea select{
-  width: 141px;
-  padding:5px;
+.inputArea label {
+  display: inline-block;
+  width: 110px;
+  text-align: right;
+  font-weight: 500;
+  color: #2d3748;
+  margin: 8px 10px 0 60px;
 }
 
+.inputArea input,
+.inputArea select {
+  width: 160px;
+  padding: 6px 8px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.inputArea input:focus,
+.inputArea select:focus {
+  border-color: #3E5C2A;
+}
+
+.inputArea select {
+	width: 180px;
+  background-color: #fff;
+}
+
+
+.pointError {
+  margin-top: 4px;
+}
+
+/* 表單標題 */
+.inputArea > div:first-child {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  color: #3E5C2A;
+  margin-bottom: 10px;
+}
 
 .mountArea{
   flex:1;
@@ -146,9 +176,9 @@ margin-top:25px;
     radial-gradient(circle at 50% 50%, black 0 45%, transparent 46% 100%);
 }
 
-/* 圖片大小可依需求調整 */
+/* 圖片 */
 .pay-img{
-  height:50px;     /* 或用 width 設定寬度 */
+  height:50px; 
   object-fit:contain;
   display:block;
 }
@@ -227,19 +257,25 @@ color:#c00;
           <span th:if="${#fields.hasErrors('regName')}"
 	      th:errors="*{regName}"
 	      class="error"></span>
-
+				
+		  <br>		
+			
           <label for="mob">手機號碼：</label>
           <input type="text" placeholder="09xxxxxxxx" th:field="*{regMob}" >
           <span th:if="${#fields.hasErrors('regMob')}"
 	      th:errors="*{regMob}"
 	      class="error"></span>
-
+			
+		  <br>	
+			
           <label for="email">聯絡人Email：</label>
           <input type="text" placeholder="test@gmail.com" th:field="*{regMail}" >
           <span th:if="${#fields.hasErrors('regMail')}"
 	      th:errors="*{regMail}"
 	      class="error"></span>
-
+		  
+		  <br>	
+		  
           <label for="people">參加人數：</label>
           <select id="people" th:field="*{regCount}" required>
             <option value="1">1人</option>
@@ -273,7 +309,7 @@ color:#c00;
       </div>
 
       <div class="mountArea">
-        <div class="summary-title">報名訂單摘要</div>
+        <div class="summary-title">報名金額</div>
         <div class="summary-item">
 		  金額：$
 		<span id="unitPrice"

@@ -3,140 +3,373 @@
 <head>
 
 <meta charset="UTF-8">
-<title>小農活動專區 - 活動一覽</title>
+<title>管理員頁面 - 活動一覽</title>
+<link rel="icon" th:href="@{/images/logo.png}">
 
-<link rel="icon" href="./images/logo.png">
-    
-<!--     引入main.css, iconfonts -->
-<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-    
-<link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
-
-<!--     @{/css} + "/sty/storeSty2.css" -->
 <style>
-	.container-header,
-	.container-footer{
-		background-color: #dce2ef;	
-	}
-	.nav > li > a{
-		background-color: #4F9D9D;
-	}
+/* ================================================= */
+/* 全局重置，確保內容緊貼視窗邊緣 */
+/* ================================================= */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    /* 避免滾動條，如果內容不多 */
+    overflow-x: hidden; 
+}
 
 
-	table {
-		width: 100%;
-		border-collapse: separate; /* 保持圓角 */
-		border-spacing: 0;
-		font-size: 1rem;
-		border-radius: 12px; /* 整體圓角 */
-		overflow: hidden; /* 防止表格內容超出圓角 */
-		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-		margin: 20px 0;
-	}
-	
-	table thead th {
-		border: none;
-	    padding: 12px 15px;
-	    background-color: #C7B896;
-	    color: #3E5C2A;
-	    text-align: center;
-	}
-	
-	table thead th:first-child {
-	    border-top-left-radius: 12px;
-	}
-	table thead th:last-child {
-	    border-top-right-radius: 12px;
-	}
-	
-	table tbody td {
-	    padding: 12px 15px;
-	    text-align: center;
-	    border: none;
-	}
-	
-	table tbody tr:nth-child(odd) {
-	    background-color: #F7F4E9; 
-	}
-	table tbody tr:nth-child(even) {
-	    background-color: #FFFFFF; 
-	}
+/* ================================================= */
+/* 卡片風格 CSS - 活動一覽列表 (管理員專用) - 修正視窗空隙版 */
+/* ================================================= */
 
+/* 顏色定義 */
+:root {
+    --color-page-bg: #f7fcf5; /* 淺白綠色 (頁面背景) */
+    --color-card-bg: #ffffff; /* 卡片底色 */
+    --color-border-light: #e6eedb; /* 輕微分隔線 */
+    --color-text-label: #6a4a3c; /* 淺褐色標籤文字 */
+    --color-text-normal: #333333; /* 普通文字 */
 
-	.mainImg { max-width: 100px; max-height: 80px; }
-	.btn { padding: 4px 8px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
-	
-	h1{ text-align: center;}
-	
-	.list {
-		padding: 20px 40px;
-		background-color: #FFFDF5;
-		border-radius: 8px;
-		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-		margin: 30px; /* 與下方區塊距離 */
-	}
-	
-	
+    /* 主題色 - 紫色標題/按鈕 */
+    --color-title-dark: #b19cd9; /* 淺紫色標題 */
+    --color-btn-purple: #b19cd9; /* 淺紫色按鈕 (確認待審核) */
+    --color-btn-purple-hover: #9a7dbe; 
+    
+    /* 輔助色 - 湖水綠按鈕 */
+    --color-btn-teal: #8dd3c7; /* 湖水綠按鈕 (查看詳細) */
+    --color-btn-teal-hover: #72a89f; 
+
+    /* 狀態顏色 */
+    --color-status-approved: #38761d; /* 綠色 (已通過/已上架) */
+    --color-status-approved-bg: #e6eedb; 
+    --color-status-pending: #a06e00; /* 棕色/橙色 (待審核) */
+    --color-status-pending-bg: #fff8e1;
+}
+
+/* 整體頁面 Wrapper */
+.view-page-wrapper {
+    background-color: var(--color-page-bg); 
+    padding: 40px 0; 
+    min-height: 100vh;
+    box-sizing: border-box; 
+}
+
+/* 內容主要容器 - 確保沒有左右空隙 */
+.container {
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0; /* 確保容器本身沒有 padding */
+}
+
+/* 頁面標題與按鈕的容器 */
+.page-header-container {
+    margin-bottom: 35px;
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    /* 在這裡保留左右 padding，確保標題和按鈕不會緊貼視窗邊緣 */
+    padding: 0 20px; 
+}
+
+/* 頁面標題樣式 */
+.view-page-wrapper h1 { 
+    text-align: center;
+    color: var(--color-title-dark); 
+    margin: 0 0 20px 0; 
+    font-size: 2.5em; 
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* 確認待審核活動按鈕 (淺紫色) */
+.btn-to-review-list {
+    background-color: var(--color-btn-purple) !important; 
+    color: var(--color-white) !important;
+    padding: 15px 30px !important; 
+    font-size: 1.1rem !important;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    
+    align-self: center; 
+    margin-bottom: 20px;
+    max-width: 250px; 
+    text-align: center; 
+}
+.btn-to-review-list:hover {
+    background-color: var(--color-btn-purple-hover) !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* 無數據提示區塊 */
+.no-data-message {
+    background-color: #fff8e1; 
+    color: #a06e00; 
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); 
+    text-align: center;
+    max-width: 700px;
+    margin: 40px auto;
+    font-size: 1.2em;
+    border: 1px solid #ffe0b2;
+}
+
+/* 活動卡片列表容器 - Grid 佈局 */
+.card-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px; 
+    /* 讓卡片清單與視窗邊緣保持安全距離 */
+    padding: 0 20px; 
+}
+
+/* 單一活動卡片樣式 */
+.activity-card-view {
+    background-color: var(--color-card-bg); 
+    border-radius: 15px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 懸停效果 */
+.activity-card-view:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 卡片圖片區塊 */
+.card-image {
+    width: 100%;
+    height: 200px; 
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid var(--color-border-light);
+    background-color: #f0f4f7; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+/* 圖片在卡片中置中顯示 */
+.card-image img {
+    max-width: 100%; 
+    max-height: 100%; 
+    object-fit: contain; 
+    display: block;
+}
+
+/* 卡片詳細資訊區塊 */
+.card-details {
+    padding: 20px;
+    flex-grow: 1; 
+}
+
+.card-title {
+    font-size: 1.6em; 
+    color: var(--color-title-dark); 
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--color-border-light); 
+    padding-bottom: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 數據列表項 */
+.card-data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+    padding: 8px 0;
+    font-size: 1em; 
+    border-bottom: 1px dashed #f0f0f0;
+}
+.card-data-item:last-of-type {
+    border-bottom: none; 
+}
+
+.data-label {
+    font-weight: bold;
+    color: var(--color-text-label); 
+    flex-shrink: 0;
+    margin-right: 15px; 
+    line-height: 1.5; 
+}
+
+.data-value {
+    color: var(--color-text-normal);
+    text-align: right; 
+    word-break: break-word; 
+    line-height: 1.5; 
+}
+
+/* 狀態標籤樣式 */
+.status-tag {
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block; 
+    font-size: 0.9em;
+}
+.status-approved {
+    color: var(--color-status-approved); 
+    background-color: var(--color-status-approved-bg); 
+}
+.status-unapproved, .status-pending {
+    color: var(--color-status-pending); 
+    background-color: var(--color-status-pending-bg);
+}
+
+/* 審核備註 */
+.remark-area {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--color-border-light);
+    font-size: 0.95em;
+    color: var(--color-text-normal);
+    background-color: #fcfcfc;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+.remark-area .data-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-title-dark);
+    font-weight: bold;
+    font-size: 1.1em;
+}
+.remark-area .data-value {
+    text-align: left; /* 備註內容靠左 */
+    word-break: break-word; 
+}
+
+/* 卡片操作區塊 */
+.card-actions {
+    padding: 20px;
+    border-top: 1px solid var(--color-border-light);
+    text-align: center; 
+}
+
+/* 查看活動詳細資訊按鈕樣式 (湖水綠) */
+.btn-view-detail {
+    display: block; 
+    width: 100%;
+    max-width: 90%; 
+    margin: 0 auto; /* 居中 */
+    padding: 12px 15px;
+    color: var(--color-white) !important; 
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    font-size: 1.1em;
+    border: none;
+    cursor: pointer;
+    background-color: var(--color-btn-teal) !important; /* 湖水綠 */
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-view-detail:hover {
+    background-color: var(--color-btn-teal-hover) !important; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+/* 媒體查詢：小螢幕上調整卡片列表的邊距 */
+@media (max-width: 768px) {
+    .page-header-container {
+        padding: 0 10px;
+    }
+    .card-list-container {
+        padding: 0 10px; /* 小螢幕上留一個小小的邊距防止內容緊貼邊緣 */
+    }
+}
 </style>
 </head>
 <body>
 
-<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-
+<div class="view-page-wrapper">
 <div class="container">
-<div class="list">
-	<h1>活動列表</h1>
-	
-	<div style="margin-bottom: 20px; text-align: right;">
-        <a th:href="@{/admin/act/listUnapprovedAct}" class="btn" 
-           style="background-color: #E68A00; padding: 10px 15px; font-size: 1rem;">
+    
+    <div class="page-header-container">
+        <h1>活動列表</h1>
+        <a th:href="@{/admin/act/listUnapprovedAct}" class="btn-to-review-list">
             確認待審核活動
         </a>
     </div>
 
-	<div th:if="${#lists.isEmpty(actList)}">
+	<div th:if="${#lists.isEmpty(actList)}" class="no-data-message">
 		<p>目前尚無活動</p>
 	</div>
 
-	<div th:unless="${#lists.isEmpty(actList)}">
-		<table border="1">
-		<thead>
-			<tr>
-				<th>活動ID</th>
-				<th>活動主照片</th>
-				<th>活動名稱</th>
-				<th>開始日期</th>
-				<th>結束日期</th>
-				<th>費用</th>
-				<th>活動狀態</th>
-				<th>活動審核備註</th>
-				<th>操作</th>
-            </tr>
-		</thead>
-		<tbody>
-			<tr th:each="act : ${actList}">
-				<td th:text="${act.actId}"></td>
-				<td>
-					<img class="mainImg" th:if="${act.actMainImg != null}" th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" alt="主照片"/>
-				</td>
-				<td th:text="${act.actName}"></td>
-				<td th:text="${act.actStart}"></td>
-				<td th:text="${act.actEnd}"></td>
-				<td th:text="${act.actFee}"></td>
-				<td th:text="${act.actStatText}"></td>
-				<td th:text="${act.actRemark}"></td>
+	<div th:unless="${#lists.isEmpty(actList)}" class="card-list-container">
+		
+		<div th:each="act : ${actList}" class="activity-card-view">
+			
+			<div class="card-image">
+				<img class="mainImg" th:if="${act.actMainImg != null}" 
+					 th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" 
+					 alt="活動主照片"/>
+				<div th:unless="${act.actMainImg != null}" class="no-image-placeholder">
+				    <span>無活動主圖片</span>
+				</div>
+			</div>
+
+			<div class="card-details">
 				
-				<td>
-					<a th:href="@{/admin/act/detail/{actId}(actId=${act.actId})}" class="btn">查看活動詳細資訊</a>
-				</td>
+				<h2 class="card-title" th:text="${act.actName}">活動名稱</h2>
 				
-			</tr>
-		</tbody>
-		</table>
+				<div class="card-data-item">
+					<span class="data-label">活動ID:</span>
+					<span class="data-value" th:text="${act.actId}"></span>
+				</div>
+
+				<div class="card-data-item">
+					<span class="data-label">開始日期:</span>
+					<span class="data-value" th:text="${#dates.format(act.actStart, 'yyyy/MM/dd')}"></span>
+				</div>
+				
+				<div class="card-data-item">
+					<span class="data-label">結束日期:</span>
+					<span class="data-value" th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></span>
+				</div>
+				
+				<div class="card-data-item">
+					<span class="data-label">費用:</span>
+					<span class="data-value" th:text="${act.actFee}"></span>
+				</div>
+
+				<div class="card-data-item">
+					<span class="data-label">活動狀態:</span>
+					<span class="data-value status-tag" 
+					      th:text="${act.actStatText}"
+					      th:classappend="${act.actStatText == '審核通過' ? 'status-approved' : 
+					                      (act.actStatText == '待審核' ? 'status-pending' : 'status-unapproved')}">
+					</span>
+				</div>
+				
+				<div class="remark-area">
+					<span class="data-label">活動審核備註:</span>
+					<p class="data-value" th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></p>
+				</div>
+
+			</div>
+			
+			<div class="card-actions">
+				<a th:href="@{/admin/act/detail/{actId}(actId=${act.actId})}" class="btn-view-detail">查看活動詳細資訊</a>
+			</div>
+			
+		</div>
 	</div>
 </div>
 </div>
-<div th:replace="~{/front_end/index :: footer}"></div>
 
 </body>
 </html>

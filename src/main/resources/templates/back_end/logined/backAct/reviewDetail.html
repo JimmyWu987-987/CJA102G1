@@ -2,71 +2,459 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>後台 - 活動詳細資訊</title>
+    <title>管理員頁面 - 活動詳細資訊</title>
+    <link rel="icon" th:href="@{/images/logo.png}">
     
-    <!-- 原本引用的 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     
-    <!-- 活動詳情專用 CSS -->
-    <link rel="stylesheet" th:href="@{/css/act/actDetails.css}">
+    <style>
+    /* 定義淺紫色調 */
+:root {
+    --primary-color: #8C9EFF;       /* 較深的淺紫色 */
+    --light-primary-color: #C5CAE9; /* 較淺的淺紫色，用於背景 */
+    --accent-color: #536DFE;        /* 亮色/強調色 */
+    --background-color: #F5F7FA;    /* 頁面背景 */
+    --card-bg-color: #FFFFFF;       /* 卡片背景 */
+    --shadow-color: rgba(0, 0, 0, 0.15); /* 統一陰影強度 */
+    --border-radius: 12px;          /* 圓角大小 */
+    --text-color: #333;
+    --secondary-text-color: #555;
+}
+
+/* 頁面整體設置 (包含置中邏輯) */
+.admin-act-body {
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    
+    /* 核心置中設定 */
+    display: flex; 
+    justify-content: center; /* 水平置中 */
+    align-items: center;     /* 垂直置中 */
+    min-height: 100vh;       /* 確保高度覆蓋整個視窗 */
+    overflow-y: auto;        /* 內容過長時可滾動 */
+    padding: 40px 20px;      /* 確保有足夠的上下邊距 */
+}
+
+/* 主要內容包裹器 */
+.main-content-wrapper {
+    width: 100%;
+    max-width: 800px; 
+    box-sizing: border-box;
+}
+
+/* 活動標題 */
+.act-title {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+/* 所有卡片的共同樣式 */
+.main-card-container > div {
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    margin-bottom: 25px; 
+    padding: 30px; 
+}
+.main-card-container > div:last-child {
+    margin-bottom: 0; 
+}
+
+
+/* ======================== 輪播器 (統一顏色並移除多餘樣式) ======================== */
+
+/* 輪播器外層容器，確保它佔滿 .carousel-section 的空間 */
+.carousel-section {
+    padding: 0; /* 移除 .carousel-section 默認的 30px padding */
+}
+.carousel {
+    position: relative; 
+    width: 100%; /* 佔滿 .carousel-section 寬度 */
+    height: 45vh;
+    min-height: 300px; /* 統一最小高度 */
+    margin: 0; /* 移除多餘的 margin: 10px auto; */
+    overflow: hidden;
+    /* 移除多餘的 box-shadow，由 .carousel-section 處理 */
+    box-shadow: none; 
+    border-radius: var(--border-radius); /* 使用統一圓角 */
+    background-color: var(--card-bg-color); /* 統一背景色 */
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%; 
+}
+
+.carousel-item {
+    min-width: 100%;
+    box-sizing: border-box;
+    display: flex;            
+    justify-content: center;  
+    align-items: center;      
+    height: 100%;
+    background-color: var(--card-bg-color); /* 統一背景色 */
+}
+
+.carousel-item img {
+    max-width: 90%; /* 調整為更合理的比例 */
+    max-height: 90%;
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+}
+
+/* 左右按鈕 */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* 統一顏色為淺紫色 */
+    background-color: rgba(140, 158, 255, 0.7); /* primary-color with opacity */
+    border: none;
+    color: white;
+    padding: 10px 15px; 
+    cursor: pointer;
+    border-radius: 50%; /* 圓形按鈕 */
+    font-size: 1.8rem;
+    transition: background-color 0.3s;
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    background-color: var(--accent-color);
+}
+
+.carousel-btn.prev { left: 15px; }
+.carousel-btn.next { right: 15px; }
+
+/* 圓點 */
+.carousel-dots {
+    text-align: center;
+    position: absolute;
+    bottom: 10px; /* 調整圓點位置 */
+    width: 100%;
+    z-index: 10;
+}
+
+.carousel-dots .dot {
+    height: 12px;
+    width: 12px;
+    margin: 0 5px;
+    /* 統一圓點顏色 */
+    background-color: rgba(255, 255, 255, 0.8); 
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    border: 2px solid var(--primary-color); 
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.carousel-dots .dot.active {
+    background-color: var(--primary-color);
+    transform: scale(1.2); 
+}
+
+/* ======================== 活動資訊與說明卡片 ======================== */
+.act-info {
+    font-size: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0; 
+    border-bottom: 1px dotted var(--light-primary-color);
+}
+.detail-item:last-of-type { 
+    border-bottom: none;
+}
+
+.detail-item p {
+    margin: 0;
+    font-weight: 500;
+    color: var(--secondary-text-color);
+}
+
+.detail-value {
+    color: var(--text-color);
+    font-weight: 400;
+    text-align: right;
+    flex-shrink: 0; 
+}
+
+.fee-highlight {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* 分類標籤 */
+.category-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end; 
+}
+
+.category-tag {
+    background-color: var(--light-primary-color);
+    color: var(--secondary-text-color);
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* 活動說明區塊 */
+.description-section {
+    margin-top: 25px; 
+    padding-top: 20px; 
+    border-top: 1px dashed var(--light-primary-color);
+}
+
+.description-section p:first-child { 
+    font-weight: 600;
+    color: var(--secondary-text-color);
+    margin-bottom: 10px;
+}
+
+.description-text {
+    line-height: 1.7;
+    color: var(--text-color);
+    background-color: #fcfcfc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0; 
+    white-space: pre-wrap; 
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); 
+}
+
+
+/* ======================== 審核按鈕和備註卡片 ======================== */
+
+.review-form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+}
+
+.review-buttons-group {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start; 
+    margin-bottom: 10px; 
+}
+
+/* 通用按鈕樣式 */
+.btn {
+    padding: 12px 22px; 
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem; 
+    font-weight: 600;
+    text-decoration: none; 
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
+    white-space: nowrap; 
+}
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* 通過按鈕 (淺紫色系) */
+.btn-approve {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-approve:hover {
+    background-color: var(--accent-color);
+    box-shadow: 0 4px 8px rgba(140, 158, 255, 0.3);
+}
+
+/* 不通過按鈕 (淺紫色系) */
+.btn-reject {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-reject:hover {
+    background-color: var(--accent-color);
+    box-shadow: 0 4px 8px rgba(140, 158, 255, 0.3);
+}
+
+
+/* 審核備註區塊 */
+.review-remark-group {
+    position: relative; 
+    padding: 15px 20px;
+    border: 2px solid var(--light-primary-color); 
+    border-radius: var(--border-radius);
+    background-color: #fdfdff; 
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05); 
+}
+
+.remark-textarea {
+    width: 100%;
+    padding: 8px; 
+    border: 1px solid var(--light-primary-color); 
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 80px; 
+    background-color: #ffffff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    color: var(--text-color);
+}
+
+.remark-textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(140, 158, 255, 0.5);
+    outline: none;
+}
+
+.error-message {
+    color: #D32F2F; 
+    margin-top: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.return-button-group {
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 10px; 
+}
+
+/* 返回按鈕 (統一使用灰色系，更像功能性按鈕) */
+.btn-back {
+    background-color: #9E9E9E; 
+    color: white;
+}
+.btn-back:hover {
+    background-color: #757575;
+    box-shadow: 0 4px 8px rgba(117, 117, 117, 0.3);
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .main-content-wrapper {
+        padding: 10px;
+    }
+    .act-title {
+        font-size: 1.8rem;
+    }
+    .carousel {
+        height: 35vh;
+        min-height: 250px;
+    }
+    .main-card-container > div {
+        padding: 20px;
+    }
+    .btn {
+        flex-grow: 1; 
+        justify-content: center;
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+    .review-buttons-group {
+        flex-direction: column; 
+        gap: 10px;
+    }
+    .return-button-group {
+        justify-content: stretch; 
+    }
+}
+    </style>
+    
 </head>
-<body>
-    <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
+<body class="admin-act-body">
+    
+    <div class="main-content-wrapper"> 
+        <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
 
-    <!-- 輪播器 -->
-    <div class="carousel">
-        <div class="carousel-track">
-            <!-- 主圖 -->
-            <div class="carousel-item">
-                <img th:src="@{/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
+        <div class="main-card-container"> 
+            
+            <div class="carousel-section"> 
+                <div class="carousel">
+                    <div class="carousel-track">
+                        <div class="carousel-item">
+                            <img th:src="@{/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
+                        </div>
+                        <div class="carousel-item" th:each="img : ${act.actImg}">
+                            <img th:src="@{/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
+                        </div>
+                    </div>
+                    <button class="carousel-btn prev">&#10094;</button>
+                    <button class="carousel-btn next">&#10095;</button>
+                    <div class="carousel-dots">
+                        <span class="dot active" th:data-index="0"></span>
+                        <span class="dot" th:each="img, iterStat : ${act.actImg}" th:data-index="${iterStat.index + 1}"></span>
+                    </div>
+                </div>
             </div>
-            <!-- 活動多圖 -->
-            <div class="carousel-item" th:each="img : ${act.actImg}">
-                <img th:src="@{/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
+
+            <div class="info-details-card"> 
+                <div class="act-info">
+                    <div class="detail-item">
+                        <p><strong>活動日期:</strong></p> 
+                        <span class="detail-value" th:text="${act.actStart} + ' ~ ' + ${act.actEnd}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <p><strong>活動基本價:</strong></p> 
+                        <span class="detail-value fee-highlight" th:text="${act.actFee} + ' 元'"></span>
+                    </div>
+                    <div class="detail-item">
+                        <p><strong>分類:</strong></p>
+                        <span class="detail-value category-tags">
+                            <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName}" class="category-tag"></span>
+                        </span>
+                    </div>
+                    
+                    <div class="description-section">
+                        <p><strong>活動說明:</strong></p>
+                        <p class="description-text" th:text="${act.actDes}"></p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <button class="carousel-btn prev">&#10094;</button>
-        <button class="carousel-btn next">&#10095;</button>
-        <div class="carousel-dots">
-            <span class="dot" th:each="img, iterStat : ${act.actImg}" th:data-index="${iterStat.index}"></span>
-        </div>
-    </div>
-<div class="act-info">
-<div class="act-details">
-    <p><strong>活動日期:</strong> <span th:text="${act.actStart} + ' ~ ' + ${act.actEnd}"></span></p><br>
-    <p><strong>活動基本價:</strong> <span th:text="${act.actFee}"></span> 元</p><br>
-    <p><strong>分類:</strong>
-        <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
-    </p><br>
-    <p><strong>活動說明:</strong></p>
-    <p th:text="${act.actDes}"></p>
-</div>
-</div>
 
-<form th:action="@{/admin/act/reviewAct}" method="post">
-    <!-- 隱藏欄位傳 actId -->
-    <input type="hidden" name="actId" th:value="${act.actId}" />
+            <div class="review-action-card"> 
+                <form th:action="@{/admin/act/reviewAct}" method="post" class="review-form-layout">
+                    <input type="hidden" name="actId" th:value="${act.actId}" />
 
-    <!-- 不通過原因輸入，保留輸入值 -->
-    <div style="margin-bottom: 10px;">
-        <label for="remark"><strong>不通過原因：</strong></label><br>
-        <textarea id="remark" name="actRemark" rows="3" cols="50"
-                  placeholder="若不通過請輸入原因"
-                  th:text="${act.actRemark}"></textarea>
-        <!-- 顯示錯誤訊息 -->
-        <div style="color: red;" th:if="${errorMessage}" th:text="${errorMessage}"></div>
-    </div>
-
-    <!-- 通過 / 不通過 / 返回按鈕 -->
-    <div style="margin-top: 10px; display: flex; gap: 10px;">
-        <button type="submit" name="action" value="approve" class="btn">通過</button>
-        <button type="submit" name="action" value="reject" class="btn">不通過</button>
-        <a th:href="@{/admin/act/listUnapprovedAct}" class="btn">返回列表</a>
-    </div>
-</form>
-
-    <!-- 分離 JS -->
+                    <div class="review-buttons-group">
+                        <button type="submit" name="action" value="approve" class="btn btn-approve">審核通過</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-reject">審核不通過</button>
+                    </div>
+                    
+                    <div class="form-group review-remark-group">
+                        <textarea id="remark" name="actRemark" rows="3"
+                                  placeholder="若審核不通過請務必輸入備註"
+                                  class="remark-textarea"
+                                  th:text="${act.actRemark}"></textarea>
+                        <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+                    </div>
+                    
+                    <div class="return-button-group">
+                        <a th:href="@{/admin/act/listUnapprovedAct}" class="btn btn-back"><i class="fas fa-arrow-alt-circle-left"></i> 返回列表</a>
+                    </div>
+                </form>
+            </div>
+            
+        </div> 
+    </div> 
+    
     <script th:src="@{/js/act/actCarousel.js}"></script>
+        
 </body>
 </html>

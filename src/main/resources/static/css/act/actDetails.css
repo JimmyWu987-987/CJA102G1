@@ -1,29 +1,48 @@
-/* ======================== 整體設定 ======================== */
-body {
-    padding: 20px 160px; /* 整體距離視窗邊緣 */
-    background-color: #FAFAF0;
-    font-family: "Noto Sans", sans-serif;
-    line-height: 1;
+/* ======================== 整體設定 (最終修正) ======================== */
+/* body { */
+/* padding: 0;  */
+/* margin: 0;  */
+/* background-color: #FAFAF0; */
+/* font-family: "Noto Sans", sans-serif; */
+/* line-height: 1; */
+/* } */
+
+/* ======================== 主要內容容器 (負責 55% 寬度) ======================== */
+.main-content {
+    width: 55%; 
+    margin: 0 auto; 
+    padding: 0; 
+    max-width: 1600px; 
 }
 
-/* ======================== 卡片區塊 ======================== */
+/* 新增：將所有內容包裹起來以利排版 */
+.content-wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* ======================== 卡片區塊 (填滿 55% 容器) - 使用柔和色調 ======================== */
 .act-info, .ses-info {
     padding: 20px 40px;
-    background-color: #FFFDF5;
+    background-color: #FFFDF5; 
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin: 20px; /* 與下方區塊距離 */
+    width: 100%; 
+    box-sizing: border-box; 
+    margin: 20px 0; 
 }
 
-/* ======================== 標題 ======================== */
+/* ======================== 標題 (解註釋並使用專屬 class) ======================== */
 h1.act-title,
 h2.ses-title {
     text-align: center;
-    color: #3E5C2A;
+    color: #3E5C2A; /* 深綠色 */
+    font-family: "Noto Sans", sans-serif;
 }
 
 h1.act-title {
     font-size: 2.2rem;
+    margin-top: 20px;  
     margin-bottom: 20px;
 }
 
@@ -32,45 +51,74 @@ h2.ses-title {
     margin-bottom: 20px;
 }
 
-/* ======================== 活動圖片 ======================== */
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 20px auto;
-    border-radius: 8px;
-}
+/* /* ======================== 活動圖片 (非輪播器內的圖片) ======================== */ */
+/* img { */
+/* max-width: 100%; */
+/* height: auto; */
+/* display: block; */
+/* margin: 20px auto; */
+/* border-radius: 8px; */
+/* } */
 
-/* ======================== 按鈕 ======================== */
-.btn {
+/* /* ======================== 通用按鈕 (已註釋，避免影響全域) ======================== */ */
+/* .btn { */
+/* display: inline-block; */
+/* padding: 6px 12px; */
+/* background-color: #3E5C2A; */
+/* color: white; */
+/* text-decoration: none; */
+/* border-radius: 5px; */
+/* transition: 0.3s; */
+/* } */
+
+/* .btn:hover { */
+/* background-color: #55783C; */
+/* } */
+
+/* ======================== 活動詳情專用按鈕 (取代 .btn) ======================== */
+.act-btn {
     display: inline-block;
-    padding: 6px 12px;
-    background-color: #3E5C2A;
-    color: white;
+    /* 尺寸再次加大 */
+    padding: 15px 30px; 
+    background-color: #E6F0E6; /* 淺綠色 */
+    color: #3E5C2A; /* 深綠色文字 */
     text-decoration: none;
-    border-radius: 5px;
+    /* 圓角 */
+    border-radius: 25px; /* 稍微增加圓角 */
     transition: 0.3s;
+    border: 1px solid #3E5C2A; 
+    cursor: pointer;
+    /* 卡片質感：輕微陰影 */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); 
+    /* 文字加大 */
+    font-size: 1.5rem; /* 顯著加大文字 */
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap; 
 }
 
-.btn:hover {
-    background-color: #55783C;
+.act-btn:hover {
+    background-color: #C7B896; /* Hover 時改為淺褐色 */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-2px); 
 }
 
-/* ======================== 表格 ======================== */
+
+/* ======================== 表格 - 兩色相間和柔和色調 ======================== */
 table.ses-table {
     width: 100%;
-    border-collapse: separate; /* 保持圓角 */
+    border-collapse: separate; 
     border-spacing: 0;
     font-size: 1rem;
-    border-radius: 12px; /* 整體圓角 */
-    overflow: hidden; /* 防止表格內容超出圓角 */
+    border-radius: 12px; 
+    overflow: hidden; 
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 20px 0;
+    margin: 20px auto; /* 關鍵：置中 */
 }
 
 table.ses-table thead th {
     padding: 12px 15px;
-    background-color: #C7B896;
+    background-color: #C7B896; /* 表頭顏色：淺褐色 */
     color: #3E5C2A;
     text-align: center;
 }
@@ -86,39 +134,37 @@ table.ses-table tbody td {
     padding: 12px 15px;
     text-align: center;
     border: none;
+    color: #444;
 }
 
+/* 兩色相間：奇數列 - 淺綠色 */
 table.ses-table tbody tr:nth-child(odd) {
-    background-color: #F7F4E9; 
+    background-color: #E6F0E6; 
 }
+/* 兩色相間：偶數列 - 白色 */
 table.ses-table tbody tr:nth-child(even) {
     background-color: #FFFFFF; 
 }
 
 /* ======================== 輪播器 ======================== */
 .carousel {
-    position: relative;
-    width: 90%;
-    /* 保持您喜歡的 max 限制 */
-    max-width: 35vw; 
-    max-height: 45vh;
-    margin: 10px auto;
+    position: relative; 
+    width: 100%; 
+    min-height: 90px; 
+    min-width: 160px;
+    height: 45vh;
+    width: 80vh;
+    margin: 10px auto; 
     overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     margin-bottom: 20px;
-    
-    /* 關鍵：給予固定高度 (例如 45vh) 讓圖片有參考空間 */
-    /* 由於您前面使用了 max-height，我們強制將高度設為最大高度，讓圖片有空間縮放 */
-    height: 45vh; /* 確保容器高度被固定，以便圖片縮放 */
-    width: 35vw; /* 讓寬度也是固定的，確保圖片不會溢出 */
+    background-color: #FFFDF5;
 }
 
 .carousel-track {
     display: flex;
     transition: transform 0.5s ease-in-out;
-    
-    /* 關鍵：填滿父容器的高度 */
     height: 100%; 
 }
 
@@ -130,66 +176,100 @@ table.ses-table tbody tr:nth-child(even) {
     justify-content: center;  
     align-items: center;      
     
-    /* 關鍵：填滿父容器的高度 */
     height: 100%;
+    background-color: #FFFDF5;
 }
 
 .carousel-item img {
-    /* 移除 width: 100%; (會讓圖片變形) */
-    /* 移除 max-width: 88%; max-height: 88%; */
-    
-    /* 關鍵：讓圖片縮放以填滿容器，但保持比例 */
-    width: auto;           /* 讓寬度自動計算 */
-    height: auto;          /* 讓高度自動計算 */
-    max-width: 100%;       /* 最大寬度不超過容器 */
-    max-height: 100%;      /* 最大高度不超過容器 */
-    
-    object-fit: contain;    /* 保持比例，如果容器比例與圖片不同，則留白 */
+    width: 80%;           
+    height: 80%;
+    object-fit: contain;
     display: block;
     border-radius: 8px;
 }
 
 /* 左右按鈕 */
 .carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(62, 92, 42, 0.7);
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 1.5rem;
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+background-color: rgba(62, 92, 42, 0.7);
+border: none;
+color: white;
+padding: 8px 12px;
+cursor: pointer;
+border-radius: 5px;
+font-size: 1.5rem;
 }
+
+.carousel-btn.prev { left: 5px; }
+.carousel-btn.next { right: 5px; }
+
+/* .carousel-btn { */
+/*     position: absolute; */
+/*     top: 50%; */
+/*     transform: translateY(-50%); */
+/*     z-index: 10;  */
+/*     background-color: rgba(62, 92, 42, 0.7); */
+/*     border: none; */
+/*     color: white; */
+/*     padding: 8px 12px; */
+/*     cursor: pointer; */
+/*     border-radius: 5px; */
+/*     font-size: 1.5rem; */
+/* } */
+
+
 
 .carousel-btn.prev { left: 5px; }
 .carousel-btn.next { right: 5px; }
 
 /* 圓點 */
 .carousel-dots {
-    text-align: center;
-    position: absolute;
-    bottom: 3px;
-    width: 100%;
+text-align: center;
+position: absolute;
+bottom: 3px;
+width: 100%;
 }
 
 .carousel-dots .dot {
-    height: 10px;
-    width: 10px;
-    margin: 0 4px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-    cursor: pointer;
+height: 10px;
+width: 10px;
+margin: 0 4px;
+background-color: #bbb;
+border-radius: 50%;
+display: inline-block;
+cursor: pointer;
 }
 
 .carousel-dots .dot.active {
-    background-color: #3E5C2A;
+background-color: #3E5C2A;
 }
 
+
+/* .carousel-dots { */
+/*     text-align: center; */
+/*     position: absolute; */
+/*     bottom: 3px; */
+/*     width: 100%; */
+/*     z-index: 10;  */
+/* } */
+
+/* .carousel-dots .dot { */
+/*     height: 10px; */
+/*     width: 10px; */
+/*     margin: 0 4px; */
+/*     background-color: #bbb; */
+/*     border-radius: 50%; */
+/*     display: inline-block; */
+/*     cursor: pointer; */
+/* } */
+
+/* .carousel-dots .dot.active { */
+/*     background-color: #3E5C2A; */
+/* } */
+
 /* ======================== 活動說明段落 ======================== */
-/* 活動資訊區卡片 */
 .act-info {
     padding: 30px 40px;
     background-color: #FFFDF5;
@@ -197,28 +277,24 @@ table.ses-table tbody tr:nth-child(even) {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* 段落間距緊湊 */
 .act-info p {
     margin: 8px 0;        
     line-height: 1.5;
     margin-bottom: 4px;
 }
 
-/* 標籤換行加粗 */
 .act-info p strong {
-    display: block;       /* 換行 */
+    display: block;
     font-weight: bold;
-    margin-bottom: 4px;   /* 標籤與內容間距 */
+    margin-bottom: 4px;
 }
 
-/* 活動說明最後段落 */
 .act-info p:last-child {
     margin-top: 10px;
     line-height: 1.6;
     margin-bottom: 4px;
 }
 
-/* 標題置中 */
 .act-info h2, .act-info h1 {
     text-align: center;
     margin-bottom: 15px;
