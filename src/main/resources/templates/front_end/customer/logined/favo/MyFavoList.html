@@ -112,8 +112,14 @@
 	        <div th:each="favo : ${favoProList}" class="favo-card" th:fragment="example">
 	
 	          <!-- 圖片區 -->
-	          <img th:src="@{${favo.productVO.proImage}}" alt="商品圖片" class="favo-img">
-<!-- 	          <img th:src="@{/images/apple.png}" alt="商品圖片" class="favo-img"> -->
+	
+<div class="favo-img">
+	           <img th:if="${favo.productVO != null and favo.productVO.proImage != null}" 
+       th:src="@{/product-image/{id}(id=${favo.productVO.proImage.proImgId})}" 
+       class="card-img-top"
+       style="width:100%; height:180px; object-fit:cover; border-radius:8px;"
+       alt="商品圖片">
+           </div>
 	
 	          <div class="favo-body">
 	            <div class="favo-title" th:text="${favo.productVO.proName}">商品名稱</div>
