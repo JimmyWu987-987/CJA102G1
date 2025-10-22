@@ -179,6 +179,17 @@ public class AdminService {
 	        }
 	        adminRepository.save(admin);
 	    }
+	
+    // 刪除管理員
+    public void deleteAdminById(Integer id) {
+        // 在刪除前，可以先檢查是否存在，避免拋出例外
+        if (adminRepository.existsById(id)) {
+            adminRepository.deleteById(id);
+        } else {
+            // 如果找不到對應的 ID，可以選擇拋出一個更明確的例外
+            throw new IllegalArgumentException("找不到 ID 為 " + id + " 的管理員");
+        }
+    }
 
 	// 新增：提供查詢所有管理員類型的功能
 	public List<AdminType> findAllAdminTypes() {
@@ -213,6 +224,7 @@ public class AdminService {
         
         adminTypeRepository.save(adminType);
     }
+    
     
    // --- 功能(AdminFunction)相關服務 ---
     

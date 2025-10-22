@@ -2,86 +2,235 @@
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">管理員表單</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #FEFBF6; }
-        .content-card { background-color: white; padding: 2.5rem; border-radius: 0.75rem; margin-top: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
-        .form-input { margin-top: 0.25rem; display: block; width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; }
-        .back-btn { display: inline-block; background-color: #6b7280; color: white; padding: 0.6rem 1rem; border-radius: 0.375rem; text-decoration: none; }
-        .save-btn { display: inline-block; background-color: #FF7B42; color: white; padding: 0.6rem 1.5rem; border-radius: 0.375rem; text-decoration: none; border: none; cursor: pointer; }
+        .form-card { background-color: white; padding: 2.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .form-label { font-weight: 600; color: #374151; }
+        .form-input, .form-select {
+            width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB;
+            border-radius: 0.375rem; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none; border-color: #e65c2d; box-shadow: 0 0 0 3px rgba(230, 92, 45, 0.3);
+        }
+        .form-input.error, .form-select.error {
+            border-color: #ef4444;
+        }
+        .error-text {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 0.375rem; text-decoration: none; font-weight: 600; transition: background-color 0.2s; display: inline-block; }
+        .btn-success { background-color: #22c55e; color: white; border: none; cursor: pointer; }
+        .btn-success:hover { background-color: #16a34a; }
+        .btn-secondary { background-color: #6b7280; color: white; }
+        .btn-secondary:hover { background-color: #4b5563; }
+        .required::after { content: " *"; color: #ef4444; }
     </style>
 </head>
 <body class="p-8">
-    <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-800" th:text="${pageTitle}">新增/修改管理員</h1>
+    <div class="form-card max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6" th:text="${pageTitle}"></h1>
         
-        <div class="content-card">
-            <form th:action="@{/admin/save}" th:object="${admin}" method="post" class="space-y-6">
-                <input type="hidden" th:field="*{adminId}" />
+        <!-- 錯誤訊息提示框 -->
+        <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline" th:text="${errorMessage}"></span>
+        </div>
 
-                <!-- ... 其他欄位如帳號、密碼、姓名等 ... -->
+        <form th:action="@{/admin/save}" th:object="${admin}" method="post" id="adminForm" novalidate>
+            <input type="hidden" th:field="*{adminId}" />
+
+            <div class="space-y-6">
+                <!-- 帳號 -->
                 <div>
-                    <label for="adminAcc" class="block text-sm font-medium text-gray-700">帳號</label>
-                    <input type="text" th:field="*{adminAcc}" id="adminAcc" class="form-input">
-                </div>
-                <div>
-                    <label for="adminPwd" class="block text-sm font-medium text-gray-700">密碼 (若不修改請留白)</label>
-                    <input type="password" th:field="*{adminPwd}" id="adminPwd" class="form-input">
-                </div>
-                <div>
-                    <label for="adminName" class="block text-sm font-medium text-gray-700">姓名</label>
-                    <input type="text" th:field="*{adminName}" id="adminName" class="form-input">
-                </div>
-                <div>
-                    <label for="adminEmail" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" th:field="*{adminEmail}" id="adminEmail" class="form-input">
-                </div>
-                <div>
-                    <label for="adminMobile" class="block text-sm font-medium text-gray-700">手機</label>
-                    <input type="tel" th:field="*{adminMobile}" id="adminMobile" class="form-input">
+                    <label for="adminAcc" class="form-label block mb-2 required">帳號</label>
+                    <input type="text" id="adminAcc" th:field="*{adminAcc}" 
+                           class="form-input" required 
+                           placeholder="請輸入帳號" />
+                    <p class="error-text hidden" id="adminAccError">請輸入帳號</p>
                 </div>
 
-<!--                 <div>
-                    <label for="adminType" class="block text-sm font-medium text-gray-700">管理員類型</label>
-                    
-                      *** 關鍵修正 ***
-                      th:field="*{adminType}" 會將整個 <select> 標籤與 admin 物件中的 adminType 屬性綁定。
-                      Thymeleaf 會自動處理：
-                      1. 迭代 allAdminTypes 列表來生成選項。
-                      2. 當 admin 物件的 adminType 不為 null 時 (修改模式)，自動選中對應的選項。
-                   
-                    <select th:field="*{adminType}" id="adminType" class="form-input">
-                        <option value="">-- 請選擇 --</option>
-                        <option th:each="type : ${allAdminTypes}" 
-                                th:value="${type.adminTypeId}" 
-                                th:text="${type.adminTypeName}">
+                <!-- 密碼 -->
+                <div>
+                    <label for="adminPwd" class="form-label block mb-2" 
+                           th:classappend="${admin.adminId == null} ? 'required' : ''">密碼</label>
+                    <input type="password" id="adminPwd" th:field="*{adminPwd}" 
+                           class="form-input" 
+                           th:required="${admin.adminId == null}"
+                           th:placeholder="${admin.adminId == null} ? '請輸入密碼' : '若不修改密碼請留空'" />
+                    <p class="error-text hidden" id="adminPwdError">請輸入密碼</p>
+                </div>
+
+                <!-- 姓名 -->
+                <div>
+                    <label for="adminName" class="form-label block mb-2 required">姓名</label>
+                    <input type="text" id="adminName" th:field="*{adminName}" 
+                           class="form-input" required 
+                           placeholder="請輸入姓名" />
+                    <p class="error-text hidden" id="adminNameError">請輸入姓名</p>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="adminEmail" class="form-label block mb-2">Email</label>
+                    <input type="email" id="adminEmail" th:field="*{adminEmail}" 
+                           class="form-input" 
+                           placeholder="example@email.com" />
+                    <p class="error-text hidden" id="adminEmailError">請輸入有效的 Email 格式</p>
+                </div>
+
+                <!-- 手機 -->
+                <div>
+                    <label for="adminMobile" class="form-label block mb-2">手機</label>
+                    <input type="text" id="adminMobile" th:field="*{adminMobile}" 
+                           class="form-input" 
+                           pattern="09[0-9]{8}"
+                           placeholder="09xxxxxxxx" 
+                           maxlength="10" />
+                    <p class="error-text hidden" id="adminMobileError">手機號碼格式不正確（應為09開頭的10位數字）</p>
+                </div>
+                
+                <!-- 管理員類型 -->
+                <div>
+                    <label for="adminType" class="form-label block mb-2 required">管理員類型</label>
+                    <select id="adminType" th:field="*{adminType.adminTypeId}" 
+                            class="form-select" required>
+                        <option value="">-- 請選擇一個角色 --</option>
+                        <option th:each="type : ${allAdminTypes}"
+                                th:value="${type.adminTypeId}"
+                                th:text="${type.adminTypeName}"
+                                th:selected="${admin.adminType != null and admin.adminType.adminTypeId == type.adminTypeId}">
                         </option>
                     </select>
-                </div> -->
+                    <p class="error-text hidden" id="adminTypeError">請選擇管理員類型</p>
+                </div>
                 
+                <!-- 狀態 -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">狀態</label>
-                    <div class="mt-2 space-x-4">
+                    <label class="form-label block mb-2 required">狀態</label>
+                    <div class="flex items-center space-x-4">
                         <label class="inline-flex items-center">
-                            <input type="radio" th:field="*{adminStatus}" value="1" class="form-radio">
+                            <input type="radio" th:field="*{adminStatus}" value="1" 
+                                   class="form-radio" name="adminStatus" required />
                             <span class="ml-2">啟用</span>
                         </label>
                         <label class="inline-flex items-center">
-                            <input type="radio" th:field="*{adminStatus}" value="0" class="form-radio">
+                            <input type="radio" th:field="*{adminStatus}" value="0" 
+                                   class="form-radio" name="adminStatus" required />
                             <span class="ml-2">停用</span>
                         </label>
                     </div>
+                    <p class="error-text hidden" id="adminStatusError">請選擇管理員狀態</p>
                 </div>
+            </div>
 
-                <div class="pt-4 flex justify-end space-x-3">
-                    <a th:href="@{/admin/list}" class="back-btn">取消</a>
-                    <button type="submit" class="save-btn">儲存</button>
-                </div>
-            </form>
-        </div>
+            <div class="mt-8 pt-6 border-t border-gray-200 flex items-center space-x-4">
+                <button type="submit" class="btn btn-success">儲存</button>
+                <a th:href="@{/admin/list}" class="btn btn-secondary">返回列表</a>
+            </div>
+        </form>
     </div>
+
+    <script>
+        document.getElementById('adminForm').addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // 清除所有錯誤提示
+            document.querySelectorAll('.error-text').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.form-input, .form-select').forEach(el => el.classList.remove('error'));
+            
+            // 驗證帳號
+            const adminAcc = document.getElementById('adminAcc');
+            if (!adminAcc.value.trim()) {
+                showError('adminAcc', 'adminAccError');
+                isValid = false;
+            }
+            
+            // 驗證密碼（僅新增時必填）
+            const adminPwd = document.getElementById('adminPwd');
+            const isNewAdmin = !document.querySelector('input[name="adminId"]').value;
+            if (isNewAdmin && !adminPwd.value.trim()) {
+                showError('adminPwd', 'adminPwdError');
+                isValid = false;
+            }
+            
+            // 驗證姓名
+            const adminName = document.getElementById('adminName');
+            if (!adminName.value.trim()) {
+                showError('adminName', 'adminNameError');
+                isValid = false;
+            }
+            
+            // 驗證 Email 格式（如果有填寫）
+            const adminEmail = document.getElementById('adminEmail');
+            if (adminEmail.value.trim()) {
+                const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+                if (!emailRegex.test(adminEmail.value)) {
+                    showError('adminEmail', 'adminEmailError');
+                    isValid = false;
+                }
+            }
+            
+            // 驗證手機格式（如果有填寫）
+            const adminMobile = document.getElementById('adminMobile');
+            if (adminMobile.value.trim()) {
+                const mobileRegex = /^09\d{8}$/;
+                if (!mobileRegex.test(adminMobile.value)) {
+                    showError('adminMobile', 'adminMobileError');
+                    isValid = false;
+                }
+            }
+            
+            // 驗證管理員類型
+            const adminType = document.getElementById('adminType');
+            if (!adminType.value) {
+                showError('adminType', 'adminTypeError');
+                isValid = false;
+            }
+            
+            // 驗證狀態
+            const adminStatus = document.querySelector('input[name="adminStatus"]:checked');
+            if (!adminStatus) {
+                document.getElementById('adminStatusError').classList.remove('hidden');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                // 捲動到第一個錯誤欄位
+                const firstError = document.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+        
+        function showError(inputId, errorId) {
+            document.getElementById(inputId).classList.add('error');
+            document.getElementById(errorId).classList.remove('hidden');
+        }
+        
+        // 即時移除錯誤提示
+        document.querySelectorAll('.form-input, .form-select').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('error');
+                const errorId = this.id + 'Error';
+                const errorElement = document.getElementById(errorId);
+                if (errorElement) {
+                    errorElement.classList.add('hidden');
+                }
+            });
+        });
+        
+        // 狀態選擇時移除錯誤
+        document.querySelectorAll('input[name="adminStatus"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('adminStatusError').classList.add('hidden');
+            });
+        });
+    </script>
 </body>
 </html>
-
