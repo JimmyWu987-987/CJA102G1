@@ -35,7 +35,7 @@ public class ProCpnServiceImp implements ProCpnService {
 
 //新增 
 	@Override
-	public void addProCpn(ProCpnVO proCpnVO) {
+	public ProCpnVO addProCpn(ProCpnVO proCpnVO) {
 		// 1. 自動命名邏輯
 		if (proCpnVO.getCpnName() == null || proCpnVO.getCpnName().isBlank()) {
 			String cpnName;
@@ -83,6 +83,7 @@ public class ProCpnServiceImp implements ProCpnService {
 			System.out.println("新增一般券 → " + saved.getCpnName());
 		}
 		}
+		return saved;
 	}
 
 //更新

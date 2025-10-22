@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>後台｜折價券操作日誌</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- jQuery + DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/memcpn/couponManage.css}">
+<style>
+  body { background-color: #f8fafc; font-family: 'Noto Sans TC', sans-serif; }
+    h2 { text-align: center; color: #1e293b; font-weight: 700; margin: 2rem 0; font-size: 1.75rem; }
+    .status-unused { color: #16a34a; font-weight: 600; }
+    .status-used { color: #2563eb; font-weight: 600; }
+    .status-expired { color: #dc2626; font-weight: 600; }
+    table.dataTable tbody tr:hover { background-color: #f1f5f9; }
+    select {
+    background-color: #2d2d2d;
+    color: white;
+    }
+</style>
+
+</head>
+
+<body>
+<div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+  
+  <!-- Header -->
+  <div th:replace="~{/back_end/logined/coupon/couponManagePage :: header}"></div>
+  <h2>折價券操作日誌清單</h2>
+  
+   <!--  查詢區塊 -->
+  <form id="filterForm" class="flex justify-center gap-3 mb-6 flex-wrap">
+ 
+  <!--  關鍵字搜尋 -->
+    <input type="text" id="keyword" name="keyword"
+           placeholder="輸入關鍵字 (管理員ID / 折價券ID)"
+           th:value="${keyword}"
+           class="border border-gray-300 rounded-lg px-4 py-2 w-72 focus:outline-none focus:ring-2 focus:ring-blue-400">
+	
+	<!--  篩選類型 -->
+    <select id="filterType" name="filterType"
+            class="border border-gray-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+      <option value="all" th:selected="${filterType == null or filterType == 'all'}">全部日誌</option>
+      <option value="admin" th:selected="${filterType == 'admin'}">依管理員ID</option>
+      <option value="coupon" th:selected="${filterType == 'coupon'}">依折價券ID</option>
+    </select>
+
+    <!-- 搜尋按鈕 -->
+    <button type="button" onclick="searchLogs()" 
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            搜尋
+    </button>
+
+    <!-- 重置按鈕 -->
+    <a th:href="@{/admin/log/list}"
+       class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+       重置
+    </a>
+  </form>
+  
+ <!--  無資料提示 -->
+  <div th:if="${#lists.isEmpty(logs)}" 
+       class="text-center bg-yellow-100 text-yellow-800 py-3 rounded-lg font-medium">
+    目前無折價券操作日誌資料。
+  </div>
+
+  <!-- 資料表格 -->
+  <div th:if="${!#lists.isEmpty(logs)}" class="overflow-x-auto">
+    <table id="logTable" 
+           class="min-w-full text-sm text-center text-gray-700 border border-gray-200 rounded-lg">
+      <thead class="bg-gray-100 text-gray-800 font-semibold">
+        <tr>
+          <th class="px-4 py-2">日誌ID</th>
+          <th class="px-4 py-2">管理員ID</th>
+          <th class="px-4 py-2">折價券ID</th>
+          <th class="px-4 py-2">操作類型</th>
+          <th class="px-4 py-2">操作時間</th>
+          <th class="px-4 py-2">描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="log : ${logs}">
+          <td th:text="${log.logId}"></td>
+          <td th:text="${log.adminId}"></td>
+          <td th:text="${log.proCpnId != null ? log.proCpnId : '-'}"></td>
+          <td th:text="${log.actionType}" 
+              th:classappend="${log.actionType == '新增' ? 'text-green-600 font-semibold' :
+                              log.actionType == '修改' ? 'text-blue-600 font-semibold' :
+                              log.actionType == '刪除' ? 'text-red-600 font-semibold' : 'text-gray-600'}">
+          </td>
+          <td th:text="${#temporals.format(log.actionTime, 'yyyy/MM/dd HH:mm:ss')}"></td>
+          <td th:text="${log.description}"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 總筆數 -->
+    <div class="text-right text-gray-500 text-sm mt-3"
+         th:text="'共 ' + ${#lists.size(logs)} + ' 筆操作紀錄'"></div>
+  </div>
+</div>
+	<script>
+
+	// ... DataTables 初始化腳本 ...
+	$(document).ready(function() {
+		console.log("DataTables 初始化中")
+		$('#memProCpnTable').DataTable({
+			"lengthMenu" : [ 5, 10, 20, 50 ],
+			"searching" : false, // 禁用 DataTables 內建的搜尋框
+			"paging" : true, // 保留分頁功能
+			"ordering" : false, // ●●● 關鍵修改：禁用排序功能 ●●●
+			"info" : true, // 顯示 "顯示第 X 至 Y 筆結果"
+			"language" : {
+				"processing" : "處理中...",
+				"loadingRecords" : "載入中...",
+				"lengthMenu" : "每頁顯示 _MENU_ 筆",
+				"zeroRecords" : "沒有符合的結果",
+				"info" : "顯示第 _START_ 至 _END_ 筆結果，共 _TOTAL_ 筆",
+				"infoEmpty" : "顯示第 0 至 0 筆結果，共 0 筆",
+				"infoFiltered" : "(從 _MAX_ 筆結果中過濾)",
+				"paginate" : {
+					"first" : "第一頁",
+					"previous" : "上一頁",
+					"next" : "下一頁",
+					"last" : "最後一頁"
+				}
+			}
+		});
+		  console.log("DataTables 已啟用");
+	});
+	document.addEventListener("DOMContentLoaded", function() {
+	    const select = document.getElementById("statusSelect");
+	    select.addEventListener("change", function() {
+	        // 自動送出 form
+	        this.form.submit();
+	    });
+	});
+	
+	 // --- 查詢切換功能 ---
+	  function searchLogs() {
+	    const filterType = document.getElementById("filterType").value;
+	    const keyword = document.getElementById("keyword").value.trim();
+
+	    if (filterType === "admin" && keyword) {
+	      window.location.href = `/admin/log/byAdmin?adminId=${keyword}`;
+	    } else if (filterType === "coupon" && keyword) {
+	      window.location.href = `/admin/log/byCoupon?proCpnId=${keyword}`;
+	    } else {
+	      window.location.href = `/admin/log/list`;
+	    }
+	  }
+	 
+	</script>
+</body>
+</html>

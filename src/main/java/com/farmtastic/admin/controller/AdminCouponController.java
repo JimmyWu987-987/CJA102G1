@@ -41,4 +41,10 @@ public class AdminCouponController {
 	public String redirectToMemActCpn() {
 		return "redirect:/admin/memactcpn/list";
 	}
+
+	// 轉向折價券操作日誌
+	@GetMapping("/log")
+	public String redirectToCouponLog() {
+		return "redirect:/admin/log/list";
+	}
 }

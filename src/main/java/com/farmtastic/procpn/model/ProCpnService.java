@@ -11,7 +11,7 @@ import com.farmtastic.common.enums.IsActive;
 public interface ProCpnService {
 	// 資料層操作
 	// 暫時先用vo
-	void addProCpn(ProCpnVO vo);
+	ProCpnVO addProCpn(ProCpnVO vo);
 
 	void updateProCpn(ProCpnVO vo);
 

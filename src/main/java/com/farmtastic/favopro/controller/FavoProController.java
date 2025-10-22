@@ -177,7 +177,7 @@ public class FavoProController {
 		Mem loginUser = (Mem) session.getAttribute("loggedInMember");
 		Integer memId = loginUser.getMemId();
 		// 2️.查詢收藏清單
-		List<FavoProVO> favoProList = favoProSvc.getByMember(memId);
+		List<FavoProVO> favoProList = favoProSvc.getFavoList(memId);
 		List<FavoActVO> favoActList = favoActSvc.getByMember(memId);
 		// 3️.放入 model 給前端 Thymeleaf 顯示
 		model.addAttribute("favoProList", favoProList);

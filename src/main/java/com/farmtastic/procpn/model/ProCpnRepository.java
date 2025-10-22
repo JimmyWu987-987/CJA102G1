@@ -71,4 +71,6 @@ public interface ProCpnRepository extends JpaRepository<ProCpnVO, Integer> {
 	@Query("UPDATE ProCpnVO c SET c.isActive = :status WHERE c.proCpnId = :id")
 	void updateStatus(@Param("id") Integer id, @Param("status") IsActive status);
 
+	// 查出最新一筆
+	ProCpnVO findTopByOrderByProCpnIdDesc();
 }
