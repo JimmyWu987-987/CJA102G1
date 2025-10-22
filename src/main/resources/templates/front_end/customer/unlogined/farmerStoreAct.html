@@ -11,6 +11,12 @@
 
 	<link rel="stylesheet" th:if="${fmem.sty}" th:href="@{${fmem.sty.styCssPath}}">
 	
+	<style>
+		.store-content a.addToCart{
+			height: 40px;
+			color: #fff;
+		}
+	</style>
     
 </head>
 <body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
@@ -34,17 +40,17 @@
 <!--                 <li class="activity" th:fragment="activity"> -->
                 <li class="activity" th:each="act : ${actList}">
                     <div class="pic">
-                    	<a href="#">
+                    	<a th:href="@{/act/detail/{actId}(actId=${act.actId})}">
                     		<div class="mask"></div>
                     		<div class="tag">熱門</div>
                     		<img th:if="${act.actMainImgBase64 != null}" th:src="'data:image/jpeg;base64, ' + ${act.actMainImgBase64}" alt="活動圖片">
                     	</a>
                    	</div>
 	                <div class="text">
-                    	<a href="#">
+                    	<a th:href="@{/act/detail/{actId}(actId=${act.actId})}">
 <!--                     		<div class="mask"></div> -->
 	                        <div th:text="${act.actName}" class="name"></div>
-	                        <div th:text="${act.actDes}" class="intro"></div>
+<!-- 	                        <div th:text="${act.actDes}" class="intro"></div> -->
 	                        <div class="price">
 	                            <span class="prefix">$</span>
 	                            <span th:text="${act.actFee}" class="number"></span>
@@ -56,7 +62,7 @@
                         	<span>~</span>
                         	<span th:text="${act.actEnd}"></span>
                         </div>
-						<button class="addToCart">立馬報名去</button>	                    
+						<a th:href="@{/act/detail/{actId}(actId=${act.actId})}" class="addToCart btn">立馬報名去</a>	                    
 	                </div>
                 </li>
                 

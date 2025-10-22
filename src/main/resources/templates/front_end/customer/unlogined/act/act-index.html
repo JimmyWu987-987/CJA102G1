@@ -469,25 +469,8 @@ transform:scale(1.1);
 
   </div>
   
-  <div class="container container-footer" th:fragment="footer">
-        <div class="footer">
-            <div class="quick-link">
-                <a href="#">關於我們</a>
-                <a href="#">最新消息</a>
-                <a href="#">常見問題</a>
-                <a href="#">聯絡我們</a>
-                <a href="#">退貨說明</a>
-                <a href="#">訂單查詢</a>
-                <a href="#">聯絡我們</a>
-            </div>
-            <div class="info">
-                <div class="copyright">Copyright © 2025 農作物與它們的產地</div>
-                <span>Email: support@farm.com</span>
-                <span>電話: 03-4259888</span>
-                <span>地址: 桃園市中壢區農田路66號</span>
-            </div>
-        </div>
-    </div>
+  <div th:replace="~{/front_end/index :: footer}"></div>
+   
 
 
 
