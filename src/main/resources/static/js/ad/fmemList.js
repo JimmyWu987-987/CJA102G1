@@ -41,3 +41,32 @@ document.addEventListener('click', e=>{
 closeAdv.addEventListener('click', ()=>{ advPopup.style.display = 'none'; });
 advPopup.addEventListener('click', e=>{ if (e.target === advPopup) advPopup.style.display = 'none'; });
 
+
+
+
+//審核完畢特效
+ window.addEventListener("load", function() {
+	const successMsg = document.body.dataset.success;
+	if (successMsg != null) {
+		console.log(successMsg);
+		if (successMsg  === "申請成功") {
+			Swal.fire({
+				icon : 'success',
+				title : successMsg,
+				text : "請等待審核。",
+				showConfirmButton : false,
+				customClass : {
+					icon : 'custom-icon',
+					popup : 'custom-swal',
+					title : 'custom-swal-title',
+					htmlContainer : 'custom-swal-content'
+				}
+			});
+
+		}
+
+
+	}
+});
+ 
+
