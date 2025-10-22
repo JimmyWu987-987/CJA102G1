@@ -1270,7 +1270,23 @@ INSERT INTO admin_type_func_list (admin_type_id, admin_func_id) VALUES
 (2, 2),
 (3, 2);
 
+-- 折價券操作日誌表
+CREATE TABLE coupon_log (
+    log_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    admin_id INT NOT NULL,
+    pro_cpn_id INT,
+    action_type VARCHAR(20) NOT NULL COMMENT '操作類型(新增/修改/刪除...)',
+    action_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作時間',
+    description VARCHAR(255) COMMENT '操作說明'
+) ENGINE=InnoDB;
 
+ALTER TABLE coupon_log
+ADD CONSTRAINT fk_couponlog_admin
+FOREIGN KEY (admin_id) REFERENCES  administrator(admin_id)
+ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT fk_couponlog_cpn
+FOREIGN KEY (pro_cpn_id) REFERENCES pro_cpn(pro_cpn_id)
+ON DELETE SET NULL ON UPDATE CASCADE;
 
 
 -- step1.
