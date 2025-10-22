@@ -1273,7 +1273,13 @@ INSERT INTO admin_type_func_list (admin_type_id, admin_func_id) VALUES
 (1, 3),
 (2, 1),
 (2, 2),
-(3, 2);
+(3, 2),
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8),
+(1, 9);
 
 -- 折價券操作日誌表
 CREATE TABLE coupon_log (
