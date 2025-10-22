@@ -16,6 +16,8 @@ import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.news.model.News;
 import com.farmtastic.news.model.NewsService;
 
+import jakarta.servlet.http.HttpSession;
+
 
 @Controller
 public class Newscontroller {
@@ -27,6 +29,16 @@ public class Newscontroller {
 	private FmemService fmemService;
 	
 	
+    /**
+     * 檢查使用者是否登入的輔助方法。
+     * @param session HttpSession
+     * @return 如果未登入則返回 true
+     */
+    private boolean isNotLoggedIn(HttpSession session) {
+        return session.getAttribute("LOGGED_IN_ADMIN") == null;
+    }
+	
+	
 	//==========================================
 //    * 顯示發送訊息給小農的表單頁面
 //    * @param model 用於將空的 News 物件和所有小農列表綁定到表單
@@ -34,7 +46,10 @@ public class Newscontroller {
   
     
    @GetMapping("/showSendMessageForm")
-   public String showSendMessageForm(Model model) {
+   public String showSendMessageForm(Model model, HttpSession session) {
+	   
+	   if (isNotLoggedIn(session)) return "redirect:/admin/login";
+	   
        News news = new News();
        // 從 FarmerService 取得所有小農的列表
        List<Fmem> allFarmers = fmemService.getAll();
@@ -66,7 +81,10 @@ public class Newscontroller {
 	 * @return 消息列表頁面的模板名稱
 	 */
 	@GetMapping("/news")
-	public String viewHomePage(Model model) {
+	public String viewHomePage(Model model, HttpSession session) {
+		
+		if (isNotLoggedIn(session)) return "redirect:/admin/login";
+		
 		model.addAttribute("listNews", newsService.getAllNews());
 		return "back_end/logined/admin/news/news_list";
 	}
@@ -78,7 +96,10 @@ public class Newscontroller {
 	 * @return 新增消息表單的模板名稱
 	 */
 	@GetMapping("/newnewsform")
-	public String newNewsForm(Model model) {
+	public String newNewsForm(Model model, HttpSession session) {
+		
+		if (isNotLoggedIn(session)) return "redirect:/admin/login";
+		
 		News news = new News();
 		model.addAttribute("news", news);
 		return "add_news";
@@ -104,7 +125,10 @@ public class Newscontroller {
 	 * @return 修改消息表單的模板名稱
 	 */
 	@GetMapping("/editnews/{id}")
-	public String showFormForUpdate(@PathVariable(value = "id") long id, Model model) {
+	public String showFormForUpdate(@PathVariable(value = "id") long id, Model model, HttpSession session) {
+		
+		if (isNotLoggedIn(session)) return "redirect:/admin/login";
+		
 		// 從 service 取得 News
 		News news = newsService.getNewsById(id);
 		// 將 News 設定為 model attribute 來預填表單

@@ -118,34 +118,110 @@ public class AdminManagementController {
 	}
 
 	// 處理來自新增或修改表單的 POST 請求
-    @PostMapping("/save")
-	public String saveAdmin(@ModelAttribute("admin") Admin admin, RedirectAttributes redirectAttributes,
-			HttpSession session) {
-		if (permissionDenied(session, REQUIRED_PERMISSION))
-			return handleNoPermission(redirectAttributes);
-		// 判斷是「修改」還是「新增」
-		if (admin.getAdminId() != null) { // 修改模式
-			// 從資料庫撈取舊資料
-			Optional<Admin> existingAdminOptional = adminService.findById(admin.getAdminId());
-			if (existingAdminOptional.isPresent()) {
-				Admin existingAdmin = existingAdminOptional.get();
-				// 檢查前端傳來的密碼是否為空
-				if (!StringUtils.hasText(admin.getAdminPwd())) {
-					// 如果是空的，就用舊的密碼覆蓋，避免密碼被清空
-					admin.setAdminPwd(existingAdmin.getAdminPwd());
-				}
-				// 將舊的管理員類型設定回去，因為表單上沒有這個欄位
-				admin.setAdminType(existingAdmin.getAdminType());
-			}
-		} else { // 新增模式
-			// 在實際應用中，這裡應該對新密碼進行加密
-			// 並且應該設定一個預設的管理員類型
-			// 這裡我們暫時不做設定，依賴 Service 層的處理
-		}
+	@PostMapping("/save")
+	public String saveAdmin(@ModelAttribute("admin") Admin admin, 
+	                        RedirectAttributes redirectAttributes,
+	                        Model model,
+	                        HttpSession session) {
+	    if (permissionDenied(session, REQUIRED_PERMISSION))
+	        return handleNoPermission(redirectAttributes);
 
-		adminService.save(admin);
-		redirectAttributes.addFlashAttribute("successMessage", "管理員資料儲存成功！");
-		return "redirect:/admin/list";
+	    // *** 核心修正：加入後端驗證 ***
+	    boolean isNew = admin.getAdminId() == null;
+
+	    // 1. 驗證帳號
+	    if (!StringUtils.hasText(admin.getAdminAcc())) {
+	        model.addAttribute("errorMessage", "儲存失敗：帳號為必填欄位！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
+
+	    // 2. 驗證姓名
+	    if (!StringUtils.hasText(admin.getAdminName())) {
+	        model.addAttribute("errorMessage", "儲存失敗：姓名為必填欄位！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
+
+	    // 3. 驗證密碼（新增時必填）
+	    if (isNew && !StringUtils.hasText(admin.getAdminPwd())) {
+	        model.addAttribute("errorMessage", "儲存失敗：新增管理員時，密碼為必填欄位！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", "新增管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
+
+	    // 4. 驗證管理員類型
+	    if (admin.getAdminType() == null || admin.getAdminType().getAdminTypeId() == null) {
+	        model.addAttribute("errorMessage", "儲存失敗：必須為管理員指派一個角色！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
+
+	    // 5. *** 新增：驗證狀態（必須選擇啟用或停用）***
+	    if (admin.getAdminStatus() == null) {
+	        model.addAttribute("errorMessage", "儲存失敗：必須選擇管理員狀態（啟用或停用）！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
+
+	    // 6. 驗證 Email 格式（如果有填寫）
+	    if (StringUtils.hasText(admin.getAdminEmail())) {
+	        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+	        if (!admin.getAdminEmail().matches(emailRegex)) {
+	            model.addAttribute("errorMessage", "儲存失敗：Email 格式不正確！");
+	            model.addAttribute("admin", admin);
+	            model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	            loadCommonData(model);
+	            return "back_end/logined/admin/admin/admin_form";
+	        }
+	    }
+
+	    // 7. 驗證手機格式（如果有填寫）
+	    if (StringUtils.hasText(admin.getAdminMobile())) {
+	        String mobileRegex = "^09\\d{8}$";
+	        if (!admin.getAdminMobile().matches(mobileRegex)) {
+	            model.addAttribute("errorMessage", "儲存失敗：手機號碼格式不正確（應為09開頭的10位數字）！");
+	            model.addAttribute("admin", admin);
+	            model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	            loadCommonData(model);
+	            return "back_end/logined/admin/admin/admin_form";
+	        }
+	    }
+	    
+	    // *** 驗證結束 ***
+	    
+	    // 如果是修改且未填寫密碼，保留原密碼
+	    if (!isNew) {
+	        Optional<Admin> existingAdminOptional = adminService.findById(admin.getAdminId());
+	        if (existingAdminOptional.isPresent()) {
+	            Admin existingAdmin = existingAdminOptional.get();
+	            if (!StringUtils.hasText(admin.getAdminPwd())) {
+	                admin.setAdminPwd(existingAdmin.getAdminPwd());
+	            }
+	        }
+	    }
+
+	    try {
+	        adminService.save(admin);
+	        redirectAttributes.addFlashAttribute("successMessage", "管理員資料儲存成功！");
+	        return "redirect:/admin/list";
+	    } catch (Exception e) {
+	        model.addAttribute("errorMessage", "儲存失敗：" + e.getMessage());
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
 	}
 
 	// 權限設定頁面
@@ -195,6 +271,20 @@ public class AdminManagementController {
         
         return "redirect:/admin/permissions";
     }
+    
+    // 處理刪除請求的方法
+    @GetMapping("/delete/{id}")
+    public String deleteAdmin(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes, HttpSession session) {
+        if (permissionDenied(session, REQUIRED_PERMISSION)) return handleNoPermission(redirectAttributes);
+        try {
+            adminService.deleteAdminById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "管理員 " + id + " 刪除成功！");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "刪除失敗：" + e.getMessage());
+        }
+        return "redirect:/admin/list";
+    }
+    
     
     //後台會員管理
     @GetMapping("/mem-management")

@@ -95,6 +95,7 @@
         .product-description p { font-size: 1rem; line-height: 1.8; color: #555; }
         
         /* 購買選項區域 */
+        
         .purchase-section {
             margin-top: 2rem;
             padding: 1.5rem;
@@ -148,6 +149,7 @@
         }
         
         /* 移除數字輸入框的上下箭頭 */
+        
         .quantity-input::-webkit-outer-spin-button,
         .quantity-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -204,6 +206,7 @@
         }
         
         /* 評論區域樣式 */
+        
         .comment-section-container {
             margin-top: 3rem;
             padding: 2rem;
@@ -221,8 +224,9 @@
         }
         
         /* 評論統計 */
+        
         .comment-stats {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff9a56 0%, #ff9a56 100%);
             padding: 1.5rem;
             border-radius: 10px;
             margin-bottom: 2rem;
@@ -245,6 +249,7 @@
         }
         
         /* 評論列表 */
+        
         .comment-list {
             margin-bottom: 3rem;
         }
@@ -612,8 +617,7 @@
             <p>此商品目前還沒有任何評論！</p>
         </div>
 
-        <!-- 評論表單區域 -->
-        <div class="comment-form-section">
+            <!-- 評論表單區域 -->
             <!-- 已登入使用者 -->
             <div th:if="${isUserLoggedIn}">
                     
@@ -637,10 +641,8 @@
                                   required 
                                   placeholder="分享您對此商品的看法..."></textarea>
                     </div>
-                </form>
             </div>
             
-        </div>
     </div>
 </div>
 
