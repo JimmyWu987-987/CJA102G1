@@ -2,6 +2,7 @@ package com.farmtastic.member.controller;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -119,6 +120,10 @@ public class MemController {
 			// 對應到前端顯示
 			model.addAttribute("googleError", googleError);
 		}
+		
+		// 計算 12 歲前的日期
+	    LocalDate maxDate = LocalDate.now().minusYears(12);
+	    model.addAttribute("maxBirthday", maxDate.toString());
 		
 		return "front_end/customer/unlogined/memRegLogin";
 	}

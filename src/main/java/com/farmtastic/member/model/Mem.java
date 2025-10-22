@@ -71,7 +71,7 @@ public class Mem implements Serializable {
 
 	@Column(name = "mem_birthday")
 	@NotNull(message = "生日欄位請勿空白", groups = RegistrationValidation.class)
-	@MinAge(value = 12, message = "您必須年滿 12 歲")
+	@MinAge(value = 12, message = "您必須年滿 12 歲", groups = RegistrationValidation.class)
 	private Date memBirthday;
 
 	@Column(name = "mem_mobile")
