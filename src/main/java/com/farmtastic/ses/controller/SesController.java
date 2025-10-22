@@ -22,44 +22,43 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/ses")
-@SessionAttributes({"sessionSes"})
+@SessionAttributes({ "sessionSes" })
 public class SesController {
-	
+
 	@Autowired
 	private ActService actSvc;
-	
+
 	@Autowired
 	private SesService sesSvc;
 
 //	================= 單一查詢 (for 場次報名表單用) ==================
 	@GetMapping("/register/{actId}/{sesId}")
-    public String sesDetail(@PathVariable Integer sesId, ModelMap model) {
-    	Optional<Ses> optSes = sesSvc.getOneSes(sesId);		// 取得場次
-    	
-    	// 防呆用
-    	if (optSes.isEmpty()) {
-            // 查無場次, 導回首頁或活動一覽頁，顯示訊息
-            model.addAttribute("message", "查無此場次");
-            return "redirect:/act";		// 導回活動一覽頁
-        }
-    	
-    	Ses ses = optSes.get();
-    	
-    	// 防呆用, 如果沒上架or是空值(因為活動根本沒過審), 就跳查無此活動or導回首頁
-    	if (ses.getSesLaunStat() == null || !ses.getSesLaunStat().equals(1)) {
-    		// 查無場次, 導回首頁或活動一覽頁，顯示訊息
-            model.addAttribute("message", "查無此場次");
-            return "front_end/customer/unlogined/act/actMainPageTest"; 		// 回原本的詳細頁
-        }
+	public String sesDetail(@PathVariable Integer sesId, ModelMap model) {
+		Optional<Ses> optSes = sesSvc.getOneSes(sesId); // 取得場次
 
-    	model.addAttribute("ses", ses);
-        model.addAttribute("sessionAct", ses);
-        
-        return "front_end/customer/unlogined/ (再看報名表單的連結為何~) "; //報名表單的部分已另外做了
-        
+		// 防呆用
+		if (optSes.isEmpty()) {
+			// 查無場次, 導回首頁或活動一覽頁，顯示訊息
+			model.addAttribute("message", "查無此場次");
+			return "redirect:/act"; // 導回活動一覽頁
+		}
+
+		Ses ses = optSes.get();
+
+		// 防呆用, 如果沒上架or是空值(因為活動根本沒過審), 就跳查無此活動or導回首頁
+		if (ses.getSesLaunStat() == null || !ses.getSesLaunStat().equals(1)) {
+			// 查無場次, 導回首頁或活動一覽頁，顯示訊息
+			model.addAttribute("message", "查無此場次");
+			return "front_end/customer/unlogined/act/actMainPageTest"; // 回原本的詳細頁
+		}
+
+		model.addAttribute("ses", ses);
+		model.addAttribute("sessionAct", ses);
+
+		return "front_end/customer/unlogined/ (再看報名表單的連結為何~) "; // 報名表單的部分已另外做了
+
 	}
-	
-	
+
 ////	================= (這是舊的, 先保留起來以備不時之需) 列出該活動所有場次 ================
 //	@GetMapping("/listByAct/{actId}")
 //	public String listByAct(@PathVariable("actId") Integer actId, ModelMap model) {

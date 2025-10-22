@@ -16,87 +16,69 @@ import java.util.Optional;
 @Repository
 public interface ActRepository extends JpaRepository<Act, Integer> {
 
-    List<Act> findByFmemId(Integer fmemId, Sort sort);
-    List<Act> findByFmemId(Integer fmemId);
-    List<Act> findByActId(Integer actId);
-    List<Act> findByActStat(Integer actStat, Sort sort);
-    List<Act> findByActLaunStat(Integer actLaunStat, Sort sort);
-    List<Act> findByFmemIdAndActStat(Integer fmemId, Integer actStat, Sort sort);
-    List<Act> findByFmemIdAndActLaunStat(Integer fmemId, Integer actLaunStat, Sort sort);
-    
-    // 複合查詢 for 小農
-    @Query("SELECT DISTINCT a FROM Act a " +
-           "JOIN a.actCate ac " +
-           "WHERE (:fmemId IS NULL OR a.fmemId = :fmemId) " +
-           "AND (:actStat IS NULL OR a.actStat = :actStat) " +
-           "AND (:actLaunStat IS NULL OR a.actLaunStat = :actLaunStat) " +
-           "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) " +
-           "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') " +
-           "OR a.actDes LIKE CONCAT('%', :keyword, '%')))")
-    List<Act> findActByCQForFmem(@Param("fmemId") Integer fmemId,
-    							 @Param("actStat") Integer actStat,
-    							 @Param("actLaunStat") Integer actLaunStat,
-    							 @Param("actCateId") List<Integer> actCateId,
-    							 @Param("keyword") String keyword,
-    							 Sort sort);
-    
-    // 複合查詢 for 消費者 (不篩小農)
-    @Query("SELECT DISTINCT a FROM Act a " +
-           "JOIN a.actCate ac " +
-           "JOIN a.fmem f " +
-           "WHERE a.actLaunStat = 1 " + 
-           "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) " +
-           "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') " +
-           "OR a.actDes LIKE CONCAT('%', :keyword, '%') " +
-           "OR f.storeName LIKE CONCAT('%', :keyword, '%')))")
-     List<Act> findActByCQForCus(@Param("actCateId") List<Integer> actCateId,
-    		 					 @Param("keyword") String keyword,
-    		 					 Sort sort);
-    
-    // 複合查詢 for 後台 (跟小農差不多, 不過也能透過小農的商店名稱關鍵字查詢)
-    @Query("SELECT DISTINCT a FROM Act a " +
-           "JOIN a.actCate ac " +
-           "JOIN a.fmem f " +
-           "WHERE (:fmemId IS NULL OR a.fmemId = :fmemId) " +
-           "AND (:actStat IS NULL OR a.actStat = :actStat) " +
-           "AND (:actLaunStat IS NULL OR a.actLaunStat = :actLaunStat) " +
-           "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) " +
-           "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') " +
-           "OR a.actDes LIKE CONCAT('%', :keyword, '%') " +
-           "OR f.storeName LIKE CONCAT('%', :keyword, '%')))")
-    List<Act> findActByForAdmin(@Param("fmemId") Integer fmemId,
-    							@Param("actStat") Integer actStat,
-    							@Param("actLaunStat") Integer actLaunStat,
-    							@Param("actCateId") List<Integer> actCateId,
-    							@Param("keyword") String keyword,
-    							Sort sort);
-    
-    
-    @Query("SELECT a FROM Act a LEFT JOIN FETCH a.actImg WHERE a.actId = :actId")
-    Optional<Act> findByActIdWithImgs(@Param("actId") Integer actId);
-    
-    @Query("SELECT a FROM Act a WHERE a.actId = :actId AND a.fmemId = :fmemId")
-    Optional<Act> getOneActByFmemId(Integer actId, Integer fmemId);
+	List<Act> findByFmemId(Integer fmemId, Sort sort);
 
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM Act a WHERE a.actId = :actId")
-    void deleteByActId(@Param("actId") Integer actId);
-    
-    // 活動評價總分
-    @Query("SELECT SUM(r.actRate) " +
-           "FROM RegVO r " +
-           "JOIN Ses s ON r.sesId = s.sesId " +
-           "WHERE s.actId = :actId AND r.regStat IN (3, 4, 5) AND r.actRate IS NOT NULL")
-    Integer getActScoreByActId(@Param("actId") Integer actId);
+	List<Act> findByFmemId(Integer fmemId);
 
-    // 活動評價人數 (= 有幾張已完成的訂單給了評價)
-    @Query("SELECT COUNT(r) " +
-           "FROM RegVO r " +
-           "JOIN Ses s ON r.sesId = s.sesId " +
-           "WHERE s.actId = :actId AND r.regStat IN (3, 4, 5) AND r.actRate IS NOT NULL")
-    Long getActCntByActId(@Param("actId") Integer actId);
-    
-    
-    
+	List<Act> findByActId(Integer actId);
+
+	List<Act> findByActStat(Integer actStat, Sort sort);
+
+	List<Act> findByActLaunStat(Integer actLaunStat, Sort sort);
+
+	List<Act> findByFmemIdAndActStat(Integer fmemId, Integer actStat, Sort sort);
+
+	List<Act> findByFmemIdAndActLaunStat(Integer fmemId, Integer actLaunStat, Sort sort);
+
+	// 複合查詢 for 小農
+	@Query("SELECT DISTINCT a FROM Act a " + "JOIN a.actCate ac " + "WHERE (:fmemId IS NULL OR a.fmemId = :fmemId) "
+			+ "AND (:actStat IS NULL OR a.actStat = :actStat) "
+			+ "AND (:actLaunStat IS NULL OR a.actLaunStat = :actLaunStat) "
+			+ "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) "
+			+ "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') "
+			+ "OR a.actDes LIKE CONCAT('%', :keyword, '%')))")
+	List<Act> findActByCQForFmem(@Param("fmemId") Integer fmemId, @Param("actStat") Integer actStat,
+			@Param("actLaunStat") Integer actLaunStat, @Param("actCateId") List<Integer> actCateId,
+			@Param("keyword") String keyword, Sort sort);
+
+	// 複合查詢 for 消費者 (不篩小農)
+	@Query("SELECT DISTINCT a FROM Act a " + "JOIN a.actCate ac " + "JOIN a.fmem f " + "WHERE a.actLaunStat = 1 "
+			+ "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) "
+			+ "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') "
+			+ "OR a.actDes LIKE CONCAT('%', :keyword, '%') " + "OR f.storeName LIKE CONCAT('%', :keyword, '%')))")
+	List<Act> findActByCQForCus(@Param("actCateId") List<Integer> actCateId, @Param("keyword") String keyword,
+			Sort sort);
+
+	// 複合查詢 for 後台 (跟小農差不多, 不過也能透過小農的商店名稱關鍵字查詢)
+	@Query("SELECT DISTINCT a FROM Act a " + "JOIN a.actCate ac " + "JOIN a.fmem f "
+			+ "WHERE (:fmemId IS NULL OR a.fmemId = :fmemId) " + "AND (:actStat IS NULL OR a.actStat = :actStat) "
+			+ "AND (:actLaunStat IS NULL OR a.actLaunStat = :actLaunStat) "
+			+ "AND (:actCateId IS NULL OR ac.actCateId IN :actCateId) "
+			+ "AND (:keyword IS NULL OR (a.actName LIKE CONCAT('%', :keyword, '%') "
+			+ "OR a.actDes LIKE CONCAT('%', :keyword, '%') " + "OR f.storeName LIKE CONCAT('%', :keyword, '%')))")
+	List<Act> findActByForAdmin(@Param("fmemId") Integer fmemId, @Param("actStat") Integer actStat,
+			@Param("actLaunStat") Integer actLaunStat, @Param("actCateId") List<Integer> actCateId,
+			@Param("keyword") String keyword, Sort sort);
+
+	@Query("SELECT a FROM Act a LEFT JOIN FETCH a.actImg WHERE a.actId = :actId")
+	Optional<Act> findByActIdWithImgs(@Param("actId") Integer actId);
+
+	@Query("SELECT a FROM Act a WHERE a.actId = :actId AND a.fmemId = :fmemId")
+	Optional<Act> getOneActByFmemId(Integer actId, Integer fmemId);
+
+	@Transactional
+	@Modifying
+	@Query("DELETE FROM Act a WHERE a.actId = :actId")
+	void deleteByActId(@Param("actId") Integer actId);
+
+	// 活動評價總分
+	@Query("SELECT SUM(r.actRate) " + "FROM RegVO r " + "JOIN Ses s ON r.sesId = s.sesId "
+			+ "WHERE s.actId = :actId AND r.regStat IN (3, 4, 5) AND r.actRate IS NOT NULL")
+	Integer getActScoreByActId(@Param("actId") Integer actId);
+
+	// 活動評價人數 (= 有幾張已完成的訂單給了評價)
+	@Query("SELECT COUNT(r) " + "FROM RegVO r " + "JOIN Ses s ON r.sesId = s.sesId "
+			+ "WHERE s.actId = :actId AND r.regStat IN (3, 4, 5) AND r.actRate IS NOT NULL")
+	Long getActCntByActId(@Param("actId") Integer actId);
+
 }

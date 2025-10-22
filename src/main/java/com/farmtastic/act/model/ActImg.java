@@ -18,17 +18,16 @@ import jakarta.persistence.Transient;
 @Table(name = "actimg")
 public class ActImg implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@Column(name = "actimg_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer actImgId;
-	
+
 	@Lob
 	@Column(name = "act_img", columnDefinition = "LONGBLOB")
 	private byte[] actImg;
 
-	
 //	排順序用...先做起來吧
 	@Column(name = "actimg_order", columnDefinition = "INT DEFAULT 1")
 	private Integer actimgOrder;
@@ -40,10 +39,9 @@ public class ActImg implements java.io.Serializable {
 	// 單純直接拿到actId
 	@Transient
 	public Integer getActId() {
-	    return act != null ? act.getActId() : null;
+		return act != null ? act.getActId() : null;
 	}
-	
-	
+
 	public ActImg() {
 		super();
 	}
@@ -79,6 +77,5 @@ public class ActImg implements java.io.Serializable {
 	public void setAct(Act act) {
 		this.act = act;
 	}
-	
-	
+
 }

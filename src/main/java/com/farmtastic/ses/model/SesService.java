@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SesService {
-	
+
 	@Autowired
 	private SesRepository sesRepository;
-	
+
 	// ========== 新增場次 ==========
 	public void addSes(Ses ses) {
 		sesRepository.save(ses);
@@ -24,37 +24,33 @@ public class SesService {
 	public void updateSes(Ses ses, Integer fmem) {
 		sesRepository.save(ses);
 	}
-	
-	
+
 	// ========== 取得報名人數 ==========
 	@Transactional(readOnly = true)
 	public Integer getHeadCount(Integer sesId) {
-	    Integer count = sesRepository.getHeadCountBySesId(sesId);
-	    
-	    // 若為空值即為0
-	    return count != null ? count : 0; 
+		Integer count = sesRepository.getHeadCountBySesId(sesId);
+
+		// 若為空值即為0
+		return count != null ? count : 0;
 	}
-	
-	
+
 // 查詢
 
 	// ========== 查小農自己的全部場次 ==========
 	public List<Ses> findSesByFmemId(Integer fmemId, Sort sort) {
 		return sesRepository.findByAct_Fmem_FmemId(fmemId, sort);
 	}
-	
-	
+
 	// ========== 查小農自己的全部場次 (for場次一覽用) ==========
 	public List<Ses> findSesWithActByFmemId(Integer fmemId, Sort sort) {
 		return sesRepository.findSesWithActByFmemId(fmemId, sort);
 	}
-	
-	
+
 	// ========== 依活動ID查詢 ==========
 	public List<Ses> findSesByActId(Integer actId, Sort sort) {
 		return sesRepository.findByActId(actId, sort);
 	}
-	
+
 	// ========== 依場次ID查單一場次 ==========
 	@Transactional(readOnly = true)
 	public Optional<Ses> getOneSes(Integer sesId) {
@@ -65,33 +61,27 @@ public class SesService {
 	public List<Ses> findBySesLaunStat(Integer sesLaunStat, Sort sort) {
 		return sesRepository.findBySesLaunStat(sesLaunStat, sort);
 	}
-	
+
 	// ========== 依報名狀態列出場次 >> ex: 供小農查看已成團的場次 ==========
 	public List<Ses> findByRegStat(Integer actStat, Sort sort) {
 		return sesRepository.findByRegStat(actStat, sort);
 	}
-	
-	
-	
+
 	// ========== 查全部場次 ==========
-		public List<Ses> getAllSes(Sort sort) {
-			return sesRepository.findAll(sort);
+	public List<Ses> getAllSes(Sort sort) {
+		return sesRepository.findAll(sort);
 	}
-		
-		
+
 	// ========== 查小農自己的全部場次 ==========
-		public List<Ses> getAllSesForFmem(Integer fmemId, Sort sort) {
-			return sesRepository.findByAct_Fmem_FmemId(fmemId, sort);
+	public List<Ses> getAllSesForFmem(Integer fmemId, Sort sort) {
+		return sesRepository.findByAct_Fmem_FmemId(fmemId, sort);
 	}
-	
-	
+
 	// ========== 刪除場次 ==========
 	public void deleteAct(Integer sesId) {
 		if (sesRepository.existsById(sesId)) {
 			sesRepository.deleteBySesId(sesId);
 		}
 	}
-	
-	
-	
+
 }
