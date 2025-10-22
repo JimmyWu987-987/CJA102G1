@@ -65,7 +65,16 @@
       </a>
     </form>
 
-   
+    <!-- 狀態篩選 -->
+    <form th:action="@{/admin/memactcpn/filterByStatus}" method="get"
+          class="flex justify-center gap-3 mb-6 flex-wrap">
+      <select name="status" class="form-select border rounded px-2 py-1" id="statusSelect">
+        <option value="">全部狀態</option>
+        <option value="UNUSED" th:selected="${selectedStatus == 'UNUSED'}">未使用</option>
+        <option value="USED" th:selected="${selectedStatus == 'USED'}">已使用</option>
+        <option value="EXPIRED" th:selected="${selectedStatus == 'EXPIRED'}">已過期</option>
+      </select>
+    </form>
 
     <!-- 無資料提示 -->
     <div th:if="${#lists.isEmpty(memCoupons)}"
