@@ -49,12 +49,18 @@ public interface ProComRepository extends JpaRepository<ProComVO, Integer> {
 	
 
 	// 新增，計算每個商品的平均評分，並篩選出平均小於 2 的商品
-    @Query("SELECT new com.farmtastic.pro.model.LowRatePro(" +
-            "p.proId, p.fmemId.fmemId, CAST(AVG(pc.proComRate) AS double), p.proStatus) " +
-            "FROM ProComVO pc JOIN pc.proVO p " +  
-            "GROUP BY p.proId, p.fmemId.fmemId, p.proStatus " +
-            "HAVING AVG(pc.proComRate) < 3.0")
-     List<LowRatePro> findProductsWithAverageRatingLessThan();
+	@Query("SELECT new com.farmtastic.pro.model.LowRatePro(" +
+			   "p.proId, " +                   // 商品 ID
+			   "p.fmemId.fmemId, " +         // 小農 ID (透過 Pro 關聯取得)
+			   "CAST(AVG(pc.proComRate) AS double), " + // 平均評分 (轉為 double)
+			   "p.proStatus, " +             // 商品狀態 (透過 Pro 關聯取得)
+	           "p.proName, " +               // 【新增】商品名稱 (透過 Pro 關聯取得)
+	           "p.fmemId.fmemName" +         // 【新增】小農名稱 (透過 Pro 關聯取得)
+			   ") " +
+			   "FROM ProComVO pc JOIN pc.proVO p " + // 【重要】JOIN ProComVO 中的 proVO 欄位 (關聯到 Pro)
+			   "GROUP BY p.proId, p.fmemId.fmemId, p.proStatus, p.proName, p.fmemId.fmemName " + // 【更新】GROUP BY 加入名稱
+			   "HAVING AVG(pc.proComRate) < 3.0") // 篩選條件
+		List<LowRatePro> findProductsWithAverageRatingLessThan();
     
     //新增：只查詢未下架的低評分商品（proStatus = 1）
     @Query("SELECT new com.farmtastic.pro.model.LowRatePro(" +
