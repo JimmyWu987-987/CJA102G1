@@ -13,9 +13,6 @@ public interface FavoProRepository extends JpaRepository<FavoProVO, FavoProId> {
 	// 檢查指定的收藏紀錄是否存在
 	boolean existsById(FavoProId id);
 
-	// 撈出某商品的第一張圖片
-	// ProImage findFirstByProIdOrderByProImgIdAsc(Long proId);
-
 	// 查出「指定會員」收藏的所有商品。
 	// 同時載商品資料
 	@Query("SELECT f FROM FavoProVO f JOIN FETCH f.productVO WHERE f.memVO.memId = :memId")

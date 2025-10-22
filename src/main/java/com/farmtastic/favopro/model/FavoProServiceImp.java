@@ -104,6 +104,7 @@ public class FavoProServiceImp {
 		return favoRepo.findAll();
 	}
 
+//撈圖片
 	public List<FavoProVO> getFavoList(Integer memId) {
 
 		System.out.println("[FavoService] 查詢會員收藏清單 memId=" + memId);
