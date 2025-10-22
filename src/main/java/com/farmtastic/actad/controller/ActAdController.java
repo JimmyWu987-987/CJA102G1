@@ -202,7 +202,8 @@ public class ActAdController {
                                    BindingResult binding,
                                    @RequestParam("adImg") MultipartFile file,
                                    HttpSession session,
-                                   ModelMap model) throws IOException {
+                                   ModelMap model,
+                                   RedirectAttributes redirectAttributes) throws IOException {
 
         Integer fmemId = (Integer) session.getAttribute("fmemId");
 
@@ -250,7 +251,7 @@ public class ActAdController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        redirectAttributes.addFlashAttribute("success", "申請成功");
         return "redirect:/fmem/actAd/list";
     }
 
