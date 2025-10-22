@@ -10,7 +10,7 @@
      
   </style>
 </head>
-<body class="flex items-center justify-center justify-start min-h-screen p-4">
+<body class="flex items-center justify-center justify-start min-h-screen p-3">
    <div class="dashboard-card w-full max-w-65xl">
   <h1 class="section-title">折價券管理</h1>
 
@@ -21,16 +21,13 @@
                 <a th:href="@{/admin/coupon/mempro}" class="btn btn-enabled">商品折價券明細</a>
                 <a th:href="@{/admin/coupon/log}" class="btn btn-enabled">折價券操作日誌</a>
             </div>
-            <div class="mt-12 text-center">
-             <a th:href="@{/managepage}" class="w-full sm:w-auto px-10 py-3 bg-gray-600 text-white rounded-md font-semibold hover:bg-gray-700 transition">
-             返回管理選單</a>
-        </div>
-                 <div class="mt-12 text-center">
-            <form th:action="@{/auth/logout}" method="post">
-                <button type="submit" class="w-full sm:w-auto px-10 py-3 bg-gray-600 text-white rounded-md font-semibold hover:bg-gray-700 transition">
-                登出</button>
-            </form>
-        </div>
+           <div class="footer-btns" th:fragment="footer">
+  <a th:href="@{/managepage}" class="footer-btn">返回管理選單</a>
+
+  <form th:action="@{/auth/logout}" method="post" class="inline-form">
+    <button type="submit" class="footer-btn">登出</button>
+  </form>
+</div>
         </div>
 </body>
 </html>

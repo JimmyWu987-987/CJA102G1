@@ -165,15 +165,22 @@ public class CouponLogAspect {
 		for (Object arg : joinPoint.getArgs()) {
 			if (arg == null)
 				continue;
-			if (arg instanceof Integer) {
-				Integer id = (Integer) arg;
-				try {
-					ProCpnVO cpn = proCpnRepo.findById(id).orElse(null);
-					if (cpn != null && cpn.getCpnName() != null && !cpn.getCpnName().isBlank()) {
-						return cpn.getCpnName();
-					}
 
-				} catch (Exception ignored) {
+			// 檢查是否有 getCpnName() 方法
+			try {
+				var method = arg.getClass().getMethod("getCpnName");
+				Object value = method.invoke(arg);
+				if (value instanceof String name && !name.isBlank()) {
+					return name;
+				}
+			} catch (Exception ignored) {
+			}
+
+			// 若是 Integer ID
+			if (arg instanceof Integer id) {
+				ProCpnVO cpn = proCpnRepo.findById(id).orElse(null);
+				if (cpn != null && cpn.getCpnName() != null && !cpn.getCpnName().isBlank()) {
+					return cpn.getCpnName();
 				}
 			}
 		}
