@@ -175,27 +175,37 @@ public class AdminManagementController {
 	    }
 
 	    // 6. 驗證 Email 格式（如果有填寫）
-	    if (StringUtils.hasText(admin.getAdminEmail())) {
-	        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-	        if (!admin.getAdminEmail().matches(emailRegex)) {
-	            model.addAttribute("errorMessage", "儲存失敗：Email 格式不正確！");
-	            model.addAttribute("admin", admin);
-	            model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
-	            loadCommonData(model);
-	            return "back_end/logined/admin/admin/admin_form";
-	        }
+	    if (!StringUtils.hasText(admin.getAdminEmail())) {
+	        model.addAttribute("errorMessage", "儲存失敗：Email 為必填欄位！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
+	    String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+	    if (!admin.getAdminEmail().matches(emailRegex)) {
+	        model.addAttribute("errorMessage", "儲存失敗：Email 格式不正確！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
 	    }
 
-	    // 7. 驗證手機格式（如果有填寫）
-	    if (StringUtils.hasText(admin.getAdminMobile())) {
-	        String mobileRegex = "^09\\d{8}$";
-	        if (!admin.getAdminMobile().matches(mobileRegex)) {
-	            model.addAttribute("errorMessage", "儲存失敗：手機號碼格式不正確（應為09開頭的10位數字）！");
-	            model.addAttribute("admin", admin);
-	            model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
-	            loadCommonData(model);
-	            return "back_end/logined/admin/admin/admin_form";
-	        }
+	    // 7. 驗證手機（必填且格式正確）
+	    if (!StringUtils.hasText(admin.getAdminMobile())) {
+	        model.addAttribute("errorMessage", "儲存失敗：手機號碼為必填欄位！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
+	    }
+	    String mobileRegex = "^09\\d{8}$";
+	    if (!admin.getAdminMobile().matches(mobileRegex)) {
+	        model.addAttribute("errorMessage", "儲存失敗：手機號碼格式不正確（應為09開頭的10位數字）！");
+	        model.addAttribute("admin", admin);
+	        model.addAttribute("pageTitle", isNew ? "新增管理員" : "修改管理員");
+	        loadCommonData(model);
+	        return "back_end/logined/admin/admin/admin_form";
 	    }
 	    
 	    // *** 驗證結束 ***

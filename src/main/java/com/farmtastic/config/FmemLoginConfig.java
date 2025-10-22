@@ -12,32 +12,22 @@ public class FmemLoginConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new FmemLoginInterceptor())
-				.addPathPatterns("/fmem/fmemArea/**", "/fmem/home");
-//				.excludePathPatterns(
-//						"/fmem/register",
-//						"/fmem/login",
-//						"/fmem/showFmemRegLoginForm"
-//						"/fmem/forgetPasswordPage",
-//						"/fmem/resetPasswordPage"
-//				);
+				.addPathPatterns("/fmem/fmemArea/**", "/fmem/home")
+				.excludePathPatterns(
+						"/fmem/showFmemRegLoginForm",
+						"/fmem/register",
+						"/fmem/login",
+						"/fmem/forgetPasswordPage",
+						"/fmem/forgetPassword",
+						"/fmem/resetPasswordPage",
+						"/fmem/resetPassword",
+						"/fmem/supplementIdentityCheckPage",
+						"/fmem/requestSupplement",
+						"/fmem/fmemSupplementFormPage",
+						"/fmem/submitSupplement",
+						"/fmem/loginVerifyPage",
+						"/fmem/loginVerify"
+				);
 	}
 }
 
-
-//@GetMapping("/showFmemRegLoginForm")
-//@PostMapping("/register")
-//@PostMapping("/login")
-//	
-//@PostMapping("/logout")	
-//@GetMapping("/home")
-					//@GetMapping("/toFmemArea")
-//@GetMapping("/fmemArea")
-					//@GetMapping("/toUpdateProfile")
-//@GetMapping("/fmemArea/updateProfilePage")
-//@PostMapping("/fmemArea/updateProfile")
-					//@GetMapping("/toUpdatePassword")
-//@GetMapping("/fmemArea/updatePasswordPage")
-//@PostMapping("/fmemArea/updatePassword")
-					//@GetMapping("/toUpdateStore")
-//@GetMapping("/fmemArea/updateStorePage")
-//@PostMapping("/fmemArea/updateStore")
