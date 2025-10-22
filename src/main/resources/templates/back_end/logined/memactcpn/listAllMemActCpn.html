@@ -11,89 +11,127 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
      <link rel="stylesheet" th:href="@{/css/memcpn/couponManage.css}">
+<link rel="stylesheet" th:href="@{/css/memcpn/listAllCpnMode.css}">
 <style>
-      body { background-color: #f8fafc; font-family: 'Noto Sans TC', sans-serif; }
+   body { background-color: #f8fafc; font-family: 'Noto Sans TC', sans-serif; }
     h2 { text-align: center; color: #1e293b; font-weight: 700; margin: 2rem 0; font-size: 1.75rem; }
     .status-unused { color: #16a34a; font-weight: 600; }
     .status-used { color: #2563eb; font-weight: 600; }
     .status-expired { color: #dc2626; font-weight: 600; }
     table.dataTable tbody tr:hover { background-color: #f1f5f9; }
+.btn-info {
+    background-color: #3b82f6;     
+    color: white;                 
+    padding: 0.4rem 0.8rem;        
+    border-radius: 0.4rem;         
+    font-size: 0.875rem;          
+    transition: background-color 0.25s ease, transform 0.15s ease;
+    text-align: center;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.btn-info:hover {
+    background-color: #2563eb;     
+    transform: translateY(-1px);   
+}
 </style>
 </head>
 <body>
 <!-- 白底卡片內容 -->
- <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
- <div th:replace="~{/back_end/logined/coupon/couponManagePage :: header}"></div>
+  <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+
+    <!-- 共用 Header -->
+    <div th:replace="~{/back_end/logined/coupon/couponManagePage :: header}"></div>
+
     <h2>活動折價券明細清單</h2>
-    <!-- 搜尋與篩選 -->
-    <form th:action="@{/admin/memactcpn/list}" method="get" class="flex justify-center gap-3 mb-6 flex-wrap">
-<input type="text" name="keyword"
-                   placeholder="輸入會員帳號或活動折價券名稱..."
-                   th:value="${keyword}"
-                   class="border border-gray-300 rounded-lg px-4 py-2 w-72 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <button type="submit"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">搜尋</button>
-            <a th:href="@{/admin/memactcpn/list}"
-               class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">重置</a>
+
+    <!-- 搜尋與篩選區塊 -->
+    <form th:action="@{/admin/memactcpn/list}" method="get"
+          class="flex justify-center gap-3 mb-6 flex-wrap">
+      <input type="text" name="keyword"
+             placeholder="輸入會員帳號或活動折價券名稱..."
+             th:value="${keyword}"
+             class="border border-gray-300 rounded-lg px-4 py-2 w-72 focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+      <button type="submit"
+              class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+        搜尋
+      </button>
+
+      <a th:href="@{/admin/memactcpn/list}"
+         class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+        重置
+      </a>
+    </form>
+
+    <!-- 狀態篩選 -->
+    <form th:action="@{/admin/memactcpn/filterByStatus}" method="get"
+          class="flex justify-center gap-3 mb-6 flex-wrap">
+      <select name="status" class="form-select border rounded px-2 py-1" id="statusSelect">
+        <option value="">全部狀態</option>
+        <option value="UNUSED" th:selected="${selectedStatus == 'UNUSED'}">未使用</option>
+        <option value="USED" th:selected="${selectedStatus == 'USED'}">已使用</option>
+        <option value="EXPIRED" th:selected="${selectedStatus == 'EXPIRED'}">已過期</option>
+      </select>
     </form>
 
     <!-- 無資料提示 -->
-      <div th:if="${#lists.isEmpty(memCoupons)}"
-             class="text-center bg-yellow-100 text-yellow-800 py-3 rounded-lg font-medium">
-            目前無活動折價券資料。
-        </div>
-
-    <!--  清單表格 -->
-     <div th:if="${!#lists.isEmpty(memCoupons)}" class="overflow-x-auto">
-  <table id="memActCpnTable"
-         class="w-full text-sm text-center text-gray-200 border border-gray-700 rounded-lg border-collapse">
-    <thead class="bg-gray-800 text-gray-100 font-semibold">
-      <tr>
-        <th class="px-4 py-3 w-20 border-b border-gray-700">序號</th>
-        <th class="px-4 py-3 w-40 border-b border-gray-700">會員帳號</th>
-        <th class="px-4 py-3 w-56 border-b border-gray-700">折價券名稱</th>
-        <th class="px-4 py-3 w-28 border-b border-gray-700">使用狀態</th>
-        <th class="px-4 py-3 w-40 border-b border-gray-700">領取日期</th>
-        <th class="px-4 py-3 w-32 border-b border-gray-700">起始日</th>
-        <th class="px-4 py-3 w-32 border-b border-gray-700">到期日</th>
-        <th class="px-4 py-3 w-28 border-b border-gray-700">操作</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr th:each="mc, iterStat : ${memCoupons}" 
-          class="border-t border-gray-700 hover:bg-gray-700 transition">
-        <td th:text="${iterStat.index + 1}" class="py-3 px-2"></td>
-        <td th:text="${mc.memVO.memAcc}" class="py-3 px-2"></td>
-        <td th:text="${mc.actCpnVO.cpnName}" class="py-3 px-2"></td>
-
-        <td class="py-3 px-2">
-          <span th:switch="${mc.cpnUseStatus}">
-            <span th:case="0" class="text-green-400 font-semibold">未使用</span>
-            <span th:case="1" class="text-blue-400 font-semibold">已使用</span>
-            <span th:case="2" class="text-red-400 font-semibold">已過期</span>
-            <span th:case="*">未知</span>
-          </span>
-        </td>
-
-        <td th:text="${#temporals.format(mc.rcvAt, 'yyyy-MM-dd HH:mm')}" class="py-3 px-2"></td>
-        <td th:text="${mc.effStart}" class="py-3 px-2"></td>
-        <td th:text="${mc.effEnd}" class="py-3 px-2"></td>
-        <td class="py-3 px-2">
-          <a th:href="@{'/admin/memactcpn/view/' + ${mc.cpnHolderDetailId}}"
-             class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-xs">
-            查看
-          </a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-    <!--  總筆數 -->
-     <div class="text-right text-gray-500 text-sm mt-3"
-             th:text="'共 ' + ${#lists.size(memCoupons)} + ' 筆資料'"></div>
+    <div th:if="${#lists.isEmpty(memCoupons)}"
+         class="text-center bg-yellow-100 text-yellow-800 py-3 rounded-lg font-medium">
+      目前無活動折價券資料。
     </div>
+
+    <!-- 清單表格 -->
+    <div th:if="${!#lists.isEmpty(memCoupons)}" class="table-container">
+      <table id="memActCpnTable" class="mem-cpn-table">
+        <thead>
+          <tr>
+            <th>序號</th>
+            <th>會員帳號</th>
+            <th>折價券名稱</th>
+            <th>使用狀態</th>
+            <th>領取日期</th>
+            <th>起始日</th>
+            <th>到期日</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr th:each="mc, iterStat : ${memCoupons}">
+            <td th:text="${iterStat.index + 1}"></td>
+            <td th:text="${mc.memVO.memAcc}"></td>
+            <td th:text="${mc.actCpnVO.cpnName}"></td>
+
+            <td th:text="${mc.cpnUseStatus.text}"
+                class="font-semibold py-3 px-2"
+                th:classappend="${
+                  mc.cpnUseStatus == T(com.farmtastic.common.enums.CpnUseStatus).UNUSED ? ' text-green-400' :
+                  mc.cpnUseStatus == T(com.farmtastic.common.enums.CpnUseStatus).USED ? ' text-blue-400' :
+                  mc.cpnUseStatus == T(com.farmtastic.common.enums.CpnUseStatus).EXPIRED ? ' text-red-400' : ''
+                }">
+            </td>
+
+            <td th:text="${#temporals.format(mc.rcvAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${mc.effStart}"></td>
+            <td th:text="${mc.effEnd}"></td>
+            <td>
+              <a th:href="@{'/admin/memactcpn/view/' + ${mc.cpnHolderDetailId}}" class="btn-info">
+                查看
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 總筆數 -->
+      <div class="text-right text-gray-500 text-sm mt-3"
+           th:text="'共 ' + ${#lists.size(memCoupons)} + ' 筆資料'">
+      </div>
+    </div>
+  </div>
+
 	<script>
 		// ... DataTables 初始化腳本 ...
 		$(document).ready(function() {
