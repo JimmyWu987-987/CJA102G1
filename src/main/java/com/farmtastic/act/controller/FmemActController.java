@@ -559,7 +559,13 @@ public class FmemActController {
 
 //  =========== 新增活動 ============
 	@GetMapping("addAct")
-	public String showAddActForm(ModelMap model) {
+	public String showAddActForm(ModelMap model, HttpSession session) {
+		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
+
+		if (fmem == null) {
+			model.addAttribute("errorMsg", "請先登入小農帳號才能新增活動！");
+			return "front_end/farmer/logined/fmemAct/addAct";
+		}
 		model.addAttribute("act", new Act());
 		// 將分類丟給前端使用
 		List<ActCate> allCategories = actCateRepo.findAll();
