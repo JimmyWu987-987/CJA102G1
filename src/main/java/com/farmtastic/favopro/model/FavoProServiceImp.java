@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.farmtastic.member.model.MemRepository;
+import com.farmtastic.pro.model.Pro;
 import com.farmtastic.pro.model.ProRepository;
+import com.farmtastic.proimage.model.ProImage;
+import com.farmtastic.proimage.model.ProImageRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -19,15 +22,17 @@ public class FavoProServiceImp {
 	private final FavoProRepository favoRepo;
 	private final MemRepository memRepo;
 	private final ProRepository proRepo;
+	private final ProImageRepository proImageRepo;
 
 	// 建構子注入
 	@Autowired
 	public FavoProServiceImp(FavoCacheService cache, FavoProRepository favoRepo, MemRepository memRepo,
-			ProRepository proRepo) {
+			ProRepository proRepo, ProImageRepository proImageRepo) {
 		this.cache = cache;
 		this.favoRepo = favoRepo;
 		this.memRepo = memRepo;
 		this.proRepo = proRepo;
+		this.proImageRepo = proImageRepo;
 	}
 
 //Hibernate 用SessionFactory 管理連線與交易
@@ -97,5 +102,51 @@ public class FavoProServiceImp {
 	// 後台管理用：查詢所有收藏紀錄(目前沒用到)
 	public List<FavoProVO> getAll() {
 		return favoRepo.findAll();
+	}
+
+	public List<FavoProVO> getFavoList(Integer memId) {
+
+		System.out.println("[FavoService] 查詢會員收藏清單 memId=" + memId);
+
+		// 1️. 從快取取出所有收藏的 FavoProId
+		Set<FavoProId> allCache = cache.getAllFavorites();
+
+		// 2️. 篩出該會員的收藏商品 ID
+		Set<Integer> proIds = allCache.stream().filter(id -> id.getMemId().equals(memId)).map(FavoProId::getProId)
+				.collect(Collectors.toSet());
+
+		List<FavoProVO> favoList;
+
+		// 3️. 若快取空，改從資料庫查詢
+		if (proIds.isEmpty()) {
+			System.out.println("快取無資料 → 改查資料庫");
+			favoList = favoRepo.findByMemVO_MemId(memId);
+		} else {
+			// 4️. 從資料庫批量撈出收藏清單
+			favoList = favoRepo
+					.findAllById(proIds.stream().map(pid -> new FavoProId(memId, pid)).collect(Collectors.toSet()));
+		}
+
+		// 5️.手動載入商品資料 + 第一張圖片
+		for (FavoProVO favo : favoList) {
+			if (favo.getProductVO() != null) {
+				Integer proId = favo.getProductVO().getProId();
+
+				// 重新載入商品
+				Pro product = proRepo.findById(proId).orElse(null);
+
+				if (product != null) {
+					// 撈出第一張圖片
+					ProImage firstImage = proImageRepo.findFirstByProIdOrderByProImgIdAsc(Long.valueOf(proId));
+
+					// 設定圖片進商品 (使用 @Transient proImage)
+					product.setProImage(firstImage);
+
+					// 更新收藏商品
+					favo.setProductVO(product);
+				}
+			}
+		}
+		return favoList;
 	}
 }
