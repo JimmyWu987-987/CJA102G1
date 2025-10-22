@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>後台｜折價券操作日誌</title>
+
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -10,10 +11,18 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/memcpn/couponManage.css}">
 <style>
   body { background-color: #f8fafc; font-family: 'Noto Sans TC', sans-serif; }
-  h2 { text-align: center; color: #1e293b; font-weight: 700; margin: 2rem 0; font-size: 1.75rem; }
-  table.dataTable tbody tr:hover { background-color: #f1f5f9; }
+    h2 { text-align: center; color: #1e293b; font-weight: 700; margin: 2rem 0; font-size: 1.75rem; }
+    .status-unused { color: #16a34a; font-weight: 600; }
+    .status-used { color: #2563eb; font-weight: 600; }
+    .status-expired { color: #dc2626; font-weight: 600; }
+    table.dataTable tbody tr:hover { background-color: #f1f5f9; }
+    select {
+    background-color: #2d2d2d;
+    color: white;
+    }
 </style>
 
 </head>

@@ -11,7 +11,7 @@
   </style>
 </head>
 <body class="flex items-center justify-center justify-start min-h-screen p-4">
-   <div class="dashboard-card w-full max-w-5xl">
+   <div class="dashboard-card w-full max-w-65xl">
   <h1 class="section-title">折價券管理</h1>
 
   <div class="header-grid" th:fragment="header">
@@ -19,7 +19,7 @@
                 <a th:href="@{/admin/coupon/pro}" class="btn btn-enabled">商品折價券管理</a>
                 <a th:href="@{/admin/coupon/memact}" class="btn btn-enabled">活動折價券明細</a>
                 <a th:href="@{/admin/coupon/mempro}" class="btn btn-enabled">商品折價券明細</a>
-                <a th:href="@{{/admin/coupon/log}" class="btn btn-enabled">折價券操作日誌</a>
+                <a th:href="@{/admin/coupon/log}" class="btn btn-enabled">折價券操作日誌</a>
             </div>
             <div class="mt-12 text-center">
              <a th:href="@{/managepage}" class="w-full sm:w-auto px-10 py-3 bg-gray-600 text-white rounded-md font-semibold hover:bg-gray-700 transition">
