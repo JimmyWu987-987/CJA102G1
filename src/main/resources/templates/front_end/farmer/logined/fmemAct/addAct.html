@@ -218,7 +218,7 @@ input[type="file"] {
                 </div>
                 
 <div class="form-group">
-                    <label for="actFee">活動費用 <span style="color: red;">*</span></label>
+                    <label for="actFee">活動費用 <span style="color: red;">*</span><span style="color: grey;">為保護消費者權益, 後續各場次實際費用不得超過送審時填寫的活動基本費用的 20%。如有需求, 請另外提交審核。</span></label>
                     <input type="number" id="actFee" th:field="*{actFee}" placeholder="請輸入活動費用 (每人)" required>
                     <span class="error-message" th:if="${#fields.hasErrors('actFee')}" th:errors="*{actFee}"></span>
                 </div>
