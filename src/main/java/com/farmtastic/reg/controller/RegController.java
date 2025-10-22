@@ -445,11 +445,10 @@ public class RegController {
 	    memSvc.updateMem(mem);
 
 	    // 狀態改為待退款
-	    reg.setRegStat(regStat);
 	    reg.setRegPointDisc(0);
 	    reg.setRegPointGet(0);
 	    regService.updatePayReg(reg);
-
+	    regService.updateRegStat(regId, 1);
 	    ra.addFlashAttribute("success", "取消成功");
 	    return "redirect:/mem/reg/list";
 	}
