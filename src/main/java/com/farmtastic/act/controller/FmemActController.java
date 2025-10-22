@@ -218,28 +218,25 @@ public class FmemActController {
 				}
 			}
 
-			if (count > 5) {
-				result.rejectValue("actImgs", null, "最多只能上傳 5 張圖片");
-			} else {
-				int order = 1;
-				for (MultipartFile file : actImgs) {
-					if (!file.isEmpty()) {
-						if (!file.getContentType().startsWith("image/")) {
-							result.rejectValue("actImgs", null, "所有檔案都必須是圖片");
-							break;
-						} else if (file.getSize() > 4 * 1024 * 1024) {
-							result.rejectValue("actImgs", null, "每張圖片不得超過 4MB");
-							break;
-						} else {
-							ActImg actImg = new ActImg();
-							actImg.setActImg(file.getBytes());
-							actImg.setActimgOrder(order++); // 存順序用的
-							actImg.setAct(updatedAct);
-							updatedAct.getActImg().add(actImg);
-						}
+			int order = 1;
+			for (MultipartFile file : actImgs) {
+				if (!file.isEmpty()) {
+					if (!file.getContentType().startsWith("image/")) {
+						result.rejectValue("actImgs", null, "所有檔案都必須是圖片");
+						break;
+					} else if (file.getSize() > 4 * 1024 * 1024) {
+						result.rejectValue("actImgs", null, "每張圖片不得超過 4MB");
+						break;
+					} else {
+						ActImg actImg = new ActImg();
+						actImg.setActImg(file.getBytes());
+						actImg.setActimgOrder(order++); // 存順序用的
+						actImg.setAct(updatedAct);
+						updatedAct.getActImg().add(actImg);
 					}
 				}
 			}
+
 		} else {
 			updatedAct.setActImg(originAct.getActImg());
 			for (ActImg img : updatedAct.getActImg()) {
@@ -260,13 +257,13 @@ public class FmemActController {
 
 		// 若驗證又有錯誤就再傳回
 		if (result.hasErrors()) {
-			return "redirect:/fmem/act/listAllActForFmem";
+			return "front_end/farmer/logined/fmemAct/updateAct";
 		}
 
 		actSvc.updateAct(updatedAct, fmemId);
 
 		redirectAttributes.addFlashAttribute("successMessage", "活動資料已更新並重新送審！");
-		return "redirect:/fmem/act/listAllActForFmem";
+		return "front_end/farmer/logined/fmemAct/updateAct";
 	}
 
 	// =========== 小農查詢自己的活動 (ok) ============
@@ -670,26 +667,21 @@ public class FmemActController {
 					count++;
 				}
 			}
-
-			if (count > 5) {
-				result.rejectValue("actImgs", null, "最多只能上傳 5 張圖片");
-			} else {
-				int order = 1;
-				for (MultipartFile file : actImgs) {
-					if (!file.isEmpty()) {
-						if (!file.getContentType().startsWith("image/")) {
-							result.rejectValue("actImgs", null, "所有檔案都必須是圖片");
-							break;
-						} else if (file.getSize() > 4 * 1024 * 1024) {
-							result.rejectValue("actImgs", null, "每張圖片不得超過 4MB");
-							break;
-						} else {
-							ActImg actImg = new ActImg();
-							actImg.setActImg(file.getBytes());
-							actImg.setActimgOrder(order++); // 存順序用的
-							actImg.setAct(act);
-							act.getActImg().add(actImg);
-						}
+			int order = 1;
+			for (MultipartFile file : actImgs) {
+				if (!file.isEmpty()) {
+					if (!file.getContentType().startsWith("image/")) {
+						result.rejectValue("actImgs", null, "所有檔案都必須是圖片");
+						break;
+					} else if (file.getSize() > 4 * 1024 * 1024) {
+						result.rejectValue("actImgs", null, "每張圖片不得超過 4MB");
+						break;
+					} else {
+						ActImg actImg = new ActImg();
+						actImg.setActImg(file.getBytes());
+						actImg.setActimgOrder(order++); // 存順序用的
+						actImg.setAct(act);
+						act.getActImg().add(actImg);
 					}
 				}
 			}
@@ -717,6 +709,11 @@ public class FmemActController {
 		}
 		if (act.getActCnt() == null) {
 			act.setActCnt(0); // 預設活動次數/點擊數為 0
+		}
+
+		// 若驗證又有錯誤就再傳回
+		if (result.hasErrors()) {
+			return "front_end/farmer/logined/fmemAct/updateAct";
 		}
 
 		actSvc.addAct(act);
