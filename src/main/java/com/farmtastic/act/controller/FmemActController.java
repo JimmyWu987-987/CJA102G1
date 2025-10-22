@@ -71,10 +71,8 @@ public class FmemActController {
 
 	// =========== 編輯活動 ============
 	@GetMapping("updateAct/{actId}")
-	public String getUpdatePage(@PathVariable Integer actId,
-								ModelMap model,
-								RedirectAttributes redirectAttributes,
-								HttpSession session) {
+	public String getUpdatePage(@PathVariable Integer actId, ModelMap model, RedirectAttributes redirectAttributes,
+			HttpSession session) {
 
 		// 取得活動
 		Optional<Act> optAct = actSvc.getOneAct(actId);
@@ -114,14 +112,13 @@ public class FmemActController {
 	}
 
 	@PostMapping("/update")
-	public String updateAct(@RequestParam("actStart") String actStartStr,
-										  @RequestParam("actEnd") String actEndStr,
-										  @Valid @ModelAttribute("act") Act updatedAct, // 表單傳來的資訊
-										  BindingResult result,
-										  @RequestParam(value = "actMainImgFile", required = false) MultipartFile actMainImgFile,
-										  @RequestParam(value = "actImgs", required = false) MultipartFile[] actImgs,
-										  @RequestParam(value = "actCateId", required = false) List<Integer> actCateId, HttpSession session,
-										  Model model, RedirectAttributes redirectAttributes) throws IOException {
+	public String updateAct(@RequestParam("actStart") String actStartStr, @RequestParam("actEnd") String actEndStr,
+			@Valid @ModelAttribute("act") Act updatedAct, // 表單傳來的資訊
+			BindingResult result,
+			@RequestParam(value = "actMainImgFile", required = false) MultipartFile actMainImgFile,
+			@RequestParam(value = "actImgs", required = false) MultipartFile[] actImgs,
+			@RequestParam(value = "actCateId", required = false) List<Integer> actCateId, HttpSession session,
+			Model model, RedirectAttributes redirectAttributes) throws IOException {
 
 		// 初始化 model 資料
 		List<ActCate> allCategories = actCateRepo.findAll();
@@ -284,20 +281,20 @@ public class FmemActController {
 		// 塞自己的FmemId
 		List<Act> actList = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
 
-        for (Act act : actList) {
-            Integer actId = act.getActId();
+		for (Act act : actList) {
+			Integer actId = act.getActId();
 
-            actSvc.persistActScores(actId); 
+			actSvc.persistActScores(actId);
 
-            Integer totalScore = actSvc.getActScore(actId);
-            Integer reviewCount = actSvc.getActCnt(actId);
-            
-            act.setActScore(totalScore); 
-            act.setActCnt(reviewCount);
+			Integer totalScore = actSvc.getActScore(actId);
+			Integer reviewCount = actSvc.getActCnt(actId);
 
-            String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
-            act.setActAvgScore(avgScoreStr); 
-        }		
+			act.setActScore(totalScore);
+			act.setActCnt(reviewCount);
+
+			String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
+			act.setActAvgScore(avgScoreStr);
+		}
 
 		model.addAttribute("actList", actList);
 
@@ -318,21 +315,21 @@ public class FmemActController {
 		// 塞自己的FmemId
 		List<Act> actList = actSvc.findByFmemId(fmemId, Sort.by(Sort.Direction.ASC, "actId"));
 
-        for (Act act : actList) {
-            Integer actId = act.getActId();
+		for (Act act : actList) {
+			Integer actId = act.getActId();
 
-            actSvc.persistActScores(actId); 
+			actSvc.persistActScores(actId);
 
-            Integer totalScore = actSvc.getActScore(actId);
-            Integer reviewCount = actSvc.getActCnt(actId);
-            
-            act.setActScore(totalScore); 
-            act.setActCnt(reviewCount);
+			Integer totalScore = actSvc.getActScore(actId);
+			Integer reviewCount = actSvc.getActCnt(actId);
 
-            String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
-            act.setActAvgScore(avgScoreStr); 
-        }
-		
+			act.setActScore(totalScore);
+			act.setActCnt(reviewCount);
+
+			String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
+			act.setActAvgScore(avgScoreStr);
+		}
+
 		model.addAttribute("actList", actList);
 
 		if (actList.isEmpty()) {
@@ -367,19 +364,17 @@ public class FmemActController {
 
 		Act act = optAct.get();
 
-			actSvc.persistActScores(actId); 
+		actSvc.persistActScores(actId);
 
-			Integer totalScore = actSvc.getActScore(actId);
-			Integer reviewCount = actSvc.getActCnt(actId);
-            
-			act.setActScore(totalScore); 
-			act.setActCnt(reviewCount);
+		Integer totalScore = actSvc.getActScore(actId);
+		Integer reviewCount = actSvc.getActCnt(actId);
 
-			String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
-			act.setActAvgScore(avgScoreStr); 
+		act.setActScore(totalScore);
+		act.setActCnt(reviewCount);
 
-		
-		
+		String avgScoreStr = actSvc.calculateAverageActScore(totalScore, reviewCount);
+		act.setActAvgScore(avgScoreStr);
+
 		if (act.getActImg() != null) {
 			act.getActImg().size();
 		}

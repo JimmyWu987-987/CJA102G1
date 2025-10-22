@@ -24,7 +24,7 @@ public class ActCate implements java.io.Serializable {
 
 	@Column(name = "actcate_name")
 	private String actCateName;
-	
+
 //	對應多個活動
 	@ManyToMany(mappedBy = "actCate")
 	private Set<Act> act = new HashSet<>();
@@ -56,20 +56,21 @@ public class ActCate implements java.io.Serializable {
 	public void setAct(Set<Act> act) {
 		this.act = act;
 	}
-	
-	
+
 	// for 分類用 >> 確保勾選/取消勾選時有綁定
 	@Override
 	public boolean equals(Object o) {
-	    if (this == o) return true;
-	    if (!(o instanceof ActCate)) return false;
-	    ActCate that = (ActCate) o;
-	    return actCateId != null && actCateId.equals(that.actCateId);
+		if (this == o)
+			return true;
+		if (!(o instanceof ActCate))
+			return false;
+		ActCate that = (ActCate) o;
+		return actCateId != null && actCateId.equals(that.actCateId);
 	}
 
 	@Override
 	public int hashCode() {
-	    return 31;
+		return 31;
 	}
 
 }
