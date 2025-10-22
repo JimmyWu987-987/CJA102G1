@@ -102,7 +102,7 @@ public class Newscontroller {
 		
 		News news = new News();
 		model.addAttribute("news", news);
-		return "add_news";
+		return "back_end/logined/admin/news/add_news";
 	}
 
 	/**
