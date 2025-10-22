@@ -14,6 +14,7 @@ body {
 	display: flex;
 	align-items: flex-start;
 	gap: 24px;
+	flex-grow: 1;
 }
 
 .main-area {

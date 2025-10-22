@@ -28,6 +28,7 @@ body {
 	display: flex;
 	align-items: flex-start;
 	gap: 24px;
+	flex-grow: 1;
 }
 
 .main-area {
@@ -89,8 +90,8 @@ body {
 		<div class="left-area">
 			<div class="left-title">廣告功能</div>
 			<ul class="left-list">
-				<li><a th:href="@{/fmem/proAd/list}">查看廣告列表</a></li>
 				<li><a th:href="@{/fmem/proAd/applyAdView}">申請廣告</a></li>
+				<li><a th:href="@{/fmem/proAd/list}">查看廣告</a></li>
 			</ul>
 		</div>
 
