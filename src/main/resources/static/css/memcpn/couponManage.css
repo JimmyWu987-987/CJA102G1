@@ -24,12 +24,50 @@
             font-weight: 700;
             color: #374151;
         }
-        .header-grid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.25rem; /* gap-5 = 20px */
+ .header-grid {
+    display: flex;
+  justify-content: center;   /* 水平置中 */
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: nowrap;         /* ✅ 禁止換行 */
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+ .header-grid a {
+  flex: 1 1 0;               /* 平均分配寬度 */
+  max-width: 220px;
+}
+/* === 按鈕外層容器 === */
+.footer-btns {
+    margin-top: 3rem;          /* mt-12 */
+    text-align: center;
 }
 
+/* === 通用按鈕樣式 === */
+.footer-btn {
+    display: inline-block;
+    background-color: #4b5563; /* gray-600 */
+    color: #fff;
+    padding: 0.75rem 2.5rem;   /* py-3 px-10 */
+    border-radius: 0.375rem;   /* rounded-md */
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.25s ease, transform 0.15s ease;
+    margin: 0 0.5rem;
+}
+
+/* === 滑過特效 === */
+.footer-btn:hover {
+    background-color: #374151; /* gray-700 */
+    transform: translateY(-2px);
+}
+
+/* === 登出表單 === */
+.inline-form {
+    display: inline-block;
+    margin: 0;
+}
 /* sm:grid-cols-2 */
 @media (min-width: 640px) {
   .header-grid {

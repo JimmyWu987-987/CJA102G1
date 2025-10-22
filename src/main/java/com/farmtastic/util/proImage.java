@@ -21,7 +21,7 @@ public class proImage {
 
 		// 上傳活動廣告圖片
 //		uploadImages("act", "UPDATE act_ad SET act_ad_img = ? WHERE act_ad_id = ?");
-		
+
 		uploadImages("pro", "UPDATE product_image SET pro_img = ? WHERE pro_img_id = ?");
 
 		System.out.println("\n上傳完成！");
