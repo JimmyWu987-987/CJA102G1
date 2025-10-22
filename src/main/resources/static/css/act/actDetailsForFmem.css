@@ -116,8 +116,8 @@ table.ses-table tbody tr:nth-child(even) {
     position: relative;
     width: 90%;
     /* 保持您喜歡的 max 限制 */
-    max-width: 35vw; 
-    max-height: 45vh;
+/*     max-width: 35vw;  */
+/*     max-height: 45vh; */
     margin: 10px auto;
     overflow: hidden;
     border-radius: 8px;
@@ -126,8 +126,8 @@ table.ses-table tbody tr:nth-child(even) {
     
     /* 關鍵：給予固定高度 (例如 45vh) 讓圖片有參考空間 */
     /* 由於您前面使用了 max-height，我們強制將高度設為最大高度，讓圖片有空間縮放 */
-    height: 45vh; /* 確保容器高度被固定，以便圖片縮放 */
-    width: 35vw; /* 讓寬度也是固定的，確保圖片不會溢出 */
+/*     height: 45vh; 確保容器高度被固定，以便圖片縮放 */
+/*     width: 35vw; 讓寬度也是固定的，確保圖片不會溢出 */
 }
 
 .carousel-track {
