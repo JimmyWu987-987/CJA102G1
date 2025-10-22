@@ -150,6 +150,12 @@ public class FmemSesController {
 								 ModelMap model,
 								 HttpSession session) {
 		
+		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農        
+        if (fmem == null) {
+            model.addAttribute("message", "請先登入小農頁面, 謝謝");
+            return "redirect:/showFmemRegLoginForm"; // 導回小農登入頁
+        }
+		
 		Act act = actSvc.getOneAct(actId).orElseThrow(() -> new RuntimeException("活動不存在"));
 		session.setAttribute("sessionAct", act);
 		

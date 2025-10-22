@@ -26,7 +26,7 @@
 
 /* 獨特 Wrapper Class：隔離 Header/Footer，提供背景和頁面間距 */
 .act-list-wrapper {
-    background-color: var(--color-beige); 
+/*     background-color: var(--color-beige);  */
     padding-top: 30px; 
     padding-bottom: 30px; 
     width: 100%;
@@ -253,7 +253,7 @@
 <div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 <div class="act-list-wrapper"> <div class="container">
         
-        <h1>活動列表</h1> <div th:if="${#lists.isEmpty(actList)}" class="no-data-message">
+        <h1>活動管理</h1> <div th:if="${#lists.isEmpty(actList)}" class="no-data-message">
             <p>目前尚無活動可供查閱</p>
         </div>
         

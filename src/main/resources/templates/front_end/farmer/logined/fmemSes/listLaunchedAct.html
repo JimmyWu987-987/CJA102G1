@@ -26,7 +26,7 @@
 
 /* 獨特 Wrapper Class：提供背景和頁面間距 */
 .act-list-wrapper {
-    background-color: var(--color-beige); 
+/*     background-color: var(--color-beige);  */
     padding-top: 30px; 
     padding-bottom: 30px; 
     width: 100%;
@@ -216,7 +216,7 @@
 <div class="act-list-wrapper">
 <div class="container">
     
-	<h1>已上架活動列表 (新增場次)</h1> 
+	<h1>場次管理</h1> 
 	
 	<div th:if="${#lists.isEmpty(actList)}" class="no-data-message">
 		<p th:if="${message}" class="error-message" th:text="${message}">目前尚無已上架活動可新增場次</p> 
