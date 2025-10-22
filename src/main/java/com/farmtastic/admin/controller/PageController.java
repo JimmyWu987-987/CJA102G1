@@ -69,14 +69,14 @@ public class PageController {
         // 建立一個按鈕與所需權限的對應 Map
         Map<String, String[]> managementButtons = new LinkedHashMap<>();
         // 按鈕顯示文字, [連結路徑, 所需權限名稱]
-        managementButtons.put("商城管理",   new String[]{"/admin/pro-management",    "商城管理"});
-        managementButtons.put("活動管理",   new String[]{"#",                 "活動管理"}); 
-        managementButtons.put("廣告管理",    new String[]{"/admin/proAd/list","廣告管理"}); 
-        managementButtons.put("金流管理",   new String[]{"/admin/cashflow/",     "金流管理"}); 
-        managementButtons.put("會員管理",   new String[]{"/admin/mem-management","會員管理"}); 
-        managementButtons.put("折價券管理", new String[]{"/admin/coupon/manage","折價券管理"});
-        managementButtons.put("最新消息管理",    new String[]{"/news",          "最新消息管理"});
-        managementButtons.put("QA 管理",    new String[]{"/qa/list",          "QA管理"});
+        managementButtons.put("商城管理",   	new String[]{"/admin/pro-management",   "商城管理"});
+        managementButtons.put("活動管理",    	new String[]{"/admin/act/listAllAct",   "活動管理"}); 
+        managementButtons.put("廣告管理",    	new String[]{"/admin/proAd/list",		"廣告管理"}); 
+        managementButtons.put("金流管理",  	new String[]{"/admin/cashflow/",     	"金流管理"}); 
+        managementButtons.put("會員管理",  	new String[]{"/admin/mem-management",	"會員管理"}); 
+        managementButtons.put("折價券管理", 	new String[]{"/admin/coupon/manage",	"折價券管理"});
+        managementButtons.put("最新消息管理", new String[]{"/news",          			"最新消息管理"});
+        managementButtons.put("QA 管理",    	new String[]{"/qa/list",          		"QA管理"});
 
 
         model.addAttribute("adminName", loggedInAdmin.getAdminName());
