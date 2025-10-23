@@ -387,7 +387,7 @@ public class ProOrderMemController {
 		switch (proOrderVO.getProOrdPayment()) {
 		case 0: // 信用卡
 			// 先暫時導向首頁
-			redirectAttributes.addFlashAttribute("errorMessage", "第三方支付忙線中！請重新選擇付款方式。(其實根本沒有功能哭哭喔)");
+			redirectAttributes.addFlashAttribute("errorMessage", "第三方支付忙線中！請重新選擇付款方式。");
 			return "redirect:/mem/proorders/listAllProOrder";
 
 		// 成功實現信用卡API，導向該API
