@@ -67,25 +67,25 @@ public class AdminActController {
 
 //		// 預設依狀態更新時間排
 //		List<Act> actList = actSvc.findByActStat(1, Sort.by(Sort.Direction.DESC, "actUpd"));
-		
+
 		Sort sort = Sort.by(Sort.Direction.DESC, "actUpd");
-		
+
 		List<Act> actList1 = actSvc.findByActStat(1, sort);
 
-//	    // 抓取狀態為 1 or 4 的活動
-//	    List<Act> actList4 = actSvc.findByActStat(4, sort);
+	    // 抓取狀態為 1 or 4 的活動
+	    List<Act> actList4 = actSvc.findByActStat(4, sort);
 
-	    List<Act> actList = new ArrayList<>(actList1);
-//	    actList.addAll(actList4);
+		List<Act> actList = new ArrayList<>(actList1);
+	    actList.addAll(actList4);
 
-	    actList.sort(Comparator.comparing(Act::getActUpd).reversed());
+		actList.sort(Comparator.comparing(Act::getActUpd).reversed());
 
-	    model.addAttribute("actList", actList);
+		model.addAttribute("actList", actList);
 
-	    if (actList.isEmpty()) {
-	        model.addAttribute("message", "目前尚無待審核活動");
-	    }
-	    return "back_end/logined/backAct/reviewPage"; // 回審核首頁
+		if (actList.isEmpty()) {
+			model.addAttribute("message", "目前尚無待審核活動");
+		}
+		return "back_end/logined/backAct/reviewPage"; // 回審核首頁
 	}
 
 //    =============== 抓單一活動 ============
