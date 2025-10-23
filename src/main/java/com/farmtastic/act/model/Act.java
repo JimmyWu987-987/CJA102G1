@@ -305,7 +305,7 @@ public class Act implements java.io.Serializable {
 	}
 
 	public void setActMainImgBase64(String actMainImgBase64) {
-		this.actMainImgBase64 = actMainImgBase64;
+		this.actMainImgBase64 = actMainImgBase64; 
 	}
 
 	// 動態算評分相關資料
