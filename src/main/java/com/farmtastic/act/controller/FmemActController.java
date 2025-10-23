@@ -202,7 +202,7 @@ public class FmemActController {
 			}
 		} else {
 			byte[] originalMainImg = originAct.getActMainImg();
-		if (originalMainImg == null || originalMainImg.length == 0) {
+			if (originalMainImg == null || originalMainImg.length == 0) {
 				result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
 			}
 			updatedAct.setActMainImg(originalMainImg);
@@ -268,7 +268,7 @@ public class FmemActController {
 				model.addAttribute("actCateId", selectedCateIds);
 			}
 
-			return "front_end/farmer/logined/fmemAct/updateAct";
+			return "redirect:/fmem/act/updateAct";
 		}
 
 		// 執行更新
@@ -569,7 +569,7 @@ public class FmemActController {
 
 		if (fmem == null) {
 			model.addAttribute("errorMsg", "請先登入小農帳號才能新增活動！");
-			return "front_end/farmer/logined/fmemAct/addAct";
+			return "redirect:/showFmemRegLoginForm";
 		}
 		model.addAttribute("act", new Act());
 		// 將分類丟給前端使用
@@ -597,14 +597,14 @@ public class FmemActController {
 
 		// 處理空表單用
 		if (result.hasErrors()) {
-			return "front_end/farmer/logined/fmemAct/addAct";
+			return "redirect:/fmem/act/addAct";
 		}
 
 		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
 
 		if (fmem == null) {
 			model.addAttribute("errorMsg", "請先登入小農帳號才能新增活動！");
-			return "front_end/farmer/logined/fmemAct/addAct";
+			return "redirect:/showFmemRegLoginForm";
 		}
 
 		// 不是空的再進行以下手動驗證
@@ -617,9 +617,19 @@ public class FmemActController {
 		act.setActStart(actStart);
 		act.setActEnd(actEnd);
 
+//		// 字數驗證
+//		if (act.getActName() == null || act.getActName().trim().isEmpty()) {
+//			result.rejectValue("actName", null, "活動名稱必需在{min}到{max}字之間");
+//			return "redirect:/fmem/act/addAct";
+//		} else if (act.getActName()) {
+//		}
+		
+		
+		
 		// 不選分類的驗證
 		if (actCateId == null || actCateId.isEmpty()) {
 			result.rejectValue("actCate", null, "請至少選擇一項分類");
+			return "redirect:/fmem/act/addAct";
 		} else {
 			model.addAttribute("actCateId", actCateId);
 			Set<ActCate> cates = new HashSet<>();
@@ -636,10 +646,12 @@ public class FmemActController {
 
 		if (act.getActStart() == null) {
 			result.rejectValue("actStart", null, "請填入活動開始日期");
+			return "redirect:/fmem/act/addAct";
 		} else {
 			java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
 			if (actStart != null && actStart.before(after45)) {
 				result.rejectValue("actStart", null, "考慮到審核作業時間及消費者報名時間, 僅能選擇 45 天之後的日期。");
+				return "redirect:/fmem/act/addAct";
 			}
 		}
 
@@ -647,22 +659,28 @@ public class FmemActController {
 //		java.sql.Date actEnd = act.getActEnd();
 		if (act.getActEnd() == null) {
 			result.rejectValue("actEnd", null, "請填入活動結束日期");
+			return "redirect:/fmem/act/addAct";
 		} else if (actStart != null && actEnd != null && actEnd.before(actStart)) {
 			result.rejectValue("actEnd", null, "結束日期不得早於開始日期。");
+			return "redirect:/fmem/act/addAct";
 		}
 
 		// 1019 主圖修改
 		if (actMainImgFile == null || actMainImgFile.isEmpty()) {
 			result.rejectValue("actMainImg", null, "請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中)");
+			return "redirect:/fmem/act/addAct";
 		} else if (!actMainImgFile.getContentType().startsWith("image/")) {
 			result.rejectValue("actMainImg", null, "只能上傳圖檔");
+			return "redirect:/fmem/act/addAct";
 		} else if (actMainImgFile.getSize() > 4 * 1024 * 1024) {
 			result.rejectValue("actMainImg", null, "圖片不得超過 4MB");
+			return "redirect:/fmem/act/addAct";
 		} else {
 			try {
 				act.setActMainImg(actMainImgFile.getBytes());
 			} catch (IOException e) {
 				result.rejectValue("actMainImg", null, "讀取主要圖片發生 IO 錯誤，請重試。");
+				return "redirect:/fmem/act/addAct";
 			}
 		}
 
@@ -703,9 +721,9 @@ public class FmemActController {
 
 		// 若驗證又有錯誤就再傳回
 		if (result.hasErrors()) {
-			return "front_end/farmer/logined/fmemAct/addAct";
-		}
-
+            return "fmem/act/addAct"; 
+        }
+		
 		// 設定狀態&更新時間
 		// (抓登入中的小農)
 //		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
