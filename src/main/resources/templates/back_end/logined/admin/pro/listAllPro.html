@@ -114,10 +114,10 @@ a:hover {
 
 	<div class="container">
 		<h2>所有商品資料</h2>
-		<th:block
-			th:if="${currentUri != null and currentUri == '/pro/listAllPro'}">
-			<a href="/pro/addPro" class="add-btn">新增產品</a>
-		</th:block>
+<!-- 		<th:block -->
+<!-- 			th:if="${currentUri != null and currentUri == '/pro/listAllPro'}"> -->
+<!-- 			<a href="/pro/addPro" class="add-btn">新增產品</a> -->
+<!-- 		</th:block> -->
 
 		<a th:if="${param.size() > 1}" th:href="@{/pro/listAllPro}"
 			class="back-button">返回商品清單</a>
