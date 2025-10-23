@@ -303,10 +303,10 @@ public class AdminManagementController {
         return "back_end/logined/admin/mem/mem_management";
     }
     
-    //後台低分商品管理
-    @GetMapping("/pro-management")
-    public String showProManagementPage(HttpSession session, RedirectAttributes redirectAttributes) {
-		if (permissionDenied(session, REQUIRED_PERMISSION)) return handleNoPermission(redirectAttributes);
-        return "back_end/logined/admin/pro/pro_management";
-    }
+//    //後台低分商品管理
+//    @GetMapping("/pro-management")
+//    public String showProManagementPage(HttpSession session, RedirectAttributes redirectAttributes) {
+//		if (permissionDenied(session, REQUIRED_PERMISSION)) return handleNoPermission(redirectAttributes);
+//        return "back_end/logined/admin/pro/pro_management";
+//    }
 }
