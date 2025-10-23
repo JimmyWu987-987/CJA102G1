@@ -307,7 +307,7 @@ public class FmemSesController {
 
 			String message;
 			if (targetStat.equals(0)) {
-				if (!currentHeadCount.equals(0)) {
+				if (currentHeadCount != null || !currentHeadCount.equals(0)) {
 					redirectAttributes.addFlashAttribute("errorMessage", "場次 ID " + sesId + " 已有 " + currentHeadCount + // 顯示正確人數
 							" 人報名，無法執行「下架」操作。若需中止場次，請點擊「取消場次」。");
 					return "redirect:/fmem/ses/listAllSesForFmem";
