@@ -1469,7 +1469,7 @@ VALUES
 -- 生日 折 200
 (4, 21, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY),NULL);
 
-
+ 
 
 INSERT INTO mem_act_cpn (act_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end)
 VALUES
