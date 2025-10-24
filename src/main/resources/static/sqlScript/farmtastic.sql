@@ -1451,3 +1451,35 @@ SET a.act_cnt = (
 
 SET SQL_SAFE_UPDATES = 1;
 
+
+-- 派片用一般會員customer21
+INSERT INTO mem (mem_acc, mem_pwd, acc_status, mem_name, mem_birthday, mem_mobile, mem_email, mem_zipcode, mem_city, mem_dist, mem_addr, reg_date, mem_point) VALUES
+('customer21','$2a$10$ZVJIione6YkNYgjw0sPnM.bOqu2LIopwPIMRbNwYhKRYmbt71iDEO',1,'陳志明','1990-10-20','0988-666000','member21@example.com','806','高雄市','前鎮區','中華5路888號',current_timestamp(),150);
+
+-- 派片用商品折價卷customer21
+INSERT INTO mem_pro_cpn
+(pro_cpn_id, mem_id, pro_ord_id, cpn_use_status, rcv_at, eff_start, eff_end, used_at)
+VALUES
+-- 註冊 9 折券
+(1, 21, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY),NULL),
+-- 註冊 抵 100
+(2, 21, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY),NULL),
+-- 生日 85 折券
+(3, 21, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY),NULL),
+-- 生日 折 200
+(4, 21, NULL, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY),NULL);
+
+
+
+INSERT INTO mem_act_cpn (act_cpn_id, mem_id, cpn_use_status, rcv_at, eff_start, eff_end)
+VALUES
+-- 派片用活動折價卷customer21
+-- 新客專屬9折券（無期限）
+(1, 21, 0, NOW(), CURDATE(), NULL),
+-- 新客專屬折1000（無期限）
+(2, 21, 0, NOW(), CURDATE(), NULL),
+-- 生日85折券（30天內有效）
+(3, 21, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY)),
+-- 生日折500（30天內有效）
+(4, 21, 0, NOW(), CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY));
+
