@@ -339,7 +339,7 @@ input:focus {
 
         if (sesFee > maxFee) {
             warningDiv.style.display = 'block';
-            warningDiv.innerHTML = `<strong>警告:</strong> 場次實際費用 (${sesFee}) 已超過活動基本費用 (${actFee}) 的 20% (最高容許費用: ${maxFee.toFixed(0)})。如果提交，將要求小農另外提交活動審核。`;
+            warningDiv.innerHTML = `<strong>警告:</strong> 場次實際費用 (${sesFee}) 已超過活動基本費用 (${actFee}) 的 20% (最高金額可為: ${maxFee.toFixed(0)})。如此費用為必要，請另外提交活動審核。`;
         } else {
             warningDiv.style.display = 'none';
         }
