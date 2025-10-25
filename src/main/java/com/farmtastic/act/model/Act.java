@@ -48,7 +48,6 @@ public class Act implements java.io.Serializable {
 
 	@Column(name = "act_name", nullable = false)
 	@NotBlank(message = "活動名稱請勿空白")
-	@Size(min = 2, max = 30, message = "活動名稱必需在{min}到{max}字之間")
 	private String actName;
 
 	@Column(name = "act_start", nullable = false)
