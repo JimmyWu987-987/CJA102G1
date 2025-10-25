@@ -48,6 +48,7 @@ public class Act implements java.io.Serializable {
 
 	@Column(name = "act_name", nullable = false)
 	@NotBlank(message = "活動名稱請勿空白")
+	@Size(min = 2, max = 30, message = "活動名稱必需在{min}到{max}字之間")
 	private String actName;
 
 	@Column(name = "act_start", nullable = false)
@@ -68,7 +69,7 @@ public class Act implements java.io.Serializable {
 	@Column(name = "act_fee", nullable = false)
 	@NotNull(message = "請填入活動費用")
 	@Min(value = 0, message = "活動費用不得為負數")
-	@Digits(integer = 6, fraction = 0, message = "費用不得超過6位整數(如有需求請向平台詢問), 且需為整數數字")
+	@Digits(integer = 5, fraction = 0, message = "費用不得超過5位整數(如有需求請向平台詢問), 且需為整數數字")
 	private Integer actFee;
 
 //	活動編輯. 審核相關
