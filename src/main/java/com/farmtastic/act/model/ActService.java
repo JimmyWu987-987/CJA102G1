@@ -35,7 +35,7 @@ public class ActService {
 
 	// ========== 小農依審核狀態查詢 >> 審核過了才能新增場次 ==========
 	public List<Act> findByFmemIdAndActStat(Integer fmem, Integer actStat, Sort sort) {
-		return actRepository.findByActStat(actStat, sort);
+		return actRepository.findByFmemIdAndActStat(fmem, actStat, sort);
 	}
 
 	// ========== 小農依活動上下架狀態查詢 >> 上下架活動用 ==========
