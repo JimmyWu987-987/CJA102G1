@@ -224,7 +224,7 @@ input[type="file"] {
                 </div>
                 
                 <div class="form-group">
-                    <label for="actDes">活動描述</label><span style="color: red;">*</span>
+                    <label for="actDes">活動描述 <span style="color: red;">*</span></label>
                     <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述, 請務必要填入聯絡資訊及舉辦地點等資訊" required></textarea>
                     <span class="error-message" th:if="${#fields.hasErrors('actDes')}" th:errors="*{actDes}"></span>
                 </div>

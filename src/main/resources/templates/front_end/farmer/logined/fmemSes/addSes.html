@@ -179,7 +179,7 @@ input:focus {
         <input type="hidden" id="minRegEndHidden" th:value="${#dates.format(minRegEnd, 'yyyy-MM-dd')}" /> 
 
         <div class="form-group">
-            <label for="sesDate">場次日期:</label>
+            <label for="sesDate">場次日期: <span style="color: red;">*</span></label>
             <input type="date" id="sesDate" th:field="*{sesDate}" 
                    th:min="${#dates.format(minDate, 'yyyy-MM-dd')}"  
                    th:max="${#dates.format(maxDate, 'yyyy-MM-dd')}"
@@ -196,20 +196,20 @@ input:focus {
         </div>
 
         <div class="form-group">
-            <label for="sesStart">場次開始時間:</label>
+            <label for="sesStart">場次開始時間: <span style="color: red;">*</span></label>
             <input type="time" id="sesStart" th:field="*{sesStart}" onchange="updateSesEndTimeLimit()" required />
             <span th:if="${#fields.hasErrors('sesStart')}" th:errors="*{sesStart}" class="error"></span>
         </div>
 
         <div class="form-group">
-            <label for="sesEnd">場次結束時間:</label>
+            <label for="sesEnd">場次結束時間: <span style="color: red;">*</span></label>
             <input type="time" id="sesEnd" th:field="*{sesEnd}" onchange="validateSesEndTime()" required />
             <small id="sesEndLimit" class="date-limit" style="color: #2f4f4f; margin-top: 0;"></small>
             <span th:if="${#fields.hasErrors('sesEnd')}" th:errors="*{sesEnd}" class="error"></span>
         </div>
 
         <div class="form-group">
-            <label for="regEnd">報名截止日期:</label>
+            <label for="regEnd">報名截止日期: <span style="color: red;">*</span></label>
             <input type="date" id="regEnd" th:field="*{regEnd}" 
                    th:min="${#dates.format(minRegEnd, 'yyyy-MM-dd')}" 
                    onchange="validateRegEndDateLimit()"
@@ -223,19 +223,19 @@ input:focus {
         </div>
 
         <div class="form-group">
-            <label for="minPpl">人數下限:</label>
+            <label for="minPpl">人數下限: <span style="color: red;">*</span></label>
             <input type="number" id="minPpl" th:field="*{minPpl}" min="1" required />
             <span th:if="${#fields.hasErrors('minPpl')}" th:errors="*{minPpl}" class="error"></span>
         </div>
 
         <div class="form-group">
-            <label for="maxPpl">人數上限:</label>
+            <label for="maxPpl">人數上限: <span style="color: red;">*</span></label>
             <input type="number" id="maxPpl" th:field="*{maxPpl}" min="1" required />
             <span th:if="${#fields.hasErrors('maxPpl')}" th:errors="*{maxPpl}" class="error"></span>
         </div>
 
         <div class="form-group">
-            <label for="sesFee">場次實際費用 (sesFee):</label>
+            <label for="sesFee">場次實際費用: <span style="color: red;">*</span></label>
             <input type="number" id="sesFee" th:field="*{sesFee}" min="0" oninput="validateSesFee()" required />
             <div id="feeWarning" class="alert-warning">
                 <strong>警告:</strong> 費用已超過活動基本費用的 20%。若有需要請另外提交活動審核並調整基本價格。
