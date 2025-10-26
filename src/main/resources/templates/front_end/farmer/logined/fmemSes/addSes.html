@@ -371,7 +371,7 @@ input:focus {
         const maxDateString = maxDate.toISOString().split('T')[0];
 
         regEndInput.setAttribute('max', maxDateString);
-        regEndMaxLimit.innerHTML = `<strong>最晚截止日:</strong> ${maxDateString} (場次日期前兩天)`;
+        regEndMaxLimit.innerHTML = `<strong>最晚截止日:</strong> ${maxDateString} (場次日期前3天)`;
 
         validateRegEndDateLimit();
     }
