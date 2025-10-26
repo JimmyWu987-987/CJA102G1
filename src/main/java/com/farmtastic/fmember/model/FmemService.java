@@ -1,50 +1,15 @@
 package com.farmtastic.fmember.model;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.farmtastic.member.model.Mem;
 
 @Service("fmemService")
 public class FmemService {
 
 	@Autowired
 	FmemRepository repository;
-	
-//	@Autowired
-//	private SessionFactory sessionFactory;
-	
-//	public Fmem login(String fmemAccLogin, String fmemPwdLogin) {
-//		
-//		Fmem fmem = repository.findByFmemAcc(fmemAccLogin);
-//		
-//		if(fmem == null) {
-//			return null;
-//		}
-//		
-//		if(!fmem.getFmemPwd().equals(fmemPwdLogin)) {
-//			int newAttempts = fmem.getFailAttempts() + 1;
-//			fmem.setFailAttempts(newAttempts);
-//			
-//			if(newAttempts >= 5) {
-//				fmem.setLockTime(new Date());
-//			}
-//			repository.save(fmem);
-//			
-//			return null;
-//		}
-//		
-//		if((fmem.getAccStatus() != 2) && (fmem.getAccStatus() != 1)) {
-//			throw new IllegalStateException("帳號尚未通過審核或已被停權");
-//		}
-//		
-//		return fmem;
-//	}
-	
 	
 	public boolean existsByFmemAcc(String fmemAcc) {
 		return repository.findByFmemAcc(fmemAcc) != null;
@@ -57,7 +22,6 @@ public class FmemService {
 	public boolean existsByFId(String fId) {
 		return repository.findByFid(fId) != null;
 	}
-	
 
 	public Fmem forgetPassword(String fmemMobile, String fmemEmail) {
 		Fmem fmem = repository.findByFmemMobile(fmemMobile);

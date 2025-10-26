@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>home-fmem</title>
+	<title>小農預覽個人首頁-活動頁</title>
 	<link rel="icon" th:href="@{/images/logo.png}">
 	
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
@@ -24,19 +24,14 @@
 
 </head>
 <body>
-
 	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
 <!-- --------------------------------------------------------------------- -->
     
-   <div th:replace="~{/front_end/farmer/logined/home :: fbanner}"></div>
+   	<div th:replace="~{/front_end/farmer/logined/home :: fbanner}"></div>
 
     <div class="container container-main">
-    
-    
         <div th:replace="~{/front_end/farmer/logined/home :: sidebar}"></div>
-            
-
         <div class="store-content">
             <ul class="activities">
             	<p th:if="${actList == null or #lists.isEmpty(actList)}" th:text="目前尚無上架活動" class="no-item-msg"></p>
@@ -52,15 +47,12 @@
                     	<a href="#">
 <!--                     		<div class="mask"></div> -->
 	                        <div th:text="${act.actName}" class="name"></div>
-<!-- 	                        <div th:text="${act.actDes}" class="intro"></div> -->
 	                        <div class="price">
 	                            <span class="prefix">$</span>
 	                            <span th:text="${act.actFee}" class="number"></span>
 	                        </div>
-
 	                	</a>
                         <div class="date">
-<!--                         	<span>活動期間：</span> -->
                         	<span th:text="${act.actStart}"></span>
                         	<span>~</span>
                         	<span th:text="${act.actEnd}"></span>
@@ -68,18 +60,12 @@
 						<button class="addToCart">立馬報名去</button>	                    
 	                </div>
                 </li>
-                 
             </ul>
         </div>
-        
     </div>
-   
-
     
 <!-- --------------------------------------------------------------------- -->
 	
-	
 	<div th:replace="~{/front_end/index :: footer}"></div>
-
 </body>
 </html>

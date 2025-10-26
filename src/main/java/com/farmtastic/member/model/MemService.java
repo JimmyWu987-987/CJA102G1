@@ -21,9 +21,7 @@ public class MemService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-
 	public Mem login(String memAccLogin, String memPwdLogin) {
-		
 		// 1.先檢查帳號是否存在
 		Mem localMem = repository.findByMemAccAndAuthProvider(memAccLogin, AuthProvider.LOCAL);
 		Mem googleMem = repository.findByMemAccAndAuthProvider(memAccLogin, AuthProvider.GOOGLE);
@@ -56,7 +54,6 @@ public class MemService {
 			}
 	        throw new IllegalStateException("此帳號使用 Google 登入，請點擊 Google 登入按鈕");
 	    }
-
 		return localMem; //LOCAL登入成功
 	}
 	
@@ -78,18 +75,14 @@ public class MemService {
 		if (mem == null) {
 			return null;
 		}
-		
 		if (!mem.getMemEmail().equals(memEmail)) {
 			return null;
 		}
-		
 		if (mem.getAccStatus() != 1) {
 			throw new IllegalStateException("帳號尚未開通或已被停權");
 		}
-		
 		return mem;
 	}
-	
 	
 	
 	public void addMem(Mem mem) {

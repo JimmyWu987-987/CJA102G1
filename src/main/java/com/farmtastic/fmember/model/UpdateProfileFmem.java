@@ -3,9 +3,7 @@ package com.farmtastic.fmember.model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.farmtastic.validator.FileSize;
-import com.farmtastic.validator.RegistrationValidation;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 
@@ -155,35 +153,28 @@ public class UpdateProfileFmem {
 		this.fmemPic = fmemPic;
 	}
 
-
 	public MultipartFile getOrganicPic() {
 		return organicPic;
 	}
-
 
 	public void setOrganicPic(MultipartFile organicPic) {
 		this.organicPic = organicPic;
 	}
 
-
 	public MultipartFile getLandPic() {
 		return landPic;
 	}
-
 
 	public void setLandPic(MultipartFile landPic) {
 		this.landPic = landPic;
 	}
 
-
 	public MultipartFile getInsurPic() {
 		return insurPic;
 	}
 
-
 	public void setInsurPic(MultipartFile insurPic) {
 		this.insurPic = insurPic;
 	}
-	
 	
 }

@@ -12,29 +12,24 @@
     
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
 
-
 </head>
 <body>
-
-<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-
-<div class="container container-member">
-    <div class="member-sidebar">
-        <h3>會員專區</h3>
-<!--         = home.html的會員中心架構 -->
-        <ul th:replace="~{/front_end/farmer/logined/home :: fmemAreaLink}"></ul>
-    </div>
-
-    <div class="member-content">
-        <h2>小農會員中心</h2>
-<!--         <input type="text" th:value="${session.fmemTest.fmemName}" class="acc" disabled>  -->
-        <p>小農會員中心</p>
-        <p>小農會員中心</p>
-       
-    </div>
-</div>
-
-<div th:replace="~{/front_end/index :: footer}"></div>
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+	
+	<div class="container container-member">
+	    <div class="member-sidebar">
+	        <h3>會員專區</h3>
+	<!--         = home.html的會員中心架構 -->
+	        <ul th:replace="~{/front_end/farmer/logined/home :: fmemAreaLink}"></ul>
+	    </div>
+	    <div class="member-content">
+	        <h2>小農會員中心</h2>
+	        <p>小農會員中心</p>
+	        <p>小農會員中心</p>
+	    </div>
+	</div>
+	
+	<div th:replace="~{/front_end/index :: footer}"></div>
 
 </body>
 </html>

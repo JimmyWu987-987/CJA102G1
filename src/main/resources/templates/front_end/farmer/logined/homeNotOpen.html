@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>home-fmem</title>
+	<title>小農預覽個人首頁</title>
 	<link rel="icon" th:href="@{/images/logo.png}">
 	
 	<th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
@@ -21,25 +21,16 @@
 
 </head>
 <body>
-
-<!-- 引用header: 複製下面這行 -->
-<!-- 	<div th:replace="~{/front_end/home :: header}"></div> -->
-
    	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
 
 <!-- --------------------------------------------------------------------- -->
     
     <div class="container container-not-open">
-        
         商店尚未啟用，請至 "會員中心/管理商店資料" 完成開店流程。
-        
     </div>
     
 <!-- --------------------------------------------------------------------- -->
   
-	
 	<div th:replace="~{/front_end/index :: footer}"></div>
-
-
 </body>
 </html>

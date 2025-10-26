@@ -3,10 +3,7 @@ package com.farmtastic.fmember.model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.farmtastic.validator.FileSize;
-import com.farmtastic.validator.RegistrationValidation;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 

@@ -23,21 +23,3 @@ public class MemLoginConfig implements WebMvcConfigurer {
 	}
 }
 
-//@GetMapping("/showMemRegLoginForm")
-//@PostMapping("/register")
-//@GetMapping("/verifyEmail")
-//@GetMapping("/forgetPasswordPage")
-//@PostMapping("/forgetPassword")
-//@GetMapping("/resetPasswordPage")
-//@PostMapping("/resetPassword")
-//@PostMapping("/login")
-//	
-//@PostMapping("/logout")
-// @GetMapping("/toMemArea")
-//@GetMapping("/memArea")
-// @GetMapping("/toUpdateProfile")
-//@GetMapping("/memArea/updateProfilePage")
-//@PostMapping("/memArea/updateProfile")
-// @GetMapping("/toUpdatePassword")
-//@GetMapping("/memArea/updatePasswordPage")
-//@PostMapping("/memArea/updatePassword")

@@ -8,13 +8,9 @@
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
-    
     <!-- flatpickr CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-    <style>
-        
-    </style>
+	
 </head>
 <body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}">
 
@@ -22,7 +18,6 @@
 
     <div class="container container-reg-login">
         <h2 class="reg-login-title">一般會員</h2>
-
         <div class="reg-login-btns">    
             <span class="btn-login active-btn" id="btn-login">登 入</span><span class="btn-reg" id="btn-reg">註 冊</span>
         </div>
@@ -64,9 +59,7 @@
                         <label for="">帳號</label>
                         <input type="text" th:field="*{memAcc}" class="acc" placeholder="英文或數字或_ , 長度8~20">                        
                         <span th:if="${#fields.hasErrors('memAcc')}" th:errors="*{memAcc}" class="error"></span>
-                        
 						<span th:if="${regError}" th:text="${regError}" class="error-reg"></span>
-						
                     </li>
                     <li>
                         <label for="">密碼</label>
@@ -117,7 +110,6 @@
                         <span th:if="${#fields.hasErrors('memCity')}" th:errors="*{memCity}" class="error-city"></span>
                         <span th:if="${#fields.hasErrors('memDist')}" th:errors="*{memDist}" class="error-dist"></span>
                         <span th:if="${#fields.hasErrors('memAddr')}" th:errors="*{memAddr}" class="error-addr"></span>
-
                     </li>
                     
                     <input type="submit" value="送出" class="btn link" id="btn-submitReg">
@@ -125,7 +117,6 @@
             </form>
         </div>
     </div>
-    
    
 	<div th:replace="~{/front_end/index :: footer}"></div>
 

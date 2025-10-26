@@ -40,7 +40,7 @@ public class SecurityConfig {
 	        .securityContext(securityContext -> securityContext
 	            .requireExplicitSave(false)  // 自動儲存 SecurityContext 到 Session
 	        )
-	        // 放寬 Frame 限制
+	        // 放寬 iframe 限制
 	        .headers(headers -> headers
 	            .frameOptions(frameOptions -> frameOptions.disable())  // 完全停用 X-Frame-Options
 	        )

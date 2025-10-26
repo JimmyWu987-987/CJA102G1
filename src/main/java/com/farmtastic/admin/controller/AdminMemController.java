@@ -2,7 +2,6 @@ package com.farmtastic.admin.controller;
 
 import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +24,6 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/admin")
 public class AdminMemController {
-	
 	@Autowired
 	MemService memSvc = new MemService();
 	
@@ -81,7 +79,6 @@ public class AdminMemController {
 			Mem mem = memSvc.getOneByMemId(memId);
 			mailSvc.sendMail(mem.getMemEmail(), mailTitle, mailContent);			
 		}
-		
 		redirectAttrs.addFlashAttribute("lastEditMemId", memId);
 		return "redirect:/admin/listAllMems";
 	}
@@ -92,7 +89,6 @@ public class AdminMemController {
 	public String listAllFmems(Model model, HttpSession session) {
 		List<Fmem> listFmem = fmemSvc.getAll();
 		model.addAttribute("listFmem", listFmem);
-//		session.setAttribute("listFmem", listFmem);
 		return "/back_end/logined/fmem/listAllFmems";
 	}
 	
@@ -106,7 +102,6 @@ public class AdminMemController {
 			RedirectAttributes redirectAttrs) {
 		
 		fmemSvc.updateAccStatus(fmemId, accStatus);
-		
 		List<Fmem> listFmem = fmemSvc.getAll();
 		model.addAttribute("listFmem", listFmem);
 		
@@ -135,7 +130,6 @@ public class AdminMemController {
 			Fmem fmem = fmemSvc.getOneByFmemId(fmemId);
 			mailSvc.sendMail(fmem.getFmemEmail(), mailTitle, mailContent);			
 		}
-		
 		redirectAttrs.addFlashAttribute("lastEditFmemId", fmemId);
 		return "redirect:/admin/listAllFmems";
 	}
@@ -149,14 +143,12 @@ public class AdminMemController {
 		return "/back_end/logined/fmem/reviewFmems";
 	}
 	
-	
 //  前往審核頁面(單一小農)
 	@PostMapping("/reviewFmem")
 	public String reviewFmem(
 			Model model, 
 			@RequestParam("fmemId") String fmemId,
 			HttpSession session) {
-//		List<Fmem> listFmem = fmemSvc.getAll();
 		model.addAttribute("fmemId", fmemId);
 		session.setAttribute("fmemId", fmemId);
 
@@ -169,12 +161,10 @@ public class AdminMemController {
 			String landPicBase64 = Base64.getEncoder().encodeToString(fmem.getLandPic());
 			model.addAttribute("landPicBase64", landPicBase64);
 		}
-		
 		model.addAttribute("fmem", fmem);
 		session.setAttribute("fmem", fmem);
 		return "/back_end/logined/fmem/reviewFmem";
 	}
-	
 	
 	@PostMapping("/decideAccReview")
 	public String decideAccReview(
@@ -193,7 +183,6 @@ public class AdminMemController {
 		} else {
 			fmem.setAccDesc(accDesc);
 		}
-		
 		fmemSvc.updateFmem(fmem);
 		
 		Integer accStatusInteger = Integer.valueOf(accStatus);
@@ -216,15 +205,10 @@ public class AdminMemController {
 							  + "可由此連結補件，或由小農登入頁面下方點擊「我要補件」。";
 				break;
 		}
-		
 		if (accStatusInteger == 1 || accStatusInteger == 3) {
 			mailSvc.sendMail(fmem.getFmemEmail(), mailTitle, mailContent);			
 		}
-		
 		return "redirect:/admin/reviewFmems";
 	}
-	
-	
-	
 	
 }

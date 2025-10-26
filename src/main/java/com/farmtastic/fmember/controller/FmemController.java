@@ -1,9 +1,7 @@
 package com.farmtastic.fmember.controller;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
@@ -13,15 +11,12 @@ import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,18 +87,6 @@ public class FmemController{
 	@Autowired
 	MailService mailSvc;
 	
-	// @InitBinder：用來註冊**資料綁定器**
-	// 這個方法會在每次**處理請求之前**自動執行
-	// WebDataBinder binder`：負責將 HTTP 請求參數綁定到 Java 物件
-//	如果 @InitBinder 設定正確（allowEmpty = true），通常不會遇到 typeMismatch 錯誤，
-//			因為空值會正確轉為 null，然後被 @NotNull 驗證捕捉
-	@InitBinder  //檢查年齡滿XX歲
-	public void inintBinder(WebDataBinder binder) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		dateFormat.setLenient(false);
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-	}
-	
 //	註冊頁面"超連結"
 	@GetMapping("/showFmemRegLoginForm")
 	public String showFmemRegLoginForm(ModelMap model) {
@@ -111,7 +94,6 @@ public class FmemController{
 		model.addAttribute("loginRequest", new LoginRequest());
 		return "front_end/farmer/unlogined/fmemRegLogin";
 	}
-	
 	
 //	登入後的小農首頁
 	@GetMapping("/home")
@@ -130,9 +112,7 @@ public class FmemController{
 			
 			String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 			String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
-
 			model.addAttribute("fmem", fmem);
-//			model.addAttribute("fmemId", fmemId);
 			model.addAttribute("StorePicBase64", StorePicBase64);
 			model.addAttribute("fmemPicBase64", fmemPicBase64);
 			
@@ -147,11 +127,9 @@ public class FmemController{
 				}
 			}
 			model.addAttribute("proList", proList);
-			
 		} else {
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
-		
 		return "/front_end/farmer/logined/home";
 	}
 	
@@ -161,9 +139,7 @@ public class FmemController{
 		if(fmem != null) {
 			String StorePicBase64 = Base64.getEncoder().encodeToString(fmem.getStorePic());
 			String fmemPicBase64 = Base64.getEncoder().encodeToString(fmem.getFmemPic());
-			
 			model.addAttribute("fmem", fmem);
-//			model.addAttribute("fmemId", fmemId);
 			model.addAttribute("StorePicBase64", StorePicBase64);
 			model.addAttribute("fmemPicBase64", fmemPicBase64);
 			
@@ -174,23 +150,17 @@ public class FmemController{
 				}
 			}
 			model.addAttribute("actList", actList);
-			
 		} else {
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
-		
 		return "/front_end/farmer/logined/homeAct";
 	}
 
 	
-	
-	
 	@GetMapping("/fmemArea")
 	public String fmemArea(HttpSession session, ModelMap model) {
-		
 		return "/front_end/farmer/logined/fmemArea";
 	}
-	
 	
 	
 	@GetMapping("/fmemArea/updateProfilePage")
@@ -345,15 +315,11 @@ public class FmemController{
     	}
 
 		fmemSvc.updateFmem(loggedInFmember);
-
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
 		redirectAttrs.addFlashAttribute("success", "修改資料成功");
 		return "redirect:/fmem/fmemArea/updateProfilePage";
 	}
-	
-	
-	
 
 	
 	@GetMapping("/fmemArea/updatePasswordPage")
@@ -363,7 +329,7 @@ public class FmemController{
 		
 		UpdatePasswordFmem updatePasswordFmem = new UpdatePasswordFmem();
 		BeanUtils.copyProperties(loggedInFmember, updatePasswordFmem);
-		model.addAttribute("updatePasswordFmem", updatePasswordFmem); //??
+		model.addAttribute("updatePasswordFmem", updatePasswordFmem);
 		return "/front_end/farmer/logined/fmemProfile/fmemUpdatePassword";
 	}
 	
@@ -378,7 +344,6 @@ public class FmemController{
 		if (result.hasErrors()) {
 			return "/front_end/farmer/logined/fmemProfile/fmemUpdatePassword";
 		}
-		
 		Fmem loggedInFmember = (Fmem) session.getAttribute("loggedInFmember");
 		if (loggedInFmember == null) {
 			return "redirect:/fmem/showFmemRegLoginForm";
@@ -391,12 +356,8 @@ public class FmemController{
 	}
 	
 	
-	
-
-	
 	@GetMapping("/fmemArea/updateStorePage")
 	public String updateStorePage(
-//			HttpSession session,
 			@ModelAttribute("loggedInFmember") Fmem loggedInFmember,
 			ModelMap model) {
 		
@@ -408,18 +369,15 @@ public class FmemController{
 			String tempStorePicBase64 = Base64.getEncoder().encodeToString(loggedInFmember.getStorePic());
 			model.addAttribute("tempStorePicBase64", tempStorePicBase64);
 		}
-		
 		if(loggedInFmember.getSty().getStyPic() != null) {
 			String tempStyPicBase64 = Base64.getEncoder().encodeToString(loggedInFmember.getSty().getStyPic());
 			model.addAttribute("tempStyPicBase64", tempStyPicBase64);
-			System.out.println("dddddd");
 		}
 		
 		UpdateStoreFmem updateStoreFmem = new UpdateStoreFmem();
 		BeanUtils.copyProperties(loggedInFmember, updateStoreFmem);
 		
 		updateStoreFmem.setStyNo(loggedInFmember.getSty().getStyNo()); //sty
-		
 		
 		Integer fmemId = loggedInFmember.getFmemId();
 //		取得小農所有商品總分 + 評論數
@@ -452,7 +410,6 @@ public class FmemController{
 			}
 		}
 		fmemSvc.updateFmem(loggedInFmember);
-		
 		model.addAttribute("updateStoreFmem", updateStoreFmem);
 		return "/front_end/farmer/logined/fmemProfile/fmemUpdateStore";
 	}
@@ -462,13 +419,10 @@ public class FmemController{
 	public String updateStore(
 			@Valid @ModelAttribute("updateStoreFmem") UpdateStoreFmem updateStoreFmem,
 			BindingResult result, //一定要放在@Valid @ModelAttribute後面，不然如果有錯誤不會進controller
-//			@RequestParam(value = "storePic", required = false) MultipartFile storePicFile,
 			ModelMap model,
 			HttpSession session,
 			RedirectAttributes redirectAttrs,
 			HttpServletRequest request) throws IOException {
-		
-	
 		// 抓使用者選擇的圖片
 		MultipartFile fmemPicFile = updateStoreFmem.getFmemPic();
 		MultipartFile storePicFile = updateStoreFmem.getStorePic();
@@ -502,7 +456,7 @@ public class FmemController{
 			model.addAttribute("tempStorePicBase64", tempStorePicBase64); 
 		}
 		
-		//    	fmemPicFile有選擇圖片且沒有錯誤的話，要把新的存進tempPic DTO，並用tempXXXBase64顯示在前端預覽
+		// fmemPicFile有選擇圖片且沒有錯誤的話，要把新的存進tempPic DTO，並用tempXXXBase64顯示在前端預覽
 	    if (result.hasErrors()) {
 	    	if(!result.hasFieldErrors("fmemPic")) {
 	    		if(fmemPicFile != null && !fmemPicFile.isEmpty()) {
@@ -520,10 +474,7 @@ public class FmemController{
 	    	}
 	        return "/front_end/farmer/logined/fmemProfile/fmemUpdateStore";
 	    }
-
-		
 	    BeanUtils.copyProperties(updateStoreFmem, loggedInFmember);
-	    
 		
 		// 樣式更新
 		if(updateStoreFmem.getStyNo() != null) {
@@ -554,7 +505,6 @@ public class FmemController{
 		if (storePicFile != null && !storePicFile.isEmpty()) {
 			loggedInFmember.setStorePic(storePicFile.getBytes());
 		}
-
 		
 		// 商店資料上傳完整就會"啟用"帳號
 		if(loggedInFmember.getAccStatus() == 1) {
@@ -564,9 +514,8 @@ public class FmemController{
 					&& loggedInFmember.getStorePic() != null) {
 				loggedInFmember.setAccStatus((byte) 2);
 				fmemSvc.updateFmem(loggedInFmember);
-				System.out.println("setAccStatus((byte) 2)");
 				redirectAttrs.addFlashAttribute("accStatus", "已啟用");
-				
+
 				// 寄信通知小農：商店已啟用
 				String baseUrl = request.getScheme() + "://" + request.getServerName() + 
 						 ( (request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort() );
@@ -574,19 +523,14 @@ public class FmemController{
 				String verifyUrl = "恭喜您已完成開店流程！可開始上架及販售商品\n" 
 									+ "首頁連結：" + baseUrl + "\n"
 									+ "登入連結：" + baseUrl + "/fmem/showFmemRegLoginForm\n";
-				
 				mailSvc.sendMail(loggedInFmember.getFmemEmail(), mailTitle, verifyUrl);
 			}
 		}
-		
-		
 		session.setAttribute("loggedInFmember", loggedInFmember); //index右上角顯示更新
 		session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
 		redirectAttrs.addFlashAttribute("success", "修改資料成功");
 		return "redirect:/fmem/fmemArea/updateStorePage";
 	}
-	
-	
 	
 	
 //	送出註冊"表單"
@@ -611,7 +555,6 @@ public class FmemController{
 		if (fmemSvc.existsByFId(fId)) {
 			result.rejectValue("fId", null, "此身分證已有人註冊過");
 		}
-		
 
 		// 取得上傳的圖片
 		MultipartFile landPicFile = fmem.getLandPicFile();
@@ -622,7 +565,6 @@ public class FmemController{
 		if(tempPic == null) {
 			tempPic = new TempPic();
 			session.setAttribute("tempPic", tempPic);
-			System.out.println("tempPic = new TempPic()");
 		}
 		
 		// 先處理新上傳的圖片
@@ -630,11 +572,9 @@ public class FmemController{
 	    // 如果這次沒上傳或有錯誤 > 用舊的 tempPic
 		if(landPicFile != null && !landPicFile.isEmpty() && !result.hasFieldErrors("landPicFile")) {
 			tempPic.setLandPic(landPicFile.getBytes());
-			System.out.println("tempPic.setLandPic(landPicFile.getBytes()");
 		}
 		if(insurPicFile != null && !insurPicFile.isEmpty() && !result.hasFieldErrors("insurPicFile")) {
 			tempPic.setInsurPic(insurPicFile.getBytes());
-			System.out.println("tempPic.setInsurPic(insurPicFile.getBytes())");
 		}
 		
 		String tempLandPicBase64 = null;
@@ -653,7 +593,6 @@ public class FmemController{
 		} else if(!result.hasFieldErrors("insurPicFile")) {
 			result.rejectValue("insurPicFile", null, "保險證明圖片請勿空白");
 		}
-		
 		
 		if(result.hasErrors()) {
 			session.setAttribute("tempPic", tempPic);  // 更新session裡的資料
@@ -685,16 +624,12 @@ public class FmemController{
 	}
 	
 	
-	
-	
 //	------------------忘記密碼----------------
-	
 	@GetMapping("/forgetPasswordPage")
 	public String forgetPasswordPage(ModelMap model) {
 		model.addAttribute("forgetPwdRequest", new ForgetPwdRequest());
 		return "front_end/farmer/unlogined/fmemForgetPassword";
 	}
-
 
 	@PostMapping("/forgetPassword")
 	public String forgetPassword(
@@ -752,10 +687,6 @@ public class FmemController{
 	}
 	
 	
-	
-	
-	
-	
 //	------------------重設密碼----------------
 	@GetMapping("/resetPasswordPage")
 	public String resetPasswordPage(
@@ -783,8 +714,6 @@ public class FmemController{
 		return "redirect:/fmem/forgetPasswordPage";
 	}
 	
-	
-	
 	@PostMapping("/resetPassword")
 	public String resetPassword(
 			@Validated(UpdatePasswordValidation.class) @ModelAttribute("updatePasswordFmem") Fmem resetPasswordFmem,
@@ -800,7 +729,6 @@ public class FmemController{
 		if (fmemForResetPwd == null) {
 			return "/front_end/farmer/unlogined/fmemResetPassword";
 		}
-
 		fmemForResetPwd.setFmemPwd(resetPasswordFmem.getFmemPwd());
 		fmemSvc.updateFmem(fmemForResetPwd);
 		redirectAttrs.addFlashAttribute("success", "重設密碼成功");
@@ -811,14 +739,12 @@ public class FmemController{
 	}
 	
 	
-	
 //	小農補件 (借用忘記密碼DTO)
 	@GetMapping("/supplementIdentityCheckPage")
 	public String supplementIdentityCheckPage(ModelMap model) {
 		model.addAttribute("forgetPwdRequest", new ForgetPwdRequest());
 		return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
 	}
-
 
 	@PostMapping("/requestSupplement")
 	public String requestSupplement(
@@ -852,8 +778,6 @@ public class FmemController{
 			}
 			
 			// 3.驗證成功，把fmem傳給下一個頁面
-			
-//			redirectAttrs.addFlashAttribute("success", "成功發送驗證信");
 			session.setAttribute("verifiedFmem", verifiedFmem);
 			return "redirect:/fmem/fmemSupplementFormPage";  //重導到重設密碼頁面
 			
@@ -868,13 +792,11 @@ public class FmemController{
 	@GetMapping("/fmemSupplementFormPage")
 	public String fmemSupplementFormPage(
 			ModelMap model,
-			HttpSession session) 
-					throws IOException {
+			HttpSession session) throws IOException {
 		
 		Fmem verifiedFmem = (Fmem) session.getAttribute("verifiedFmem");
 		if (verifiedFmem == null) {
 	        // 可能導向登入頁面或提示錯誤
-			System.out.println("verifiedFmem == null");
 	        return "front_end/farmer/unlogined/fmemSupplementIdentityCheck";
 	    }
 		
@@ -891,7 +813,6 @@ public class FmemController{
 		BeanUtils.copyProperties(verifiedFmem, updateSupplementFmem);
 		model.addAttribute("updateSupplementFmem", updateSupplementFmem);
 		model.addAttribute("verifiedFmem", verifiedFmem);
-//		session.setAttribute("verifiedFmem", verifiedFmem);  //驗證正確就有傳進來 還需要??
 		return "front_end/farmer/unlogined/fmemSupplementForm";
 	}
 	
@@ -937,9 +858,8 @@ public class FmemController{
 			tempInsurPicBase64 = Base64.getEncoder().encodeToString(tempPic.getInsurPic());
 			model.addAttribute("tempInsurPicBase64", tempInsurPicBase64);
 		}
-	
 		
-////    	fmemPicFile有選擇圖片且沒有錯誤的話，要把新的存進tempPic DTO，並用tempXXXBase64顯示在前端預覽
+//    	fmemPicFile有選擇圖片且沒有錯誤的話，要把新的存進tempPic DTO，並用tempXXXBase64顯示在前端預覽
     	if (result.hasErrors()) {
 			if(!result.hasFieldErrors("landPic")) {
 				if(landPicFile != null && !landPicFile.isEmpty()) {
@@ -955,15 +875,11 @@ public class FmemController{
 					tempPic.setInsurPic(insurPicFile.getBytes()); //後端暫存用byte[]
 				}
 			}
-			
 		    return "front_end/farmer/unlogined/fmemSupplementForm";
 		}
     	
-    	
 //    	資料正確，開始存進資料庫
-    	
 		BeanUtils.copyProperties(updateSupplementFmem, verifiedFmem);
-		
 		byte[] tempLandPic = tempPic.getLandPic();
 		byte[] tempInsurPic = tempPic.getInsurPic();
 	
@@ -982,16 +898,11 @@ public class FmemController{
     	
 		verifiedFmem.setAccStatus((byte) 0); //進入待審核
     	fmemSvc.updateFmem(verifiedFmem);
-    	
     	session.removeAttribute("tempPic"); //刪除session，不然登入其他會員也會存到舊的session資料
     	session.removeAttribute("verifiedFmem");
-
 		redirectAttrs.addFlashAttribute("success", "補件上傳成功");
     	return "redirect:/";
 	}
-	
-
-	
 	
 	
 	@PostMapping("/login")
@@ -1032,7 +943,6 @@ public class FmemController{
 				model.addAttribute("loginRequest", loginRequest);
 				model.addAttribute("fmem", new Fmem());
 				model.addAttribute("activeTab", "login");  //標記目前所在頁籤
-				System.out.println("fmem == null***");
 				return "front_end/farmer/unlogined/fmemRegLogin";
 			}
 			
@@ -1058,7 +968,6 @@ public class FmemController{
 					fmem.setLockTime(new Timestamp(System.currentTimeMillis()));
 				}
 				fmemSvc.updateFmem(fmem);
-				
 				model.addAttribute("loginError", "帳號或密碼錯誤");
 				return "front_end/farmer/unlogined/fmemRegLogin";
 			}
@@ -1069,13 +978,10 @@ public class FmemController{
 				return "front_end/farmer/unlogined/fmemRegLogin";
 			}
 			
-			
-			
 			// 3.登入成功，把會員資料存進session
 			model.addAttribute("loggedInFmember", fmem); //@SessionAttributes會自動幫我存進session
 			model.addAttribute("fmemId", fmem.getFmemId());
 			session.setAttribute("fmemId", fmem.getFmemId());
-			
 			// 發送OTP驗證碼
 			String verificationCode = OTPGenerator.generateOTP();
 			long timeoutMinutes = 5; //設定有效時間(分鐘)
@@ -1086,19 +992,17 @@ public class FmemController{
 			        		   + "此驗證碼" + timeoutMinutes +"分鐘內有效，逾時請重新操作。";
 			mailSvc.sendMail(fmem.getFmemEmail(), mailTitle, mailContent);
 						
-			
 			// 4.登入成功後 重導至OTP驗證***
 //			return "redirect:/fmem/home";
 			return "redirect:/fmem/loginVerifyPage";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);
-			model.addAttribute("fmem", new Fmem()); // ???
+			model.addAttribute("fmem", new Fmem());
 			model.addAttribute("activeTab", "login");  //標記目前所在頁籤
 			return "front_end/farmer/unlogined/fmemRegLogin";
 		}
 	}
-	
 	
 	@GetMapping("/loginVerifyPage")
 	public String loginVerifyPage(ModelMap model) {
@@ -1119,8 +1023,6 @@ public class FmemController{
 		return "redirect:/fmem/home";
 	}	
 	
-	
-	
 	@PostMapping("/logout")
 	public String logout(HttpSession session, SessionStatus status) {
 		if(!status.isComplete()) {
@@ -1128,9 +1030,7 @@ public class FmemController{
 		}
 		session.removeAttribute("loggedInMember");
 		session.removeAttribute("fmemId");
-//		session.removeAttribute("fmemName");
 		return "redirect:/fmem/showFmemRegLoginForm";
 	}
-
 	
 }

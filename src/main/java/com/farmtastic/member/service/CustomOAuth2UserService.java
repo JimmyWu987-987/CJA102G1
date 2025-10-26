@@ -48,7 +48,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			// 使用者已存在
 			// 檢查是否為傳統方式註冊
 			if (mem.getAuthProvider() == AuthProvider.LOCAL) {
-//				System.out.println("此 Email 已使用傳統帳密註冊");
 				throw new OAuth2AuthenticationException(
 					new OAuth2Error(
 			            "email_already_used",  // errorCode
@@ -86,21 +85,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 				autoAccount = autoAccount + "google" + System.currentTimeMillis() % 10000;
 			}
 			mem.setMemAcc(autoAccount);
-			
 			// password 留空（Google 登入不需要）
 		}
-
 		mem = memRepository.save(mem);
 
-		System.out.println("儲存成功，memId=" + mem.getMemId());
-		
 		// 首次註冊發券
 		if (isNewUser) {
-			System.out.println("發送新會員優惠券");
 			memProCpnSvc.giveCoupon(mem.getMemId(), CpnConstants.REGISTER_DISCOUNT_ID);
 			memProCpnSvc.giveCoupon(mem.getMemId(), CpnConstants.REGISTER_CASHBACK_ID);
 		}
-
 		return oauth2User;
 	}
 }

@@ -30,11 +30,9 @@ public class IndexController {
         if (principal != null) {
             String name = principal.getAttribute("name");
             String email = principal.getAttribute("email");
-//            String picture = principal.getAttribute("picture");
             
             model.addAttribute("name", name);
             model.addAttribute("email", email);
-//            model.addAttribute("picture", picture);
         }
         return "/front_end/index";
     }

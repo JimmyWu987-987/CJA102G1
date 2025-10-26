@@ -1,4 +1,3 @@
-
 package com.farmtastic.validator;
 
 import com.farmtastic.fmember.model.Fmem;
@@ -7,13 +6,11 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class FmemPasswordMatchedValidator implements ConstraintValidator<FmemPasswordMatches, Fmem> {
-	
 	@Override
 	public boolean isValid(Fmem fmem, ConstraintValidatorContext context) {
 		if(fmem.getFmemPwd() == null || fmem.getFmemPwdCheck() == null) {
 			return false;
 		}
-		
 		boolean isMatched = fmem.getFmemPwd().equals(fmem.getFmemPwdCheck());
 		
 		if(!isMatched) {
@@ -22,8 +19,6 @@ public class FmemPasswordMatchedValidator implements ConstraintValidator<FmemPas
 					.addPropertyNode("fmemPwdCheck")
 					.addConstraintViolation();
 		}
-		
-		
 		return isMatched;
 	}
 }

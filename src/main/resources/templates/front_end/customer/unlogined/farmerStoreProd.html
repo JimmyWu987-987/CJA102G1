@@ -7,10 +7,6 @@
     <link rel="icon" href="./images/logo.png">
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-<!--     <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block> -->
-
-<!-- 	<link rel="stylesheet" th:href="@{/css/sty/farmerStore1ColorNature.css}"> -->
-<!-- 	<link rel="stylesheet" th:href="@{/css/sty/farmerStore1ColorWarm.css}"> -->
 	<link rel="stylesheet" th:if="${fmem.sty}" th:href="@{${fmem.sty.styCssPath}}">
 	
 </head>
@@ -54,10 +50,8 @@
         </div>
 
         <div class="store-content">
-<!--             <h3>商品</h3> -->
             <ul class="products">
            		<p th:if="${proList == null or #lists.isEmpty(proList)}" th:text="目前尚無上架商品" class="no-item-msg"></p>
-<!--                 <li class="product" th:fragment="product"> -->
                 <li class="product" th:each="pro : ${proList}">
                    	<div class="pic">
 	                    <a th:href="${pro.proStatus == 1} ? @{/mall/product/{id}(id=${pro.proId})} : '#'">
@@ -84,15 +78,12 @@
 		            </form>
                 </li>
 
-                
             </ul>
         </div>
         
     </div>
 
-    
 <!-- --------------------------------------------------------------------- -->
-    
    
 	<div th:replace="~{/front_end/index :: footer}"></div>
 

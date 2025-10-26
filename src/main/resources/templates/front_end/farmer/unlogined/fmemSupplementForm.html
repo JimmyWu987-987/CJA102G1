@@ -9,13 +9,10 @@
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
     <link rel="stylesheet" th:href="@{/css/mem/forgetResetPassword.css}">
-    <style>
-    	
-    </style>
+    <link rel="stylesheet" th:href="@{/css/fmem/fmemHeaderFooterColor.css}">
    
 </head>
 <body th:data-success="${success}" th:data-fail="${fail}">
-
 	<div th:replace="~{/front_end/index :: header}"></div>
 
     <div class="container container-submit-supplement">
@@ -92,7 +89,6 @@
                         <span th:if="${#fields.hasErrors('bankAcc')}" th:errors="*{bankAcc}" class="error-bankAcc"></span>
                     </li>
                     
-                    
                     <li class="list-pic">
 	               		<label>農地證明文件(點選下框以新增或更換圖片)</label>
                			<div class="picBox">
@@ -116,8 +112,7 @@
 					    </div>
 					    <div class="picInfo"></div>
 					    <span th:if="${#fields.hasErrors('insurPic')}" th:errors="*{insurPic}" class="error"></span>
-	               </li>
-					
+	               	</li>
 					<input type="submit" value="送出" class="btn link">
                 </ul>
             </form>
@@ -127,12 +122,9 @@
 	<div th:replace="~{/front_end/index :: footer}"></div>
 	
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!--     <script th:src="@{/js/mem/successRegAlert.js}"></script> -->
-    
     <script th:src="@{/js/mem/emailAddr.js}"></script>
     <script th:src="@{/js/fmem/bankCode.js}"></script>
     <script th:src="@{/js/fmem/uploadPic.js}"></script>
-    
     <script th:src="@{/js/admin/fmemSupplementForm.js}"></script>
     
 </body>

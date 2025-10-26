@@ -13,13 +13,9 @@
     
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/twmap/twmap.css}">
-    <style>
-    	
-    </style>
 	
 </head>
 <body th:data-success="${success}">
-
     <div class="container container-header" th:fragment="header">
         <div class="header" th:fragment="header-inner">
             <div class="logo">
@@ -37,16 +33,9 @@
                 </li>
                 <li>
                     <a th:href="@{/mall/products}" class="link btn">小農商城</a>
-<!--                     <ul> -->
-<!--                         <li><a href="#">熱門排行榜</a></li> -->
-<!--                     </ul> -->
                 </li>
                 <li>
                     <a th:href="@{/act}" class="link btn">活動專區</a>
-<!--                     <ul> -->
-<!--                         <li><a href="#">自行修改喔</a></li> -->
-<!--                         <li><a href="#">自行修改喔</a></li> -->
-<!--                     </ul> -->
                 </li>
 
                 <li>
@@ -61,16 +50,9 @@
                     </ul>
                 </li>
                 
-<!--                 <li class="test"> -->
-<!--                     <a th:href="@{/mem/farmerStoreProd?fmemId=1}" class="link btn test-farmerStore">測試小農</a> -->
-<!--                     <a th:href="@{/oauth2/authorization/google}">用 Google 登入</a> --> 
-<!--                     <a href="/oauth2/authorization/google">使用 Google 登入</a> -->
-                    
-<!--                 </li> -->
             </ul>
             <div class="member">
                 <a th:if="${session.loggedInMember} == null" th:href="@{/fmem/showFmemRegLoginForm}" class="member-logo link btn btn-farmer">
-<!--                 	<i class="fa-solid fa-tree"></i> -->
                 	<i class="fa-solid fa-seedling"></i>
                 	<span class="icon-label">小農</span>
                 </a>
@@ -86,7 +68,6 @@
                 	</div>
                 </div>
                 
-                
                 <a th:href="@{/cart/view}" class="member-logo link btn cart">
                 	<i class="fa-solid fa-cart-shopping"></i>
                 	<span class="icon-label">購物車</span>
@@ -98,26 +79,17 @@
             			<span class="icon-label">登出</span>
             		</button>
             	</form>
-
-            
             </div>
-            
         </div>
     </div>
     
     <div class="container container-banner">
         <div class="banner">
             <img th:src="@{/images/banner-txt.png}" alt="banner">
-
             <div class="animate-box">
                	<img th:src="@{/images/actIndex/banner-farmer3.png}" id="car" class="car">	
                 <img th:src="@{/images/apple.png}" alt="apple" id="apple-small" class="apple-small" style="max-width: 45px; max-height: 45px;"  >
             </div>
-            
-<!--             <div class="text"> -->
-<!--                 <h2>農作物與它們的產地</h2> -->
-<!--                 <p>我們的目標是建立一個雙向互動的社群：消費者不再只是購買者，更是支持在地永續農業的一份子；小農不只是生產者，更是生活與文化的傳遞者。</p> -->
-<!--             </div> -->
         </div>
     </div>
 
@@ -220,7 +192,6 @@
         </div> 
     </div>
     
-
     <div class="container container-shops">
         <div class="shops-title title">來逛逛我們的商店</div>
         <div class="shops">
@@ -240,14 +211,11 @@
         </div>
     </div>
 
-
     <div class="container container-footer" th:fragment="footer">
         <div class="footer" th:fragment="footer-inner">
             <div class="quick-link">
-<!--                 <a href="#">關於我們</a> -->
                 <a th:href="@{/forcusnews}">最新消息</a>
                 <a th:href="@{/qa/view}">常見問題</a>
-<!--                 <a href="#">聯絡我們</a> -->
                 <a th:href="@{/mem/proorders/listAllProOrder}">訂單查詢</a>
                 <a th:href="@{/}">回到首頁</a>
             </div>
@@ -259,13 +227,11 @@
             </div>
         </div>
     </div>
-    
 
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
     <script th:src="@{/js/index.js}"></script>
     <script th:src="@{/js/mem/successRegAlert.js}"></script>
     
-  
 </body>
 </html>

@@ -143,7 +143,6 @@
 <!--             <h3>商品</h3> -->
             <ul class="products">
             	<p th:if="${proList == null or #lists.isEmpty(proList)}" th:text="目前尚無上架商品" class="no-item-msg"></p>
-<!--                 <li class="product" th:fragment="product"> -->
                 <li class="product" th:each="pro : ${proList}">
                    	<div class="pic">
 	                    <a href="#">
@@ -164,19 +163,14 @@
                     
 					<button class="addToCart">加入購物車</button>	                    
                 </li>
-
-                
             </ul>
         </div>
         
     </div>
 
-    
 <!-- --------------------------------------------------------------------- -->
   
-	
 	<div th:replace="~{/front_end/index :: footer}"></div>
-
 
 </body>
 </html>

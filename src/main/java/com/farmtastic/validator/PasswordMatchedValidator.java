@@ -12,7 +12,6 @@ public class PasswordMatchedValidator implements ConstraintValidator<PasswordMat
 		if(mem.getMemPwd() == null || mem.getMemPwdCheck() == null) {
 			return false;
 		}
-		
 		boolean isMatched = mem.getMemPwd().equals(mem.getMemPwdCheck());
 		
 		if(!isMatched) {
@@ -21,8 +20,6 @@ public class PasswordMatchedValidator implements ConstraintValidator<PasswordMat
 					.addPropertyNode("memPwdCheck")
 					.addConstraintViolation();
 		}
-		
-		
 		return isMatched;
 	}
 }
