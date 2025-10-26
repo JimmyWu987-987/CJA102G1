@@ -200,7 +200,7 @@ input[type="file"] {
                 
                 <div class="form-group">
                     <label for="actName">活動名稱 <span style="color: red;">*</span></label>
-                    <input type="text" id="actName" th:field="*{actName}" placeholder="請輸入活動名稱" required>
+                    <input type="text" id="actName" th:field="*{actName}" placeholder="請輸入活動名稱 (2 ~ 30 字)" required>
                     <span class="error-message" th:if="${#fields.hasErrors('actName')}" th:errors="*{actName}"></span>
                 </div>
 <div class="form-group">
@@ -225,7 +225,7 @@ input[type="file"] {
                 
                 <div class="form-group">
                     <label for="actDes">活動描述 <span style="color: red;">*</span></label>
-                    <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述, 請務必要填入聯絡資訊及舉辦地點等資訊" required></textarea>
+                    <textarea id="actDes" th:field="*{actDes}" rows="5" placeholder="請輸入活動詳細描述, 請務必要填入聯絡資訊及舉辦地點等資訊 (10 ~ 1,000 字)" required></textarea>
                     <span class="error-message" th:if="${#fields.hasErrors('actDes')}" th:errors="*{actDes}"></span>
                 </div>
                 
