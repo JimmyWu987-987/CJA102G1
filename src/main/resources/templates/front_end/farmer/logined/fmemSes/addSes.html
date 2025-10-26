@@ -238,7 +238,7 @@ input:focus {
             <label for="sesFee">場次實際費用: <span style="color: red;">*</span></label>
             <input type="number" id="sesFee" th:field="*{sesFee}" min="0" oninput="validateSesFee()" required />
             <div id="feeWarning" class="alert-warning">
-                <strong>警告:</strong> 費用已超過活動基本費用的 20%。若有需要請另外提交活動審核並調整基本價格。
+                <strong>警告:</strong> 費用已超過活動基本費用的120%。若有需要請另外提交活動審核並調整基本價格。
             </div>
             <span th:if="${#fields.hasErrors('sesFee')}" th:errors="*{sesFee}" class="error"></span>
         </div>
@@ -339,7 +339,7 @@ input:focus {
 
         if (sesFee > maxFee) {
             warningDiv.style.display = 'block';
-            warningDiv.innerHTML = `<strong>警告:</strong> 場次實際費用 (${sesFee}) 已超過活動基本費用 (${actFee}) 的 20% (最高金額可為: ${maxFee.toFixed(0)})。如此費用為必要，請另外提交活動審核。`;
+            warningDiv.innerHTML = `<strong>警告:</strong> 場次實際費用 (${sesFee}) 已超過活動基本費用 (${actFee}) 的120% (最高金額可為: ${maxFee.toFixed(0)})。如此費用為必要，請另外提交活動審核。`;
         } else {
             warningDiv.style.display = 'none';
         }
