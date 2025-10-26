@@ -175,7 +175,7 @@ public class FmemActController {
 		if (actStart == null) { // 檢查新的開始日期
 			result.rejectValue("actStart", null, "請填入活動開始日期");
 		} else {
-			java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
+			java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 44L * 24 * 60 * 60 * 1000);
 			if (actStart.before(after45)) {
 				result.rejectValue("actStart", null, "考慮到審核作業時間及消費者報名時間, 僅能選擇 45 天之後的日期。");
 			}
@@ -646,7 +646,7 @@ public class FmemActController {
 		if (act.getActStart() == null) {
 			result.rejectValue("actStart", null, "請填入活動開始日期");
 		} else {
-			java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 45L * 24 * 60 * 60 * 1000);
+			java.sql.Date after45 = new java.sql.Date(System.currentTimeMillis() + 44L * 24 * 60 * 60 * 1000);
 			if (actStart != null && actStart.before(after45)) {
 				result.rejectValue("actStart", null, "考慮到審核作業時間及消費者報名時間, 僅能選擇 45 天之後的日期。");
 			}
