@@ -52,12 +52,10 @@ public class Act implements java.io.Serializable {
 	private String actName;
 
 	@Column(name = "act_start", nullable = false)
-//	@NotNull(message="請填入活動開始日期")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date actStart;
 
 	@Column(name = "act_end", nullable = false)
-//	@NotNull(message="請填入活動結束日期")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date actEnd;
 
@@ -74,7 +72,6 @@ public class Act implements java.io.Serializable {
 
 //	活動編輯. 審核相關
 	@Column(name = "act_stat", nullable = false, columnDefinition = "TINYINT DEFAULT 0")
-//	@NotNull
 	private Integer actStat;
 
 	@Column(name = "act_upd")
@@ -101,13 +98,10 @@ public class Act implements java.io.Serializable {
 
 	@Lob
 	@Column(name = "act_mainimg", nullable = false, columnDefinition = "LONGBLOB")
-//	@NotNull(message="請上傳活動首圖(將顯示於活動一覽頁面及活動詳情中")
 	private byte[] actMainImg;
 
 //	對應多個分類
 	@ManyToMany
-//	@NotNull(message="請至少選擇一項分類")
-//	@Size(min = 1, message="請至少選擇一項分類")
 	@JoinTable(name = "actcate_list", joinColumns = @JoinColumn(name = "act_id"), inverseJoinColumns = @JoinColumn(name = "actcate_id"))
 	private Set<ActCate> actCate = new HashSet<>();
 
@@ -305,7 +299,7 @@ public class Act implements java.io.Serializable {
 	}
 
 	public void setActMainImgBase64(String actMainImgBase64) {
-		this.actMainImgBase64 = actMainImgBase64; 
+		this.actMainImgBase64 = actMainImgBase64;
 	}
 
 	// 動態算評分相關資料

@@ -28,7 +28,7 @@ public class ActImg implements java.io.Serializable {
 	@Column(name = "act_img", columnDefinition = "LONGBLOB")
 	private byte[] actImg;
 
-//	排順序用...先做起來吧
+//	排順序用
 	@Column(name = "actimg_order", columnDefinition = "INT DEFAULT 1")
 	private Integer actimgOrder;
 

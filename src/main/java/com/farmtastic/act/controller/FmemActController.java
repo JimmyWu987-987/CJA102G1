@@ -146,7 +146,6 @@ public class FmemActController {
 
 		Integer fmemId = fmem.getFmemId();
 
-		// 處理空表單用 (應該不會用到)
 		// 不是空的再進行以下手動驗證
 		// 先確保為sql的格式不是util的...
 		java.sql.Date actStart = (actStartStr == null || actStartStr.isBlank()) ? null
@@ -404,8 +403,7 @@ public class FmemActController {
 			// 呼叫 SesService 取得報名人數
 			Integer headCount = sesSvc.getHeadCount(ses.getSesId());
 
-			// 將計算結果設定到 Ses 物件中。
-			// 注意：您需要在 Ses.java 中新增 setActualRegCount() 方法
+			// 將計算結果設定到 Ses
 			ses.setHeadCountCache(headCount);
 		}
 
@@ -586,19 +584,13 @@ public class FmemActController {
 	@PostMapping("insert")
 	public String addAct(@RequestParam("actStart") String actStartStr, @RequestParam("actEnd") String actEndStr,
 			@Valid @ModelAttribute("act") Act act, BindingResult result,
-			@RequestParam("actMainImgFile") MultipartFile actMainImgFile, // 1019 追加
-//						 @RequestParam("actMainImg") MultipartFile actMainImg,
+			@RequestParam("actMainImgFile") MultipartFile actMainImgFile,
 			@RequestParam(value = "actImgs", required = false) MultipartFile[] actImgs,
 			@RequestParam(value = "actCateId", required = false) List<Integer> actCateId, HttpSession session,
 			Model model, RedirectAttributes redirectAttributes) throws IOException {
 
 		List<ActCate> allCategories = actCateRepo.findAll();
 		model.addAttribute("allCategories", allCategories);
-
-//		// 處理空表單用
-//		if (result.hasErrors()) {
-//			return "redirect:/fmem/act/addAct";
-//		}
 
 		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
 
@@ -608,7 +600,7 @@ public class FmemActController {
 		}
 
 		// 不是空的再進行以下手動驗證
-		// 先確保為sql的格式不是util的...
+		// 先確保為sql的格式不是util的
 		java.sql.Date actStart = (actStartStr == null || actStartStr.isBlank()) ? null
 				: java.sql.Date.valueOf(actStartStr);
 
@@ -617,15 +609,6 @@ public class FmemActController {
 		act.setActStart(actStart);
 		act.setActEnd(actEnd);
 
-//		// 字數驗證
-//		if (act.getActName() == null || act.getActName().trim().isEmpty()) {
-//			result.rejectValue("actName", null, "活動名稱必需在{min}到{max}字之間");
-//			return "redirect:/fmem/act/addAct";
-//		} else if (act.getActName()) {
-//		}
-		
-		
-		
 		// 不選分類的驗證
 		if (actCateId == null || actCateId.isEmpty()) {
 			result.rejectValue("actCate", null, "請至少選擇一項分類");
@@ -653,7 +636,6 @@ public class FmemActController {
 		}
 
 		// 結束日期的其他驗證
-//		java.sql.Date actEnd = act.getActEnd();
 		if (act.getActEnd() == null) {
 			result.rejectValue("actEnd", null, "請填入活動結束日期");
 		} else if (actStart != null && actEnd != null && actEnd.before(actStart)) {
@@ -716,17 +698,10 @@ public class FmemActController {
 			} else {
 				model.addAttribute("actCateId", actCateId);
 			}
-            return "front_end/farmer/logined/fmemAct/addAct";
-        }
-		
-//		// 若驗證又有錯誤就再傳回
-//		if (result.hasErrors()) {
-//            return "fmem/act/addAct"; 
-//        }
-		
-		// 設定狀態&更新時間
-		// (抓登入中的小農)
-//		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
+			return "front_end/farmer/logined/fmemAct/addAct";
+		}
+
+		// 取得登入中的小農, 設定狀態&更新時間
 		Integer fmemId = fmem.getFmemId();
 		act.setFmemId(fmemId);
 		act.setActStat(1); // 設為待審核
@@ -747,7 +722,6 @@ public class FmemActController {
 
 //		// 設置 Flash Attribute，用於 SweetAlert
 //		redirectAttributes.addFlashAttribute("successMessage", "新增成功！");
-//	
-		return "redirect:/fmem/act/listAllActForFmem"; // 要傳URL
+		return "redirect:/fmem/act/listAllActForFmem";
 	}
 }
