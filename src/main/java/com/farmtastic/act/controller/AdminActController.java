@@ -44,7 +44,6 @@ import jakarta.validation.Valid;
 @Controller
 @Validated
 @RequestMapping("/admin/act")
-//@SessionAttributes({"sessionAdminAct"})  // 應該不會用到
 public class AdminActController {
 
 	@Autowired
@@ -59,24 +58,22 @@ public class AdminActController {
 	@Autowired
 	private ActRepository actRepo;
 
-//	// =========== 審核活動 ==============
+//	============ 審核活動 ==============
 
 	// 先抓未審核的活動
 	@GetMapping("listUnapprovedAct")
 	public String listUnapprovedAct(Model model) {
 
-//		// 預設依狀態更新時間排
-//		List<Act> actList = actSvc.findByActStat(1, Sort.by(Sort.Direction.DESC, "actUpd"));
-
 		Sort sort = Sort.by(Sort.Direction.DESC, "actUpd");
 
+		// 預設依狀態更新時間排
 		List<Act> actList1 = actSvc.findByActStat(1, sort);
 
-	    // 抓取狀態為 1 or 4 的活動
-	    List<Act> actList4 = actSvc.findByActStat(4, sort);
+		// 抓取狀態為 1 or 4 的活動
+		List<Act> actList4 = actSvc.findByActStat(4, sort);
 
 		List<Act> actList = new ArrayList<>(actList1);
-	    actList.addAll(actList4);
+		actList.addAll(actList4);
 
 		actList.sort(Comparator.comparing(Act::getActUpd).reversed());
 
@@ -300,32 +297,5 @@ public class AdminActController {
 		List<byte[]> imgs = actSvc.getAllActImagesForCarousel(actId);
 		return imgs.toArray(new byte[0][]);
 	}
-
-//    // ============ !!!這是舊的!!! 活動詳細頁 (for 後台) ============
-//    @GetMapping("/reviewDetail/{actId}")
-//    public String actDetail(@PathVariable Integer actId, ModelMap model) {
-//    	Optional<Act> optAct = actSvc.getOneAct(actId);		// 取得活動
-//    	
-//    	// 防呆用
-//    	if (optAct.isEmpty()) {
-//            // 查無活動 > 跑去"查無此活動"頁面
-//            model.addAttribute("message", "查無此活動");
-//            return "back_end/logined/noAct"; 		// 做一個 "查無此活動"頁面
-//        }
-//    	
-//    	Act act = optAct.get();
-//    	
-//
-//        // 依分類ID排序
-//        List<ActCate> sortedCate = new ArrayList<>(act.getActCate());
-//        sortedCate.sort(Comparator.comparing(ActCate::getActCateId));
-//        model.addAttribute("actCateList", sortedCate);
-//
-//        model.addAttribute("act", act);
-//        model.addAttribute("sessionAct", act);
-//        
-//        return "back_end/logined/backAct/reviewDetail";
-//        
-//    }
 
 }

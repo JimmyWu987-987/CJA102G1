@@ -1,351 +1,340 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
- 
+
 <meta charset="UTF-8">
 <title>小農活動專區 - 活動一覽</title>
 <link rel="icon" th:href="@{/images/logo.png}">
 
 <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
 <style>
-/* ================================================= */
-/* 活動列表頁面 CSS (卡片風格 - Grid 佈局) - 最終修正版 */
-/* ================================================= */
 
 /* 顏色定義 (沿用卡片風格) */
 :root {
-    --color-light-green: #e6eedb; /* 淺綠色 (卡片邊框, 分隔線) */
-    --color-medium-green: #8fbc8f; /* 中綠色 (按鈕) */
-    --color-dark-green: #38761d; /* 深綠色 (標題/重要文字) */
-    --color-beige: #f7fcf5; /* 淺白綠色 (頁面背景) */
-    --color-white: #ffffff; /* 白色 (卡片底色) */
-    --color-label-brown: #6a4a3c; /* 淺褐色標籤文字 */
-    --color-light-grey: #f0f0f0; /* 淺灰色 (圖片區塊背景) */
+	--color-light-green: #e6eedb; /* 淺綠色 (卡片邊框, 分隔線) */
+	--color-medium-green: #8fbc8f; /* 中綠色 (按鈕) */
+	--color-dark-green: #38761d; /* 深綠色 (標題/重要文字) */
+	--color-beige: #f7fcf5; /* 淺白綠色 (頁面背景) */
+	--color-white: #ffffff; /* 白色 (卡片底色) */
+	--color-label-brown: #6a4a3c; /* 淺褐色標籤文字 */
+	--color-light-grey: #f0f0f0; /* 淺灰色 (圖片區塊背景) */
 }
 
-/* 獨特 Wrapper Class：隔離 Header/Footer，提供背景和頁面間距 */
 .act-list-wrapper {
-/*     background-color: var(--color-beige);  */
-    padding-top: 30px; 
-    padding-bottom: 30px; 
-    width: 100%;
-    box-sizing: border-box; 
+	padding-top: 30px;
+	padding-bottom: 30px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 /* 頁面標題樣式 */
-.act-list-wrapper h1 { 
-    text-align: center;
-    color: var(--color-dark-green);
-    margin-bottom: 25px;
-    font-size: 2em;
-    font-weight: bold;
+.act-list-wrapper h1 {
+	text-align: center;
+	color: var(--color-dark-green);
+	margin-bottom: 25px;
+	font-size: 2em;
+	font-weight: bold;
 }
 
-/* 無數據提示區塊 (沿用卡片風格) */
+/* 無數據提示區塊 */
 .no-data-message {
-    background-color: #fff8e1; /* 淺黃色，溫暖提示 */
-    color: #a06e00; /* 棕色字體 */
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
+	background-color: #fff8e1;
+	color: #a06e00; /* 棕色字體 */
+	padding: 30px;
+	border-radius: 15px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	max-width: 600px;
+	margin: 0 auto;
 }
 
 /* 活動卡片列表容器 - Grid 佈局 */
 .card-list-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px; 
-    padding: 10px 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 30px;
+	padding: 10px 0;
 }
 
 /* 單一活動卡片樣式 */
 .activity-card {
-    background-color: var(--color-white); 
-    border-radius: 15px; 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-    overflow: hidden; 
-    display: flex;
-    flex-direction: column; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid var(--color-light-green); 
+	background-color: var(--color-white);
+	border-radius: 15px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	border: 1px solid var(--color-light-green);
 }
 
 /* 懸停效果 (重點) */
 .activity-card:hover {
-    transform: translateY(-8px); 
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	transform: translateY(-8px);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* 卡片圖片區塊 */
 .card-image {
-    width: 100%;
-    height: 200px; 
-    overflow: hidden;
-    position: relative;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: var(--color-light-grey); 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+	width: 100%;
+	height: 200px;
+	overflow: hidden;
+	position: relative;
+	border-bottom: 1px solid #e0e0e0;
+	background-color: var(--color-light-grey);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 /* 圖片在卡片中置中顯示 */
 .card-image img {
-    max-width: 100%; 
-    max-height: 100%; 
-    object-fit: contain; 
-    display: block;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	display: block;
 }
 
 /* 沒有圖片時的佔位符 (確保高度一致) */
 .card-image .no-image-placeholder {
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-light-grey); 
+	width: 100%;
+	height: 100%;
+	background-color: var(--color-light-grey);
 }
-
 
 /* 卡片詳細資訊區塊 */
 .card-details {
-    padding: 15px 20px;
-    flex-grow: 1; 
+	padding: 15px 20px;
+	flex-grow: 1;
 }
 
 .card-title {
-    font-size: 1.5em;
-    color: var(--color-dark-green); 
-    margin-top: 0;
-    margin-bottom: 10px;
-    border-bottom: 2px solid var(--color-light-green); 
-    padding-bottom: 5px;
-    font-weight: bold;
-    text-align: center;
+	font-size: 1.5em;
+	color: var(--color-dark-green);
+	margin-top: 0;
+	margin-bottom: 10px;
+	border-bottom: 2px solid var(--color-light-green);
+	padding-bottom: 5px;
+	font-weight: bold;
+	text-align: center;
 }
 
 /* 數據列表項 */
 .card-data-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    font-size: 0.95em;
-    border-bottom: 1px dashed #f0f0f0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 5px 0;
+	font-size: 0.95em;
+	border-bottom: 1px dashed #f0f0f0;
 }
 
 .card-data-item:last-of-type {
-    border-bottom: none;
+	border-bottom: none;
 }
 
 .data-label {
-    font-weight: bold;
-    color: var(--color-label-brown); 
-    flex-shrink: 0;
-    margin-right: 10px;
+	font-weight: bold;
+	color: var(--color-label-brown);
+	flex-shrink: 0;
+	margin-right: 10px;
 }
 
 .data-value {
-    color: #333;
-    text-align: right;
-    word-break: break-word; 
+	color: #333;
+	text-align: right;
+	word-break: break-word;
 }
 
 /* 特別樣式：活動狀態 */
 .status-text {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 /* 上架狀態顏色 */
 .status-published {
-    color: #28a745; 
-    background-color: #e8f5e9; 
-    padding: 2px 8px;
-    border-radius: 5px;
+	color: #28a745;
+	background-color: #e8f5e9;
+	padding: 2px 8px;
+	border-radius: 5px;
 }
 
 .status-draft {
-    color: #dc3545; 
-    background-color: #fcebeb; 
-    padding: 2px 8px;
-    border-radius: 5px;
+	color: #dc3545;
+	background-color: #fcebeb;
+	padding: 2px 8px;
+	border-radius: 5px;
 }
 
 /* 備註（單獨處理） */
 .remark-area {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px solid var(--color-light-green);
-    font-size: 0.9em;
-    color: #555;
+	margin-top: 15px;
+	padding-top: 10px;
+	border-top: 1px solid var(--color-light-green);
+	font-size: 0.9em;
+	color: #555;
 }
 
 .remark-area .data-label {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--color-dark-green); 
+	display: block;
+	margin-bottom: 5px;
+	color: var(--color-dark-green);
 }
 
 .remark-area .data-value {
-    text-align: left; 
-    word-wrap: break-word;
+	text-align: left;
+	word-wrap: break-word;
 }
-
 
 /* 卡片操作區塊 */
 .card-actions {
-    padding: 10px 20px 20px;
-    border-top: 1px solid #eee;
-    text-align: center;
+	padding: 10px 20px 20px;
+	border-top: 1px solid #eee;
+	text-align: center;
 }
-
-/* ************************************** */
-/* 關鍵修正: 將按鈕樣式鎖定在 .card-actions 內  */
-/* ************************************** */
 
 /* 按鈕樣式 (查看按鈕) */
 .card-actions .btn {
-    display: block; 
-    width: 100%;
-    padding: 10px 15px;
-    background-color: var(--color-medium-green); 
-    color: white !important; 
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-    font-size: 1em;
-    border: none;
-    cursor: pointer;
+	display: block;
+	width: 100%;
+	padding: 10px 15px;
+	background-color: var(--color-medium-green);
+	color: white !important;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: background-color 0.3s ease;
+	font-size: 1em;
+	border: none;
+	cursor: pointer;
 }
 
 .card-actions .btn:hover {
-    background-color: #6b8e23; 
+	background-color: #6b8e23;
 }
 
 /* 編輯按鈕 (單獨為其設定顏色和間距) */
 .card-actions .btn.edit-btn-card {
-    background-color: #3498db !important;
-    margin-top: 10px; /* 增加編輯按鈕與上一個按鈕的間距 */
+	background-color: #3498db !important;
+	margin-top: 10px; /* 增加編輯按鈕與上一個按鈕的間距 */
 }
 
 .card-actions .btn.edit-btn-card:hover {
-    background-color: #2980b9 !important;
+	background-color: #2980b9 !important;
 }
 
 /* 無法編輯的狀態提示 */
 .disabled-info {
-    color: var(--color-label-brown); 
-    font-size: 0.9em;
-    display: block;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: var(--color-light-grey);
-    border: 1px solid #ccc;
-    white-space: normal;
-    margin-top: 10px;
+	color: var(--color-label-brown);
+	font-size: 0.9em;
+	display: block;
+	padding: 10px;
+	border-radius: 8px;
+	background-color: var(--color-light-grey);
+	border: 1px solid #ccc;
+	white-space: normal;
+	margin-top: 10px;
 }
 </style>
 </head>
 <body>
 
-<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-<div class="act-list-wrapper"> <div class="container">
-        
-        <h1>活動管理</h1> <div th:if="${#lists.isEmpty(actList)}" class="no-data-message">
-            <p>目前尚無活動可供查閱</p>
-        </div>
-        
-        <div th:unless="${#lists.isEmpty(actList)}" class="card-list-container">
-            
-            <div th:each="act : ${actList}" class="activity-card">
-                    
-<div class="card-image">
-    <img th:if="${act.actMainImg != null}" 
-         th:src="@{'/fmem/act/mainImg/' + ${act.actId}}" 
-         th:alt="${act.actName} + '主照片'"/>
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+	<div class="act-list-wrapper">
+		<div class="container">
 
-    <div th:unless="${act.actMainImg != null}" class="no-image-placeholder">
-        </div>
-</div>
+			<h1>活動管理</h1>
+			<div th:if="${#lists.isEmpty(actList)}" class="no-data-message">
+				<p>目前尚無活動可供查閱</p>
+			</div>
 
-                    <div class="card-details">
-                        
-                        <h2 class="card-title" th:text="${act.actName}">活動名稱</h2>
+			<div th:unless="${#lists.isEmpty(actList)}"
+				class="card-list-container">
 
-                        <div class="card-data-item">
-                            <span class="data-label">活動ID:</span>
-                            <span class="data-value" th:text="${act.actId}"></span>
-                        </div>
-                        
-                        <div class="card-data-item">
-                            <span class="data-label">開始日期:</span>
-                            <span class="data-value" th:text="${#dates.format(act.actStart, 'yyyy/MM/dd')}"></span>
-                        </div>
+				<div th:each="act : ${actList}" class="activity-card">
 
-                        <div class="card-data-item">
-                            <span class="data-label">結束日期:</span>
-                            <span class="data-value" th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></span>
-                        </div>
-                        
-                        <div class="card-data-item">
-                            <span class="data-label">費用:</span>
-                            <span class="data-value" th:text="${act.actFee}"></span>
-                        </div>
+					<div class="card-image">
+						<img th:if="${act.actMainImg != null}"
+							th:src="@{'/fmem/act/mainImg/' + ${act.actId}}"
+							th:alt="${act.actName} + '主照片'" />
 
-                        <div class="card-data-item">
-                            <span class="data-label">活動狀態:</span>
-                            <span class="data-value status-text" th:text="${act.actStatText}"></span>
-                        </div>
-                        
-                        <div class="card-data-item">
-                            <span class="data-label">上下架狀態:</span>
-                            <span class="data-value status-text" 
-                                  th:text="${act.actLaunStatText}"
-                                  th:classappend="${act.actLaunStatText == '已上架'} ? 'status-published' : 'status-draft'">
-                            </span>
-                        </div>
-                        
-                        <div class="card-data-item">
-                            <span class="data-label">活動評價:</span>
-                            <span class="data-value" th:text="${act.actCnt != null && act.actCnt > 0 ?
+						<div th:unless="${act.actMainImg != null}"
+							class="no-image-placeholder"></div>
+					</div>
+
+					<div class="card-details">
+
+						<h2 class="card-title" th:text="${act.actName}">活動名稱</h2>
+
+						<div class="card-data-item">
+							<span class="data-label">活動ID:</span> <span class="data-value"
+								th:text="${act.actId}"></span>
+						</div>
+
+						<div class="card-data-item">
+							<span class="data-label">開始日期:</span> <span class="data-value"
+								th:text="${#dates.format(act.actStart, 'yyyy/MM/dd')}"></span>
+						</div>
+
+						<div class="card-data-item">
+							<span class="data-label">結束日期:</span> <span class="data-value"
+								th:text="${#dates.format(act.actEnd, 'yyyy/MM/dd')}"></span>
+						</div>
+
+						<div class="card-data-item">
+							<span class="data-label">費用:</span> <span class="data-value"
+								th:text="${act.actFee}"></span>
+						</div>
+
+						<div class="card-data-item">
+							<span class="data-label">活動狀態:</span> <span
+								class="data-value status-text" th:text="${act.actStatText}"></span>
+						</div>
+
+						<div class="card-data-item">
+							<span class="data-label">上下架狀態:</span> <span
+								class="data-value status-text" th:text="${act.actLaunStatText}"
+								th:classappend="${act.actLaunStatText == '已上架'} ? 'status-published' : 'status-draft'">
+							</span>
+						</div>
+
+						<div class="card-data-item">
+							<span class="data-label">活動評價:</span> <span class="data-value"
+								th:text="${act.actCnt != null && act.actCnt > 0 ?
                               #numbers.formatDecimal(act.actScore / act.actCnt, 1, 1) + ' 顆星 (' + act.actCnt + ' 筆)' :
                               '尚無評價'}">
-                            </span>
-                        </div>
-                        
-                        <div class="remark-area">
-                            <span class="data-label">審核備註:</span>
-                            <p class="data-value" th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></p>
-                        </div>
+							</span>
+						</div>
 
-                    </div>
-                    
-                    <div class="card-actions">
-                        <a class="btn" th:href="@{/fmem/act/detail/{id}(id=${act.actId})}">查看活動詳細資訊</a>
+						<div class="remark-area">
+							<span class="data-label">審核備註:</span>
+							<p class="data-value"
+								th:text="${#strings.isEmpty(act.actRemark) ? '無' : act.actRemark}"></p>
+						</div>
 
-                        <th:block th:if="${act.actStat == 2}"> 
-                            <span class="disabled-info">
-                                    無法編輯已過審的活動
-                            </span>
-                        </th:block>
-                        <th:block th:unless="${act.actStat == 2}">
-                            <a th:href="@{/fmem/act/updateAct/{actId}(actId=${act.actId})}" 
-                               class="btn edit-btn-card" 
-                               style="margin-top: 10px; background-color: #3498db;">
-                               編輯並重新送審
-                            </a>
-                        </th:block>
+					</div>
 
-                    </div>
-                </div>
-            
-        </div>
-    </div>
-</div>
+					<div class="card-actions">
+						<a class="btn" th:href="@{/fmem/act/detail/{id}(id=${act.actId})}">查看活動詳細資訊</a>
+
+						<th:block th:if="${act.actStat == 2}">
+							<span class="disabled-info"> 無法編輯已過審的活動 </span>
+						</th:block>
+						<th:block th:unless="${act.actStat == 2}">
+							<a th:href="@{/fmem/act/updateAct/{actId}(actId=${act.actId})}"
+								class="btn edit-btn-card"
+								style="margin-top: 10px; background-color: #3498db;">
+								編輯並重新送審 </a>
+						</th:block>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
 
 
-<div th:replace="~{/front_end/index :: footer}"></div>
+	<div th:replace="~{/front_end/index :: footer}"></div>
 </body>
 </html>

@@ -1,177 +1,188 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head> 
-    <meta charset="UTF-8">
-    <title>小農活動專區 - 活動詳情</title>
+<head>
+<meta charset="UTF-8">
+<title>小農活動專區 - 活動詳情</title>
 <link rel="icon" th:href="@{/images/logo.png}">
-    
+
 <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-	<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
+<th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block>
 <link rel="stylesheet" th:href="@{/css/act/actDetailsForFmem.css}">
-	<style>
-	.header-spacing {
-    	height: 30px; /* 根據開發者工具測量的精確數值 */
-	}
-    </style>
-    
+<style>
+.header-spacing {
+	height: 30px;
+}
+</style>
+
 </head>
 <body>
 
-<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
-<div class="header-spacing"></div>
-<div class="container">
-<div class="main-content">
-    <h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
+	<div th:replace="~{/front_end/farmer/logined/home :: header}"></div>
+	<div class="header-spacing"></div>
+	<div class="container">
+		<div class="main-content">
+			<h1 class="act-title" th:text="${act.actName}">活動名稱</h1>
 
-    <div class="carousel">
-        <div class="carousel-track">
-            <div class="carousel-item">
-                <img th:src="@{/fmem/act/mainImg/{actId}(actId=${act.actId})}" alt="主圖">
-            </div>
-            <div class="carousel-item" th:each="img : ${act.actImg}">
-                <img th:src="@{/fmem/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}" alt="活動圖片" />
-            </div>
-        </div>
-        <button class="carousel-btn prev">&#10094;</button>
-        <button class="carousel-btn next">&#10095;</button>
-        <div class="carousel-dots">
-            <span class="dot" th:each="img, iterStat : ${act.actImg}" th:data-index="${iterStat.index}"></span>
-        </div>
-    </div>
-<div class="act-info" th:object="${act}">
+			<div class="carousel">
+				<div class="carousel-track">
+					<div class="carousel-item">
+						<img th:src="@{/fmem/act/mainImg/{actId}(actId=${act.actId})}"
+							alt="主圖">
+					</div>
+					<div class="carousel-item" th:each="img : ${act.actImg}">
+						<img
+							th:src="@{/fmem/act/img/{actId}/{imgId}(actId=${act.actId}, imgId=${img.actImgId})}"
+							alt="活動圖片" />
+					</div>
+				</div>
+				<button class="carousel-btn prev">&#10094;</button>
+				<button class="carousel-btn next">&#10095;</button>
+				<div class="carousel-dots">
+					<span class="dot" th:each="img, iterStat : ${act.actImg}"
+						th:data-index="${iterStat.index}"></span>
+				</div>
+			</div>
+			<div class="act-info" th:object="${act}">
 
-    <div class="act-details">
-        <p><strong>活動評價：</strong>
-        <span th:if="*{actCnt != null and actCnt > 0}"
-            th:text="${#numbers.formatDecimal(act.actScore / act.actCnt, 1, 1)} + ' 顆星 (' + *{actCnt} + ' 筆評價)'"></span>
-        <span th:if="*{actCnt == null or actCnt == 0}">尚無評價</span>
-        </p>
-        <p><strong>活動日期:</strong> <span th:text="*{actStart} + ' ~ ' + *{actEnd}"></span></p>
-        <p><strong>活動基本價:</strong> <span th:text="*{actFee}"></span> 元</p>
-        <p><strong>分類:</strong>
-            <span th:each="actCate : ${actCateList}" th:text="${actCate.actCateName} + ' '"></span>
-        </p>
-        <p><strong>活動說明:</strong></p>
-        <div style="white-space: pre-wrap;" th:text="${act.actDes}">
-                		<p th:utext="${#strings.replace(act.actDes, '\n', '<br/>')}"></p>
-				    </div>
-    </div>
+				<div class="act-details">
+					<p>
+						<strong>活動評價：</strong> <span
+							th:if="*{actCnt != null and actCnt > 0}"
+							th:text="${#numbers.formatDecimal(act.actScore / act.actCnt, 1, 1)} + ' 顆星 (' + *{actCnt} + ' 筆評價)'"></span>
+						<span th:if="*{actCnt == null or actCnt == 0}">尚無評價</span>
+					</p>
+					<p>
+						<strong>活動日期:</strong> <span
+							th:text="*{actStart} + ' ~ ' + *{actEnd}"></span>
+					</p>
+					<p>
+						<strong>活動基本價:</strong> <span th:text="*{actFee}"></span> 元
+					</p>
+					<p>
+						<strong>分類:</strong> <span th:each="actCate : ${actCateList}"
+							th:text="${actCate.actCateName} + ' '"></span>
+					</p>
+					<p>
+						<strong>活動說明:</strong>
+					</p>
+					<div style="white-space: pre-wrap;" th:text="${act.actDes}">
+						<p th:utext="${#strings.replace(act.actDes, '\n', '<br/>')}"></p>
+					</div>
+				</div>
 
-	<div class="launch-area"> 
+				<div class="launch-area">
 
-        <div class="launch-control-box">
-    <h1 class="launch-status-title">活動上下架狀態:</h1>
-            <div class="status-display" 
-                 th:classappend="*{actLaunStat == 1 ? 'status-launched' : 'status-delisted'}">
-                <span th:text="*{actLaunStat == 1 ? '上架中' : '未上架'}"></span> 
-            </div>
+					<div class="launch-control-box">
+						<h1 class="launch-status-title">活動上下架狀態:</h1>
+						<div class="status-display"
+							th:classappend="*{actLaunStat == 1 ? 'status-launched' : 'status-delisted'}">
+							<span th:text="*{actLaunStat == 1 ? '上架中' : '未上架'}"></span>
+						</div>
 
-            <div th:if="*{actStat == 2}">
-                
-                <button th:if="*{actLaunStat == 0}" 
-                        class="btn launch-btn btn-success" 
-                        onclick="confirmLaunch(1)">
-                    <i class="fas fa-arrow-up"></i> 立即上架
-                </button>
-                
-                <button th:if="*{actLaunStat == 1}" 
-                        class="btn launch-btn btn-danger" 
-                        onclick="confirmDelist(0)">
-                    <i class="fas fa-arrow-down"></i> 立即下架
-                </button>
-            </div>
-        <div th:unless="*{actStat == 2}" class="alert alert-warning mt-3 status-alert">
-            待審核通過後才能操作上下架。
-        </div>
-        </div>
-        
-    </div>
-    </div>
+						<div th:if="*{actStat == 2}">
 
-<form id="launchForm" th:action="@{/fmem/act/updateLaunchStatus/{actId}(actId=*{actId})}" method="post" style="display:none;">
-    <input type="hidden" id="launchStatInput" name="newLaunStat" value="">
-</form>
+							<button th:if="*{actLaunStat == 0}"
+								class="btn launch-btn btn-success" onclick="confirmLaunch(1)">
+								<i class="fas fa-arrow-up"></i> 立即上架
+							</button>
 
-<div class="ses-info">
-    <div th:if="${#lists.isEmpty(sesList)}"> 
-        <p>此活動目前尚無場次</p> 
-    </div>
+							<button th:if="*{actLaunStat == 1}"
+								class="btn launch-btn btn-danger" onclick="confirmDelist(0)">
+								<i class="fas fa-arrow-down"></i> 立即下架
+							</button>
+						</div>
+						<div th:unless="*{actStat == 2}"
+							class="alert alert-warning mt-3 status-alert">
+							待審核通過後才能操作上下架。</div>
+					</div>
 
-    <div th:if="${!#lists.isEmpty(sesList)}">
-        <h2 class="ses-title">場次一覽</h2> 
-        <table class="ses-table">
-            <thead>
-                <tr>
-                    <th>場次日期</th>
-                    <th>場次進行時間</th>
-                    <th>報名費用</th>
-                    <th>可參加人數</th>
-                    <th>報名截止日期</th>
-                    <th>已報名人數</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="ses : ${sesList}">
-                    <td th:text="${#dates.format(ses.sesDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${#dates.format(ses.sesStart, 'HH:mm')} + ' ~ ' + ${#dates.format(ses.sesEnd, 'HH:mm')}"></td>
-                    <td th:text="${ses.sesFee}" ></td>
-                    <td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
-                    <td th:text="${#dates.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${ses.headCount}">0</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-</div>
-</div>
+				</div>
+			</div>
 
+			<form id="launchForm"
+				th:action="@{/fmem/act/updateLaunchStatus/{actId}(actId=*{actId})}"
+				method="post" style="display: none;">
+				<input type="hidden" id="launchStatInput" name="newLaunStat"
+					value="">
+			</form>
 
+			<div class="ses-info">
+				<div th:if="${#lists.isEmpty(sesList)}">
+					<p>此活動目前尚無場次</p>
+				</div>
 
-<div th:replace="~{/front_end/index :: footer}"></div>
-<script>
-    // 從 Thymeleaf 取得活動 ID
-    const actId = '[[${act.actId}]]';
-    
-    // 檢查 sesList 是否為空 (用於前端判斷場次狀態)
-    const hasLaunchedSes = '[[${!#lists.isEmpty(sesList)}]]' === 'true'; 
-    
-    // ===================================
-    // 活動上架函式 (newStat = 1) 
-    // ===================================
-    function confirmLaunch(newStat) {
-        if (confirm("確認要上架此活動嗎？")) {
-            // 設置表單 action 和 input 值
-            document.getElementById('launchForm').action = '/fmem/act/updateLaunchStatus/' + actId;
-            document.getElementById('launchStatInput').value = newStat;
-            // 提交表單給後端 Controller
-            document.getElementById('launchForm').submit();
-        }
-    }
+				<div th:if="${!#lists.isEmpty(sesList)}">
+					<h2 class="ses-title">場次一覽</h2>
+					<table class="ses-table">
+						<thead>
+							<tr>
+								<th>場次日期</th>
+								<th>場次進行時間</th>
+								<th>報名費用</th>
+								<th>可參加人數</th>
+								<th>報名截止日期</th>
+								<th>已報名人數</th>
 
-    // ===================================
-    // 活動下架函式 (newStat = 0)
-    // ===================================
-    function confirmDelist(newStat) {
-        
-        // 檢查是否有上架中的場次 (前端提示邏輯)
-        if (hasLaunchedSes) {
-            alert("此活動尚有上架中的場次，請先將所有場次下架或完成所有場次, 才能下架整個活動");
-            // ！！！ 關鍵修正：警告後立即返回，不再顯示第二次確認對話框 ！！！
-            return; 
-        }
-
-        // 只有在沒有上架中場次的情況下，才詢問是否下架
-        if (confirm("確認要下架此活動嗎？")) {
-            document.getElementById('launchForm').action = '/fmem/act/updateLaunchStatus/' + actId;
-            document.getElementById('launchStatInput').value = newStat;
-            document.getElementById('launchForm').submit();
-        }
-    }
-</script>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="ses : ${sesList}">
+								<td th:text="${#dates.format(ses.sesDate, 'yyyy-MM-dd')}"></td>
+								<td
+									th:text="${#dates.format(ses.sesStart, 'HH:mm')} + ' ~ ' + ${#dates.format(ses.sesEnd, 'HH:mm')}"></td>
+								<td th:text="${ses.sesFee}"></td>
+								<td th:text="${ses.minPpl} + ' ~ ' + ${ses.maxPpl}"></td>
+								<td th:text="${#dates.format(ses.regEnd, 'yyyy-MM-dd')}"></td>
+								<td th:text="${ses.headCount}">0</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-    <script th:src="@{/js/act/actCarousel.js}"></script>
+
+	<div th:replace="~{/front_end/index :: footer}"></div>
+	<script>
+		// 從 Thymeleaf 取得活動 ID
+		const actId = '[[${act.actId}]]';
+
+		// 檢查 sesList 是否為空 (用於前端判斷場次狀態)
+		const hasLaunchedSes = '[[${!#lists.isEmpty(sesList)}]]' === 'true';
+
+		function confirmLaunch(newStat) {
+			if (confirm("確認要上架此活動嗎？")) {
+				// 設置表單 action 和 input 值
+				document.getElementById('launchForm').action = '/fmem/act/updateLaunchStatus/'
+						+ actId;
+				document.getElementById('launchStatInput').value = newStat;
+				// 提交表單給後端 Controller
+				document.getElementById('launchForm').submit();
+			}
+		}
+
+		function confirmDelist(newStat) {
+
+			// 檢查是否有上架中的場次 (前端提示邏輯)
+			if (hasLaunchedSes) {
+				alert("此活動尚有上架中的場次，請先將所有場次下架或完成所有場次, 才能下架整個活動");
+				// 警告後立即返回，不再顯示第二次確認對話框
+				return;
+			}
+
+			// 只有在沒有上架中場次的情況下，才詢問是否下架
+			if (confirm("確認要下架此活動嗎？")) {
+				document.getElementById('launchForm').action = '/fmem/act/updateLaunchStatus/'
+						+ actId;
+				document.getElementById('launchStatInput').value = newStat;
+				document.getElementById('launchForm').submit();
+			}
+		}
+	</script>
+
+
+	<script th:src="@{/js/act/actCarousel.js}"></script>
 </body>
 </html>

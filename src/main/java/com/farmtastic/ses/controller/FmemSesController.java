@@ -181,15 +181,10 @@ public class FmemSesController {
 		return "front_end/farmer/logined/fmemSes/addSes";
 	}
 
-	// 額外資料. 關聯資料. 檔案上傳 → @RequestParam !!!!
+	// 額外資料. 關聯資料. 檔案上傳 >> @RequestParam !!!!
 	@PostMapping("insertSes")
 	public String addSes(@Valid @ModelAttribute("ses") Ses ses, BindingResult result, HttpSession session, Model model,
 			RedirectAttributes redirectAttributes) throws IOException {
-
-//		// 處理空表單用
-//		if (result.hasErrors()) {
-//			return "front_end/farmer/logined/fmemSes/addSes";
-//		}
 
 		Fmem fmem = (Fmem) session.getAttribute("loggedInFmember"); // 取得登入小農
 		Act act = (Act) session.getAttribute("sessionAct"); // 取得該場次
@@ -205,38 +200,38 @@ public class FmemSesController {
 		}
 
 		ses.setAct(act);
-		
+
 		// 不超過120%的驗證
 		if (ses.getSesFee() != null && act.getActFee() != null) {
-	        
-	        Integer actFee = act.getActFee();
-	        Integer sesFee = ses.getSesFee();
-	        
-	        Integer maxDifference = (actFee * 20) / 100;
-	        Integer maxSesFee = actFee + maxDifference;
-	        
-	        Integer difference = Math.abs(sesFee - actFee);
-	        
-	        if (difference > maxDifference) {
-	            String errorMessage = String.format("場次費用 ($%d) 不得超過活動費用 ($%d) 的 120%% (最高為: $%d)", 
-	                                                 sesFee, actFee, maxSesFee);
-	            
-	            result.rejectValue("sesFee", null, errorMessage);
-	        }
-	    }
-		
-		if (result.hasErrors()) {
-	        return "front_end/farmer/logined/fmemSes/addSes";
-	    }
 
-		// 初始化非必填但可能需要預設值的欄位... 測試看看
+			Integer actFee = act.getActFee();
+			Integer sesFee = ses.getSesFee();
+
+			Integer maxDifference = (actFee * 20) / 100;
+			Integer maxSesFee = actFee + maxDifference;
+
+			Integer difference = Math.abs(sesFee - actFee);
+
+			if (difference > maxDifference) {
+				String errorMessage = String.format("場次費用 ($%d) 不得超過活動費用 ($%d) 的 120%% (最高為: $%d)", sesFee, actFee,
+						maxSesFee);
+
+				result.rejectValue("sesFee", null, errorMessage);
+			}
+		}
+
+		if (result.hasErrors()) {
+			return "front_end/farmer/logined/fmemSes/addSes";
+		}
+
+		// 初始化非必填但可能需要預設值的欄位
 		if (ses.getSesLaunStat() == null) {
 			ses.setSesLaunStat(0); // 預設為 0 (未上架/預設值)
 		}
 
 		sesSvc.addSes(ses);
 
-//		// 設置 Flash Attribute，用於 SweetAlert
+//		設置 Flash Attribute，用於 SweetAlert
 		redirectAttributes.addFlashAttribute("successMessage", "已成功新增場次！");
 //	
 		return "redirect:/fmem/ses/listAllSesForFmem"; // 新增完後轉到場次一覽
@@ -355,7 +350,7 @@ public class FmemSesController {
 		return "redirect:/fmem/ses/listAllSesForFmem";
 	}
 
-	// ================= 取消場次 (= 編輯報名狀態+下架) ==================
+//	================= 取消場次 (= 編輯報名狀態+下架) ==================
 	@PostMapping("/cancelSes")
 	public String cancelSes(@RequestParam("sesId") Integer sesId, HttpSession session, ModelMap model) {
 

@@ -7,6 +7,4 @@ iframe.addEventListener('load', function() {
 		window.top.location.href = href;
 	}
 	// 失敗時會回報名表單不會跳整頁
-});/**
- * 
- */
+});

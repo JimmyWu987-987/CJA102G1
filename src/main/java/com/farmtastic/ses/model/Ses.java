@@ -194,7 +194,7 @@ public class Ses {
 		this.headCountCache = headCountCache;
 	}
 
-	public Act getAct() { // 如果沒有Lombok, 需手動加入
+	public Act getAct() { // 如果沒有Lombok, 需手動加入!!!
 		return act;
 	}
 
@@ -250,7 +250,6 @@ public class Ses {
 	}
 
 	// 取得報名狀態
-	// TODO: 需修改假資料, 不做編輯場次了, default要改成5
 	@Transient
 	public String getRegStatText() {
 		switch (this.regStat) {

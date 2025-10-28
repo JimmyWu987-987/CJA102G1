@@ -40,10 +40,6 @@ import com.farmtastic.ses.model.SesService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-/*
- * ToDo: 修改為 return 的頁面 >> 73. 95. 180
- * */
-
 @Controller
 @Validated
 @RequestMapping("/act")

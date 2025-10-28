@@ -58,22 +58,4 @@ public class SesController {
 		return "front_end/customer/unlogined/ (再看報名表單的連結為何~) "; // 報名表單的部分已另外做了
 
 	}
-
-////	================= (這是舊的, 先保留起來以備不時之需) 列出該活動所有場次 ================
-//	@GetMapping("/listByAct/{actId}")
-//	public String listByAct(@PathVariable("actId") Integer actId, ModelMap model) {
-//		Sort sort = Sort.by(Sort.Direction.ASC, "sesDate");
-//
-//		Act act = actSvc.getOneAct(actId);
-//		
-//		// 依活動ID查所有場次
-//		List<Ses> sesList = sesSvc.findByActId(actId, sort);
-//
-//		model.addAttribute("act", act);
-//		model.addAttribute("sesList", sesList);
-//		model.addAttribute("actId", actId);
-//
-//		return "front_end/customer/unlogined/actDetails/actDetails"; 
-//
-//	}
 }
