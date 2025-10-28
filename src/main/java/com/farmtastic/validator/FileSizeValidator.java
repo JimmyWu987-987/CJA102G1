@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileSizeValidator implements ConstraintValidator<FileSize, MultipartFile> {
-
     private long maxSize;
 
     @Override

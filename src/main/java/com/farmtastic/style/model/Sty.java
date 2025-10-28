@@ -66,7 +66,6 @@ public class Sty implements Serializable{
 	}
 
 	
-	
 	public Set<Fmem> getFmems() {
 		return fmems;
 	}

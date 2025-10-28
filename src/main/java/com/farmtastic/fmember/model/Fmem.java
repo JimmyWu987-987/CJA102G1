@@ -121,9 +121,6 @@ public class Fmem implements Serializable {
 	
 	@Column(name = "bank_code")
 	@NotEmpty(message = "銀行代碼請勿空白", groups = RegistrationValidation.class)
-//	@Pattern(regexp = "^$|^[0-9]{3,4}$", 
-//			 message = "銀行代碼格式不符，請輸入數字3~4碼", 
-//			 groups = RegistrationValidation.class)
 	private String bankCode;
 	
 	@Column(name = "bank_acc")
@@ -162,14 +159,11 @@ public class Fmem implements Serializable {
 	private MultipartFile insurPicFile;
 	
 	
-	
-	
 	@Column(name = "store_pic", insertable = false)
 	private byte[] storePic;
 	
 	@Column(name = "store_name", insertable = false)
 	private String storeName;
-	
 	
 	
 	@Column(name = "store_intro", insertable = false)

@@ -7,8 +7,6 @@
     <link rel="icon" href="./images/logo.png">
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
-<!--     <th:block th:replace="~{/front_end/farmer/logined/home :: homeCss}"></th:block> -->
-
 	<link rel="stylesheet" th:if="${fmem.sty}" th:href="@{${fmem.sty.styCssPath}}">
 	
 	<style>
@@ -29,15 +27,12 @@
 
     <div class="container container-main">
     
-    
         <div th:replace="~{/front_end/customer/unlogined/farmerStoreProd :: sidebar}"></div>
-            
 
         <div class="store-content">
 <!--             <h3>商品</h3> -->
             <ul class="activities">
             	<p th:if="${actList == null or #lists.isEmpty(actList)}" th:text="目前尚無上架活動" class="no-item-msg"></p>
-<!--                 <li class="activity" th:fragment="activity"> -->
                 <li class="activity" th:each="act : ${actList}">
                     <div class="pic">
                     	<a th:href="@{/act/detail/{actId}(actId=${act.actId})}">
@@ -57,7 +52,6 @@
 	                        </div>
 	                	</a>
                         <div class="date">
-<!--                         	<span>活動期間：</span> -->
                         	<span th:text="${act.actStart}"></span>
                         	<span>~</span>
                         	<span th:text="${act.actEnd}"></span>
@@ -70,14 +64,11 @@
         </div>
         
     </div>
-
     
 <!-- --------------------------------------------------------------------- -->
-    
    
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
-<!-- 	<script th:src="@{/js/mem/addToCartAlert.js}"></script> -->
     
 </body>
 </html>

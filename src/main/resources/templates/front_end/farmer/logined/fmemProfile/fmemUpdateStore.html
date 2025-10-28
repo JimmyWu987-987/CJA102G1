@@ -11,8 +11,6 @@
 	<link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
     <link rel="stylesheet" th:href="@{/css/mem/memArea.css}">
     <link rel="stylesheet" th:href="@{/css/fmem/fmemUpdateStore.css}">
-    
-
 
 </head>
 <body th:data-success="${success}" th:data-status="${accStatus}">
@@ -58,13 +56,11 @@
                    				 th:src="@{'data:image/jpeg;base64,' + ${tempStyPicBase64}}"
                    				 alt="樣式預覽圖"
                    				 class="img-nail">
-                   			
 					    </div>
 					    <div id="img-display">
 					    	<img src="" >
 					    </div>
 	                </li>
-	                
 	                
 	                <li class="list-pic first-pic">
                			<label>小農頭像<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span>(點選下框以新增或更換圖片)</label>
@@ -77,9 +73,7 @@
 					    </div>
 					    <div class="picInfo"></div>
 					    <span th:if="${#fields.hasErrors('fmemPic')}" th:errors="*{fmemPic}" class="error"></span>
-          
 	               </li>
-	                
 	                
 	                <li class="list-pic">
                			<label>小農商店主圖<span class="star-tag" th:if="${loggedInFmember.accStatus==1}" th:text="'*'"></span>(點選下框以新增或更換圖片)</label>
@@ -94,8 +88,6 @@
 					    <span th:if="${#fields.hasErrors('storePic')}" th:errors="*{storePic}" class="error"></span>
 	                </li>
 	                
-	                
-	                
 	                <li class="list-score">
 	                    <label>商品總評價：</label>
 	                    <span th:text = "${avgMktScore != null ? avgMktScore : '尚無評分'}"></span>
@@ -105,7 +97,6 @@
 						<span>則)</span>
 	                </li>
 	                
-	             
 	                <li class="list-score">
 	                    <label>活動總評價：</label>
 	                    <span th:text = "${avgActScore != null ? avgActScore : '尚無評分'}"></span>
@@ -127,11 +118,9 @@
 	</div>
 	<div th:replace="~{/front_end/index :: footer}"></div>
 
-
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script th:src="@{/js/fmem/uploadPic.js}"></script>
 	<script th:src="@{/js/mem/successUpdateProfileAlert.js}"></script>
 	<script th:src="@{/js/fmem/styPicPreview.js}"></script>
-	
 </body>
 </html>

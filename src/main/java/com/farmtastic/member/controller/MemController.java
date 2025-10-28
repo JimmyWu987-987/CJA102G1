@@ -130,9 +130,7 @@ public class MemController {
 
 	@GetMapping("/farmerStoreProd")
 	public String farmerStoreProd(ModelMap model, @RequestParam("fmemId") String fmemId, HttpSession session) {
-		
 		Integer fmemIdInteger = Integer.valueOf(fmemId);
-		
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
 
 		List<Pro> proList = proSvc.findByFmemId(fmemIdInteger);
@@ -154,15 +152,12 @@ public class MemController {
 		model.addAttribute("fmemId", fmemId);
 		model.addAttribute("StorePicBase64", StorePicBase64);
 		model.addAttribute("fmemPicBase64", fmemPicBase64);
-
 		return "front_end/customer/unlogined/farmerStoreProd";
 	}
 
 	@GetMapping("/farmerStoreAct")
 	public String farmerStoreAct(ModelMap model, @RequestParam("fmemId") String fmemId) {
-
 		Integer fmemIdInteger = Integer.valueOf(fmemId);
-		
 		Fmem fmem = fmemSvc.getOneByFmemId(fmemIdInteger);
 		
 		List<Act> actList = actSvc.findByFmemId(fmemIdInteger, Sort.by(Sort.Direction.DESC, "actLaunUpd"));
@@ -180,14 +175,12 @@ public class MemController {
 		model.addAttribute("fmemId", fmemId);
 		model.addAttribute("StorePicBase64", StorePicBase64);
 		model.addAttribute("fmemPicBase64", fmemPicBase64);
-
 		return "front_end/customer/unlogined/farmerStoreAct";
 	}
 
 //	登入後才能看的: 會員專區
 	@GetMapping("/memArea")
 	public String memArea() {
-		System.out.println("memArea重導");
 		return "/front_end/customer/logined/memArea";
 	}
 	
@@ -228,12 +221,10 @@ public class MemController {
 	        model.addAttribute("loggedInMember", loggedInMember);
 	        return "front_end/customer/logined/memProfile/memCompleteProfile";
 	    }
-	    
 	    // 更新資料
 	    loggedInMember.setMemBirthday(memBirthday);
 	    memSvc.updateMem(loggedInMember);
 	    
-	    // 更新 Session
 	    session.setAttribute("loggedInMember", loggedInMember);
 	    redirectAttrs.addFlashAttribute("success", "生日填寫完成");
 	    return "redirect:/mem/memArea";
@@ -241,10 +232,9 @@ public class MemController {
 	
 	
 	
-	
 
 //	怎麼分辨是「表單送來的」還是「Session 裡的」？
-//	Spring 的處理順序大致是這樣：
+//	Spring 的處理順序：
 //	1. 如果是 @PostMapping，且有 th:object="loggedInMember"，那麼 Spring 會用 表單資料來綁定 loggedInMember
 //	2. 如果你沒有送這個物件（或是 GET 請求），那麼 Spring 就會從 @SessionAttributes 管理的 session model 中取出 loggedInMember 填給你
 //	登入後才能看的: 會員專區/修改個人資料頁面
@@ -257,7 +247,6 @@ public class MemController {
 		UpdateProfileMem updateProfileMem = new UpdateProfileMem();
 		BeanUtils.copyProperties(loggedInMember, updateProfileMem);
 		model.addAttribute("updateProfileMem", updateProfileMem);
-		
 		return "/front_end/customer/logined/memProfile/memUpdateProfile";
 	}
 
@@ -278,8 +267,6 @@ public class MemController {
 
 		BeanUtils.copyProperties(updateProfileMem, loggedInMember);
 		memSvc.updateMem(loggedInMember);
-		System.out.println("loggedInMember=" + loggedInMember);
-//		model.addAttribute("loggedInMember", loggedInMember); //index右上角顯示更新
 		session.setAttribute("loggedInMember", loggedInMember); // index右上角顯示更新
 		redirectAttrs.addFlashAttribute("success", "修改資料成功");
 		return "redirect:/mem/memArea/updateProfilePage";
@@ -290,7 +277,7 @@ public class MemController {
 
 		UpdatePasswordMem updatePasswordMem = new UpdatePasswordMem();
 		BeanUtils.copyProperties(loggedInMember, updatePasswordMem);
-		model.addAttribute("updatePasswordMem", updatePasswordMem); // ??
+		model.addAttribute("updatePasswordMem", updatePasswordMem);
 		return "/front_end/customer/logined/memProfile/memUpdatePassword";
 	}
 
@@ -310,7 +297,6 @@ public class MemController {
 		}
 
 		loggedInMember.setMemPwd(passwordEncoder.encode(updatePasswordMem.getMemPwd()));
-//		BeanUtils.copyProperties(updatePasswordMem, loggedInMember);
 		memSvc.updateMem(loggedInMember);
 		redirectAttrs.addFlashAttribute("success", "修改密碼成功");
 		return "redirect:/mem/memArea/updatePasswordPage";
@@ -360,7 +346,6 @@ public class MemController {
 		// 註冊成功後立即發券
 		memProCpnSvc.giveCoupon(mem.getMemId(), CpnConstants.REGISTER_DISCOUNT_ID);
 		memProCpnSvc.giveCoupon(mem.getMemId(), CpnConstants.REGISTER_CASHBACK_ID);
-//		redirectAttrs.addFlashAttribute("success", "註冊成功，已自動發送新客專屬折價券！");
 		redirectAttrs.addFlashAttribute("success", "註冊成功");
 		return "redirect:/"; // 註冊(新增)成功後重導至index.html
 	}
@@ -383,7 +368,7 @@ public class MemController {
 			redisSvc.deleteCode(code);
 			return "redirect:/mem/showMemRegLoginForm";
 		}
-		model.addAttribute("fail", "使用者不存在"); // *****要寫錯誤訊息的提示
+		model.addAttribute("fail", "使用者不存在");
 		return "redirect:/";
 	}
 
@@ -503,14 +488,14 @@ public class MemController {
 		if (memAccLogin == null || memAccLogin.trim().isEmpty()) {
 			model.addAttribute("loginError", "請輸入帳號");
 			model.addAttribute("loginRequest", loginRequest);
-			model.addAttribute("mem", new Mem()); // 給註冊表單用???
+			model.addAttribute("mem", new Mem()); // 給註冊表單用
 			model.addAttribute("activeTab", "login"); // 標記目前所在頁籤
 			return "front_end/customer/unlogined/memRegLogin";
 		}
 		if (memPwdLogin == null || memPwdLogin.trim().isEmpty()) {
 			model.addAttribute("loginError", "請輸入密碼");
 			model.addAttribute("loginRequest", loginRequest);
-			model.addAttribute("mem", new Mem()); // ???
+			model.addAttribute("mem", new Mem()); // 給註冊表單用
 			model.addAttribute("activeTab", "login"); // 標記目前所在頁籤
 			return "front_end/customer/unlogined/memRegLogin";
 		}
@@ -522,7 +507,7 @@ public class MemController {
 			if (mem == null) {
 				model.addAttribute("loginError", "帳號或密碼錯誤");
 				model.addAttribute("loginRequest", loginRequest);
-				model.addAttribute("mem", new Mem()); // ???
+				model.addAttribute("mem", new Mem()); // 給註冊表單用
 				model.addAttribute("activeTab", "login"); // 標記目前所在頁籤
 				return "front_end/customer/unlogined/memRegLogin";
 			}
@@ -530,12 +515,11 @@ public class MemController {
 			
 			// 3.登入成功，把會員資料存進session
 			model.addAttribute("loggedInMember", mem);
-//			session.setAttribute("loggedInMember", mem); //??
 			model.addAttribute("memId", mem.getMemId());
 			session.setAttribute("memId", mem.getMemId());
 			
 			
-			// **設定 Spring Security 的 SecurityContext
+			// *設定 Spring Security 的 SecurityContext
 	        UsernamePasswordAuthenticationToken authentication = 
 	            new UsernamePasswordAuthenticationToken(
 	                mem, 
@@ -544,26 +528,16 @@ public class MemController {
 	            );
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 			
-//	        System.out.println("SecurityContext 已設定");
-//	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
-//	        System.out.println("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-			
 	        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 	        securityContext.setAuthentication(authentication);
 	        SecurityContextHolder.setContext(securityContext);
 	        
-	        // **將 SecurityContext 儲存到 Session
+	        // *將 SecurityContext 儲存到 Session
 	        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
 	        
-//	        System.out.println("SecurityContext 已設定並儲存到 Session");
-//	        System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
-
-			
 			// 4.登入成功後 重導至原本頁面
 			String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
 			
-			System.out.println("redirectUrl-"+redirectUrl);
 			if (redirectUrl != null) {
 				session.removeAttribute("redirectAfterLogin");
 				return "redirect:" + redirectUrl;

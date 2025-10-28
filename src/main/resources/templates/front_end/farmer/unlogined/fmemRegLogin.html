@@ -8,28 +8,9 @@
     
     <th:block th:replace="~{/front_end/index :: mainCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/mem/regLogin.css}">
-
+    <link rel="stylesheet" th:href="@{/css/fmem/fmemHeaderFooterColor.css}">
+    
     <style>
-		
-		.container-header,
-		.container-footer{
-			background-color: #e0ead5;	
-		}
-		.nav > li > a{
-			background-color: #459463;
-		}
-		.container-header .member .btn-farmer i,
-		.container-header .member .btn-logout i,
-		.container-header .member .bell i{
-			background-color: #57a24d;
-		}
-		.container-header .member .btn-farmer:hover i,
-		.container-header .member .btn-logout:hover i,
-		.container-header .member .bell:hover i{
-			background-color: #37922d;
-		}
-		
-		
 		form.userInfo{
 		    border: 3px solid #8fcaa1;
 		}
@@ -45,8 +26,8 @@
 		.reg-login-btns .btn-reg:not(.active-btn):hover{
 		    background-color: #b2dbbf;
 		}
-		
 	</style>
+		
 </head>
 <body th:data-active-tab="${activeTab != null ? activeTab : 'login'}" th:data-success="${success}" th:data-fail="${fail}">
     

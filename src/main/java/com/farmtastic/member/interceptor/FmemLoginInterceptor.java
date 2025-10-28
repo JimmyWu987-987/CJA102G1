@@ -13,17 +13,9 @@ public class FmemLoginInterceptor implements HandlerInterceptor{
 
 		HttpSession session = request.getSession();
 		if (session.getAttribute("loggedInFmember") == null) {
-			
-//			String uri = request.getRequestURI();
-//			String queryString = request.getQueryString();
-//			String fullUrl = uri + (queryString != null ? "?"+queryString : "");
-//			
-//			session.setAttribute("redirectAfterLogin", fullUrl);
-			
 			response.sendRedirect(request.getContextPath() + "/fmem/showFmemRegLoginForm");
 			return false;
 		}
-
 		return true;
 	}
 }

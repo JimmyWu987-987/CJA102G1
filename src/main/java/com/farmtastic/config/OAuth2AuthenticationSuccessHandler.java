@@ -26,10 +26,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		
-		
-		System.out.println("========== OAuth2AuthenticationSuccessHandler 開始 ==========");
-		
-
 		OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
 		String email = oauth2User.getAttribute("email");
 
@@ -44,9 +40,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 		session.setAttribute("loggedInMember", mem);
 		session.setAttribute("memId", mem.getMemId());
 		
-		// ✅ 檢查是否需要補充生日
+		// *檢查是否需要補充生日
 	    if (mem.getMemBirthday() == null) {
-	        System.out.println("需要補充生日資訊，導向補充資料頁");
 	        getRedirectStrategy().sendRedirect(request, response, "/mem/memArea/completeProfilePage");
 	        return;
 	    }

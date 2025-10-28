@@ -13,7 +13,6 @@ public class StyService {
 		this.repository = repository;
 	}
 	
-	
 	public Sty getOneByStyNo(Byte styNo) {
 		return repository.findById(styNo).orElse(null);
 	}

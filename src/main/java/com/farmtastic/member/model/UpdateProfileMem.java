@@ -36,32 +36,12 @@ public class UpdateProfileMem {
 		super();
 	}
 	
-	public UpdateProfileMem(
-			String memName,
-			String memMobile,
-			String memEmail,
-			String memZipcode,
-			String memCity,
-			String memDist,
-			String memAddr) {
-		super();
-		this.memName = memName;
-		this.memMobile = memMobile;
-		this.memEmail = memEmail;
-		this.memZipcode = memZipcode;
-		this.memCity = memCity;
-		this.memDist = memDist;
-		this.memAddr = memAddr;
-	}
-	
-
 	public String getMemName() {
 		return memName;
 	}
 	public void setMemName(String memName) {
 		this.memName = memName;
 	}
-	
 	
 	public String getMemMobile() {
 		return memMobile;
@@ -70,14 +50,12 @@ public class UpdateProfileMem {
 		this.memMobile = memMobile;
 	}
 	
-	
 	public String getMemEmail() {
 		return memEmail;
 	}
 	public void setMemEmail(String memEmail) {
 		this.memEmail = memEmail;
 	}
-	
 	
 	public String getMemZipcode() {
 		return memZipcode;
@@ -86,14 +64,12 @@ public class UpdateProfileMem {
 		this.memZipcode = memZipcode;
 	}
 	
-	
 	public String getMemCity() {
 		return memCity;
 	}
 	public void setMemCity(String memCity) {
 		this.memCity = memCity;
 	}
-	
 	
 	public String getMemDist() {
 		return memDist;
@@ -102,24 +78,11 @@ public class UpdateProfileMem {
 		this.memDist = memDist;
 	}
 	
-	
 	public String getMemAddr() {
 		return memAddr;
 	}
 	public void setMemAddr(String memAddr) {
 		this.memAddr = memAddr;
-	}
-	
-	
-	@Override
-	public String toString() {
-		return "Mem [memName = " + memName +
-				", memMobile = " + memMobile +
-				", memEmail = " + memEmail +
-				", memZipcode = " + memZipcode +
-				", memCity = " + memCity +
-				", memDist = " + memDist +
-				", memAddr = " + memAddr + "]";
 	}
 	
 }

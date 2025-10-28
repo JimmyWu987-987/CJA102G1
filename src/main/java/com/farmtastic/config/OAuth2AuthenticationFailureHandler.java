@@ -33,8 +33,6 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
             }
         }
         
-        System.out.println("OAuth2 登入失敗: " + errorMessage);
-        
         // URL 編碼錯誤訊息（處理中文）
         String encodedError = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
         

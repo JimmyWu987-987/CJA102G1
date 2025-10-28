@@ -56,9 +56,6 @@ public class Mem implements Serializable {
 	@NotEmpty(message = "密碼確認欄位請勿空白", groups = {RegistrationValidation.class, UpdatePasswordValidation.class})
 	private String memPwdCheck;
 
-//	                             配合新增persist
-//	@Column(name = "acc_status", insertable = false)
-//	private Byte accStatus; // default=0
 	@Column(name = "acc_status")
 	private Byte accStatus = 0;
 
@@ -125,33 +122,9 @@ public class Mem implements Serializable {
 	@Column(name = "provider_id")
 	private String providerId;
 	
-	// 新增：大頭照（Google 會提供）
-//	@Column(name = "profile_picture")
-//	private String profilePicture;
-	
-	
 
 	public Mem() {
 		super();
-	}
-
-	public Mem(String memAcc, String memPwd, Byte accStatus, String memName, Date memBirthday, String memMobile,
-			String memEmail, String memZipcode, String memCity, String memDist, String memAddr, Timestamp regDate,
-			Integer memPoint) {
-		super();
-		this.memAcc = memAcc;
-		this.memPwd = memPwd;
-		this.accStatus = accStatus;
-		this.memName = memName;
-		this.memBirthday = memBirthday;
-		this.memMobile = memMobile;
-		this.memEmail = memEmail;
-		this.memZipcode = memZipcode;
-		this.memCity = memCity;
-		this.memDist = memDist;
-		this.memAddr = memAddr;
-		this.regDate = regDate;
-		this.memPoint = memPoint;
 	}
 
 	public Integer getMemId() {

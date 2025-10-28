@@ -1,11 +1,8 @@
 package com.farmtastic.fmember.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
-
-
 public class UpdatePasswordFmem {
 	
 	@NotEmpty(message = "密碼欄位請勿空白")
