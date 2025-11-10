@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.farmtastic.common.enums.CpnUseStatus;
+
 import com.farmtastic.fmember.model.FmemService;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
@@ -26,11 +26,10 @@ import com.farmtastic.memprocpn.model.MemProCpnRepository;
 import com.farmtastic.memprocpn.model.MemProCpnServiceImp;
 import com.farmtastic.memprocpn.model.MemProCpnVO;
 import com.farmtastic.pro.model.Pro;
-import com.farmtastic.pro.model.ProService;
-import com.farmtastic.procpn.model.ProCpnService;
+
 import com.farmtastic.proorder.model.ProOrderService;
 import com.farmtastic.proorder.model.ProOrderVO;
-import com.farmtastic.proorderitem.model.ProOrderItemId;
+
 import com.farmtastic.proorderitem.model.ProOrderItemService;
 import com.farmtastic.proorderitem.model.ProOrderItemVO;
 import com.farmtastic.shoppingcart.model.ShoppingCartService;
@@ -75,9 +74,10 @@ public class ProOrderMemController {
 			// 將值回傳至前端thymeleaf
 			model.addAttribute("proOrderList", list);
 		} catch (Exception e) {
-			// TODO: handle exception
-
-		}
+			String errorMessage = "查尋訂單錯誤，請洽系統管理員！";
+			System.err.println(errorMessage);
+			model.addAttribute("errorMessage", errorMessage);
+		} 
 		return "/front_end/customer/logined/memProOrders/listAllProOrder";
 	}
 
@@ -285,29 +285,13 @@ public class ProOrderMemController {
 
 		// ================== 會員點數新增修改的邏輯 ======================
 		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
-		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
-		Integer memPointDisc = proOrderVO.getProOrdPointdisc();
-		Integer memPointGet = proOrderVO.getProOrdPointGet();
-		Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
-		loggedInMember.setMemPoint(finalMemPoint);
-
-		// 將最終點數結果，存回DB
-		memSvc.updateMem(loggedInMember);
+		proOrdSvc.updateMemPoint(proOrderVO, loggedInMember);
 		// 更新網頁會員的session的資料
 		session.setAttribute("loggedInMember", loggedInMember);
 
-		// ================== 折價卷修改狀態 ======================
+		// ================== 折價卷修改成已使用狀態 ======================
 		if (proOrderVO.getMemProCpnVO() != null) {
-			try {
-				MemProCpnVO updateMpc = mpcSvc.getOne(proOrderVO.getMemProCpnVO().getCpnHolderDetailId());
-				// 設定已經使用該折價券
-				updateMpc.setCpnUseStatus(CpnUseStatus.USED);
-				// 將最終點數結果，存回DB
-				mpcSvc.updateMemProCpn(updateMpc);
-			} catch (Exception e) {
-				// 記錄錯誤但不影響訂單流程
-				System.err.println("更新優惠券狀態失敗: " + e.getMessage());
-			}
+			proOrdSvc.mcpnUsed(proOrderVO);
 		}
 
 		// ===================== 清除 該訂單的購物車內容 =====================
@@ -354,9 +338,6 @@ public class ProOrderMemController {
 	public String doPay(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 		Integer proOrdIdByPay = (Integer) session.getAttribute("proOrdIdByPay");
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdIdByPay);
-
-		Mem loggedInMember = (Mem) session.getAttribute("loggedInMember");
-		ProOrderVO sessionOrder = (ProOrderVO) session.getAttribute("cartToProOrder");
 
 		// ================== 付款狀態修改狀態 ======================
 		if (proOrderVO.getProPayStatus() == 0) {
@@ -530,9 +511,8 @@ public class ProOrderMemController {
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
 
-		// 4. 成功執行 (原有的邏輯)
+		// ==============錯誤驗證過關，則執行同時使用折價卷與點數之邏輯==============
 
-		// 實際折抵金額 (假設 1 點 = 1 元)
 		Integer pointDiscountAmount = tempPointdisc;
 
 		// (1) 更新折抵點數
@@ -563,7 +543,7 @@ public class ProOrderMemController {
 		List<MemProCpnVO> mpcList = mpcSvc.getValidCpnsByMember(loggedInMember.getMemId());
 		model.addAttribute("mpcList", mpcList);
 
-		// 6. 成功重定向
+		// 6. 成功並轉傳
 		model.addAttribute("successMessage", "折抵已更新！");
 		// redirectAttributes.addFlashAttribute("successMessage", "未選擇折價卷！");
 		return "/front_end/customer/logined/memProOrders/addProOrder";

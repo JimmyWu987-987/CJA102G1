@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.farmtastic.common.enums.CpnUseStatus;
 import com.farmtastic.member.model.Mem;
 import com.farmtastic.member.model.MemService;
 import com.farmtastic.memprocpn.model.MemProCpnRepository;
@@ -176,6 +177,36 @@ public class ProOrderService {
 
 	}
 
+	// 新增訂單有使用優惠卷，將優惠卷更改成已使用狀態。
+	@Transactional
+	public void mcpnUsed(ProOrderVO proOrderVO) {
+		try {
+			MemProCpnVO updateMpc = mpcSvc.getOne(proOrderVO.getMemProCpnVO().getCpnHolderDetailId());
+			// 設定已經使用該折價券
+			updateMpc.setCpnUseStatus(CpnUseStatus.USED);
+			// 將最終點數結果，存回DB
+			mpcSvc.updateMemProCpn(updateMpc);
+		} catch (Exception e) {
+			// 記錄錯誤但不影響訂單流程
+			System.err.println("更新優惠券狀態失敗: " + e.getMessage());
+		}
+	}
+
+	// 新增訂單後有點數回饋，將資料儲存至MemVO表單之會員點數欄位。
+	public void updateMemPoint(ProOrderVO proOrderVO, Mem loggedInMember) {
+
+		// 從proOrderVO取得此訂單的回饋點數，儲存至mem物件的會員點數欄位
+		Integer memPoint = proOrderVO.getMemVO().getMemPoint();
+		Integer memPointDisc = proOrderVO.getProOrdPointdisc();
+		Integer memPointGet = proOrderVO.getProOrdPointGet();
+		Integer finalMemPoint = memPoint - memPointDisc + memPointGet;
+		loggedInMember.setMemPoint(finalMemPoint);
+
+		// 將最終點數結果，存回DB
+		memSvc.updateMem(loggedInMember);
+
+	}
+
 	// 新增訂單的扣商品庫存的邏輯
 	@Transactional
 	public Pro discProductStock(ProOrderVO proOrderVO) {
@@ -196,7 +227,7 @@ public class ProOrderService {
 				discProList.add(tempProVO);
 			}
 		}
-		
+
 		// 確認該訂單明細都沒有庫存的問題，才存入資料庫
 		if (discProList != null || !discProList.isEmpty()) {
 			for (Pro finalProVO : discProList) {
@@ -284,12 +315,14 @@ public class ProOrderService {
 		}
 
 	}
+
 	// 修改訂單的狀態
 	// 最後返回的是文字訊息
+	@Transactional
 	public String updateProOrderStatus(ProOrderVO proOrderVO) {
-		
-		String successMessage =  null;
-		
+
+		String successMessage = null;
+
 		// 判斷是否要更新狀態
 		boolean updateStatus = false;
 
@@ -308,7 +341,7 @@ public class ProOrderService {
 			cancelOrderAndBackPoint(proOrderVO);
 
 			successMessage = "訂單已經取消！";
-			
+
 			updateStatus = true;
 			break;
 		// 出貨中，通知賣家到貨
@@ -343,7 +376,7 @@ public class ProOrderService {
 		if (updateStatus) {
 			updateProOrder(proOrderVO);
 		}
-		
+
 		return successMessage;
 	}
 
