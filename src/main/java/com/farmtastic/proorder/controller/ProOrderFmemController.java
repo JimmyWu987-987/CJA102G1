@@ -96,12 +96,12 @@ public class ProOrderFmemController {
 			proOrderVO.setProTrackingNo(proTrackingNo);
 		}
 
-		// **修正日期處理邏輯：將字串轉換為日期物件**
+		// 修正日期處理邏輯：將字串轉換為日期物件
 		if (proOrdShipdate != null && !proOrdShipdate.isEmpty()) {
 			try {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Date shipDate = sdf.parse(proOrdShipdate);
-				// 假設您的 VO 屬性是 java.util.Date 或其子類
+				//  VO 屬性是 java.util.Date 或其子類
 				proOrderVO.setProOrdShipdate(shipDate);
 
 			} catch (ParseException e) {
@@ -156,10 +156,7 @@ public class ProOrderFmemController {
 		proOrdStatus.put(4, "申請退貨(已出貨)");
 		proOrdStatus.put(5, "退貨中");
 		proOrdStatus.put(6, "已退貨");
-//		proOrdStatus.put(7, "貨物已燒毀");
-//		proOrdStatus.put(8, "貨物已沉入大海");
-//		proOrdStatus.put(9, "貨物被偷了");
-//		proOrdStatus.put(10, "貨物已失蹤");
+
 		// 放入 model 傳送至前端
 		model.addAttribute("proOrdStatus", proOrdStatus);
 //		========================

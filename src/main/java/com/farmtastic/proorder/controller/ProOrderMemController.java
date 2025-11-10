@@ -133,63 +133,18 @@ public class ProOrderMemController {
 			HttpSession session) {
 
 		ProOrderVO proOrderVO = proOrdSvc.getOneProOrder(proOrdId);
-
-		// 判斷是否要更新狀態
-		boolean updateStatus = false;
-
-		switch (proOrderVO.getProOrdStatus()) {
-		// 訂單未出貨，可以直接取消訂單。
-		case 0:
-		case 1:
-			System.out.println("訂單取消！");
-			proOrderVO.setProOrdStatus((byte) 1);
-
-			// 取消訂單返回庫存的邏輯
-			proOrdSvc.cancelOrderAndBackStock(proOrderVO);
-
-			// 取消訂單判斷是否要返還點數的邏輯
-			// 業務邏輯是，有付款才會新增點數到 Mem 的 DB
-			proOrdSvc.cancelOrderAndBackPoint(proOrderVO);
-
+		
+		// 修改訂單的狀態
+		String successMessage =  proOrdSvc.updateProOrderStatus(proOrderVO);
+		
+		if(successMessage == "訂單已經取消！") {
 			Mem updateMemVO = memSvc.getOneByMemId(proOrderVO.getMemVO().getMemId());
 
 			// 要將更新過的 Mem 資料，存到 session
 			session.setAttribute("loggedInMember", updateMemVO);
-
-			redirectAttributes.addFlashAttribute("successMessage", "訂單已經取消！");
-			updateStatus = true;
-			break;
-		// 出貨中，通知賣家到貨
-		case 2:
-
-			System.out.println("已通知賣家到貨！");
-			proOrderVO.setProOrdStatus((byte) 3);
-			updateStatus = true;
-			redirectAttributes.addFlashAttribute("successMessage", "已通知賣家到貨！");
-			break;
-
-		case 3:
-			// 訂單已經是退貨流程，直接返回。
-		case 4:
-			System.out.println("已通知賣家退貨！");
-			proOrderVO.setProOrdStatus((byte) 5);
-			updateStatus = true;
-			redirectAttributes.addFlashAttribute("successMessage", "已通知賣家退貨！");
-			break;
-		// 已經是退貨狀態，不會更新狀態
-		// 已在前端隱藏退貨按鈕，以下判斷為預防用。
-		case 5:
-		case 6:
-			System.out.println("已經是退貨狀態！");
-			redirectAttributes.addFlashAttribute("errorMessage", "已經是退貨狀態！");
-			break;
-		default:
-			break;
 		}
-
-		if (updateStatus) {
-			proOrdSvc.updateProOrder(proOrderVO);
-		}
+		
+		redirectAttributes.addFlashAttribute("successMessage", successMessage);
 
 		return "redirect:/mem/proorders/listAllProOrder";
 	}
@@ -280,16 +235,6 @@ public class ProOrderMemController {
 			return "/front_end/customer/logined/memProOrders/addProOrder";
 		}
 
-		// 成功時：使用表單提交的折扣金額（這些是用戶最後確認的值）
-		// proOrderVO.getProOrdPointdisc() - 已經包含用戶設定的點數折抵
-		// proOrderVO.getProOrdCpndisc() - 已經包含用戶選擇的優惠券折扣
-		// proOrderVO.getProOrdGrandTotal() - 已經包含最終計算的實付金額
-		// proOrderVO.getProOrdPointGet() - 已經包含回饋點數
-
-		// 從 session 來的必要資料, 比較安全。
-//		proOrderVO.setProOrdDate(sessionOrder.getProOrdDate());
-//		proOrderVO.setProTotal(sessionOrder.getProTotal());
-//		proOrderVO.setProOrdShipFee(sessionOrder.getProOrdShipFee());
 
 		proOrdSvc.finalCheckOrder(proOrderVO);
 
@@ -386,7 +331,8 @@ public class ProOrderMemController {
 
 		switch (proOrderVO.getProOrdPayment()) {
 		case 0: // 信用卡
-			// 先暫時導向首頁
+			
+			// 還未實作綠界信用卡轉導，先暫時導向首頁
 			redirectAttributes.addFlashAttribute("errorMessage", "第三方支付忙線中！請重新選擇付款方式。");
 			return "redirect:/mem/proorders/listAllProOrder";
 

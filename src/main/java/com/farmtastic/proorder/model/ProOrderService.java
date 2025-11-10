@@ -116,7 +116,7 @@ public class ProOrderService {
 		return repository.findFmemProOrders(fmemId);
 	}
 
-	// ====================================訂單一般會員前台使用====================================
+	// ====================================[一般會員前台]訂單====================================
 	// 確定將訂單加入到DB的邏輯
 	// @PostMapping("insert") 專用
 	@Transactional
@@ -284,6 +284,68 @@ public class ProOrderService {
 		}
 
 	}
+	// 修改訂單的狀態
+	// 最後返回的是文字訊息
+	public String updateProOrderStatus(ProOrderVO proOrderVO) {
+		
+		String successMessage =  null;
+		
+		// 判斷是否要更新狀態
+		boolean updateStatus = false;
+
+		switch (proOrderVO.getProOrdStatus()) {
+		// 訂單未出貨，可以直接取消訂單。
+		case 0:
+		case 1:
+			System.out.println("訂單取消！");
+			proOrderVO.setProOrdStatus((byte) 1);
+
+			// 取消訂單返回庫存的邏輯
+			cancelOrderAndBackStock(proOrderVO);
+
+			// 取消訂單判斷是否要返還點數的邏輯
+			// 業務邏輯是，有付款才會新增點數到 Mem 的 DB
+			cancelOrderAndBackPoint(proOrderVO);
+
+			successMessage = "訂單已經取消！";
+			
+			updateStatus = true;
+			break;
+		// 出貨中，通知賣家到貨
+		case 2:
+
+			System.out.println("已通知賣家到貨！");
+			proOrderVO.setProOrdStatus((byte) 3);
+			updateStatus = true;
+			successMessage = "已通知賣家到貨！";
+			break;
+
+		case 3:
+			// 訂單已經是退貨流程，直接返回。
+		case 4:
+			System.out.println("已通知賣家退貨！");
+			proOrderVO.setProOrdStatus((byte) 5);
+			updateStatus = true;
+			successMessage = "已通知賣家退貨！";
+			break;
+		// 已經是退貨狀態，不會更新狀態
+		// 已在前端隱藏退貨按鈕，以下判斷為預防用。
+		case 5:
+		case 6:
+			System.out.println("已經是退貨狀態！");
+			successMessage = "已經是退貨狀態！";
+			break;
+		default:
+			successMessage = "更新訂單狀態異常，請洽網站管理員！";
+			break;
+		}
+
+		if (updateStatus) {
+			updateProOrder(proOrderVO);
+		}
+		
+		return successMessage;
+	}
 
 	// 清除來自購物車的該訂單內容
 	public void insertOrderCleanCart(ProOrderVO proOrderVO) {
@@ -293,7 +355,7 @@ public class ProOrderService {
 		shoppingCartSvc.clearCartByFmemId(fmemId);
 	}
 
-	// ====================================訂單後台使用====================================
+	// ====================================[後台]使用金流系統使用====================================
 
 	// 查詢該小農“已付款“之“已到貨”以及“已退貨的”全部訂單，可以撥款的訂單
 	@Transactional
