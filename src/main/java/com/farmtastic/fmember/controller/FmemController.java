@@ -1084,12 +1084,12 @@ public class FmemController{
 			String mailTitle = "農作物與它們的產地：小農會員-登入驗證碼";
 			String mailContent = "以下是您的登入驗證碼：" + verificationCode + "\n"
 			        		   + "此驗證碼" + timeoutMinutes +"分鐘內有效，逾時請重新操作。";
-			mailSvc.sendMail(fmem.getFmemEmail(), mailTitle, mailContent);
+//			mailSvc.sendMail(fmem.getFmemEmail(), mailTitle, mailContent);
 						
 			
 			// 4.登入成功後 重導至OTP驗證***
-//			return "redirect:/fmem/home";
-			return "redirect:/fmem/loginVerifyPage";
+			return "redirect:/fmem/home";
+//			return "redirect:/fmem/loginVerifyPage";
 		} catch (IllegalStateException e) {
 			model.addAttribute("loginError", e.getMessage());
 			model.addAttribute("loginRequest", loginRequest);
